@@ -1,0 +1,8 @@
+package it.unipv.ingsw.progn25;
+
+public class ProgettoN25 {
+
+    public static void main(String[] args) {
+        //Entry point
+    }
+}
