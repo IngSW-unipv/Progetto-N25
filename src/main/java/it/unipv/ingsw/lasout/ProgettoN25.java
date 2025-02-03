@@ -4,16 +4,31 @@ import io.github.palexdev.materialfx.theming.JavaFXThemes;
 import io.github.palexdev.materialfx.theming.MaterialFXStylesheets;
 import io.github.palexdev.materialfx.theming.UserAgentBuilder;
 import io.github.palexdev.materialfx.theming.base.Theme;
+import it.unipv.ingsw.lasout.util.DatabaseUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.*;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Logger;
 
 public class ProgettoN25 extends Application {
 
+    private static final Logger LOGGER = Logger.getLogger(ProgettoN25.class.getName());
+
     public static void main(String[] args) {
+
+        try {
+            DatabaseUtil.getInstance().initialize();
+        } catch (IOException | SQLException e) {
+            LOGGER.severe("Couldn't initialize database: \n" + e);
+            System.exit(1);
+            return;
+        }
+
         launch();
     }
 
