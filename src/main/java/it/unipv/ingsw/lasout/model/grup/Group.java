@@ -38,4 +38,5 @@ public class Group {
         return false;
     }
 
+    public void metdo2(){}
 }
