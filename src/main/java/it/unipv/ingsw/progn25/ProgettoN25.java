@@ -6,5 +6,6 @@ public class ProgettoN25 {
         //Entry point
         System.out.println("Progetto");
         System.out.println("Progetto");
+        System.out.println("Progetto");
     }
 }
