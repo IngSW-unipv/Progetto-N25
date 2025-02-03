@@ -1,81 +1,73 @@
-<?import io.github.palexdev.materialfx.controls.*?>
-<?import javafx.geometry.*?>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.*?>
-<GridPane alignment="CENTER" hgap="20.0" styleClass="grid-pane" stylesheets="@it/unipv/ingsw/lasout/css/Buttons.css" vgap="20.0"
-          xmlns="http://javafx.com/javafx/17">
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+
+<GridPane alignment="CENTER" hgap="20.0" styleClass="grid-pane" stylesheets="@it/unipv/ingsw/lasout/css/Buttons.css" vgap="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
-        <ColumnConstraints halignment="CENTER"/>
-        <ColumnConstraints halignment="CENTER"/>
-        <ColumnConstraints halignment="CENTER"/>
-        <ColumnConstraints halignment="CENTER" minWidth="10.0" prefWidth="20.0"/>
-        <ColumnConstraints halignment="CENTER"/>
-        <ColumnConstraints halignment="CENTER" prefWidth="100.0"/>
-        <ColumnConstraints halignment="CENTER"/>
+        <ColumnConstraints halignment="CENTER" />
+        <ColumnConstraints halignment="CENTER" />
+        <ColumnConstraints halignment="CENTER" />
+        <ColumnConstraints halignment="CENTER" minWidth="10.0" prefWidth="20.0" />
+        <ColumnConstraints halignment="CENTER" />
+        <ColumnConstraints halignment="CENTER" prefWidth="100.0" />
+        <ColumnConstraints halignment="CENTER" />
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints minHeight="10.0" prefHeight="32.0"/>
-        <RowConstraints minHeight="10.0"/>
-        <RowConstraints minHeight="10.0" prefHeight="20.0"/>
-        <RowConstraints minHeight="10.0" prefHeight="32.0"/>
-        <RowConstraints minHeight="10.0"/>
+        <RowConstraints minHeight="10.0" prefHeight="32.0" />
+        <RowConstraints minHeight="10.0" />
+        <RowConstraints minHeight="10.0" prefHeight="20.0" />
+        <RowConstraints minHeight="10.0" prefHeight="32.0" />
+        <RowConstraints minHeight="10.0" />
     </rowConstraints>
     <padding>
-        <Insets bottom="20.0" left="30.0" right="30.0" top="20.0"/>
+        <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
     </padding>
-    <StackPane minHeight="150.0" minWidth="300.0" styleClass="grid-background" GridPane.columnSpan="3"
-               GridPane.rowSpan="2">
+    <StackPane minHeight="150.0" minWidth="300.0" styleClass="grid-background" GridPane.columnSpan="3" GridPane.rowSpan="2">
         <GridPane.margin>
-            <Insets left="-15.0" right="-15.0"/>
+            <Insets left="-15.0" right="-15.0" />
         </GridPane.margin>
         <opaqueInsets>
-            <Insets/>
+            <Insets />
         </opaqueInsets>
     </StackPane>
-    <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="header-label" text="Flat Buttons"
-           GridPane.columnSpan="3"/>
-    <MFXButton minHeight="27.0" minWidth="70.0" GridPane.rowIndex="1"/>
-    <MFXButton id="custom" minHeight="27.0" minWidth="70.0" text="Custom" GridPane.columnIndex="1"
-               GridPane.rowIndex="1"/>
-    <MFXButton disable="true" minHeight="27.0" minWidth="70.0" text="Disabled" GridPane.columnIndex="2"
-               GridPane.rowIndex="1"/>
-    <StackPane minHeight="150.0" minWidth="300.0" styleClass="grid-background" GridPane.columnSpan="3"
-               GridPane.rowIndex="3" GridPane.rowSpan="2">
+    <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="header-label" text="Flat Buttons" GridPane.columnSpan="3" />
+    <MFXButton minHeight="27.0" minWidth="70.0" GridPane.rowIndex="1" />
+    <MFXButton id="custom" minHeight="27.0" minWidth="70.0" text="Custom" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    <MFXButton disable="true" minHeight="27.0" minWidth="70.0" text="Disabled" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+    <StackPane minHeight="150.0" minWidth="300.0" styleClass="grid-background" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.rowSpan="2">
         <opaqueInsets>
-            <Insets/>
+            <Insets />
         </opaqueInsets>
         <GridPane.margin>
-            <Insets left="-15.0" right="-15.0"/>
+            <Insets left="-15.0" right="-15.0" />
         </GridPane.margin>
     </StackPane>
-    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-           styleClass="header-label" text="Raised Buttons" GridPane.columnSpan="3" GridPane.rowIndex="3"/>
-    <MFXButton buttonType="RAISED" minHeight="27.0" minWidth="70.0" GridPane.rowIndex="4"/>
-    <MFXButton id="custom" buttonType="RAISED" minHeight="27.0" minWidth="70.0" text="Custom" GridPane.columnIndex="1"
-               GridPane.rowIndex="4"/>
-    <MFXButton buttonType="RAISED" disable="true" minHeight="27.0" minWidth="70.0" text="Disabled"
-               GridPane.columnIndex="2" GridPane.rowIndex="4"/>
-    <StackPane minHeight="150.0" minWidth="300.0" styleClass="grid-background" GridPane.columnIndex="4"
-               GridPane.columnSpan="3" GridPane.rowSpan="2">
+    <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="header-label" text="Raised Buttons" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+    <MFXButton buttonType="RAISED" minHeight="27.0" minWidth="70.0" GridPane.rowIndex="4" />
+    <MFXButton id="custom" buttonType="RAISED" minHeight="27.0" minWidth="70.0" text="Custom" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+    <MFXButton buttonType="RAISED" disable="true" minHeight="27.0" minWidth="70.0" text="Disabled" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+    <StackPane minHeight="150.0" minWidth="300.0" styleClass="grid-background" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowSpan="2">
         <GridPane.margin>
-            <Insets left="-15.0" right="-15.0"/>
+            <Insets left="-15.0" right="-15.0" />
         </GridPane.margin>
     </StackPane>
-    <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="header-label" text="Outlined Buttons"
-           GridPane.columnIndex="4" GridPane.columnSpan="3"/>
-    <MFXButton minHeight="27.0" minWidth="70.0" styleClass="outline-button" GridPane.columnIndex="4"
-               GridPane.rowIndex="1"/>
-    <MFXButton buttonType="RAISED" minHeight="27.0" minWidth="70.0" styleClass="outline-button" text="Button"
-               GridPane.columnIndex="5" GridPane.rowIndex="1"/>
-    <MFXButton disable="true" minHeight="27.0" minWidth="70.0" styleClass="outline-button" text="Disabled"
-               GridPane.columnIndex="6" GridPane.rowIndex="1"/>
-    <StackPane minHeight="150.0" minWidth="300.0" styleClass="grid-background" GridPane.columnIndex="4"
-               GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.rowSpan="2">
+    <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="header-label" text="Outlined Buttons" GridPane.columnIndex="4" GridPane.columnSpan="3" />
+    <MFXButton minHeight="27.0" minWidth="70.0" styleClass="outline-button" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+    <MFXButton buttonType="RAISED" minHeight="27.0" minWidth="70.0" styleClass="outline-button" text="Button" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+    <MFXButton disable="true" minHeight="27.0" minWidth="70.0" styleClass="outline-button" text="Disabled" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+    <StackPane minHeight="150.0" minWidth="300.0" styleClass="grid-background" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="3" GridPane.rowSpan="2">
         <GridPane.margin>
-            <Insets left="-15.0" right="-15.0"/>
+            <Insets left="-15.0" right="-15.0" />
         </GridPane.margin>
     </StackPane>
-    <Label styleClass="header-label" text="Other Buttons" GridPane.columnIndex="5" GridPane.rowIndex="3"/>
-    <MFXButton minHeight="27.0" minWidth="70.0" styleClass="link-button" text="Link Button" GridPane.columnIndex="5"
-               GridPane.rowIndex="4"/>
+    <Label styleClass="header-label" text="Other Buttons" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+    <MFXButton minHeight="27.0" minWidth="70.0" styleClass="link-button" text="Link Button" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+   <MFXComboBox GridPane.columnIndex="3" GridPane.rowIndex="2" />
 </GridPane>
