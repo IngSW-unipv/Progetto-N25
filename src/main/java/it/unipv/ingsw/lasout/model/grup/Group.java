@@ -39,4 +39,8 @@ public class Group {
     }
 
     public void metdo2(){}
+    public void metodo1(){
+
+    }
+
 }
