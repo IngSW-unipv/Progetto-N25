@@ -30,6 +30,8 @@ public class ProgettoN25 extends Application {
                 .build()
                 .setGlobal();
 
+
+
         scene = new Scene(loadFXML("primary"));
         stage.setScene(scene);
         stage.show();
