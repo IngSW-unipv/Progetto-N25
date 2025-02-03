@@ -38,4 +38,8 @@ public class Group {
         return false;
     }
 
+    public void metodo1(){
+
+    }
+
 }
