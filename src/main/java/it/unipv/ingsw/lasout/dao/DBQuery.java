@@ -19,17 +19,31 @@ public class DBQuery {
         this.params = params;
     }
 
+    /**
+     * Chiude solo i dati, mantenedo la  connessione attiva
+     * Utile per utilizzare la stessa connessione più volte
+     * @throws SQLException
+     */
+    public void flush() throws SQLException {
 
-    public void close() throws SQLException {
-        if(connection != null){
-            connection.close();
-        }
         if(preparedStatement != null){
             preparedStatement.close();
         }
         if(resultSet != null){
             resultSet.close();
         }
+
+    }
+
+    /**
+     * Chiude sia la connessione che i dati
+     * @throws SQLException
+     */
+    public void close() throws SQLException {
+        if(connection != null){
+            connection.close();
+        }
+        flush();
     }
 
     public Connection getConnection() {
@@ -68,7 +82,8 @@ public class DBQuery {
         return params;
     }
 
-    public void setParams(Object[] params) {
+    public   void setParams(Object... params){
         this.params = params;
     }
+
 }

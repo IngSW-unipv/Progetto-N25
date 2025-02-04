@@ -3,6 +3,7 @@ package it.unipv.ingsw.lasout.model.user;
 import it.unipv.ingsw.lasout.model.grup.Group;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -14,12 +15,18 @@ public class User {
     private List<User> friends;
     private List<Notify> notifies;
 
+    public User() {
+        this.groups = new ArrayList<>();
+        this.friends = new ArrayList<>();
+        this.notifies = new ArrayList<>();
+    }
 
     public List<Group> getGroups() {
         return groups;
     }
     public void setGroups(List<Group> groups) {
         this.groups = groups;
+
     }
 
 
