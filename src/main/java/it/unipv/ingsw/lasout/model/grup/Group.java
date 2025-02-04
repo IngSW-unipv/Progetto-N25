@@ -6,6 +6,8 @@ import java.util.List;
 
 public class Group {
 
+
+
     private long id;
     private User admin;
     private List<User> members;

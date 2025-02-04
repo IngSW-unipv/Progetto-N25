@@ -1,14 +1,19 @@
 package it.unipv.ingsw.lasout.util;
 import it.unipv.ingsw.lasout.dao.DBQuery;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.net.URISyntaxException;
 import java.sql.*;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Logger;
 
 public class DatabaseUtil {
 
+
+    private static final String MANY_TO_MANY = "";
 
     private static final String CONNECTION_URL = "jdbc:mysql://%s:%s/%s";
     private static final Logger LOGGER = Logger.getLogger(DatabaseUtil.class.getName());
@@ -29,9 +34,7 @@ public class DatabaseUtil {
 
     }
 
-    public void  initialize() throws IOException, SQLException {
-
-
+    public void prepare() throws IOException {
         Properties prop = new Properties();
         prop.load(DatabaseUtil.class.getResourceAsStream("/app.properties"));
 
@@ -40,15 +43,28 @@ public class DatabaseUtil {
         port = prop.getProperty("port");
         username = prop.getProperty("username");
         password = prop.getProperty("password");
+    }
+    public void  initialize() throws SQLException {
 
-        try(Connection con = DriverManager.getConnection(String.format(CONNECTION_URL, host, port, dbName),  username, password)){
 
-            LOGGER.info("Connection established successfully !");
 
-        }catch (SQLException e){
-            throw new SQLException("Could not connect to database: "  + e);
-        }
 
+        InputStream inputStream = DatabaseUtil.class.getResourceAsStream("/initsql.txt");
+        if(inputStream == null) throw new RuntimeException("Could not find initsql.txt");
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+        StringBuffer buffer = new StringBuffer();
+        bufferedReader.lines().forEach(buffer::append);
+
+        DBQuery dbQuery = new DBQuery("");
+        Arrays.stream(buffer.toString().split(";")).forEach(line->{
+            dbQuery.setQuery(line+";");
+            try {
+                executeQuery(dbQuery);
+            } catch (SQLException e) {
+                LOGGER.severe("Error executing query: " + line + "error: " + e.getMessage());
+            }
+        });
 
     }
 

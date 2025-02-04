@@ -13,7 +13,9 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
@@ -25,10 +27,8 @@ public class ProgettoN25 extends Application {
 
 
         try {
+            DatabaseUtil.getInstance().prepare();
             DatabaseUtil.getInstance().initialize();
-
-
-
         } catch (IOException | SQLException e) {
             LOGGER.severe("Couldn't initialize database: \n" + e);
             System.exit(1);
