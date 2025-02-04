@@ -1,14 +1,16 @@
-package it.unipv.ingsw.lasout.model;
+package it.unipv.ingsw.lasout.model.grup;
+
+import it.unipv.ingsw.lasout.model.User;
 
 import java.util.List;
 
 public class Group {
 
-    private int id;
+    private long id;
     private User admin;
     private List<User> members;
 
-    public Group(int id) {
+    public Group(long id) {
         this.id = id;
     }
 
@@ -24,8 +26,8 @@ public class Group {
     public void setAdmin(User admin) {this.admin = admin;}
 
 
-    public int getId() {return id;}
-    public void setId(int id) {this.id = id;}
+    public long getId() {return id;}
+    public void setId(long id) {this.id = id;}
 
     @Override
     public String toString() {

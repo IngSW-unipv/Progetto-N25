@@ -3,8 +3,9 @@ package it.unipv.ingsw.lasout;
 import io.github.palexdev.materialfx.theming.JavaFXThemes;
 import io.github.palexdev.materialfx.theming.MaterialFXStylesheets;
 import io.github.palexdev.materialfx.theming.UserAgentBuilder;
-import it.unipv.ingsw.lasout.dao.GruppoDAO;
-import it.unipv.ingsw.lasout.model.Group;
+import it.unipv.ingsw.lasout.dao.IDao;
+import it.unipv.ingsw.lasout.model.grup.Group;
+import it.unipv.ingsw.lasout.model.grup.GroupDao;
 import it.unipv.ingsw.lasout.util.DatabaseUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -33,13 +34,6 @@ public class ProgettoN25 extends Application {
             System.exit(1);
             return;
         }
-
-
-        new GruppoDAO(new Group(10)).save();
-
-        Group group = new GruppoDAO(new Group(10)).load();
-
-        System.out.println(group);
 
         launch();
     }

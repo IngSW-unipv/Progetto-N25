@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class DBQuery {
 
-    private Connection  connection;
+    private Connection connection;
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
     private String query;
