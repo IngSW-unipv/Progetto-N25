@@ -1,13 +1,11 @@
-package it.unipv.ingsw.lasout.vault;
-//classe che rappresenta un utente registrato all'applicazione
+package it.unipv.ingsw.lasout.model.vault;
+
 public class RegisteredUser implements User{
-	
 	private String nome;
 	private String cognome;
     private String email;
 
 	public RegisteredUser(String nome, String cognome, String email) {
-		super();
 		this.nome = nome;
 		this.cognome = cognome;
 		this.email = email;
@@ -39,5 +37,4 @@ public class RegisteredUser implements User{
 	public String getEmail() {
 		return email;
 	}
-	
 }

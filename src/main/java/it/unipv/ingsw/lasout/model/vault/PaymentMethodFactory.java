@@ -1,4 +1,4 @@
-package it.unipv.ingsw.lasout.vault;
+package it.unipv.ingsw.lasout.model.vault;
 
 public class PaymentMethodFactory {
 	public static PaymentMethod createPayment(String method, RegisteredUser user, String numeroCarta, String dataScadenza, String cvv, String iban) {

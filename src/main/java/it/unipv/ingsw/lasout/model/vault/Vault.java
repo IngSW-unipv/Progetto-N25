@@ -1,7 +1,6 @@
-package it.unipv.ingsw.lasout.vault;
+package it.unipv.ingsw.lasout.model.vault;
 
 public class Vault {
-	
 	private double saldo;
 
 	public Vault(double saldo) {

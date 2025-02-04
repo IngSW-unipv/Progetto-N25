@@ -1,7 +1,6 @@
-package it.unipv.ingsw.lasout.vault;
+package it.unipv.ingsw.lasout.model.vault;
 
 public class CreditCard implements PaymentMethod{
-
 	private RegisteredUser utente;
     private String numeroCarta;
     private String dataScadenza;
@@ -45,5 +44,4 @@ public class CreditCard implements PaymentMethod{
 	public void setCvv(String cvv) {
 		this.cvv = cvv;
 	}
-	
 }

@@ -1,8 +1,7 @@
-package it.unipv.ingsw.lasout.vault;
+package it.unipv.ingsw.lasout.model.vault;
 
 public class PayPal implements PaymentMethod{
-	
-	private RegisteredUser utente;
+private RegisteredUser utente;
     
 	public PayPal(RegisteredUser utente) {
 		this.utente = utente;
@@ -14,5 +13,5 @@ public class PayPal implements PaymentMethod{
 
 	public void setUtente(RegisteredUser utente) {
 		this.utente = utente;
-	}   
+	}  
 }

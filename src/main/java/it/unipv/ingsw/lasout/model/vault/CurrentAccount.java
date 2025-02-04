@@ -1,11 +1,10 @@
-package it.unipv.ingsw.lasout.vault;
+package it.unipv.ingsw.lasout.model.vault;
 
 public class CurrentAccount implements PaymentMethod{
 	private RegisteredUser utente;
     private String iban;
     
 	public CurrentAccount(RegisteredUser utente, String iban) {
-		super();
 		this.utente = utente;
 		this.iban = iban;
 	}
