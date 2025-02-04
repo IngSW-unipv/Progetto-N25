@@ -5,12 +5,12 @@ import it.unipv.ingsw.lasout.model.grup.exception.NotAdminException;
 
 import java.util.List;
 
-public class Group {
+public class GroupBean {
 
     private List<User> members;
     private User admin;
 
-    public Group(List <User> members) {
+    public GroupBean(List <User> members) {
         this.members = members;
         admin=members.get(0);
     }
@@ -36,11 +36,6 @@ public class Group {
             return true;
         }
         return false;
-    }
-
-    public void metdo2(){}
-    public void metodo1(){
-
     }
 
 }
