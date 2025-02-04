@@ -3,10 +3,13 @@ package it.unipv.ingsw.lasout.model.virtualVault;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+
+//Pojo
 public class VirtualVault {
     public double saldoVV;
     private int id;
     private int proprietario;
+    private String nome;
 
     public double getSaldoVV() {
         return saldoVV;
@@ -40,9 +43,6 @@ public class VirtualVault {
         this.nome = nome;
     }
 
-    private String nome;
-
-
     @Override
     public String toString() {
         return "VirtualVault{" +
@@ -53,7 +53,7 @@ public class VirtualVault {
                 '}';
     }
 
-    //PROVA
+    /*PROVA
     public static void main(String[] args) {
 
         ArrayList<String> nomiList = new ArrayList<>();
@@ -78,6 +78,6 @@ public class VirtualVault {
             System.exit(0);
         }
         scanner.close();
-    }
+    }*/
 }
 
