@@ -1,46 +1,40 @@
 package it.unipv.ingsw.lasout.model.grup;
 
 import it.unipv.ingsw.lasout.model.User;
-import it.unipv.ingsw.lasout.model.grup.exception.NotAdminException;
 
 import java.util.List;
 
 public class Group {
 
-    private List<User> members;
+    private long id;
     private User admin;
+    private List<User> members;
 
-    public Group(List <User> members) {
+    public Group(long id) {
+        this.id = id;
+    }
+
+    public List<User> getMembers() {
+        return members;
+    }
+    public void setMembers(List<User> members) {
         this.members = members;
-        admin=members.get(0);
     }
 
-    public boolean addMember(User performer, User user) throws NotAdminException {
-        if(admin.equals(performer)) return members.add(user);
-        else throw new NotAdminException("performer are not admin");
+
+    public User getAdmin() {return admin;}
+    public void setAdmin(User admin) {this.admin = admin;}
+
+
+    public long getId() {return id;}
+    public void setId(long id) {this.id = id;}
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "id=" + id +
+                ", admin=" + admin +
+                ", members=" + members +
+                '}';
     }
-
-    public boolean removeMember(User performer, User user) throws NotAdminException {
-        if(admin.equals(performer)) return members.remove(user);
-        else throw new NotAdminException("performer are not admin");
-    }
-
-    public boolean leaveGroup(User performer) throws NotAdminException {
-        if(admin.equals(performer)) return members.remove(performer);
-        else throw new NotAdminException("performer are not admin");
-    }
-
-    public boolean changeAdmin(User performer, User newAdmin){
-        if(admin.equals(performer))if(members.contains(newAdmin)){
-            admin=newAdmin;
-            return true;
-        }
-        return false;
-    }
-
-    public void metdo2(){}
-    public void metodo1(){
-
-    }
-
 }
