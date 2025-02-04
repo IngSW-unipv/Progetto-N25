@@ -2,8 +2,8 @@ package it.unipv.ingsw.lasout.model.user;
 
 import it.unipv.ingsw.lasout.dao.DBQuery;
 import it.unipv.ingsw.lasout.dao.IDao;
-import it.unipv.ingsw.lasout.model.grup.Group;
-import it.unipv.ingsw.lasout.model.grup.GroupDao;
+import it.unipv.ingsw.lasout.model.group.Group;
+import it.unipv.ingsw.lasout.model.group.GroupDao;
 import it.unipv.ingsw.lasout.util.DatabaseUtil;
 
 import javax.xml.crypto.Data;

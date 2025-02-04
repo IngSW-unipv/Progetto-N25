@@ -1,4 +1,4 @@
-package it.unipv.ingsw.lasout.model.grup;
+package it.unipv.ingsw.lasout.model.group;
 
 import it.unipv.ingsw.lasout.model.user.User;
 
@@ -15,6 +15,8 @@ public class Group {
     public Group(long id) {
         this.id = id;
     }
+    public Group(){}
+
 
     public List<User> getMembers() {
         return members;

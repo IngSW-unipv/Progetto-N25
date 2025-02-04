@@ -1,1 +1,0 @@
-package it.unipv.ingsw.lasout.model.vault;

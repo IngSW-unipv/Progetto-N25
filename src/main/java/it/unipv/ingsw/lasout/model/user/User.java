@@ -1,6 +1,6 @@
 package it.unipv.ingsw.lasout.model.user;
 
-import it.unipv.ingsw.lasout.model.grup.Group;
+import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 
 import java.util.ArrayList;
