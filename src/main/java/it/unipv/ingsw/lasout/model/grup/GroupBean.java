@@ -1,6 +1,6 @@
 package it.unipv.ingsw.lasout.model.grup;
 
-import it.unipv.ingsw.lasout.model.User;
+import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.grup.exception.NotAdminException;
 
 import java.util.List;
