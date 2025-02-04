@@ -16,13 +16,7 @@ public class User {
     private List<User> friends;
     private List<Notify> notifies;
 
-    /**
-     * Costruttore di un oggetto User.
-     *
-     * @param groups
-     * @param friends
-     * @param notifies
-     */
+    //costruttore di Utente
      public User() {
          this.groups = new ArrayList<>();
          this.friends = new ArrayList<>();

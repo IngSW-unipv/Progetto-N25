@@ -8,6 +8,7 @@ import it.unipv.ingsw.lasout.util.DatabaseUtil;
 
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.Scanner;
 
 public class UserDAO implements IUserDAO {
 
@@ -71,10 +72,19 @@ public class UserDAO implements IUserDAO {
     //inserimento del nuovo utente nel dB
     @Override
     public void save(User user) throws Exception {
-        //TODO capire come fare l'auto increment dell'id utente
+        //TODO capire come fare l'auto increment dell'id utente (credo cmq sia una cosa da fare sulla tabella del DB con: id INT AUTO_INCREMENT PRIMARY KEY)
+        String iD, username, password;
+
+        //interazione con l'utente per l'inserimento
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Give me the username");
+        username= scanner.nextLine();
+        System.out.println("Give me the password");
+        password = scanner.nextLine();
+
         //query di inserimento di un nuovo user
-        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery("INSERT INTO user(?, ?, ?)", user.getId(), user.getUsername(), user.getPassword());
-        //esecuzione della queryInsert "queryInsert"
+        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery("INSERT INTO user(?, ?)", username, password);
+        //esecuzione della queryInsert
         DatabaseUtil.getInstance().executeQuery(queryInsert);
 
         //TODO controlli vari per la corretta esecuzione della query
