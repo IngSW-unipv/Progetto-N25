@@ -11,6 +11,16 @@ public class VirtualVault {
     private int proprietario;
     private String nome;
 
+    public VirtualVault(double saldoVV, int id, int proprietario, String nome) {
+        this.saldoVV = saldoVV;
+        this.id = id;
+        this.proprietario = proprietario;
+        this.nome = nome;
+    }
+
+    public VirtualVault(int id) {
+    }
+
     public double getSaldoVV() {
         return saldoVV;
     }
