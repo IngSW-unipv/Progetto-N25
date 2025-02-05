@@ -2,11 +2,8 @@ DROP TABLE `user`, `group`, `usergroup`, `notify`;
 CREATE TABLE `user` (id INTEGER PRIMARY KEY AUTO_INCREMENT, username CHAR(20) NOT NULL);
 CREATE TABLE `group` ( id INT PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE);
 CREATE TABLE `usergroup` (user_id INT REFERENCES `user`(id), group_id INT REFERENCES `group`(id), PRIMARY KEY(user_id, group_id));
-CREATE TABLE `notify` (id INTEGER AUTO_INCREMENT, user_id INT,`description` TEXT NOT NULL, PRIMARY KEY(id, user_id));
-CREATE TABLE `vault` (id INTEGER AUTO_INCREMENT, user_id INTEGER NOT NULL, saldo DOUBLE, PRIMARY KEY(id), FOREIGN KEY (user_id) REFERENCES users(id));
-CREATE TABLE `paypal` (numerocarta STRING NOT NULL, vault_id INTEGER NOT NULL, user_id INTEGER NOT NULL, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id) REFERENCES vault(id), FOREIGN KEY (user_id) REFERENCES user(id));
-CREATE TABLE `creditcard` (numerocarta STRING NOT NULL, data STRING NOT NULL, cvv INT NOT NULL, vault_id INT NOT NULL, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id) REFERENCES vault(id), FOREIGN KEY (user_id) REFERENCES user(id));
-CREATE TABLE `currentaccount` (iban STRING NOT NULL, vault_id INT NOT NULL, user_id INT NOT NULL, PRIMARY KEY(iban), FOREIGN KEY (vault_id) REFERENCES vault(id), FOREIGN KEY (user_id) REFERENCES user(id));
+CREATE TABLE `notify` (id INTEGER AUTO_INCREMENT, user_id INT REFERENCES user(id) ON DELETE CASCADE,`description` TEXT NOT NULL, PRIMARY KEY(id, user_id));
+CREATE TABLE `friendrequestnotify` (id INTEGER AUTO_INCREMENT, user_id INT,`description` TEXT NOT NULL, PRIMARY KEY(id, user_id), FOREIGN KEY (id, user_id) REFERENCES notify(id, user_id));
 
 
 
