@@ -21,6 +21,10 @@ public class User {
         this.notifies = new ArrayList<>();
     }
 
+    public User(long id){
+        this.id = id;
+    }
+
     public List<Group> getGroups() {
         return groups;
     }

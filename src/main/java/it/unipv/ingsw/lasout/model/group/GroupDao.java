@@ -1,14 +1,15 @@
 package it.unipv.ingsw.lasout.model.group;
 
 import it.unipv.ingsw.lasout.dao.DBQuery;
+import it.unipv.ingsw.lasout.dao.UserGroupDao;
+import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.util.DatabaseUtil;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GroupDao implements IGroupDao{
+public class GroupDao implements IGroupDao {
 
     /**
      * Istanza singola del GroupDao (implementazione singleton)
@@ -56,6 +57,8 @@ public class GroupDao implements IGroupDao{
          */
         Group group = new Group();
         group.setId(rs.getInt("id"));
+        group.setAdmin(new User(rs.getInt("admin")));
+        group.setMembers(UserGroupDao.getInstance().members(new Group(rs.getInt("id"))));
 
         query.close();
         return group;
@@ -73,6 +76,8 @@ public class GroupDao implements IGroupDao{
         while(rs.next()){
             Group group = new Group();
             group.setId(rs.getInt("id"));
+            group.setAdmin(new User(rs.getInt("admin")));
+            group.setMembers(UserGroupDao.getInstance().members(new Group(rs.getInt("id"))));
             groups.add(group);
         }
 
@@ -100,3 +105,4 @@ public class GroupDao implements IGroupDao{
         System.out.println(group);
     }
 }
+

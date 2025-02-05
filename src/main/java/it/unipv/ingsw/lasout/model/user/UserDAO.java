@@ -12,7 +12,6 @@ import java.util.List;
 
 public class UserDAO implements IDao<User> {
 
-
     @Override
     public User get(User user) throws Exception {
 
