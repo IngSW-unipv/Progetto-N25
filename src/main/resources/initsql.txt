@@ -19,10 +19,10 @@ INSERT INTO `user` (username, password)
     ("tia","paperino"),
     ("davide","gatto");
 
-INSERT INTO `group` (user_id)
+INSERT INTO `group` (name, user_id)
     VALUES
-    (1),
-    (2);
+    ("GR1", 1),
+    ("GR2", 2);
 
 INSERT INTO usergroup (user_id, group_id) VALUES
     (1, 1),
