@@ -1,8 +1,7 @@
 package it.unipv.ingsw.lasout.model.vault;
 
-import it.unipv.ingsw.lasout.dao.DBQuery;
-import it.unipv.ingsw.lasout.model.vault.Vault;
-import it.unipv.ingsw.lasout.util.DatabaseUtil;
+import it.unipv.ingsw.lasout.database.DBQuery;
+import it.unipv.ingsw.lasout.database.DatabaseUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,7 +15,12 @@ public class VaultDAO implements IVaultDAO{
     public static VaultDAO getInstance(){
         return INSTANCE;
     }
-    
+
+	@Override
+	public Vault getRaw(Vault oggetto) throws Exception {
+		return null;
+	}
+
 	@Override
 	public Vault get(Vault vault) throws Exception {
 		
