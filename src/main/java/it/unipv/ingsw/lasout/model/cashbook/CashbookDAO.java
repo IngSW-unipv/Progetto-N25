@@ -17,18 +17,14 @@ public class CashbookDAO implements IDao<Cashbook>{
 
 
     private static final String QUERY_GET_1 =
-            "SELECT * " +
-            "FROM `cashbook`" +
-            "WHERE id = ?;";
-    
-            private static final String QUERY_GET_2 =
-            "SELECT * " +
-            "FROM `cashbook`" +
-            "WHERE id = ?;";
+        "SELECT * " +
+        "FROM `cashbook`" +
+        "WHERE name = ?;";
+
 
     public Cashbook getRaw(Cashbook cashbook) throws SQLException {
 
-        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_1, cashbook.getId());
+        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_1, cashbook.getName());
         DatabaseUtil.getInstance().executeQuery(query);
 
 
@@ -36,13 +32,37 @@ public class CashbookDAO implements IDao<Cashbook>{
         if(resultSet == null || !resultSet.next()) throw new RuntimeException("Cashbook not found");
 
 
-        Cashbook savedUser = new Cashbook();
-        savedUser.setName(resultSet.getInt("name"));
-        savedUser.setTransactionList(resultSet.getString(""));
+        Cashbook savedCashbook = new Cashbook();
+        savedCashbook.setName(resultSet.getName("name"));
+        savedCashbook.setTransactionList(resultSet.getList(""));
 
         return user;
     }
 
+    @Override
+    public Cashbook get(Cashbook oggetto) throws Exception {
+        return null;
+    }
+
+    @Override
+    public List<Cashbook> getAll() throws Exception {
+        return List.of();
+    }
+
+    @Override
+    public void save(Cashbook cashbook) throws Exception {
+
+    }
+
+    @Override
+    public void update(Cashbook cashbook, String[] params) throws Exception {
+
+    }
+
+    @Override
+    public void delete(Cashbook cashbook) throws Exception {
+
+    }
 
 
 }
