@@ -1,8 +1,8 @@
 package it.unipv.ingsw.lasout.model.notify;
 
-import it.unipv.ingsw.lasout.dao.DBQuery;
+import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.dao.IDao;
-import it.unipv.ingsw.lasout.util.DatabaseUtil;
+import it.unipv.ingsw.lasout.database.DatabaseUtil;
 
 import java.sql.ResultSet;
 import java.util.List;
@@ -10,17 +10,17 @@ import java.util.List;
 public class NotifyDAO implements IDao<Notify> {
 
 
+    private static final String QUERY_NOTIFY_1 =
+            "SELECT * " +
+            "FROM `notify` " +
+            "WHERE `id` = ?;";
 
 
 
     @Override
     public Notify get(Notify oggetto) throws Exception {
 
-        DBQuery query = DatabaseUtil.getInstance().createQuery(
-                "SELECT *" +
-                        " FROM notify" +
-                        " WHERE oggetto = ?", oggetto.getId()
-        );
+        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_NOTIFY_1);
 
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
@@ -28,6 +28,7 @@ public class NotifyDAO implements IDao<Notify> {
 
         int id = rs.getInt("id");
         String description = rs.getString("description");
+
 
         return new Notify(id, description);
 

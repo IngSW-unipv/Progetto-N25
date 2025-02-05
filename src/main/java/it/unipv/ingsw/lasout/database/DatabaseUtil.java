@@ -1,12 +1,8 @@
-package it.unipv.ingsw.lasout.util;
-import it.unipv.ingsw.lasout.dao.DBQuery;
+package it.unipv.ingsw.lasout.database;
 
 import java.io.*;
-import java.lang.reflect.Field;
-import java.net.URISyntaxException;
 import java.sql.*;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -45,9 +41,6 @@ public class DatabaseUtil {
         password = prop.getProperty("password");
     }
     public void  initialize() throws SQLException {
-
-
-
 
         InputStream inputStream = DatabaseUtil.class.getResourceAsStream("/initsql.txt");
         if(inputStream == null) throw new RuntimeException("Could not find initsql.txt");

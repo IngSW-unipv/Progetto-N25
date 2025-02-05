@@ -3,16 +3,16 @@ package it.unipv.ingsw.lasout;
 import io.github.palexdev.materialfx.theming.JavaFXThemes;
 import io.github.palexdev.materialfx.theming.MaterialFXStylesheets;
 import io.github.palexdev.materialfx.theming.UserAgentBuilder;
-import it.unipv.ingsw.lasout.util.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.user.User;
+import it.unipv.ingsw.lasout.model.user.UserDAO;
+import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
@@ -20,7 +20,7 @@ public class ProgettoN25 extends Application {
 
     private static final Logger LOGGER = Logger.getLogger(ProgettoN25.class.getName());
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
 
 
         try {
@@ -30,6 +30,14 @@ public class ProgettoN25 extends Application {
             LOGGER.severe("Couldn't initialize database: \n" + e);
             System.exit(1);
             return;
+        }
+
+
+        try {
+            User user = UserDAO.getInstance().get(new User(1));
+            System.out.println(user);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         launch();

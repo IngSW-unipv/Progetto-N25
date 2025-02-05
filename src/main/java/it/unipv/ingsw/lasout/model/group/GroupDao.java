@@ -1,10 +1,11 @@
 package it.unipv.ingsw.lasout.model.group;
 
-import it.unipv.ingsw.lasout.dao.DBQuery;
-import it.unipv.ingsw.lasout.util.DatabaseUtil;
+import it.unipv.ingsw.lasout.database.DBQuery;
+import it.unipv.ingsw.lasout.model.user.User;
+import it.unipv.ingsw.lasout.model.user.UserDAO;
+import it.unipv.ingsw.lasout.database.DatabaseUtil;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,16 +45,17 @@ public class GroupDao implements IGroupDao{
      */
     @Override
     public Group get(Group fictitiousGroup) throws Exception {
-        String sql = "SELECT * FROM group WHERE id = ?";
+        String sql = "SELECT * FROM `group` WHERE id = ?";
         DBQuery query = DatabaseUtil.getInstance().createQuery(sql, fictitiousGroup.getId());
 
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
 
         if(!rs.next()) throw new Exception();
-        /* TODO
-            aggiungiere restanti attributi
-         */
+
+        int adminID = rs.getInt("user_id");
+        User user = UserDAO.getInstance().get(new User(adminID));
+
         Group group = new Group();
         group.setId(rs.getInt("id"));
 

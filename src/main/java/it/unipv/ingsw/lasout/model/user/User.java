@@ -20,6 +20,12 @@ public class User {
         this.friends = new ArrayList<>();
         this.notifies = new ArrayList<>();
     }
+    public User(int id) {
+        this.id = id;
+        this.groups = new ArrayList<>();
+        this.friends = new ArrayList<>();
+        this.notifies = new ArrayList<>();
+    }
 
     public List<Group> getGroups() {
         return groups;
@@ -49,5 +55,17 @@ public class User {
 
     public void setNotifies(List<Notify> notifies) {
         this.notifies = notifies;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", groups=" + groups +
+                ", friends=" + friends +
+                ", notifies=" + notifies +
+                '}';
     }
 }

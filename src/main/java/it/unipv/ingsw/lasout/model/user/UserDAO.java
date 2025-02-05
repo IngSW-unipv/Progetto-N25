@@ -1,26 +1,27 @@
 package it.unipv.ingsw.lasout.model.user;
 
-import it.unipv.ingsw.lasout.dao.DBQuery;
+import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.dao.IDao;
-import it.unipv.ingsw.lasout.model.group.Group;
-import it.unipv.ingsw.lasout.model.group.GroupDao;
-import it.unipv.ingsw.lasout.util.DatabaseUtil;
+import it.unipv.ingsw.lasout.database.DatabaseUtil;
 
-import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 import java.util.List;
 
 public class UserDAO implements IDao<User> {
 
+    private static final UserDAO INSTANCE = new UserDAO();
+    public static UserDAO getInstance() { return INSTANCE; }
+    private UserDAO() {
+
+    }
+
+    private static final String FIRST_QUERY = "SELECT * FROM `user` WHERE id = ?;";
 
     @Override
     public User get(User user) throws Exception {
 
 
-        DBQuery  query = DatabaseUtil.getInstance().createQuery("" +
-                "SELECT *" +
-                "FROM user" +
-                "WHERE id = ?", user.getId() );
+        DBQuery  query = DatabaseUtil.getInstance().createQuery(FIRST_QUERY, user.getId() );
         DatabaseUtil.getInstance().executeQuery(query);
 
 
@@ -28,27 +29,11 @@ public class UserDAO implements IDao<User> {
         if(resultSet == null || !resultSet.next()) throw new RuntimeException("user not found");
 
         int id = resultSet.getInt("id");
+        String username =  resultSet.getString("username");
 
         User savedUser = new User();
         savedUser.setId(id);
-
-
-        query.setQuery(
-                "SELECT *" +
-                "FROM relgroupuser" +
-                "WHERE user_id = ?");
-        query.setParams(savedUser.getId());
-
-        DatabaseUtil.getInstance().executeQuery(query);
-        resultSet = query.getResultSet();
-        if(resultSet == null) throw new RuntimeException("user not found");
-
-        while(resultSet.next()) {
-
-            Group group = GroupDao.getInstance().get(new Group(resultSet.getInt("group_id")));
-            savedUser.getGroups().add(group);
-
-        }
+        savedUser.setUsername(username);
 
 
         query.close();

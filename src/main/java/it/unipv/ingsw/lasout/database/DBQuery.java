@@ -1,4 +1,4 @@
-package it.unipv.ingsw.lasout.dao;
+package it.unipv.ingsw.lasout.database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
