@@ -8,7 +8,7 @@ public class PaymentMethodFactory {
             case "credit_card":
                 return new CreditCard(user, numeroCarta, dataScadenza, cvv);
             case "paypal":
-                return new PayPal(user);
+                return new PayPal(user, numeroCarta);
             case "bank_transfer":
                 return new CurrentAccount(user, iban);
             default:

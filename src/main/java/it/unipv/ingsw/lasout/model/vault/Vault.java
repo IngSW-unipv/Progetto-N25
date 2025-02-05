@@ -4,7 +4,7 @@ import it.unipv.ingsw.lasout.model.user.User;
 
 import java.util.List;
 
-
+// classe pojo del Vault
 public class Vault {
 	
 	private long id;
