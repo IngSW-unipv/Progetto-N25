@@ -1,8 +1,9 @@
 package it.unipv.ingsw.lasout.dao;
 
+import it.unipv.ingsw.lasout.database.DBQuery;
+import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.user.User;
-import it.unipv.ingsw.lasout.util.DatabaseUtil;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;

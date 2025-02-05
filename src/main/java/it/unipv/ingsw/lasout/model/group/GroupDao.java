@@ -1,7 +1,8 @@
 package it.unipv.ingsw.lasout.model.group;
 
-import it.unipv.ingsw.lasout.dao.DBQuery;
-import it.unipv.ingsw.lasout.util.DatabaseUtil;
+
+import it.unipv.ingsw.lasout.database.DBQuery;
+import it.unipv.ingsw.lasout.database.DatabaseUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

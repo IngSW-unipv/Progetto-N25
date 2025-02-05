@@ -1,10 +1,12 @@
 package it.unipv.ingsw.lasout.model.user;
 
-import it.unipv.ingsw.lasout.dao.DBQuery;
+
 import it.unipv.ingsw.lasout.dao.IDao;
+import it.unipv.ingsw.lasout.database.DBQuery;
+import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
-import it.unipv.ingsw.lasout.util.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 
 import javax.xml.crypto.Data;
 import java.sql.ResultSet;
@@ -17,7 +19,7 @@ public class UserDAO implements IDao<User> {
     public User get(User user) throws Exception {
 
 
-        DBQuery  query = DatabaseUtil.getInstance().createQuery("" +
+        DBQuery query = DatabaseUtil.getInstance().createQuery("" +
                 "SELECT *" +
                 "FROM user" +
                 "WHERE id = ?", user.getId() );
