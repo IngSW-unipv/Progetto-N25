@@ -1,13 +1,13 @@
-DROP TABLE `user`, `group`, `usergroup`, `notify`;
-CREATE TABLE `user`                (id INTEGER PRIMARY KEY AUTO_INCREMENT, username VARCHAR(50) NOT NULL, password VARCHAR(50) NOT NULL);
-CREATE TABLE `group`               (id INT PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE);
-CREATE TABLE `usergroup`           (user_id INT REFERENCES `user`(id), group_id INT REFERENCES `group`(id), PRIMARY KEY(user_id, group_id));
-CREATE TABLE `notify`              (id INTEGER AUTO_INCREMENT, user_id INT REFERENCES user(id) ON DELETE CASCADE,`description` TEXT NOT NULL, PRIMARY KEY(id, user_id));
+DROP TABLE IF EXISTS `user`, `group`, `usergroup`, `notify`, `friendrequestnotify`, `vault`, `creditcard`, `paypal`, `currentaccount`;
+CREATE TABLE `user` (id INTEGER PRIMARY KEY AUTO_INCREMENT, username CHAR(20) NOT NULL, password CHAR(20) NOT NULL);
+CREATE TABLE `group` ( id INT PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE);
+CREATE TABLE `usergroup` (user_id INT REFERENCES `user`(id), group_id INT REFERENCES `group`(id), PRIMARY KEY(user_id, group_id));
+CREATE TABLE `notify` (id INTEGER AUTO_INCREMENT, user_id INT REFERENCES user(id) ON DELETE CASCADE,`description` TEXT NOT NULL, PRIMARY KEY(id, user_id));
 CREATE TABLE `friendrequestnotify` (id INTEGER AUTO_INCREMENT, user_id INT,`description` TEXT NOT NULL, PRIMARY KEY(id, user_id), FOREIGN KEY (id, user_id) REFERENCES notify(id, user_id));
-CREATE TABLE `vault`               (id INTEGER AUTO_INCREMENT, user_id INT, saldo DOUBLE, PRIMARY KEY(id), FOREIGN KEY (user_id) REFERENCES user(id));
-CREATE TABLE `creditcard`          (numerocarta STRING NOT NULL, data STRING NOT NULL, cvv INT NOT NULL, vault_id INT, user_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id, user_id) REFERENCES vault(id, user_id));
-CREATE TABLE `paypal`              (numerocarta STRING NOT NULL, vault_id INT, user_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id, user_id) REFERENCES vault(id, user_id));
-CREATE TABLE `currentaccount`      (iban STRING NOT NULL, vault_id INT, user_id INT, PRIMARY KEY(iban), FOREIGN KEY (vault_id, user_id) REFERENCES vault(id, user_id));
+CREATE TABLE `vault` (id INTEGER AUTO_INCREMENT, user_id INT, saldo DOUBLE, PRIMARY KEY(id), FOREIGN KEY (user_id) REFERENCES user(id));
+CREATE TABLE `creditcard` (numerocarta VARCHAR(16) NOT NULL, mese INT NOT NULL, anno INT NOT NULL, cvv INT NOT NULL, vault_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id) REFERENCES vault(id));
+CREATE TABLE `paypal` (numerocarta VARCHAR(16) NOT NULL, vault_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id) REFERENCES vault(id));
+CREATE TABLE `currentaccount` (iban VARCHAR(34) NOT NULL, vault_id INT, PRIMARY KEY(iban), FOREIGN KEY (vault_id) REFERENCES vault(id));
 
 
 INSERT INTO `user` (username, password)
