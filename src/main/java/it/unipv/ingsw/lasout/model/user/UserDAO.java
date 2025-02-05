@@ -17,26 +17,25 @@ public class UserDAO implements IUserDAO {
     public User get(User user) throws Exception {
 
         //creazione della query di ricerca nel DB di tipo "DBQuery"
-        DBQuery query = DatabaseUtil.getInstance().createQuery("" +
-                "SELECT *" +
-                "FROM user" +
-                "WHERE id = ?", user.getId());
+        DBQuery query = DatabaseUtil.getInstance().createQuery("SELECT *" +
+                                                                  "FROM user" +
+                                                                  "WHERE id = ?", user.getId());
         //esecuzione della query
         DatabaseUtil.getInstance().executeQuery(query);
 
-        //"resultSet" prende il risultato della query precedente
+        //"resultSet" prende il risultato della query appena fatta
         ResultSet resultSet = query.getResultSet();
-        //se la query non da risultati o ? allora viene lanciata l'eccezione
-        //next pk skippo il primo
+        //se la query non da risultati o non c'è niente dopo c'è dopo il primo carattere allora viene lanciata l'eccezione
         if(resultSet == null || !resultSet.next()) throw new UserNotFoundException("User not found");
-
-        //prendo in una variabile il risultato della query
-        int id = resultSet.getInt("id");
 
         //creazione di un bean in cui metto l'id preso dalla query
         User savedUser = new User();
-        savedUser.setId(id);
+        savedUser.setId(resultSet.getInt("id"));
         //qui volendo ci sarebbe già la chiusura del metodo
+
+
+
+
 
         //DA QUI IN POI COSA FA?
         query.setQuery(
@@ -66,6 +65,21 @@ public class UserDAO implements IUserDAO {
     //ricerca delle informazioni di un utente presente nel dB
     @Override
     public List<User> getAll() throws Exception {
+        //creazione della querySelectAll di ricerca nel DB di tipo "DBQuery"
+        DBQuery querySelectAll = DatabaseUtil.getInstance().createQuery("SELECT *" +
+                                                                           "FROM user" );
+        //esecuzione della querySelectAll
+        DatabaseUtil.getInstance().executeQuery(querySelectAll);
+
+        //"resultSet" prende il risultato della querySelectAll appena fatta
+        ResultSet resultSet = querySelectAll.getResultSet();
+        //se la querySelectAll non da risultati o non c'è niente dopo c'è dopo il primo carattere allora viene lanciata l'eccezione
+        if(resultSet == null || !resultSet.next()) throw new UserNotFoundException("User not found");
+
+        //creazione di un bean in cui metto l'id preso dalla querySelectAll
+        User savedUser = new User();
+        savedUser.setId(resultSet.getInt("id"));
+
         return List.of();
     }
 
@@ -79,7 +93,7 @@ public class UserDAO implements IUserDAO {
         //dema sono cla che stai a fare con uno scanner system in??? qui stiamo idealizando niente fa nulla e sopratutto non lo facciamo dalla console
         //interazione con l'utente per l'inserimento
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Give me the username");
+        System.out.println("Give me the username:");
         username= scanner.nextLine();
         System.out.println("Give me the password");
         password = scanner.nextLine();
