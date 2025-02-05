@@ -1,9 +1,9 @@
 package it.unipv.ingsw.lasout.model.virtualVault;
 
-import it.unipv.ingsw.lasout.dao.DBQuery;
 import it.unipv.ingsw.lasout.dao.IDao;
+import it.unipv.ingsw.lasout.database.DBQuery;
+import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.vault.Vault;
-import it.unipv.ingsw.lasout.util.DatabaseUtil;
 
 import java.sql.ResultSet;
 import java.util.List;
@@ -13,7 +13,13 @@ public class VirtualVaultDAO implements IVirtualVaultDao {
     public static VirtualVaultDAO getInstance() {
         return INSTANCE;
     }
-//commento prova
+
+    @Override
+    public VirtualVault getRaw(VirtualVault oggetto) throws Exception {
+        return null;
+    }
+
+    //commento prova
     @Override
     public VirtualVault get(VirtualVault virtualVault) throws Exception {
 
