@@ -1,37 +1,44 @@
 package it.unipv.ingsw.lasout.model.user;
 
 import it.unipv.ingsw.lasout.dao.DBQuery;
-import it.unipv.ingsw.lasout.dao.IDao;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
+import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 import it.unipv.ingsw.lasout.util.DatabaseUtil;
 
-import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.Scanner;
 
-public class UserDAO implements IDao<User> {
+public class UserDAO implements IUserDAO {
 
+    //ricerca delle informazioni di un utente presente nel dB in base all'ID dell'utente
     @Override
     public User get(User user) throws Exception {
 
-
-        DBQuery  query = DatabaseUtil.getInstance().createQuery("" +
+        //creazione della query di ricerca nel DB di tipo "DBQuery"
+        DBQuery query = DatabaseUtil.getInstance().createQuery("" +
                 "SELECT *" +
                 "FROM user" +
-                "WHERE id = ?", user.getId() );
+                "WHERE id = ?", user.getId());
+        //esecuzione della query
         DatabaseUtil.getInstance().executeQuery(query);
 
-
+        //"resultSet" prende il risultato della query precedente
         ResultSet resultSet = query.getResultSet();
-        if(resultSet == null || !resultSet.next()) throw new RuntimeException("user not found");
+        //se la query non da risultati o ? allora viene lanciata l'eccezione
+        //next pk skippo il primo
+        if(resultSet == null || !resultSet.next()) throw new UserNotFoundException("User not found");
 
+        //prendo in una variabile il risultato della query
         int id = resultSet.getInt("id");
 
+        //creazione di un bean in cui metto l'id preso dalla query
         User savedUser = new User();
         savedUser.setId(id);
+        //qui volendo ci sarebbe già la chiusura del metodo
 
-
+        //DA QUI IN POI COSA FA?
         query.setQuery(
                 "SELECT *" +
                 "FROM relgroupuser" +
@@ -51,27 +58,46 @@ public class UserDAO implements IDao<User> {
 
 
         query.close();
-
         return savedUser;
 
 
     }
 
+    //ricerca delle informazioni di un utente presente nel dB
     @Override
     public List<User> getAll() throws Exception {
         return List.of();
     }
 
+    //inserimento del nuovo utente nel dB
     @Override
     public void save(User user) throws Exception {
+        //TODO capire come fare l'auto increment dell'id utente (credo cmq sia una cosa da fare sulla tabella del DB con: id INT AUTO_INCREMENT PRIMARY KEY)
+        String iD, username, password;
 
+        //interazione con l'utente per l'inserimento
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Give me the username");
+        username= scanner.nextLine();
+        System.out.println("Give me the password");
+        password = scanner.nextLine();
+
+        //query di inserimento di un nuovo user
+        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery("INSERT INTO user(?, ?)", username, password);
+        //esecuzione della queryInsert
+        DatabaseUtil.getInstance().executeQuery(queryInsert);
+
+        //TODO controlli vari per la corretta esecuzione della query
+        queryInsert.close();
     }
 
+    //modifica delle informazioni di un utente presente nel dB
     @Override
     public void update(User user, String[] params) throws Exception {
 
     }
 
+    //eliminazione di un utente presente nel dB
     @Override
     public void delete(User user) throws Exception {
 
