@@ -1,5 +1,5 @@
 package it.unipv.ingsw.lasout.model.cashbook;
 
-public class ICashbookDAO {
-    
+public interface ICashbookDAO {
+
 }

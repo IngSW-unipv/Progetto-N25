@@ -3,19 +3,28 @@ package it.unipv.ingsw.lasout.model.cashbook;
 import java.util.LinkedList;
 
 public class Cashbook {
-    LinkedList<Integer> transactionList;
+    private String name;
+    private LinkedList<Integer> transactionList;
 
-
-    public void Transaction(int amount){
-        transactionList.add(amount);
+    public Cashbook(String name, LinkedList<Integer> transactionList){
+        this.name = name;
+        this.transactionList=transactionList;
     }
 
-    public void removeTransaction(int amount){
-        transactionList.remove(amount);
+    public String getName(){
+        return name;
     }
 
-    @Override
-    public String toString(){
-        return "Test";
+    public void setName(String name){
+        this.name = name;
     }
+
+    public String getTransactionList(){
+        return name;
+    }
+
+    public void setTransactionList(LinkedList<Integer> transactionList){
+        this.transactionList=transactionList;
+    }
+
 }
