@@ -4,8 +4,7 @@ import it.unipv.ingsw.lasout.model.user.User;
 
 import java.util.List;
 
-// classe pojo del Vault
-public class Vault {
+public class Vault implements IVault{
 	
 	private long id;
 	private User user;
@@ -63,5 +62,53 @@ public class Vault {
                 ", Metodi di pagamento=" + methods +
                 '}';
     }
+
+	@Override
+	public int getID() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setID(int id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public double getBalance() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setBalance(double balance) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public User getOwner() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setOwner(User owner) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public IVaultData getIVaultData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setIVaultData(IVaultData ivaultData) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
