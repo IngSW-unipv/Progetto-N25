@@ -1,26 +1,15 @@
 package it.unipv.ingsw.lasout.model.vault;
 
-import it.unipv.ingsw.lasout.model.user.User;
-
 public class CreditCard implements PaymentMethod{
-	private User utente;
+
     private String numeroCarta;
     private String dataScadenza;
     private String cvv;
     
-	public CreditCard(User utente, String numeroCarta, String dataScadenza, String cvv) {
-		this.utente = utente;
+	public CreditCard(String numeroCarta, String dataScadenza, String cvv) {
 		this.numeroCarta = numeroCarta;
 		this.dataScadenza = dataScadenza;
 		this.cvv = cvv;
-	}
-
-	public User getUtente() {
-		return utente;
-	}
-
-	public void setUtente(User utente) {
-		this.utente = utente;
 	}
 
 	public String getNumeroCarta() {
