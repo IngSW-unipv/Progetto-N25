@@ -6,7 +6,7 @@ public class Cashbook {
     LinkedList<Integer> transactionList;
 
 
-    public void addTransaction(int amount){
+    public void Transaction(int amount){
         transactionList.add(amount);
     }
 
