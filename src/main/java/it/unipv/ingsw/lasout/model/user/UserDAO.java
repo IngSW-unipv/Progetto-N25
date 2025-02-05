@@ -6,59 +6,89 @@ import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
+import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 
 import javax.xml.crypto.Data;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO implements IDao<User> {
 
+    private static final UserDAO INSTANCE = new UserDAO();
+    public static UserDAO getInstance() {
+        return INSTANCE;
+    }
 
-    @Override
-    public User get(User user) throws Exception {
+    private static final String QUERY_GET_1 =
+            "SELECT * " +
+                    "FROM `user`" +
+                    "WHERE id = ?;";
+
+    private static final String QUERY_GROUPSOF_1 =
+            "SELECT group_id " +
+                    "FROM `usergroup`" +
+                    "WHERE user_id = ?;";
 
 
-        DBQuery query = DatabaseUtil.getInstance().createQuery("" +
-                "SELECT *" +
-                "FROM user" +
-                "WHERE id = ?", user.getId() );
+    public User getRaw(User user) throws SQLException {
+
+        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_1, user.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
 
         ResultSet resultSet = query.getResultSet();
         if(resultSet == null || !resultSet.next()) throw new RuntimeException("user not found");
 
-        int id = resultSet.getInt("id");
 
         User savedUser = new User();
-        savedUser.setId(id);
+        savedUser.setId(resultSet.getInt("id"));
+        savedUser.setUsername(resultSet.getString("username"));
+        savedUser.setPassword(resultSet.getString("password"));
 
+        return user;
+    }
 
-        query.setQuery(
-                "SELECT *" +
-                "FROM relgroupuser" +
-                "WHERE user_id = ?");
-        query.setParams(savedUser.getId());
+    @Override
+    public User get(User user) throws Exception {
+        User savedUser = getRaw(user);
+
+        List<Group> groups = groupsOfUser(savedUser);
+        savedUser.setGroups(groups);
+
+        return savedUser;
+    }
+
+    public List<Notify> getNotifies(User user) throws Exception {
+        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_1, user.getId());
+
+    }
+
+    public List<Group> groupsOfUser(User user) throws Exception {
+        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GROUPSOF_1, user.getId());
+
+        List<Group> groups = new ArrayList<>();
 
         DatabaseUtil.getInstance().executeQuery(query);
-        resultSet = query.getResultSet();
-        if(resultSet == null) throw new RuntimeException("user not found");
+
+        ResultSet resultSet = query.getResultSet();
+        if(resultSet == null) return groups;
 
         while(resultSet.next()) {
-
-            Group group = GroupDao.getInstance().get(new Group(resultSet.getInt("group_id")));
-            savedUser.getGroups().add(group);
-
+            Group group = new Group();
+            group.setId(resultSet.getInt("id"));
+            GroupDao.getInstance().getRaw(group);
         }
-
 
         query.close();
 
-        return savedUser;
 
+        return groups;
 
     }
+
 
     @Override
     public List<User> getAll() throws Exception {
