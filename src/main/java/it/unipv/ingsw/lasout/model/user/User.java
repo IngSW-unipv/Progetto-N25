@@ -16,12 +16,16 @@ public class User {
     private List<User> friends;
     private List<Notify> notifies;
 
+
+
     //costruttore di Utente
      public User() {
          this.groups = new ArrayList<>();
          this.friends = new ArrayList<>();
          this.notifies = new ArrayList<>();
      }
+
+
 
     //getters e setters
     public User(long id){

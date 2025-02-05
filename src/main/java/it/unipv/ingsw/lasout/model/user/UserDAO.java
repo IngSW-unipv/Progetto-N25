@@ -9,21 +9,16 @@ import it.unipv.ingsw.lasout.model.group.GroupDao;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Logger;
 
 public class UserDAO implements IDao<User> {
 
-    /**
-     *
-     * @return l'istanza singleton dell' UserDao
-     */
+    //istanza singleton dell' UserDao
     private static final UserDAO INSTANCE = new UserDAO();
     public static UserDAO getInstance() {
         return INSTANCE;
@@ -33,7 +28,7 @@ public class UserDAO implements IDao<User> {
 
     }
 
-    //elenco delle query
+    //elenco delle query da far eseguire ai vari metodi del DAO
     private static final String QUERY_GET_1 = "SELECT * " +
                                               "FROM £user£" +
                                               "WHERE id = ?;";
@@ -42,7 +37,7 @@ public class UserDAO implements IDao<User> {
                                                    "FROM £usergroup£" +
                                                    "WHERE user_id = ?;";
 
-    private static final String QUERY_INSERT_NEW_USER_1 = "INSERT INTO £utenti£ (username, password) VALUES (?, ?);";
+    private static final String QUERY_INSERT_NEW_USER_1 = "INSERT INTO £user£ (username, password) VALUES (?, ?);";
 
     private static final String QUERY_DELETE_EXIST_USER_1 = "DELETE FROM £utenti£ WHERE username = ?;";
 
@@ -130,7 +125,7 @@ public class UserDAO implements IDao<User> {
         if(resultSet == null || !resultSet.next()) throw new UserNotFoundException("User not found");
 
         //creazione di un bean in cui metto l'id preso dalla querySelectAll
-        List<User> users = new ArrayList<User>();
+        List<User> users = new ArrayList<>();
         //User savedUser = new User();
         //ciclo while per prendere tutti i dati dell'utente
         while(resultSet.next()) {
@@ -182,17 +177,22 @@ public class UserDAO implements IDao<User> {
             DatabaseUtil.getInstance().prepare();
             DatabaseUtil.getInstance().initialize();
         } catch (IOException | SQLException e) {
-            LOGGER.severe("Couldn't initialize database: \n" + e);
+            LOGGER.severe("Can't initialize the DB: \n" + e);
             System.exit(1);
             return;
         }
         //essendo uh singleton devo ogni volta crearlo
-        User user = UserDAO.getInstance().get(new User());
+        User userTest = new User();
 
-        System.out.println(user);
-        user.setUsername("Giovanni Giorgio");
-        user.setPassword("Giovanni Giorgio's password");
-        UserDAO.getInstance().save(user);
+        //System.out.println(userTest);
+        userTest.setUsername("Giovanni Giorgio");
+        userTest.setPassword("1");
+        UserDAO.getInstance().save(userTest);
+
+        userTest.setUsername("Giovanni Giorgio");
+        userTest.setPassword("1");
+        UserDAO.getInstance().save(userTest);
+
     }
 
 }
