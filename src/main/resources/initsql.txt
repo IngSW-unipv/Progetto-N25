@@ -4,7 +4,10 @@ CREATE TABLE `group` ( id INT PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL R
 CREATE TABLE `usergroup` (user_id INT REFERENCES `user`(id), group_id INT REFERENCES `group`(id), PRIMARY KEY(user_id, group_id));
 CREATE TABLE `notify` (id INTEGER AUTO_INCREMENT, user_id INT REFERENCES user(id) ON DELETE CASCADE,`description` TEXT NOT NULL, PRIMARY KEY(id, user_id));
 CREATE TABLE `friendrequestnotify` (id INTEGER AUTO_INCREMENT, user_id INT,`description` TEXT NOT NULL, PRIMARY KEY(id, user_id), FOREIGN KEY (id, user_id) REFERENCES notify(id, user_id));
-
+CREATE TABLE `vault` (id INTEGER AUTO_INCREMENT, user_id INT, saldo DOUBLE, PRIMARY KEY(id), FOREIGN KEY (user_id) REFERENCES user(id));
+CREATE TABLE `creditcard` (numerocarta STRING NOT NULL, data STRING NOT NULL, cvv INT NOT NULL, vault_id INT, user_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id, user_id) REFERENCES vault(id, user_id));
+CREATE TABLE `paypal` (numerocarta STRING NOT NULL, vault_id INT, user_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id, user_id) REFERENCES vault(id, user_id));
+CREATE TABLE `currentaccount` (iban STRING NOT NULL, vault_id INT, user_id INT, PRIMARY KEY(iban), FOREIGN KEY (vault_id, user_id) REFERENCES vault(id, user_id));
 
 
 INSERT INTO `user` (username, password)
