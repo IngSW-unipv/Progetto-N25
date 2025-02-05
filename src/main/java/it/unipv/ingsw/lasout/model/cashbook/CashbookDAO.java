@@ -39,9 +39,9 @@ public class CashbookDAO implements IDao<Cashbook>{
 
         Cashbook savedCashbook = new Cashbook();
         savedCashbook.setName(resultSet.getString("name"));
-        savedCashbook.setTransactionList(resultSet.getString(""));
+        //savedCashbook.setTransactionList(resultSet.getString("cashbook"));
 
-        return user;
+        return cashbook;
     }
 
     @Override
