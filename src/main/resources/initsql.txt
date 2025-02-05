@@ -1,19 +1,19 @@
 DROP TABLE `user`, `group`, `usergroup`, `notify`;
-CREATE TABLE `user` (id INTEGER PRIMARY KEY AUTO_INCREMENT, username CHAR(20) NOT NULL);
+CREATE TABLE `user` (id INTEGER PRIMARY KEY AUTO_INCREMENT, username CHAR(20) NOT NULL, password CHAR(20) NOT NULL);
 CREATE TABLE `group` ( id INT PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE);
 CREATE TABLE `usergroup` (user_id INT REFERENCES `user`(id), group_id INT REFERENCES `group`(id), PRIMARY KEY(user_id, group_id));
 CREATE TABLE `notify` (id INTEGER AUTO_INCREMENT, user_id INT,`description` TEXT NOT NULL, PRIMARY KEY(id, user_id));
 
 
 
-INSERT INTO `user` (username)
+INSERT INTO `user` (username, password)
     VALUES
-    ("dada"),
-    ("cla"),
-    ("dema"),
-    ("buso"),
-    ("tia"),
-    ("davide");
+    ("dada","ciao"),
+    ("cla","miao"),
+    ("dema","bau"),
+    ("buso","pluto"),
+    ("tia","paperino"),
+    ("davide","gatto");
 
 INSERT INTO `group` (user_id)
     VALUES

@@ -7,7 +7,6 @@ import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
 import it.unipv.ingsw.lasout.model.notify.Notify;
-import it.unipv.ingsw.lasout.model.notify.NotifyDAO;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 
 import javax.xml.crypto.Data;
@@ -19,6 +18,7 @@ import java.util.Scanner;
 
 public class UserDAO implements IDao<User> {
 
+    //singleton
     private static final UserDAO INSTANCE = new UserDAO();
     public static UserDAO getInstance() {
         return INSTANCE;
@@ -29,7 +29,7 @@ public class UserDAO implements IDao<User> {
 
     private static final String QUERY_GET_1 =
             "SELECT * " +
-                    "FROM \\'user\\'" +
+                    "FROM `user`" +
                     "WHERE id = ?;";
 
     private static final String QUERY_GROUPSOF_1 =
@@ -37,22 +37,25 @@ public class UserDAO implements IDao<User> {
                     "FROM `usergroup`" +
                     "WHERE user_id = ?;";
 
-    private static final String QUERY_NOTIFY_1 =
-            "SELECT group_id " +
-                    "FROM `usergroup`" +
-                    "WHERE user_id = ?;";
+    private static final String QUERY_INSERT_NEW_USER_1 = "INSERT INTO £utenti£ (username, password) VALUES (?, ?);";
+
+    private static final String QUERY_DELETE_EXIST_USER_1 = "DELETE FROM £utenti£ WHERE username = ?;";
 
 
+
+
+
+    //prendo solo i dati elementari dell'utente che mi interessa (il suo id)
     public User getRaw(User user) throws Exception {
 
-        //ho creato la query
+        //creo la query
         DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_1, user.getId());
         //eseguo la query
         DatabaseUtil.getInstance().executeQuery(query);
 
-
+        //prendo il risultato della query
         ResultSet resultSet = query.getResultSet();
-        //vedo se è null
+        //controllo il risultato della query (faccio ".next()" pk senò punterei a una cella inesistente)
         if(resultSet == null || !resultSet.next()) throw new RuntimeException("user not found");
 
         //creo l'oggetto da ritornare
@@ -66,10 +69,12 @@ public class UserDAO implements IDao<User> {
         return savedUser;
     }
 
+    //mi dà tutti i gruppi che hanno come partecipante quello che gli dico io (tramite l'id)
     @Override
     public User get(User user) throws Exception {
         User savedUser = getRaw(user);
 
+        //"groupsOfUser(savedUser)"
         List<Group> groups = groupsOfUser(user);
         savedUser.setGroups(groups);
 
@@ -126,21 +131,10 @@ public class UserDAO implements IDao<User> {
         return List.of();
     }
 
+    //metodo che aggiunge un nuovo user
     @Override
     public void save(User user) throws Exception {
-
-        String username, password;
-        //dema sono cla che stai a fare con uno scanner system in??? qui stiamo idealizando niente fa nulla e sopratutto non lo facciamo dalla console
-        //interazione con l'utente per l'inserimento
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Give me the username:");
-        username= scanner.nextLine();
-        System.out.println("Give me the password");
-        password = scanner.nextLine();
-
-        //query di inserimento di un nuovo user
-        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery("INSERT INTO user(?, ?)", username, password);
-        //esecuzione della queryInsert
+        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_USER_1, user.getUsername(), user.getPassword());
         DatabaseUtil.getInstance().executeQuery(queryInsert);
 
         //TODO controlli vari per la corretta esecuzione della query
@@ -156,6 +150,9 @@ public class UserDAO implements IDao<User> {
     //eliminazione di un utente presente nel dB
     @Override
     public void delete(User user) throws Exception {
+        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_DELETE_EXIST_USER_1, user.getUsername());
+        DatabaseUtil.getInstance().executeQuery(queryInsert);
 
+        queryInsert.close();
     }
 }
