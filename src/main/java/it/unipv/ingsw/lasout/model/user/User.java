@@ -6,8 +6,9 @@ import it.unipv.ingsw.lasout.model.notify.Notify;
 import java.util.ArrayList;
 import java.util.List;
 
+//classe Bean di "user" con solo attributi, costruttore, getters e setters
 public class User {
-
+    //attributi utente
     private long id;
     private String username;
     private String password;
@@ -15,10 +16,16 @@ public class User {
     private List<User> friends;
     private List<Notify> notifies;
 
-    public User() {
-        this.groups = new ArrayList<>();
-        this.friends = new ArrayList<>();
-        this.notifies = new ArrayList<>();
+    //costruttore di Utente
+     public User() {
+         this.groups = new ArrayList<>();
+         this.friends = new ArrayList<>();
+         this.notifies = new ArrayList<>();
+     }
+
+    //getters e setters
+    public User(long id){
+        this.id = id;
     }
     public User(int id) {
         this.id = id;
@@ -32,9 +39,7 @@ public class User {
     }
     public void setGroups(List<Group> groups) {
         this.groups = groups;
-
     }
-
 
     public void setId(long id) {this.id = id;}
     public long getId() {return id;}
