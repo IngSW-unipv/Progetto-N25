@@ -93,7 +93,7 @@ public class UserDAO implements IDao<User> {
 
         while(resultSet.next()) {
             Group group = new Group();
-            group.setId(resultSet.getInt("id"));
+            group.setId(resultSet.getInt("group_id"));
             Group groupOf  = GroupDao.getInstance().getRaw(group);
             groups.add(groupOf);
         }
