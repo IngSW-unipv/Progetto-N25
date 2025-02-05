@@ -1,5 +1,5 @@
 DROP TABLE `user`, `group`, `usergroup`;
-CREATE TABLE `user` (id INTEGER PRIMARY KEY AUTO_INCREMENT, username CHAR(20) NOT NULL );
+CREATE TABLE `user` (id INTEGER PRIMARY KEY AUTO_INCREMENT, username CHAR(20) NOT NULL, pw CHAR(20) NOT NULL);
 CREATE TABLE `group` ( id INT PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE);
 CREATE TABLE `usergroup` (user_id INT REFERENCES user(id), group_id INT REFERENCES `group`(id), PRIMARY KEY(user_id, group_id));
 
