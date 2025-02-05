@@ -75,6 +75,8 @@ public class UserDAO implements IUserDAO {
         //TODO capire come fare l'auto increment dell'id utente (credo cmq sia una cosa da fare sulla tabella del DB con: id INT AUTO_INCREMENT PRIMARY KEY)
         String iD, username, password;
 
+
+        //dema sono cla che stai a fare con uno scanner system in??? qui stiamo idealizando niente fa nulla e sopratutto non lo facciamo dalla console
         //interazione con l'utente per l'inserimento
         Scanner scanner = new Scanner(System.in);
         System.out.println("Give me the username");
