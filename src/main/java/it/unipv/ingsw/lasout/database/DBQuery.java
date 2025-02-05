@@ -9,6 +9,7 @@ public class DBQuery {
 
     private Connection connection;
     private PreparedStatement preparedStatement;
+    private PrepareStatementBehavior prepareStatementBehavior;
     private ResultSet resultSet;
     private String query;
     private Object[] params;
@@ -17,6 +18,7 @@ public class DBQuery {
     public DBQuery(String query, Object... params) {
         this.query = query;
         this.params = params;
+        this.prepareStatementBehavior = new DefaultPrepareStatementBehavior();
     }
 
     /**
@@ -84,6 +86,61 @@ public class DBQuery {
 
     public   void setParams(Object... params){
         this.params = params;
+    }
+
+
+    public PrepareStatementBehavior getPrepareStatementBehavior() {
+        return prepareStatementBehavior;
+    }
+
+    public void setPrepareStatementBehavior(PrepareStatementBehavior prepareStatementBehavior) {
+        this.prepareStatementBehavior = prepareStatementBehavior;
+    }
+
+    public PreparedStatement prepareStatement() throws SQLException {
+        return prepareStatementBehavior.execute(connection, query);
+    }
+
+
+    public static class Builder {
+
+        private String queryString;
+        private PrepareStatementBehavior prepareStatementBehavior;
+        private Object[] params;
+
+        private Builder(){
+            this.prepareStatementBehavior = new DefaultPrepareStatementBehavior();
+        }
+
+        public static Builder create(){
+            return new Builder();
+        }
+
+        public Builder query(String queryStr){
+            this.queryString = queryStr;
+            return this;
+        }
+
+        public Builder getGeneratedKeys(){
+            this.prepareStatementBehavior = new ReturnGeneratedKeyPrepareStatementBehavior();
+            return this;
+        }
+        public Builder params(Object... params){
+            this.params = params;
+            return this;
+        }
+
+        public DBQuery build(){
+
+            queryString = queryString.replace("\\'", "`");
+            queryString = queryString.replace("$", "`");
+            queryString = queryString.replace("£", "`");
+            DBQuery dbQuery = new DBQuery(queryString, params);
+
+            dbQuery.setPrepareStatementBehavior(prepareStatementBehavior);
+            return dbQuery;
+        }
+
     }
 
 }

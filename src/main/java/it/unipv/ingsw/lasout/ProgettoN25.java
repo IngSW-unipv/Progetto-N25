@@ -3,6 +3,8 @@ package it.unipv.ingsw.lasout;
 import io.github.palexdev.materialfx.theming.JavaFXThemes;
 import io.github.palexdev.materialfx.theming.MaterialFXStylesheets;
 import io.github.palexdev.materialfx.theming.UserAgentBuilder;
+import it.unipv.ingsw.lasout.model.notify.Notify;
+import it.unipv.ingsw.lasout.model.notify.NotifyDAO;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
@@ -20,7 +22,7 @@ public class ProgettoN25 extends Application {
 
     private static final Logger LOGGER = Logger.getLogger(ProgettoN25.class.getName());
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
 
         try {
@@ -32,13 +34,7 @@ public class ProgettoN25 extends Application {
             return;
         }
 
-
-        try {
-            User user = UserDAO.getInstance().get(new User(1));
-            System.out.println(user);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        NotifyDAO.getInstance().get(new Notify(1, new User(1)));
 
         launch();
     }

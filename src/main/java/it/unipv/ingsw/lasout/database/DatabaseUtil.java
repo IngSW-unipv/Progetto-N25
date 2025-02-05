@@ -82,12 +82,13 @@ public class DatabaseUtil {
                 query.flush();
             }
 
-            PreparedStatement pS = query.getConnection().prepareStatement(query.getQuery());
+            PreparedStatement pS  = query.prepareStatement();
             for(int i = 0; i <  query.getParams().length; i++){
                 pS.setObject(i + 1, query.getParams()[i] != null ?  query.getParams()[i].toString() : null);
             }
 
             query.setPreparedStatement(pS);
+
 
             boolean hasResults = pS.execute();
             if(hasResults){
@@ -102,9 +103,15 @@ public class DatabaseUtil {
     }
 
     public DBQuery createQuery(String s, Object... params) {
-        s = s.replace("\\'", "`");
-        s = s.replace("$", "`");
-        s = s.replace("£", "`");
-        return new DBQuery(s, params);
+        return DBQuery.Builder.create()
+                .query(s)
+                .params(params)
+                .build();
+    }
+
+    public DBQuery createGeneratedKeyQuery(String s, Object... params) {
+        DBQuery dbQuery = createQuery(s, params);
+        dbQuery.setPrepareStatementBehavior(new ReturnGeneratedKeyPrepareStatementBehavior());
+        return dbQuery;
     }
 }
