@@ -1,13 +1,13 @@
 package it.unipv.ingsw.lasout.model.vault;
 
-public class Transiction {
+public class Transaction {
 	
 	private int id;
 	private double importo;
 	private String descrizione;
 	
-	public Transiction(int id, double importo, String descrizione) {
-		super();
+	public Transaction(int id, double importo, String descrizione) {
+		
 		this.id = id;
 		this.importo = importo;
 		this.descrizione = descrizione;
