@@ -1,17 +1,15 @@
 package it.unipv.ingsw.lasout.model.cashbook;
 
-import it.unipv.ingsw.lasout.model.vault.Transaction;
-
 import java.util.LinkedList;
 
 public class Cashbook {
     private String name;
-    private LinkedList<Transaction> transactionList;
+    private LinkedList<Movement> transactionList;
 
     public Cashbook(){
     }
 
-    public Cashbook(String name, LinkedList<Transaction> transactionList){
+    public Cashbook(String name, LinkedList<Movement> transactionList){
         this.name = name;
         this.transactionList=transactionList;
     }
@@ -28,7 +26,7 @@ public class Cashbook {
         return name;
     }
 
-    public void setTransactionList(LinkedList<Transaction> transactionList){
+    public void setTransactionList(LinkedList<Movement> transactionList){
         this.transactionList=transactionList;
     }
 
