@@ -1,9 +1,8 @@
 DROP TABLE `user`, `group`, `usergroup`, `notify`;
 CREATE TABLE `user` (id INTEGER PRIMARY KEY AUTO_INCREMENT, username CHAR(20) NOT NULL);
-CREATE TABLE `group` ( id INT PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE);
+CREATE TABLE `group` ( id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(45), user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE);
 CREATE TABLE `usergroup` (user_id INT REFERENCES `user`(id), group_id INT REFERENCES `group`(id), PRIMARY KEY(user_id, group_id));
 CREATE TABLE `notify` (id INTEGER AUTO_INCREMENT, user_id INT,`description` TEXT NOT NULL, PRIMARY KEY(id, user_id));
-
 
 
 INSERT INTO `user` (username)
@@ -15,10 +14,10 @@ INSERT INTO `user` (username)
     ("tia"),
     ("davide");
 
-INSERT INTO `group` (user_id)
+INSERT INTO `group` (name, user_id)
     VALUES
-    (1),
-    (2);
+    ("GR1", 1),
+    ("GR2", 2);
 
 INSERT INTO usergroup (user_id, group_id) VALUES
     (1, 1),
