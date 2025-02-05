@@ -21,7 +21,7 @@ public class UserGroupDao{
         private UserGroupDao(){}
 
         public List<User> members(Group group) throws Exception{
-            String sql = "SELECT * FROM usergroup WHERE groupId = ?";
+            String sql = "SELECT * FROM £usergroup£ WHERE group_id = ?";
             DBQuery query = DatabaseUtil.getInstance().createQuery(sql, group.getId());
 
             DatabaseUtil.getInstance().executeQuery(query);
@@ -29,11 +29,15 @@ public class UserGroupDao{
 
             List<User> user = new ArrayList<User>();
             while(rs.next()){
-                User u = new User(rs.getInt("id"));
+                User u = new User(rs.getInt("user_id"));
                 user.add(u);
             }
             query.close();
             return user;
+        }
+
+        public List<Group> groups(User user) throws Exception{
+            return null;
         }
         
     }

@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class UserDAO implements IDao<User> {
 
@@ -63,7 +64,7 @@ public class UserDAO implements IDao<User> {
 
     public List<Notify> getNotifies(User user) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_1, user.getId());
-
+        return null;
     }
 
     public List<Group> groupsOfUser(User user) throws Exception {
@@ -113,13 +114,31 @@ public class UserDAO implements IDao<User> {
     @Override
     public void save(User user) throws Exception {
 
+        String username, password;
+        //dema sono cla che stai a fare con uno scanner system in??? qui stiamo idealizando niente fa nulla e sopratutto non lo facciamo dalla console
+        //interazione con l'utente per l'inserimento
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Give me the username:");
+        username= scanner.nextLine();
+        System.out.println("Give me the password");
+        password = scanner.nextLine();
+
+        //query di inserimento di un nuovo user
+        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery("INSERT INTO user(?, ?)", username, password);
+        //esecuzione della queryInsert
+        DatabaseUtil.getInstance().executeQuery(queryInsert);
+
+        //TODO controlli vari per la corretta esecuzione della query
+        queryInsert.close();
     }
 
+    //modifica delle informazioni di un utente presente nel dB
     @Override
     public void update(User user, String[] params) throws Exception {
 
     }
 
+    //eliminazione di un utente presente nel dB
     @Override
     public void delete(User user) throws Exception {
 

@@ -27,7 +27,6 @@ public class Group {
     public User getAdmin() {return admin;}
     public void setAdmin(User admin) {this.admin = admin;}
 
-
     public long getId() {return id;}
     public void setId(long id) {this.id = id;}
 
