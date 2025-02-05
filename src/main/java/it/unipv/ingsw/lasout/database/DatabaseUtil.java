@@ -101,7 +101,6 @@ public class DatabaseUtil {
 
     }
 
-
     public DBQuery createQuery(String s, Object... params) {
         s = s.replace("\\'", "`");
         s = s.replace("$", "`");

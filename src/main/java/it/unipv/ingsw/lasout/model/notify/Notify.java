@@ -1,5 +1,7 @@
 package it.unipv.ingsw.lasout.model.notify;
 
+import it.unipv.ingsw.lasout.model.user.User;
+
 public class Notify {
 
 

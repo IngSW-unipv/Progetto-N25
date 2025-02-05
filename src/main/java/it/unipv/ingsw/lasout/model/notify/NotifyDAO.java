@@ -9,6 +9,13 @@ import java.util.List;
 
 public class NotifyDAO implements IDao<Notify> {
 
+    private static final NotifyDAO INSTANCE = new NotifyDAO();
+    public static NotifyDAO getInstance() {
+        return INSTANCE;
+    }
+    private NotifyDAO() {
+
+    }
 
     private static final String QUERY_NOTIFY_1 =
             "SELECT * " +
@@ -16,6 +23,10 @@ public class NotifyDAO implements IDao<Notify> {
             "WHERE `id` = ?;";
 
 
+    @Override
+    public Notify getRaw(Notify oggetto) throws Exception {
+        return null;
+    }
 
     @Override
     public Notify get(Notify oggetto) throws Exception {
