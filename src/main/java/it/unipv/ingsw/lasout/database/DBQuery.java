@@ -98,7 +98,8 @@ public class DBQuery {
     }
 
     public PreparedStatement prepareStatement() throws SQLException {
-        return prepareStatementBehavior.execute(connection, query);
+        this.preparedStatement =  prepareStatementBehavior.execute(connection, query);
+        return this.preparedStatement;
     }
 
 
