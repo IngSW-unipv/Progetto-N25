@@ -121,6 +121,15 @@ public class GroupDao implements IGroupDao{
     }
 
 
+    /**
+     * Salva l'oggetto gurppo sul database tennendo conto del opzione
+     * "aggiornamento" id=0, e delle relazioni many to many
+     *
+     * @param group pojo di un gruppo che si vuole scrivere sul database
+     *              se l'id non e insereito si creera un nuova tupla
+     * @throws Exception errore nella esecuzione della query
+     *                   o errore nella generazione della chiave
+     */
     @Override
     public void save(Group group) throws Exception {
 
@@ -128,24 +137,34 @@ public class GroupDao implements IGroupDao{
         if(group.getId()!=0){
             query = DatabaseUtil.getInstance().createQuery(INSERT_GROUP_ID, group.getId(), group.getName(), group.getAdmin().getId());
         }else{
-            query = DatabaseUtil.getInstance().createQuery(INSERT_GROUP_NOID, group.getName(), group.getAdmin().getId());
+            query = DatabaseUtil.getInstance().createGeneratedKeyQuery(INSERT_GROUP_NOID, group.getName(), group.getAdmin().getId());
         }
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
+
         if(rs!=null)throw new Exception();
+        if(group.getId()==0) group.setId(query.getKey());
 
-        group.setId(query.getPreparedStatement().getGeneratedKeys().getLong(1));
+        //INSERT nella tabella usergroup
         saveAssociation(group);
-
-        // chass
         query.close();
     }
 
+    /**
+     * NOT USED
+     * @param group
+     * @param params
+     * @throws Exception
+     */
     @Override
-    public void update(Group group, String[] params) throws Exception {
+    public void update(Group group, String[] params) throws Exception {}
 
-    }
-
+    /**
+     * Eliminazione di un gruppo dal database per agiornamento o eliminazione dei
+     * dati tenendo conto anche delle relazioni ed eliminandole di conseguenza
+     * @param group carry group contentente solo l'id del gruppo da eliminare dal database
+     * @throws Exception errore nel esequzione della query sql
+     */
     @Override
     public void delete(Group group) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELATE_GROUP_FROM_ID, group.getId());
@@ -159,7 +178,12 @@ public class GroupDao implements IGroupDao{
         query.close();
     }
 
-    //altro dao usergroupDao
+    /**
+     * UserGroupDAO: retituisce la lista bi user di un gruppo dalla relazione usergroup (many to many)
+     * @param group carry group contentente solo l'id del gruppo di cui si vogliono i membri
+     * @return Lista di user con solo il loro id (per evitare ricorsione e loop)
+     * @throws Exception Errore nel esecuzione della query sql
+     */
     public List<User> members(Group group) throws Exception{
         DBQuery query = DatabaseUtil.getInstance().createQuery(GET_USER_FROM_USERGROUP, group.getId());
 
@@ -222,7 +246,7 @@ public class GroupDao implements IGroupDao{
         GroupDao.getInstance().save(new Group("VacanzaChieti", new User(2),users));
         //GroupDao.getInstance().delete(new Group(1));
         //GroupDao.getInstance().save(new Group(1,"VacanzaChieti", new User(2)));
-        GroupDao.getInstance().delete(new Group(1));
+        //GroupDao.getInstance().delete(new Group(1));
     }
 
 

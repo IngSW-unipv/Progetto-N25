@@ -102,6 +102,13 @@ public class DBQuery {
         return this.preparedStatement;
     }
 
+    public long getKey() throws Exception {
+        ResultSet r= getPreparedStatement().getGeneratedKeys();
+        if(r==null || !r.next()) throw new Exception();
+        return r.getLong(1);
+    }
+
+
 
     public static class Builder {
 
@@ -141,6 +148,7 @@ public class DBQuery {
             dbQuery.setPrepareStatementBehavior(prepareStatementBehavior);
             return dbQuery;
         }
+
 
     }
 
