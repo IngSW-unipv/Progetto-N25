@@ -18,28 +18,45 @@ import java.util.logging.Logger;
 
 public class UserDAO implements IDao<User> {
 
-    //istanza singleton dell' UserDao
-    private static final UserDAO INSTANCE = new UserDAO();
+    /**
+     * Istanza singola del GroupDao (implementazione singleton)
+     */
+    private static UserDAO istance = null;
+
+    /**
+     *
+     * @return
+     */
     public static UserDAO getInstance() {
-        return INSTANCE;
+        if (istance == null){
+            istance= new UserDAO();
+        }
+        return istance;
     }
     //rendo il costruttore privato
     private UserDAO(){
 
     }
 
-    //elenco delle query da far eseguire ai vari metodi del DAO
-    private static final String QUERY_GET_1 = "SELECT * " +
-                                              "FROM £user£" +
-                                              "WHERE id = ?;";
+    ////////////////////////////////////elenco delle query da far eseguire ai vari metodi della classe UserDAO////////////////////////////////////
+    private static final String QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER =      "SELECT * " +
+                                                                               "FROM $user$" +
+                                                                               "WHERE id = ?;";
 
-    private static final String QUERY_GROUPSOF_1 = "SELECT group_id " +
-                                                   "FROM £usergroup£" +
-                                                   "WHERE user_id = ?;";
+    private static final String QUERY_SELECT_ALL_GROUPS_OF_A_USER =            "SELECT group_id " +
+                                                                               "FROM $usergroup$" +
+                                                                               "WHERE user_id = ?;";
 
-    private static final String QUERY_INSERT_NEW_USER_1 = "INSERT INTO £user£ (username, password) VALUES (?, ?);";
+    private static final String QUERY_SELECT_ALL_INFORMATIONS_OF_EVERY_USER =  "SELECT *" +
+                                                                               "FROM $user$;";
 
-    private static final String QUERY_DELETE_EXIST_USER_1 = "DELETE FROM £utenti£ WHERE username = ?;";
+    private static final String QUERY_INSERT_NEW_USER =                        "INSERT INTO $user$ (username, password) VALUES (?, ?);";
+
+    private static final String QUERY_UPDATE_THE_PASSWORD_OF_AN_EXISTING_USER= "UPDATE user" +
+                                                                               "SET $password$ = ?" +
+                                                                               "WHERE username = ?;";
+
+    private static final String QUERY_DELETE_AN_EXISTING_USER =                "DELETE FROM $user$ WHERE username = ?;";
 
 
 
@@ -49,45 +66,47 @@ public class UserDAO implements IDao<User> {
     public User getRaw(User user) throws Exception {
 
         //creo la query
-        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_1, user.getId());
+        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER, user.getId());
         //eseguo la query
         DatabaseUtil.getInstance().executeQuery(query);
 
         //prendo il risultato della query
-        ResultSet resultSet = query.getResultSet();
+        ResultSet resultOfQuerySelect = query.getResultSet();
         //controllo il risultato della query (faccio ".next()" pk senò punterei a una cella inesistente)
-        if(resultSet == null || !resultSet.next()) throw new RuntimeException("user not found");
+        if(resultOfQuerySelect == null || !resultOfQuerySelect.next()) throw new UserNotFoundException("user not found");
 
         //creo l'oggetto da ritornare
-        User savedUser = new User();
+        User rawUserWithAllInformation = new User();
         //imposto i valori letti da database
-        savedUser.setId(resultSet.getInt("id"));
-        savedUser.setUsername(resultSet.getString("username"));
-        savedUser.setPassword(resultSet.getString("password"));
-        savedUser.setNotifies(getNotifies(user));
+        rawUserWithAllInformation.setId      (resultOfQuerySelect.getInt   ("id"));
+        rawUserWithAllInformation.setUsername(resultOfQuerySelect.getString("username"));
+        rawUserWithAllInformation.setPassword(resultOfQuerySelect.getString("password"));
+        rawUserWithAllInformation.setNotifies(getNotifies(user));
 
-        return savedUser;
+        return rawUserWithAllInformation;
     }
+
+
+    public List<Notify> getNotifies(User user) throws Exception {
+        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER, user.getId());
+        return null;
+    }
+
 
     //mi dà tutti i gruppi che hanno come partecipante quello che gli dico io (tramite l'id)
     @Override
     public User get(User user) throws Exception {
         User savedUser = getRaw(user);
 
-        //"groupsOfUser(savedUser)"
         List<Group> groups = groupsOfUser(user);
         savedUser.setGroups(groups);
 
         return savedUser;
     }
 
-    public List<Notify> getNotifies(User user) throws Exception {
-        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_1, user.getId());
-        return null;
-    }
 
     public List<Group> groupsOfUser(User user) throws Exception {
-        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GROUPSOF_1, user.getId());
+        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_GROUPS_OF_A_USER, user.getId());
 
         List<Group> groups = new ArrayList<>();
 
@@ -112,37 +131,36 @@ public class UserDAO implements IDao<User> {
 
 
     @Override
-    public List<User> getAll() throws Exception {
-        //creazione della querySelectAll di ricerca nel DB di tipo "DBQuery"
-        DBQuery querySelectAll = DatabaseUtil.getInstance().createQuery("SELECT *" +
-                                                                           "FROM user" );
-        //esecuzione della querySelectAll
-        DatabaseUtil.getInstance().executeQuery(querySelectAll);
+    public ArrayList<User> getAll() throws Exception {
+        //creazione della "querySelectAllInformationsOfEveryUser" di ricerca nel DB di tipo "DBQuery"
+        DBQuery querySelectAllInformationsOfEveryUser = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_EVERY_USER);
+        //esecuzione della "querySelectAllInformationsOfEveryUser"
+        DatabaseUtil.getInstance().executeQuery(querySelectAllInformationsOfEveryUser);
 
-        //"resultSet" prende il risultato della querySelectAll appena fatta
-        ResultSet resultSet = querySelectAll.getResultSet();
-        //se la querySelectAll non da risultati o non c'è niente dopo c'è dopo il primo carattere allora viene lanciata l'eccezione
-        if(resultSet == null || !resultSet.next()) throw new UserNotFoundException("User not found");
+        //"resultOfQuerySelectAllInformationsOfEveryUser" prende il risultato della "querySelectAllInformationsOfEveryUser" appena fatta
+        ResultSet resultOfQuerySelectAllInformationsOfEveryUser = querySelectAllInformationsOfEveryUser.getResultSet();
+        //se la query non da risultati o non c'è niente dopo (pk il primo carattere non è nulla) allora viene lanciata l'eccezione
+        if(resultOfQuerySelectAllInformationsOfEveryUser == null || !resultOfQuerySelectAllInformationsOfEveryUser.next()) throw new UserNotFoundException("User not found");
 
-        //creazione di un bean in cui metto l'id preso dalla querySelectAll
-        List<User> users = new ArrayList<>();
-        //User savedUser = new User();
-        //ciclo while per prendere tutti i dati dell'utente
-        while(resultSet.next()) {
+        //creazione di una lista bean in cui metto le informazioni prese dalla "querySelectAllInformationsOfEveryUser"
+        ArrayList<User> usersList = new ArrayList<>();
+
+        //ciclo while per prendere tutti i dati dell'utente che mi ha returnato la query
+        while(resultOfQuerySelectAllInformationsOfEveryUser.next()) {
             User user = new User();
-            user.setId(resultSet.getInt("id"));
-            user.setUsername(resultSet.getString("username"));
-            user.setPassword(resultSet.getString("password"));
-            users.add(user);
+            user.setId      (resultOfQuerySelectAllInformationsOfEveryUser.getInt   ("id"));
+            user.setUsername(resultOfQuerySelectAllInformationsOfEveryUser.getString("username"));
+            user.setPassword(resultOfQuerySelectAllInformationsOfEveryUser.getString("password"));
+            usersList.add(user);
         }
 
-        return users;
+        return usersList;
     }
 
     //metodo che aggiunge un nuovo user tramite query di insert
     @Override
     public void save(User user) throws Exception {
-        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_USER_1, user.getUsername(), user.getPassword());
+        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_USER, user.getUsername(), user.getPassword());
         DatabaseUtil.getInstance().executeQuery(queryInsert);
 
         //TODO controlli vari per la corretta esecuzione della query
@@ -152,13 +170,19 @@ public class UserDAO implements IDao<User> {
     //modifica delle informazioni di un utente presente nel dB
     @Override
     public void update(User user, String[] params) throws Exception {
+        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_UPDATE_THE_PASSWORD_OF_AN_EXISTING_USER, user.getUsername());
+        DatabaseUtil.getInstance().executeQuery(queryInsert);
+        ResultSet resultSet = queryInsert.getResultSet();
 
+        //if(resultSet!=null) throw new UserNotFoundException("User not found");
+
+        queryInsert.close();
     }
 
     //eliminazione di un utente presente nel dB
     @Override
     public void delete(User user) throws Exception {
-        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_DELETE_EXIST_USER_1, user.getUsername());
+        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_DELETE_AN_EXISTING_USER, user.getUsername());
         DatabaseUtil.getInstance().executeQuery(queryInsert);
         ResultSet resultSet = queryInsert.getResultSet();
 
