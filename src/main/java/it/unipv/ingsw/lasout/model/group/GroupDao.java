@@ -134,8 +134,10 @@ public class GroupDao implements IGroupDao{
 
         DBQuery query;
         if(group.getId()!=0){
+            //usa l'id del carry (praticmante
             query = DatabaseUtil.getInstance().createQuery(INSERT_GROUP_ID, group.getId(), group.getName(), group.getAdmin().getId());
         }else{
+            //sfrutta auto increment
             query = DatabaseUtil.getInstance().createGeneratedKeyQuery(INSERT_GROUP_NOID, group.getName(), group.getAdmin().getId());
         }
         DatabaseUtil.getInstance().executeQuery(query);
@@ -154,6 +156,18 @@ public class GroupDao implements IGroupDao{
      */
     @Override
     public void update(Group group, String[] params) throws Exception {}
+
+    /**
+     *
+     * @param group pojo con i dati da scrivere sul db con id l'id del gruppo da aggiornare
+     * @throws Exception error in sql execute
+     */
+    public void update(Group group) throws Exception {
+
+        delete(group);
+        save(group);
+
+    }
 
     /**
      * Eliminazione di un gruppo dal database per agiornamento o eliminazione dei
