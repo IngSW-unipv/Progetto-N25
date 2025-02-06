@@ -151,9 +151,6 @@ public class GroupDao implements IGroupDao{
 
     /**
      * NOT USED
-     * @param group
-     * @param params
-     * @throws Exception
      */
     @Override
     public void update(Group group, String[] params) throws Exception {}
