@@ -27,6 +27,17 @@ public class VirtualVault implements IVault{
         behavior = new VirtualVaultData();
     }
 
+    public VirtualVault() {
+
+    }
+
+    public VirtualVault(int ID, double balance, User owner, IVaultData behavior) {
+        this.ID = ID;
+        this.balance = balance;
+        this.owner = owner;
+        this.behavior = behavior;
+    }
+
     @Override
     public int getID() {
         return ID;
@@ -63,6 +74,16 @@ public class VirtualVault implements IVault{
 
     public void setIVaultData(IVaultData ivaultdata) {
         behavior = ivaultdata;
+    }
+
+    @Override
+    public String toString() {
+        return "VirtualVault{" +
+                "ID=" + ID +
+                ", balance=" + balance +
+                ", owner=" + owner +
+                ", behavior=" + behavior +
+                '}';
     }
 }
 
