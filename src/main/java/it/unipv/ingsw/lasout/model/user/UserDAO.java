@@ -219,7 +219,7 @@ public class UserDAO implements IDao<User> {
 
         User userTest2 = new User();
         userTest2.setUsername("Paperon dei Paperoni");
-        userTest2.setPassword("39XlMp780!39XlMp780!39XlMp780!39XlMp780!39XlMp780!");
+        userTest2.setPassword("39XlMp780!39XlMp780!39XlMp780!39XlMp780!39XlMp780");
 
         System.out.println(userTest1);
         System.out.println(userTest2);
