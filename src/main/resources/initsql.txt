@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `user`, `group`, `usergroup`, `notify`, `friendrequestnotify`, `vault`, `creditcard`, `paypal`, `currentaccount`;
+DROP TABLE IF EXISTS `user`, `group`, `usergroup`, `notify`, `friendrequestnotify`, `vault`, `creditcard`, `paypal`, `currentaccount`, `transazioni`,`cashbook`,`cashbooktransazioni`;
 CREATE TABLE `user`                (id INTEGER PRIMARY KEY AUTO_INCREMENT, username VARCHAR(50) NOT NULL, password VARCHAR(50) NOT NULL);
 CREATE TABLE `group`               (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(45), user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE);
 CREATE TABLE `usergroup`           (user_id INT REFERENCES `user`(id), group_id INT REFERENCES `group`(id), PRIMARY KEY(user_id, group_id));
