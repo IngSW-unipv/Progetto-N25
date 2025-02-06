@@ -19,12 +19,12 @@ public class CashbookDAO implements IDao<Cashbook>{
     private static final String QUERY_GET_1 =
         "SELECT * " +
         "FROM `cashbook`" +
-        "WHERE name = ?;";
+        "WHERE user_id = ?;";
 
-    private static final String QUERY_TRANSACTIONSOF_1 =
-            "SELECT transaction " +
-            "FROM `usergroup`" +
-            "WHERE user_id = ?;";
+    private static final String QUERY_TRANSACTIONS_OF_1 =
+        "SELECT * " +
+        "FROM `transactions`" +
+        "WHERE cashbook_id = ?;";
 
 
     public Cashbook getRaw(Cashbook cashbook) throws SQLException {
@@ -38,8 +38,10 @@ public class CashbookDAO implements IDao<Cashbook>{
 
 
         Cashbook savedCashbook = new Cashbook();
+        savedCashbook.setId(resultSet.getInt("id"));
         savedCashbook.setName(resultSet.getString("name"));
-        //savedCashbook.setTransactionList(resultSet.getString("cashbook"));
+
+
 
         return cashbook;
     }

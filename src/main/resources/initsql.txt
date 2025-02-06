@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `user`, `group`, `usergroup`, `notify`, `friendrequestnotify`, `vault`, `creditcard`, `paypal`, `currentaccount`;
+DROP TABLE IF EXISTS `user`, `group`, `usergroup`, `notify`, `friendrequestnotify`, `vault`, `creditcard`, `paypal`, `currentaccount`, `cashbook`, `cashbooktransactions`, `transactions`;
 CREATE TABLE `user`                (id INTEGER PRIMARY KEY AUTO_INCREMENT, username VARCHAR(50) NOT NULL, password VARCHAR(50) NOT NULL);
 CREATE TABLE `group`               (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(45), user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE);
 CREATE TABLE `usergroup`           (user_id INT REFERENCES `user`(id), group_id INT REFERENCES `group`(id), PRIMARY KEY(user_id, group_id));
@@ -8,7 +8,9 @@ CREATE TABLE `vault`               (id INTEGER AUTO_INCREMENT, user_id INT, sald
 CREATE TABLE `creditcard`          (numerocarta VARCHAR(16) NOT NULL, mese INT NOT NULL, anno INT NOT NULL, cvv INT NOT NULL, vault_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id) REFERENCES vault(id));
 CREATE TABLE `paypal`              (numerocarta VARCHAR(16) NOT NULL, vault_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id) REFERENCES vault(id));
 CREATE TABLE `currentaccount`      (iban VARCHAR(34) NOT NULL, vault_id INT, PRIMARY KEY(iban), FOREIGN KEY (vault_id) REFERENCES vault(id));
-
+CREATE TABLE `transactions`         (id INT NOT NULL, amount DOUBLE NULL,type TINYINT NULL,sender VARCHAR(45) NULL, receiver VARCHAR(55) NULL,note VARCHAR(120) NULL,PRIMARY KEY (id));
+CREATE TABLE `cashbook`            (id INTEGER AUTO_INCREMENT, user_id INTEGER , name VARCHAR(50) NOT NULL, PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES user(id));
+CREATE TABLE `cashbooktransactions` (transaction_id INT REFERENCES `transaction`(id), cashbook_id INT REFERENCES `cashbook`(id), PRIMARY KEY(transaction_id, cashbook_id));
 
 INSERT INTO `user` (username, password)
     VALUES
@@ -32,3 +34,25 @@ INSERT INTO usergroup (user_id, group_id) VALUES
     (3, 2),
     (4, 2),
     (6, 2);
+
+
+INSERT INTO cashbook (user_id, name) VALUES
+    (1, "default"),
+    (2, "risparmio"),
+    (2, "guadagno"),
+    (3, "risparmio"),
+    (4, "ciao"),
+    (6, "dafult");
+
+INSERT INTO transactions (id, amount, type, sender, receiver, note) VALUES
+    (1, 100.00, 0, 'Alice', 'Bob', 'Payment for services'),
+    (2, 50.00, 1, 'Bob', 'Charlie', 'Refund'),
+    (3, 200.00, 1, 'Alice', 'David', 'Gift'),
+    (4, 75.50, 0, 'Eve', 'Frank', 'Purchase');
+
+INSERT INTO cashbooktransactions (transaction_id, cashbook_id) VALUES
+    (1, 1),
+    (2, 2),
+    (3, 1),
+    (4, 3);
+
