@@ -22,8 +22,9 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
 
     //Varie query
     private static final String QUERY_RAW_1 = "SELECT * FROM $virtualvault$ WHERE id = ? AND user_id = ?";
-    private static final String QUERY_INSERT_NEW_VIRTUALVAULT= "INSERT INTO $virtualvault$ (user_id, balance) VALUES (?, ?);";
-    private static final String QUERY_DELETE_AN_EXISTING_VIRTUALVAULT =      "DELETE FROM $virtualvault$ WHERE virtualvault_id = ?;";
+    private static final String QUERY_INSERT_NEW_VIRTUALVAULT_NOID= "INSERT INTO $virtualvault$ (user_id, balance) VALUES (?, ?)";
+    private static final String QUERY_INSERT_NEW_VIRTUALVAULT_ID= "INSERT INTO $virtualvault$ (id, user_id, balance) VALUES (?, ?, ?)";
+    private static final String QUERY_DELETE_AN_EXISTING_VIRTUALVAULT =      "DELETE FROM $virtualvault$ WHERE id = ?";
 
     @Override
     public VirtualVault getRaw(VirtualVault oggetto) throws Exception {
@@ -61,12 +62,27 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
     @Override
     public void save(VirtualVault virtualVault) throws Exception {
         //Query per l'aggiunta di un virtualvault
-        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_VIRTUALVAULT,  virtualVault.getOwner().getId(), virtualVault.getBalance());
+
+
+        DBQuery queryInsert;
+
+        if(virtualVault.getID()!=0){
+            queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_VIRTUALVAULT_ID, virtualVault.getID(), virtualVault.getOwner().getId(), virtualVault.getBalance());
+        }else{
+            queryInsert = DatabaseUtil.getInstance().createGeneratedKeyQuery(QUERY_INSERT_NEW_VIRTUALVAULT_NOID, virtualVault.getOwner().getId(), virtualVault.getBalance());
+        }
+
         DatabaseUtil.getInstance().executeQuery(queryInsert);
 
+        ResultSet rs = queryInsert.getResultSet();
+
+        if(rs!=null)throw new Exception();
+        if(virtualVault.getID()==0) virtualVault.setID((int)queryInsert.getKey());
         //Chiusura query
         queryInsert.close();
     }
+
+
 
     @Override
     public void update(VirtualVault virtualVault, String[] params) throws Exception {
@@ -98,18 +114,14 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
             return;
         }
 
-        VirtualVault vvault1 = new VirtualVault();
+        VirtualVault v = new VirtualVault();;
 
-        User userTest1 = new User();
-        userTest1.setUsername("Dema Il supremo");
-        userTest1.setPassword("1234");
+        v.setBalance(200);
+        v.setOwner(new User(1));
+        v.setID(1);
 
+        VirtualVaultDAO.getInstance().save(v);
 
-        vvault1.setOwner(userTest1);
-        vvault1.setBalance(200);
-
-
-        VirtualVaultDAO.getInstance().save(vvault1);
 
 
     }

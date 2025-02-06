@@ -22,13 +22,13 @@ public class VirtualVault implements IVault{
     }
     //Costruttore con il balance e owner
     public VirtualVault(double balance, User user) {
-        this.balance = balance;
+
         this.owner = owner;
         behavior = new VirtualVaultData();
     }
 
     public VirtualVault() {
-
+        this.balance = balance;
     }
 
     public VirtualVault(int ID, double balance, User owner, IVaultData behavior) {
@@ -37,6 +37,8 @@ public class VirtualVault implements IVault{
         this.owner = owner;
         this.behavior = behavior;
     }
+
+
 
     @Override
     public int getID() {
