@@ -42,8 +42,8 @@ public class DatabaseUtil {
     }
     public void  initialize() throws SQLException {
 
-        InputStream inputStream = DatabaseUtil.class.getResourceAsStream("/initsql.txt");
-        if(inputStream == null) throw new RuntimeException("Could not find initsql.txt");
+        InputStream inputStream = DatabaseUtil.class.getResourceAsStream("/initsql.sql");
+        if(inputStream == null) throw new RuntimeException("Could not find initsql.sql");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         StringBuffer buffer = new StringBuffer();
