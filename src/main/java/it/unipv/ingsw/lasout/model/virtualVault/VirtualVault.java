@@ -1,11 +1,76 @@
 package it.unipv.ingsw.lasout.model.virtualVault;
 
+import it.unipv.ingsw.lasout.model.user.User;
+import it.unipv.ingsw.lasout.model.vault.IVault;
+import it.unipv.ingsw.lasout.model.vault.IVaultData;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
 
 //Pojo
-public class VirtualVault {
+public class VirtualVault implements IVault{
+    private int ID;
+    private double balance;
+    private User owner;
+    private IVaultData behavior;
+
+    //Costruttore con solo il balance
+    public VirtualVault(double balance) {
+        this.balance = balance;
+        behavior = new VirtualVaultData();
+    }
+    //Costruttore con il balance e owner
+    public VirtualVault(double balance, User user) {
+        this.balance = balance;
+        this.owner = owner;
+        behavior = new VirtualVaultData();
+    }
+
+    @Override
+    public int getID() {
+        return ID;
+    }
+
+    @Override
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    @Override
+    public double getBalance() {
+        return balance;
+    }
+
+    @Override
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    @Override
+    public User getOwner() {
+        return owner;
+    }
+
+    @Override
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public IVaultData getIVaultData() {
+        return null;
+    }
+
+    public void setIVaultData(IVaultData ivaultdata) {
+        behavior = ivaultdata;
+    }
+}
+
+
+
+
+
+/*
     public double saldoVV;
     private int id;
     private int proprietario;
@@ -63,7 +128,7 @@ public class VirtualVault {
                 '}';
     }
 
-    /*PROVA
+    PROVA
     public static void main(String[] args) {
 
         ArrayList<String> nomiList = new ArrayList<>();
@@ -89,5 +154,4 @@ public class VirtualVault {
         }
         scanner.close();
     }*/
-}
 
