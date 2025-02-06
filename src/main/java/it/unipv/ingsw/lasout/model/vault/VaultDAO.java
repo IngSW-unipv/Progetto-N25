@@ -2,11 +2,12 @@ package it.unipv.ingsw.lasout.model.vault;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.user.User;
+import it.unipv.ingsw.lasout.model.virtualVault.VirtualVault;
+import it.unipv.ingsw.lasout.model.virtualVault.VirtualVaultDAO;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 
 public class VaultDAO implements IVaultDAO{
@@ -15,29 +16,35 @@ public class VaultDAO implements IVaultDAO{
     public static VaultDAO getInstance(){
         return INSTANCE;
     }
+    
+    private static final String Query1 = "SELECT * FROM virtualvault WHERE id = ?;";
+    
 
 	@Override
 	public Vault getRaw(Vault oggetto) throws Exception {
-		return null;
+		
+		// mi devo interfacciare verso il DAO del VirtualVault, per capire se l'id inserito appartiene ad un Vault o meno
+		VirtualVault vault  =  VirtualVaultDAO.INSTANCE.getRaw(new VirtualVault(oggetto.getID(), new User(oggetto.getOwner().getId())));
+		
+		DBQuery query = DatabaseUtil.getInstance().createQuery(Query1, oggetto.getID());
+		
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet result = query.getResultSet();
+		
+		// nel database, l'id messo non corrisponde ad un vault
+		if(result == null) throw new RuntimeException("This is not a vault");
+		
+		// se supera l'eccezione, vuol dire che nel result ho un vault, quindi posso restituirlo
+		
+		return oggetto;
+		
 	}
 
 	@Override
 	public Vault get(Vault vault) throws Exception {
+		return null;
 		
-		DBQuery query =  DatabaseUtil.getInstance().createQuery("SELECT * " +
-                "FROM `vault` " +
-                "WHERE id = ?;", vault.getId());
-		
-        DatabaseUtil.getInstance().executeQuery(query);
-        
-        ResultSet resultSet = query.getResultSet();
-        if(!resultSet.next()) throw new RuntimeException("Could not find a vault by  id = '" + vault.getId() + "'");
-
-        int id = resultSet.getInt("id");
-        Vault loadedVault = new Vault(vault.getId());
-
-        query.close();
-        return loadedVault;
 	}
 	
 	@Override
@@ -62,8 +69,6 @@ public class VaultDAO implements IVaultDAO{
 	public void delete(Vault t) throws Exception {
 		// TODO Auto-generated method stub
 		
-	}
-
-    
+	} 
 
 }

@@ -6,20 +6,24 @@ import java.util.List;
 
 public class Vault implements IVault{
 	
-	private long id;
+	private IVault vault;
 	private User user;
 	private double saldo;
 	private List<PaymentMethod> methods;
 
-	public Vault(long id, User user, double saldo, List<PaymentMethod> methods) {
-		this.id = id;
+	public Vault(User user, double saldo, List<PaymentMethod> methods) {
 		this.user = user;
 		this.saldo = saldo;
 		this.methods = methods;
 	}
-
-	public Vault(long id) {
-		this.id = id;
+	
+	public Vault(IVault vault) {
+        this.vault = vault;
+        vault.setIVaultData(new VaultData());
+    }
+	
+	public Vault(int id) {
+		// TODO Auto-generated constructor stub
 	}
 
 	public double getSaldo() {
@@ -45,19 +49,18 @@ public class Vault implements IVault{
 	public void setUser(User user) {
 		this.user = user;
 	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
 	
+	public IVault getVault() {
+		return vault;
+	}
+
+	public void setVault(IVault vault) {
+		this.vault = vault;
+	}
+
 	@Override
     public String toString() {
         return "Vault{" +
-                "id=" + id +
                 ", utente=" + user +
                 ", Metodi di pagamento=" + methods +
                 '}';
