@@ -25,7 +25,7 @@ public class UserDAO implements IDao<User> {
 
     /**
      *
-     * @return
+     * @return l'istanza singleton del UserDAO
      */
     public static UserDAO getInstance() {
         if (istance == null){
@@ -33,7 +33,9 @@ public class UserDAO implements IDao<User> {
         }
         return istance;
     }
-    //rendo il costruttore privato
+    /**
+     * Rendo il costruttore privato
+     */
     private UserDAO(){
 
     }
@@ -65,23 +67,26 @@ public class UserDAO implements IDao<User> {
     //prendo solo i dati elementari dell'utente che mi interessa (dal suo id a tutti gli altri dati)
     public User getRaw(User user) throws Exception {
 
-        //creo la query
-        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER, user.getId());
+        //creazione della query di ricerca nel DB di tipo "DBQuery"
+        DBQuery querySelectAllInformationsOfAUser = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER, user.getId());
+
         //eseguo la query
-        DatabaseUtil.getInstance().executeQuery(query);
+        DatabaseUtil.getInstance().executeQuery(querySelectAllInformationsOfAUser);
 
         //prendo il risultato della query
-        ResultSet resultOfQuerySelect = query.getResultSet();
-        //controllo il risultato della query (faccio ".next()" pk senò punterei a una cella inesistente)
-        if(resultOfQuerySelect == null || !resultOfQuerySelect.next()) throw new UserNotFoundException("user not found");
+        ResultSet resultOfQuerySelectAllInformationsOfAUser = querySelectAllInformationsOfAUser.getResultSet();
+        //controllo il risultato della query (faccio ".next()" perché senò punterei a una cella inesistente)
+        if(resultOfQuerySelectAllInformationsOfAUser == null || !resultOfQuerySelectAllInformationsOfAUser.next()) throw new UserNotFoundException("user not found");
 
         //creo l'oggetto da ritornare
         User rawUserWithAllInformation = new User();
         //imposto i valori letti da database
-        rawUserWithAllInformation.setId      (resultOfQuerySelect.getInt   ("id"));
-        rawUserWithAllInformation.setUsername(resultOfQuerySelect.getString("username"));
-        rawUserWithAllInformation.setPassword(resultOfQuerySelect.getString("password"));
+        rawUserWithAllInformation.setId      (resultOfQuerySelectAllInformationsOfAUser.getInt   ("id"));
+        rawUserWithAllInformation.setUsername(resultOfQuerySelectAllInformationsOfAUser.getString("username"));
+        rawUserWithAllInformation.setPassword(resultOfQuerySelectAllInformationsOfAUser.getString("password"));
         rawUserWithAllInformation.setNotifies(getNotifies(user));
+
+        System.out.println(rawUserWithAllInformation);
 
         return rawUserWithAllInformation;
     }
@@ -132,17 +137,18 @@ public class UserDAO implements IDao<User> {
 
     @Override
     public ArrayList<User> getAll() throws Exception {
-        //creazione della "querySelectAllInformationsOfEveryUser" di ricerca nel DB di tipo "DBQuery"
+        //creazione della query di ricerca nel DB di tipo "DBQuery"
         DBQuery querySelectAllInformationsOfEveryUser = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_EVERY_USER);
-        //esecuzione della "querySelectAllInformationsOfEveryUser"
+
+        //esecuzione della query
         DatabaseUtil.getInstance().executeQuery(querySelectAllInformationsOfEveryUser);
 
-        //"resultOfQuerySelectAllInformationsOfEveryUser" prende il risultato della "querySelectAllInformationsOfEveryUser" appena fatta
+        //"resultOfQuerySelectAllInformationsOfEveryUser" prende il risultato della query appena fatta
         ResultSet resultOfQuerySelectAllInformationsOfEveryUser = querySelectAllInformationsOfEveryUser.getResultSet();
-        //se la query non da risultati o non c'è niente dopo (pk il primo carattere non è nulla) allora viene lanciata l'eccezione
+        //se la query non da risultati o non c'è niente dopo (perché il primo carattere non è nulla) allora viene lanciata l'eccezione
         if(resultOfQuerySelectAllInformationsOfEveryUser == null || !resultOfQuerySelectAllInformationsOfEveryUser.next()) throw new UserNotFoundException("User not found");
 
-        //creazione di una lista bean in cui metto le informazioni prese dalla "querySelectAllInformationsOfEveryUser"
+        //creazione di una lista bean in cui metto le informazioni prese dalla query
         ArrayList<User> usersList = new ArrayList<>();
 
         //ciclo while per prendere tutti i dati dell'utente che mi ha returnato la query
@@ -170,25 +176,25 @@ public class UserDAO implements IDao<User> {
     //modifica delle informazioni di un utente presente nel dB
     @Override
     public void update(User user, String[] params) throws Exception {
-        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_UPDATE_THE_PASSWORD_OF_AN_EXISTING_USER, user.getUsername());
-        DatabaseUtil.getInstance().executeQuery(queryInsert);
-        ResultSet resultSet = queryInsert.getResultSet();
+        DBQuery queryUpdatePassword = DatabaseUtil.getInstance().createQuery(QUERY_UPDATE_THE_PASSWORD_OF_AN_EXISTING_USER, user.getUsername());
+        DatabaseUtil.getInstance().executeQuery(queryUpdatePassword);
+        ResultSet resultSet = queryUpdatePassword.getResultSet();
 
         //if(resultSet!=null) throw new UserNotFoundException("User not found");
 
-        queryInsert.close();
+        queryUpdatePassword.close();
     }
 
     //eliminazione di un utente presente nel dB
     @Override
     public void delete(User user) throws Exception {
-        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_DELETE_AN_EXISTING_USER, user.getUsername());
-        DatabaseUtil.getInstance().executeQuery(queryInsert);
-        ResultSet resultSet = queryInsert.getResultSet();
+        DBQuery queryDeleteUser = DatabaseUtil.getInstance().createQuery(QUERY_DELETE_AN_EXISTING_USER, user.getUsername());
+        DatabaseUtil.getInstance().executeQuery(queryDeleteUser);
+        ResultSet resultSetDeleteUser = queryDeleteUser.getResultSet();
 
         //if(resultSet!=null) throw new UserNotFoundException("User not found");
 
-        queryInsert.close();
+        queryDeleteUser.close();
     }
 
 
@@ -206,16 +212,26 @@ public class UserDAO implements IDao<User> {
             return;
         }
         //essendo uh singleton devo ogni volta crearlo
-        User userTest = new User();
+        User userTest1 = new User();
+        userTest1.setUsername("Giovanni Giorgio Vincenzini");
+        userTest1.setPassword("39");
 
-        //System.out.println(userTest);
-        userTest.setUsername("Giovanni Giorgio");
-        userTest.setPassword("1");
-        UserDAO.getInstance().save(userTest);
 
-        userTest.setUsername("Giovanni Giorgio");
-        userTest.setPassword("1");
-        UserDAO.getInstance().save(userTest);
+        User userTest2 = new User();
+        userTest2.setUsername("Paperon dei Paperoni");
+        userTest2.setPassword("39XlMp780!39XlMp780!39XlMp780!39XlMp780!39XlMp780!");
+
+        System.out.println(userTest1);
+        System.out.println(userTest2);
+
+        UserDAO.getInstance().save(userTest1);
+        UserDAO.getInstance().save(userTest2);
+
+        //mi aspetto di non vedere più nel DB lo userTest1
+        UserDAO.getInstance().delete(userTest1);
+
+        //TODO risolvere il problema degli ID che non vedo incrementati
+        //UserDAO.getInstance().getRaw(userTest1);
 
     }
 
