@@ -102,6 +102,12 @@ public class DBQuery {
         return this.preparedStatement;
     }
 
+    /**
+     * In caso di insert con auto increment della primy key ritorna il valore
+     * della primary key asegnata in utomatico dal database
+     * @return long id generato dal database
+     * @throws Exception il database non ha generato chiavi (non e che nel carry gliela avevi gia messa?)
+     */
     public long getKey() throws Exception {
         ResultSet r= getPreparedStatement().getGeneratedKeys();
         if(r==null || !r.next()) throw new Exception();
