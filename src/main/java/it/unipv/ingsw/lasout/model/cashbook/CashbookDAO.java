@@ -1,13 +1,16 @@
 package it.unipv.ingsw.lasout.model.cashbook;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import it.unipv.ingsw.lasout.dao.IDao;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.vault.Transaction;
 
 public class CashbookDAO implements ICashbookDAO {
@@ -36,7 +39,7 @@ public class CashbookDAO implements ICashbookDAO {
 
 
     private static final String GET_ALL_CASHBOOKS = "SELECT * FROM £cashbook£";
-    private static final String GET_CASHBOOK_FROM_ID = "SELECT * FROM £cashbook£ WHERE user_id = ?;";
+    private static final String GET_CASHBOOK_FROM_ID = "SELECT * FROM £cashbook£ WHERE id=?;";
     private static final String GET_TRANSACTIONS_FROM_CASHBOOKTRANSACTIONS = "SELECT * FROM £cashbooktransactions£ WHERE cashbook_id = ?;";
 
     /**
@@ -45,8 +48,9 @@ public class CashbookDAO implements ICashbookDAO {
      * @return un Cashbook contenente solo le informazioni raw, ovvero privo delle sue transazioni
      * @throws Exception Errore nell'esecuzione della query o mancata connessione al db
      */
+    @Override
     public Cashbook getRaw(Cashbook fictitiousCashbook) throws Exception {
-        DBQuery query = DatabaseUtil.getInstance().createQuery(GET_CASHBOOK_FROM_ID, fictitiousCashbook.getName());
+        DBQuery query = DatabaseUtil.getInstance().createQuery(GET_CASHBOOK_FROM_ID, fictitiousCashbook.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
         ResultSet resultSet = query.getResultSet();
@@ -70,7 +74,7 @@ public class CashbookDAO implements ICashbookDAO {
      */
     @Override
     public Cashbook get(Cashbook carrierCashbook) throws Exception {
-        DBQuery query = DatabaseUtil.getInstance().createQuery(GET_CASHBOOK_FROM_ID, carrierCashbook.getName());
+        DBQuery query = DatabaseUtil.getInstance().createQuery(GET_CASHBOOK_FROM_ID, carrierCashbook.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
         ResultSet resultSet = query.getResultSet();
@@ -152,6 +156,5 @@ public class CashbookDAO implements ICashbookDAO {
     public void delete(Cashbook cashbook) throws Exception {
 
     }
-
 
 }

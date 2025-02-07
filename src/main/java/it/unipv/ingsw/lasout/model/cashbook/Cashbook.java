@@ -28,25 +28,6 @@ public class Cashbook {
         this.transactionList = transactionList;
     }
 
-    private static final Logger LOGGER = Logger.getLogger(Cashbook.class.getName());
-    public static void main(String []args) throws Exception {
-
-        try {
-            DatabaseUtil.getInstance().prepare();
-            DatabaseUtil.getInstance().initialize();
-        } catch (IOException | SQLException e) {
-            LOGGER.severe("Couldn't initialize database: \n" + e);
-            System.exit(1);
-            return;
-        }
-
-        Cashbook cashbook = CashbookDAO.getInstance().get(new Cashbook(2));
-        System.out.println(cashbook);
-
-        List<Cashbook> cashbooks = new ArrayList<Cashbook>();
-        //test query save
-
-    }
 
     public String getName(){
         return name;
@@ -71,5 +52,10 @@ public class Cashbook {
 
     public void setTransactionList(List<Transaction> transactionList) {
         this.transactionList = transactionList;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Cashbook{id=%d, name='%s'}", id, name);
     }
 }
