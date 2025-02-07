@@ -2,12 +2,13 @@ package it.unipv.ingsw.lasout.model.vault;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
-import it.unipv.ingsw.lasout.model.user.User;
-import it.unipv.ingsw.lasout.model.virtualVault.VirtualVault;
-import it.unipv.ingsw.lasout.model.virtualVault.VirtualVaultDAO;
 
+import java.io.IOException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 public class VaultDAO implements IVaultDAO{
@@ -17,17 +18,16 @@ public class VaultDAO implements IVaultDAO{
         return INSTANCE;
     }
     
-    private static final String Query1 = "SELECT * FROM virtualvault WHERE id = ?;";
+    private static final String GET_RAW = "SELECT * FROM £virtualvault£ WHERE id = ?;";
+    private static final String GET_ALL_VAULT = "SELECT * FROM £virtualvault£, £vault£ WHERE virtualvault.id = vault.id" ;
+    private static final String INSERT_A_NEW_VAULT = "INSERT INTO £virtualvault£ (id) VALUES (?)";
+    private static final String DELETE_AN_EXISTING_VAULT = "DELETE FROM £virtualvault£ WHERE id = ?";
     
 
 	@Override
 	public Vault getRaw(Vault oggetto) throws Exception {
 		
-		// mi devo interfacciare verso il DAO del VirtualVault, per capire se l'id inserito appartiene ad un Vault o meno
-		VirtualVault vault  =  VirtualVaultDAO.INSTANCE.getRaw(new VirtualVault(oggetto.getID(), new User(oggetto.getOwner().getId())));
-		
-		DBQuery query = DatabaseUtil.getInstance().createQuery(Query1, oggetto.getID());
-		
+		DBQuery query = DatabaseUtil.getInstance().createQuery(GET_RAW, oggetto.getID());
 		DatabaseUtil.getInstance().executeQuery(query);
 		
 		ResultSet result = query.getResultSet();
@@ -37,7 +37,11 @@ public class VaultDAO implements IVaultDAO{
 		
 		// se supera l'eccezione, vuol dire che nel result ho un vault, quindi posso restituirlo
 		
-		return oggetto;
+		Vault vault = new Vault();
+		
+		vault.setID(result.getInt("id"));
+		
+		return vault;
 		
 	}
 
@@ -49,13 +53,35 @@ public class VaultDAO implements IVaultDAO{
 	
 	@Override
 	public List<Vault> getAll() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		
+		DBQuery query = DatabaseUtil.getInstance().createQuery(GET_ALL_VAULT);
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet result = query.getResultSet();
+		
+		List<Vault> vaults = new ArrayList<Vault>();
+		
+		while (result.next()) {
+			Vault vault = new Vault();
+			vault.setID(result.getInt("id"));
+		}
+		
+		query.close();
+	
+		return vaults;
 	}
 	
 	@Override
-	public void save(Vault t) throws Exception {
-		// TODO Auto-generated method stub
+	public void save(Vault oggetto) throws Exception {
+		
+		DBQuery query = DatabaseUtil.getInstance().createQuery(INSERT_A_NEW_VAULT, oggetto.getID());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet result = query.getResultSet();
+		
+		if(result != null) throw new Exception();
+				
+		query.close();
 		
 	}
 	
@@ -67,8 +93,26 @@ public class VaultDAO implements IVaultDAO{
 	
 	@Override
 	public void delete(Vault t) throws Exception {
-		// TODO Auto-generated method stub
+		
+		DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_AN_EXISTING_VAULT);
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet result = query.getResultSet();
+		
+		query.close();
 		
 	} 
+	private static final Logger LOGGER = Logger.getLogger(VaultDAO.class.getName());
+	public static void main(String []args) throws Exception {
+
+        try {
+            DatabaseUtil.getInstance().prepare();
+            DatabaseUtil.getInstance().initialize();
+        } catch (IOException | SQLException e) {
+            LOGGER.severe("Couldn't initialize database: \n" + e);
+            System.exit(1);
+            return;
+        }
+    }
 
 }
