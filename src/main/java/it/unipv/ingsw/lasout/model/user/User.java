@@ -11,6 +11,8 @@ import java.util.List;
  * Classe Bean di "user" con solo attributi, costruttore, getters e setters
  */
 public class User {
+
+
     //attributi utente
     private long id;
     private String username;

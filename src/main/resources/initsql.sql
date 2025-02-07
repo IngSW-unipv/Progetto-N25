@@ -1,9 +1,23 @@
-DROP TABLE IF EXISTS `user`, `group`, `usergroup`, `notify`, `friendrequestnotify`, `vault`, `creditcard`, `paypal`, `currentaccount`, `cashbook`, `cashbooktransactions`, `transactions`, `virtualvault`;
+DROP TABLE IF EXISTS
+    `user`,
+    `group`,
+    `usergroup`,
+    `notify`,
+    `friendnotify`,
+    `vault`,
+    `creditcard`,
+    `paypal`,
+    `currentaccount`,
+    `cashbook`,
+    `cashbooktransactions`,
+    `transactions`,
+    `virtualvault`
+;
 CREATE TABLE `user`                (id INTEGER PRIMARY KEY AUTO_INCREMENT, username VARCHAR(50) NOT NULL, password VARCHAR(50) NOT NULL);
 CREATE TABLE `group`               (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(45), user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE);
 CREATE TABLE `usergroup`           (user_id INT REFERENCES `user`(id), group_id INT REFERENCES `group`(id), PRIMARY KEY(user_id, group_id));
-CREATE TABLE `notify`              (id INTEGER AUTO_INCREMENT, user_id INT REFERENCES user(id) ON DELETE CASCADE,`description` TEXT NOT NULL, PRIMARY KEY(id, user_id));
-CREATE TABLE `friendrequestnotify` (id INTEGER AUTO_INCREMENT, user_id INT,`description` TEXT NOT NULL, PRIMARY KEY(id, user_id), FOREIGN KEY (id, user_id) REFERENCES notify(id, user_id));
+CREATE TABLE `notify`              (id INTEGER AUTO_INCREMENT, user_id INT REFERENCES user(id) ON DELETE CASCADE,`description` TEXT NOT NULL, `type` CHAR(100), PRIMARY KEY(id, user_id));
+CREATE TABLE `friendnotify`        (id INTEGER , to_user_id INT, from_user_id INT REFERENCES `user`(id) ON DELETE CASCADE, PRIMARY KEY(id, to_user_id), FOREIGN KEY (id, to_user_id) REFERENCES `notify`(id, user_id) ON DELETE CASCADE);
 CREATE TABLE `vault`               (id INTEGER AUTO_INCREMENT, user_id INT, saldo DOUBLE, PRIMARY KEY(id), FOREIGN KEY (user_id) REFERENCES user(id));
 CREATE TABLE `creditcard`          (numerocarta VARCHAR(16) NOT NULL, mese INT NOT NULL, anno INT NOT NULL, cvv INT NOT NULL, vault_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id) REFERENCES vault(id));
 CREATE TABLE `paypal`              (numerocarta VARCHAR(16) NOT NULL, vault_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id) REFERENCES vault(id));
@@ -24,9 +38,18 @@ INSERT INTO `user` (username, password)
     ("davide","gatto");
 
 INSERT INTO `group` (name, user_id)
-    VALUES
+VALUES
     ("GR1", 1),
     ("GR2", 2);
+
+INSERT INTO `notify` (user_id, id, description, type)
+VALUES
+    (1, 1, "Benvenuto su LaVault =) Accetta la mia amicizia !", "notifyfriendrequest");
+
+
+INSERT INTO `friendnotify` (to_user_id, id, from_user_id)
+VALUES
+    (1, 1, 2);
 
 INSERT INTO usergroup (user_id, group_id) VALUES
     (1, 1),

@@ -16,16 +16,15 @@ public class Vault implements IVault{
 		this.saldo = saldo;
 		this.methods = methods;
 	}
-	
+
+	public Vault() {
+	}
+
 	public Vault(IVault vault) {
         this.vault = vault;
         vault.setIVaultData(new VaultData());
     }
 	
-	public Vault(int id) {
-		// TODO Auto-generated constructor stub
-	}
-
 	public double getSaldo() {
 		return saldo;
 	}
