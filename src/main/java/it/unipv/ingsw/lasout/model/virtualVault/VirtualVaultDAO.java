@@ -91,7 +91,7 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
     @Override
     public void delete(VirtualVault virtualVault) throws Exception {
         //Query per l'aggiunta di un virtualvault
-        DBQuery queryDelete = DatabaseUtil.getInstance().createQuery(QUERY_DELETE_AN_EXISTING_VIRTUALVAULT, virtualVault.getID(), virtualVault.getOwner());
+        DBQuery queryDelete = DatabaseUtil.getInstance().createQuery(QUERY_DELETE_AN_EXISTING_VIRTUALVAULT, virtualVault.getID());
         DatabaseUtil.getInstance().executeQuery(queryDelete);
 
         //Chiusura query
@@ -114,12 +114,18 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
         }
 
         VirtualVault v = new VirtualVault();;
+        VirtualVault v2 = new VirtualVault();;
 
-        v.setBalance(200);
         v.setOwner(new User(1));
         v.setID(1);
+        v.setBalance(2);
+        v2.setOwner(new User(2));
+        v2.setID(2);
+        v2.setBalance(2000);
 
-        VirtualVaultDAO.getInstance().save(v);
+        //VirtualVaultDAO.getInstance().save(v);
+        VirtualVaultDAO.getInstance().save(v2);
+        //VirtualVaultDAO.getInstance().delete(v2);
 
 
 
