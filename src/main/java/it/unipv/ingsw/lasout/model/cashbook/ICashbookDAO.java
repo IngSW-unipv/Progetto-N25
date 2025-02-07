@@ -1,5 +1,8 @@
 package it.unipv.ingsw.lasout.model.cashbook;
 
-public interface ICashbookDAO {
+import it.unipv.ingsw.lasout.dao.IDao;
+import it.unipv.ingsw.lasout.model.user.User;
+
+public interface ICashbookDAO extends IDao<Cashbook> {
 
 }
