@@ -24,4 +24,14 @@ public class EmptyNotifyAction implements INotifyAction{
 
 
     }
+
+    @Override
+    public String type() {
+        return "notifyempty";
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

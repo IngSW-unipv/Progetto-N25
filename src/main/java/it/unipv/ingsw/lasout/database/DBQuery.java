@@ -114,6 +114,14 @@ public class DBQuery {
         return r.getLong(1);
     }
 
+    /** per ottenere quanti dati sono stati modificati da un'update
+     * @return il numero di row modificate
+     * @throws SQLException se c'è stato un errore
+     */
+    public int getUpdateCount() throws SQLException {
+        return getPreparedStatement().getUpdateCount();
+    }
+
 
 
     public static class Builder {

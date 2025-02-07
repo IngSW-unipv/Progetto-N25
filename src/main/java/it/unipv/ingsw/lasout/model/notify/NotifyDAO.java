@@ -14,10 +14,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class NotifyDAO implements IDao<Notify> {
@@ -36,10 +33,26 @@ public class NotifyDAO implements IDao<Notify> {
 
     }
 
-    private static final String QUERY_NOTIFY_1 =
-            "SELECT  *" +
-                    "FROM 'notify' NATURAL JOIN 'notifytype'" +
+    private static final String QUERY_GET_RAW_NOTIFY_1 =
+            "SELECT *" +
+                    "FROM \\'notify\\' " +
                     "WHERE user_id = ? AND id = ?;";
+    private static final String QUERY_GET_ALL_NOTIFY_1 =
+            "SELECT *" +
+                    "FROM \\'notify\\';";
+
+    private static final String SELECT_TYPE =
+            "SELECT \\'type\\'" +
+                    "FROM \\'notify\\' WHERE user_id = ? AND id = ?;";
+
+
+    private static final String QUERY_SAVE_NOTIFY_1 =
+            "INSERT INTO \\'notify\\' " +
+                    "(user_id, id, description, type) VALUES (?, ?, ?, ?);";
+    private static final String QUERY_UPDATE_NOTIFY_1 =
+            "UPDATE \\'notify\\' " +
+                    "SET user_id = ?, id = ?, \\'description\\' = ?, \\'type\\' = ? WHERE user_id = ? AND id = ?;";
+
 
 
     private void populateMap(){
@@ -65,13 +78,13 @@ public class NotifyDAO implements IDao<Notify> {
 
     @Override
     public Notify getRaw(Notify notify) throws Exception {
-        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_NOTIFY_1, notify.getUserID(), notify.getId());
+        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_RAW_NOTIFY_1, notify.getUserID(), notify.getId());
 
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
-        if(rs == null || rs.next()) throw new RuntimeException("ResultSet is null or empty");
+        if(rs == null || !rs.next()) throw new RuntimeException("ResultSet is null or empty");
 
-        int id = notify.getId();
+        Long id = notify.getId();
         User user = UserDAO.getInstance().get(new User(notify.getUserID()));
         String description = rs.getString("description");
 
@@ -82,10 +95,12 @@ public class NotifyDAO implements IDao<Notify> {
 
         Notify returnNotify  = new Notify(id, user);
         returnNotify.setDescription(description);
-        returnNotify.setNotifyAction(iiNotifyAction);
-        iiNotifyAction.load(returnNotify);
 
-        return notify;
+        iiNotifyAction.load(returnNotify);
+        returnNotify.setNotifyAction(iiNotifyAction);
+
+        query.close();
+        return returnNotify;
     }
 
 
@@ -99,12 +114,40 @@ public class NotifyDAO implements IDao<Notify> {
 
     @Override
     public List<Notify> getAll() throws Exception {
-        return List.of();
+        DBQuery query = DBQuery.Builder.create()
+                .query(QUERY_GET_ALL_NOTIFY_1)
+                .build();
+        DatabaseUtil.getInstance().executeQuery(query);
+
+        List<Notify> all = new ArrayList<Notify>();
+
+        ResultSet rs = query.getResultSet();
+        while(rs.next()){
+            Long id = rs.getLong("id");
+            User user = new User(rs.getInt("user_id"));
+            Notify notify = get(new Notify(id, user));
+            all.add(notify);
+        }
+
+        query.close();
+
+        return all;
     }
 
     @Override
     public void save(Notify notify) throws Exception {
+        DBQuery update = DBQuery.Builder.create()
+                .query(QUERY_UPDATE_NOTIFY_1)
+                .params(notify.getUserID(), notify.getId(), notify.getDescription(), notify.getNotifyType(), notify.getUserID(), notify.getId())
+                .build();
+        DatabaseUtil.getInstance().executeQuery(update);
 
+        if(update.getUpdateCount() > 0){
+            update.setQuery(DELETE_TYPE);
+            update.close();
+        }
+
+        update.close();
     }
 
     @Override

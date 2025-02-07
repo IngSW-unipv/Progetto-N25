@@ -29,7 +29,7 @@ public class AcceptFriendRequestNotifyAction implements INotifyAction {
         DBQuery query = DBQuery.Builder.create()
                 .query("SELECT *" +
                         "FROM \\'friendnotify\\' " +
-                        "WHERE id = ? AND user_id = ?;")
+                        "WHERE id = ? AND to_user_id = ?;")
                 .params(notify.getId(), notify.getUserID())
                 .build();
         DatabaseUtil.getInstance().executeQuery(query);
@@ -41,5 +41,18 @@ public class AcceptFriendRequestNotifyAction implements INotifyAction {
 
         this.from = fromID;
         this.to = toID;
+    }
+
+    @Override
+    public String type() {
+        return "notifyfriendrequest";
+    }
+
+    @Override
+    public String toString() {
+        return "AcceptFriendRequestNotifyAction{" +
+                "from=" + from +
+                ", to=" + to +
+                '}';
     }
 }

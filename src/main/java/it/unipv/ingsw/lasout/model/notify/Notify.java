@@ -6,14 +6,14 @@ import it.unipv.ingsw.lasout.model.user.User;
 public class Notify {
 
 
-    private int id;
+    private Long id;
     private String description;
     private User user;
 
     //Uso una HAS-A perchè mi è più versalite di una generalizzazione, non fa parte strettamente del dominio
     private INotifyAction notifyAction;
 
-    public Notify(int id, User user) {
+    public Notify(Long id, User user) {
         this.id = id;
         this.user = user;
     }
@@ -23,11 +23,11 @@ public class Notify {
         return user.getId();
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -62,5 +62,9 @@ public class Notify {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getNotifyType() {
+        return notifyAction.type();
     }
 }

@@ -83,7 +83,7 @@ public class DatabaseUtil {
             }
 
             PreparedStatement pS  = query.prepareStatement();
-            for(int i = 0; i <  query.getParams().length; i++){
+            for(int i = 0; i <  (query.getParams() != null ? query.getParams().length : 0); i++){
                 pS.setObject(i + 1, query.getParams()[i] != null ?  query.getParams()[i].toString() : null);
             }
 

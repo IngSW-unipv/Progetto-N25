@@ -34,8 +34,6 @@ public class ProgettoN25 extends Application {
             return;
         }
 
-        //NotifyDAO.getInstance().get(new Notify(1, new User(1)));
-
         launch();
     }
 
