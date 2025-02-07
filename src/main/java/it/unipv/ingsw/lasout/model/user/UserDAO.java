@@ -87,7 +87,7 @@ public class UserDAO implements IDao<User> {
         rawUserWithAllPrimaryInformation.setPassword(rS.getString("password"));
         rawUserWithAllPrimaryInformation.setNotifies(getNotifies(user));
 
-        System.out.println(rawUserWithAllPrimaryInformation);
+        //System.out.println(rawUserWithAllPrimaryInformation);
 
         return rawUserWithAllPrimaryInformation;
     }
@@ -103,14 +103,11 @@ public class UserDAO implements IDao<User> {
     public User get(User user) throws Exception {
         User savedUser = getRaw(user);
 
-        //TODO non dovrebbe essere "savedUser"?
         List<Group> groups = groupsOfUser(user);
         savedUser.setGroups(groups);
 
         return savedUser;
     }
-
-
 
 
     /**
@@ -167,15 +164,14 @@ public class UserDAO implements IDao<User> {
         ResultSet rS = queryInsert.getResultSet();
 
         if(rS!=null)throw new Exception();
-        //TODO chiedere a cla
-        //if(user.getId()==0) user.setId(queryInsert.getKey());
 
         queryInsert.close();
     }
 
     @Override
     public void update(User user) throws Exception {
-
+        delete(user);
+        save(user);
     }
 
 
@@ -227,38 +223,4 @@ public class UserDAO implements IDao<User> {
         return groups;
 
     }
-
-
-    /**
-     * QUESTA COSA è STANDARD QUINDI COPIA E INCOLLA SE SERVE
-     */
-    private static final Logger LOGGER = Logger.getLogger(UserDAO.class.getName());
-    //main di test
-    public static void main(String[] args) throws Exception {
-        //controllo iniziale per il DB
-        try {
-            DatabaseUtil.getInstance().prepare();
-            DatabaseUtil.getInstance().initialize();
-        } catch (IOException | SQLException e) {
-            LOGGER.severe("Can't initialize the DB: \n" + e);
-            System.exit(1);
-            return;
-        }
-
-        //test
-        User user = UserDAO.getInstance().get(new User(3));
-        System.out.println(user);
-
-        UserDAO.getInstance().save(new User("cicco","palla"));
-        UserDAO.getInstance().save(new User(13,"malloni","palla"));
-        UserDAO.getInstance().delete(new User("malloni","palla"));
-
-        ArrayList<User> users = UserDAO.getInstance().getAll();
-        System.out.println("\nTUTTI I BRO:\n");
-        for(int i=0; i<users.size(); i++){
-            System.out.println(users.get(i));
-        }
-
-    }
-
 }
