@@ -1,17 +1,11 @@
 package it.unipv.ingsw.lasout.model.cashbook;
 
-import java.io.IOException;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
-import it.unipv.ingsw.lasout.dao.IDao;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
-import it.unipv.ingsw.lasout.model.group.Group;
-import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.vault.Transaction;
 
 public class CashbookDAO implements ICashbookDAO {
@@ -147,6 +141,11 @@ public class CashbookDAO implements ICashbookDAO {
         return transactionList;
     }
 
+    /**
+     * Salvataggio di un cashbook nel database tenendo conto delle relazioni con gli oggetti collegati
+     * @param cashbook carrier contentente solo l'id del cashbook da aggiungere dal database
+     * @throws Exception errore nel esecuzione della query sql
+     */
     @Override
     public void save(Cashbook cashbook) throws Exception {
         DBQuery query;
@@ -168,6 +167,11 @@ public class CashbookDAO implements ICashbookDAO {
         query.close();
     }
 
+    /**
+     * Update dei dati riguardanti un cashbook con conseguente modifica delle relazioni ad esso collegate
+     * @param cashbook carrier contentente solo l'id del cashbook da aggiornare
+     * @throws Exception errore nell'esecuzione della query sql
+     */
     @Override
     public void update(Cashbook cashbook) throws Exception {
         delete(cashbook);
@@ -175,10 +179,10 @@ public class CashbookDAO implements ICashbookDAO {
     }
 
     /**
-     * Eliminazione di un gruppo dal database per agiornamento o eliminazione dei
+     * Eliminazione di un cashbook dal database per aggiornamento o eliminazione dei
      * dati tenendo conto anche delle relazioni ed eliminandole di conseguenza
-     * @param cashbook carry group contentente solo l'id del gruppo da eliminare dal database
-     * @throws Exception errore nel esequzione della query sql
+     * @param cashbook carrier contentente solo l'id del cashbook da eliminare dal database
+     * @throws Exception errore nel esecuzione della query sql
      */
     @Override
     public void delete(Cashbook cashbook) throws Exception {
@@ -193,6 +197,9 @@ public class CashbookDAO implements ICashbookDAO {
         query.close();
     }
 
+    /**
+     * Codice che implementa l'eliminazione della relazione N a N nel database
+     */
     public void deleteAssociation(Cashbook cashbook) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_FROM_CASHBOOKTRANSACTIONS, cashbook.getId());
 
@@ -203,6 +210,9 @@ public class CashbookDAO implements ICashbookDAO {
         query.close();
     }
 
+    /**
+     * Codice che implementa l'aggiunta della relazione N a N nel database
+     */
     public void saveAssociation(Cashbook cashbook) throws Exception {
         DBQuery query = null;
         for(Transaction t : cashbook.getTransactionList()){
