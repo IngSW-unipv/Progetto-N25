@@ -44,8 +44,6 @@ public class NotifyDAO implements IDao<Notify> {
     private static final String SELECT_TYPE =
             "SELECT \\'type\\'" +
                     "FROM \\'notify\\' WHERE user_id = ? AND id = ?;";
-
-
     private static final String QUERY_SAVE_NOTIFY_1 =
             "INSERT INTO \\'notify\\' " +
                     "(user_id, id, description, type) VALUES (?, ?, ?, ?);";
@@ -134,27 +132,69 @@ public class NotifyDAO implements IDao<Notify> {
         return all;
     }
 
+    /**
+     * Gestisce automaticamente l'update di un oggetto in memoria o il salvataggio nuovo.
+     * @param notify oggetto da salvare, con  tutte le informazioni
+     * @throws Exception
+     */
     @Override
     public void save(Notify notify) throws Exception {
-        DBQuery update = DBQuery.Builder.create()
-                .query(QUERY_UPDATE_NOTIFY_1)
-                .params(notify.getUserID(), notify.getId(), notify.getDescription(), notify.getNotifyType(), notify.getUserID(), notify.getId())
-                .build();
-        DatabaseUtil.getInstance().executeQuery(update);
 
-        if(update.getUpdateCount() > 0){
-            //update.setQuery(DELETE_TYPE);
-            update.close();
+
+        DBQuery query =  DBQuery.Builder.create()
+                .query(SELECT_TYPE)
+                .params(notify.getUserID(), notify.getId())
+                .build();
+        try{
+            update(notify, query);
+            System.out.println("UPDATED");
+            query.close();
+            return;
+        }catch (Exception e){
+            query.setQuery(QUERY_SAVE_NOTIFY_1);
+            query.setParams(notify.getUserID(), notify.getId(),  notify.getDescription(), notify.getNotifyType());
+            DatabaseUtil.getInstance().executeQuery(query);
+
+            notify.getNotifyAction().save(notify);
+            System.out.println("SAVED");
+            query.close();
         }
 
-        update.close();
+
+    }
+
+    private void update(Notify notify, DBQuery query) throws Exception{
+
+        DatabaseUtil.getInstance().executeQuery(query);
+        ResultSet resultSet  =  query.getResultSet();
+
+        if(resultSet == null || !resultSet.next()) throw new RuntimeException("ResultSet is null or empty");
+
+        String type = resultSet.getString("type");
+        query.setQuery(QUERY_UPDATE_NOTIFY_1);
+        query.setParams(notify.getUserID(), notify.getId(), notify.getDescription(), notify.getNotifyType(), notify.getUserID(), notify.getId());
+        DatabaseUtil.getInstance().executeQuery(query);
+
+        Class<?> clazz =  getClass(type);
+        AbstractNotifyActionFactory factory = (AbstractNotifyActionFactory) clazz.getDeclaredConstructor().newInstance();
+        INotifyAction action = factory.create();
+        action.delete(notify); //elimino il  vecchio dato
+        notify.getNotifyAction().save(notify);
+
+
+
+
     }
 
     @Override
     public void update(Notify notify) throws Exception {
 
-    }
+        update(notify, DBQuery.Builder.create()
+                .query(SELECT_TYPE)
+                .params(notify.getUserID(), notify.getId())
+                .build());
 
+    }
 
     @Override
     public void delete(Notify notify) throws Exception {

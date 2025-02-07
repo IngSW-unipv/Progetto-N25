@@ -8,6 +8,12 @@ public interface INotifyAction {
     void accept();
     void build();
     void load(Notify notify) throws Exception;
+    void delete(Notify notify) throws Exception;
+    void save(Notify notify) throws Exception;
+
 
     String type();
+
+
+
 }

@@ -6,13 +6,35 @@ import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
 
+import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 
 public class AcceptFriendRequestNotifyAction implements INotifyAction {
 
+    private static final String QUERY_LOAD_1 = "SELECT *" +
+            " FROM \\'friendnotify\\'" +
+            " WHERE id = ? AND to_user_id = ?;";
+    private static final String QUERY_DELETE_1 = "DELETE" +
+            " FROM \\'friendnotify\\'" +
+            " WHERE id = ? AND to_user_id = ?;";
+    private static final String QUERY_UPDATE = "UPDATE \\'friendnotify\\'" +
+            " SET to_user_id = ?, from_user_id = ? WHERE to_user_id = ? AND id = ?;";
+    private static final String QUERY_SAVE = "INSERT INTO \\'friendnotify\\'" +
+            " (id, to_user_id, from_user_id) VALUES (?, ?, ?)";
 
     private User from;
     private User to;
+
+
+
+    public void setFrom(User from) {
+        this.from = from;
+    }
+
+    public void setTo(User to) {
+        this.to = to;
+    }
+
 
     @Override
     public void accept() {
@@ -27,9 +49,7 @@ public class AcceptFriendRequestNotifyAction implements INotifyAction {
     @Override
     public void load(Notify notify) throws Exception{
         DBQuery query = DBQuery.Builder.create()
-                .query("SELECT *" +
-                        "FROM \\'friendnotify\\' " +
-                        "WHERE id = ? AND to_user_id = ?;")
+                .query(QUERY_LOAD_1)
                 .params(notify.getId(), notify.getUserID())
                 .build();
         DatabaseUtil.getInstance().executeQuery(query);
@@ -41,6 +61,33 @@ public class AcceptFriendRequestNotifyAction implements INotifyAction {
 
         this.from = fromID;
         this.to = toID;
+
+        query.close();
+    }
+
+    @Override
+    public void delete(Notify notify) throws Exception {
+        DBQuery dbQuery =  DBQuery.Builder.create()
+                .query(QUERY_DELETE_1)
+                .params(notify.getUserID(), notify.getId())
+                .build();
+        DatabaseUtil.getInstance().executeQuery(dbQuery);
+        dbQuery.close();
+    }
+
+    @Override
+    public void save(Notify notify) throws Exception {
+        DBQuery dbQuery =  DBQuery.Builder.create()
+                .query(QUERY_UPDATE)
+                .params(to.getId(),  from.getId(), notify.getUserID(), notify.getId())
+                .build();
+        DatabaseUtil.getInstance().executeQuery(dbQuery);
+        if(dbQuery.getUpdateCount() == 0){
+            dbQuery.setQuery(QUERY_SAVE);
+            dbQuery.setParams(notify.getId(), to.getId(), from.getId());
+            DatabaseUtil.getInstance().executeQuery(dbQuery);
+        }
+        dbQuery.close();
     }
 
     @Override
