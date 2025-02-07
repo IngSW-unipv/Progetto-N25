@@ -27,9 +27,15 @@ public interface IDao<T> {
 
     List<T> getAll() throws Exception;
 
+    /**
+     * Permette di rendere persistente un oggetto
+     * Non tutte le implementazioni  di save gestiscono automaticamente l'update se già esiste a livello persistenza
+     * @param t oggetto da salvare, con  tutte le informazioni
+     * @throws Exception
+     */
     void save(T t) throws Exception;
 
-    void update(T t, String[] params) throws Exception;
+    void update(T t) throws Exception;
 
     void delete(T t) throws Exception;
 }
