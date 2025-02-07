@@ -123,9 +123,9 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
         v2.setID(2);
         v2.setBalance(2000);
 
-        //VirtualVaultDAO.getInstance().save(v);
+        VirtualVaultDAO.getInstance().save(v);
         VirtualVaultDAO.getInstance().save(v2);
-        //VirtualVaultDAO.getInstance().delete(v2);
+        VirtualVaultDAO.getInstance().delete(v2);
 
 
 
