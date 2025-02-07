@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import it.unipv.ingsw.lasout.dao.IDao;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.vault.Transaction;
 
@@ -41,7 +42,11 @@ public class CashbookDAO implements ICashbookDAO {
     private static final String GET_ALL_CASHBOOKS = "SELECT * FROM £cashbook£";
     private static final String GET_CASHBOOK_FROM_ID = "SELECT * FROM £cashbook£ WHERE id=?;";
     private static final String GET_TRANSACTIONS_FROM_CASHBOOKTRANSACTIONS = "SELECT * FROM £cashbooktransactions£ WHERE cashbook_id = ?;";
-
+    private static final String DELETE_FROM_CASHBOOKTRANSACTIONS = "DELETE FROM £cashbooktransactions£ WHERE cashbook_id = ?";
+    private static final String DELETE_CASHBOOK_FROM_ID = "DELETE FROM £cashbook£ WHERE id = ?";
+    private static final String INSERT_IN_CASHBOOKTRANSACTIONS = "INSERT INTO £cashbooktransactions£ (cashbook_id, transaction_id) VALUES(?,?)";
+    private static final String INSERT_CASHBOOK_ID = "INSERT INTO £cashbook£ (id, name, user_id) VALUES(?,?,?)";
+    private static final String INSERT_CASHBOOK_NOID = "INSERT INTO £cashbook£ (name, user_id) VALUES(?,?)";
     /**
      * Voglio ottenere un CashBook dal DB solo tramite il suo ID
      * @param fictitiousCashbook ogetto contenente il solo identificatore dell'entità
@@ -144,17 +149,70 @@ public class CashbookDAO implements ICashbookDAO {
 
     @Override
     public void save(Cashbook cashbook) throws Exception {
+        DBQuery query;
+        if(cashbook.getId()!=0){
+            //usa l'id del carry (praticmante
+            query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_ID, cashbook.getId(), cashbook.getName());
+        }else{
+            //sfrutta auto increment
+            query = DatabaseUtil.getInstance().createGeneratedKeyQuery(INSERT_CASHBOOK_NOID, cashbook.getName());
+        }
+        DatabaseUtil.getInstance().executeQuery(query);
+        ResultSet rs = query.getResultSet();
 
+        if(rs!=null)throw new Exception();
+        if(cashbook.getId()==0) cashbook.setId((int)query.getKey());
+
+        //INSERT nella tabella usergroup
+        saveAssociation(cashbook);
+        query.close();
     }
 
     @Override
-    public void update(Cashbook cashbook, String[] params) throws Exception {
-
+    public void update(Cashbook cashbook) throws Exception {
+        delete(cashbook);
+        save(cashbook);
     }
 
+    /**
+     * Eliminazione di un gruppo dal database per agiornamento o eliminazione dei
+     * dati tenendo conto anche delle relazioni ed eliminandole di conseguenza
+     * @param cashbook carry group contentente solo l'id del gruppo da eliminare dal database
+     * @throws Exception errore nel esequzione della query sql
+     */
     @Override
     public void delete(Cashbook cashbook) throws Exception {
+        DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_CASHBOOK_FROM_ID, cashbook.getId());
 
+        DatabaseUtil.getInstance().executeQuery(query);
+        ResultSet rs = query.getResultSet();
+
+        if(rs!=null)throw new Exception();
+
+        deleteAssociation(cashbook);
+        query.close();
+    }
+
+    public void deleteAssociation(Cashbook cashbook) throws Exception {
+        DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_FROM_CASHBOOKTRANSACTIONS, cashbook.getId());
+
+        DatabaseUtil.getInstance().executeQuery(query);
+        ResultSet rs = query.getResultSet();
+
+        if(rs!=null)throw new Exception();
+        query.close();
+    }
+
+    public void saveAssociation(Cashbook cashbook) throws Exception {
+        DBQuery query = null;
+        for(Transaction t : cashbook.getTransactionList()){
+            query = DatabaseUtil.getInstance().createQuery(INSERT_IN_CASHBOOKTRANSACTIONS, t.getId(), cashbook.getId());
+            DatabaseUtil.getInstance().executeQuery(query);
+            ResultSet rs = query.getResultSet();
+
+            if(rs!=null)throw new Exception();
+        }
+        if(query!=null) query.close();
     }
 
 }
