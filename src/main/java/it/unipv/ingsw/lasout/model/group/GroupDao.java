@@ -120,7 +120,6 @@ public class GroupDao implements IGroupDao{
         return group;
     }
 
-
     /**
      * Salva l'oggetto gurppo sul database tennendo conto del opzione
      * "aggiornamento" id=0, e delle relazioni many to many
@@ -135,8 +134,10 @@ public class GroupDao implements IGroupDao{
 
         DBQuery query;
         if(group.getId()!=0){
+            //usa l'id del carry (praticmante
             query = DatabaseUtil.getInstance().createQuery(INSERT_GROUP_ID, group.getId(), group.getName(), group.getAdmin().getId());
         }else{
+            //sfrutta auto increment
             query = DatabaseUtil.getInstance().createGeneratedKeyQuery(INSERT_GROUP_NOID, group.getName(), group.getAdmin().getId());
         }
         DatabaseUtil.getInstance().executeQuery(query);
@@ -152,12 +153,21 @@ public class GroupDao implements IGroupDao{
 
     /**
      * NOT USED
-     * @param group
-     * @param params
-     * @throws Exception
      */
     @Override
     public void update(Group group, String[] params) throws Exception {}
+
+    /**
+     *
+     * @param group pojo con i dati da scrivere sul db con id l'id del gruppo da aggiornare
+     * @throws Exception error in sql execute
+     */
+    public void update(Group group) throws Exception {
+
+        delete(group);
+        save(group);
+
+    }
 
     /**
      * Eliminazione di un gruppo dal database per agiornamento o eliminazione dei
@@ -201,6 +211,12 @@ public class GroupDao implements IGroupDao{
         return user;
     }
 
+    /**
+     * UserGroupDAO: cancella tutte le tuple di un asociazione molti molti dato l'id del gruppo
+     * @param group id del gurppo di cui si vogliono eliminare le associazioni
+     * @throws Exception errore nel esequzione della query sql
+     * Sostituiblie da un delete on cascate
+     */
     public void deleteAssociation(Group group) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELATE_ASSO_FROM_USERGROUP, group.getId());
 
@@ -211,6 +227,11 @@ public class GroupDao implements IGroupDao{
         query.close();
     }
 
+    /**
+     * UserGroupDAO: crea le associazioni many to many dato l'id del gruppo e la lista delli user
+     * @param group carry con l'id del gruppo e la lista delli user per creare l'associazioni many to many
+     * @throws Exception errore nel esequzione della query sql
+     */
     public void saveAssociation(Group group) throws Exception {
         DBQuery query = null;
         for(User u : group.getMembers()){
@@ -244,9 +265,9 @@ public class GroupDao implements IGroupDao{
         users.add(new User(3));
 
         GroupDao.getInstance().save(new Group("VacanzaChieti", new User(2),users));
-        //GroupDao.getInstance().delete(new Group(1));
-        //GroupDao.getInstance().save(new Group(1,"VacanzaChieti", new User(2)));
-        //GroupDao.getInstance().delete(new Group(1));
+        GroupDao.getInstance().delete(new Group(1));
+        GroupDao.getInstance().save(new Group(1,"VacanzaChieti", new User(2), users));
+        GroupDao.getInstance().delete(new Group(1));
     }
 
 

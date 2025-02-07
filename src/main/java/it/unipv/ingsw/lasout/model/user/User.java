@@ -6,7 +6,10 @@ import it.unipv.ingsw.lasout.model.notify.Notify;
 import java.util.ArrayList;
 import java.util.List;
 
-//classe Bean di "user" con solo attributi, costruttore, getters e setters
+
+/**
+ * Classe Bean di "user" con solo attributi, costruttore, getters e setters
+ */
 public class User {
 
 
@@ -18,21 +21,49 @@ public class User {
     private List<User> friends;
     private List<Notify> notifies;
 
-
-
-    //costruttore di Utente
-     public User() {
-         this.groups = new ArrayList<>();
-         this.friends = new ArrayList<>();
-         this.notifies = new ArrayList<>();
-     }
-
-
-
-    //getters e setters
+    /**
+     * COSTRUTTORE
+     * @param id
+     */
     public User(long id){
         this.id = id;
     }
+
+    /**
+     * COSTRUTTORE
+     * @param username
+     * @param password
+     */
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    /**
+     * COSTRUTTORE
+     * @param id
+     * @param username
+     * @param password
+     */
+    public User(int id, String username, String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+    }
+
+    /**
+     * COSTRUTTORE
+     */
+    public User() {
+         this.groups = new ArrayList<>();
+         this.friends = new ArrayList<>();
+         this.notifies = new ArrayList<>();
+    }
+
+    /**
+     * COSTRUTTORE
+     * @param id
+     */
     public User(int id) {
         this.id = id;
         this.groups = new ArrayList<>();
@@ -40,6 +71,11 @@ public class User {
         this.notifies = new ArrayList<>();
     }
 
+
+
+
+
+    //getters e setters
     public List<Group> getGroups() {
         return groups;
     }

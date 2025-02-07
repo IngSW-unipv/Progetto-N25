@@ -24,7 +24,6 @@ public class UserDAO implements IDao<User> {
     private static UserDAO istance = null;
 
     /**
-     *
      * @return l'istanza singleton del UserDAO
      */
     public static UserDAO getInstance() {
@@ -40,31 +39,33 @@ public class UserDAO implements IDao<User> {
 
     }
 
-    ////////////////////////////////////elenco delle query da far eseguire ai vari metodi della classe UserDAO////////////////////////////////////
-    private static final String QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER =      "SELECT * " +
-                                                                               "FROM $user$" +
-                                                                               "WHERE id = ?;";
-
-    private static final String QUERY_SELECT_ALL_GROUPS_OF_A_USER =            "SELECT group_id " +
-                                                                               "FROM $usergroup$" +
-                                                                               "WHERE user_id = ?;";
-
-    private static final String QUERY_SELECT_ALL_INFORMATIONS_OF_EVERY_USER =  "SELECT *" +
-                                                                               "FROM $user$;";
-
-    private static final String QUERY_INSERT_NEW_USER =                        "INSERT INTO $user$ (username, password) VALUES (?, ?);";
-
-    private static final String QUERY_UPDATE_THE_PASSWORD_OF_AN_EXISTING_USER= "UPDATE user" +
-                                                                               "SET $password$ = ?" +
-                                                                               "WHERE username = ?;";
-
-    private static final String QUERY_DELETE_AN_EXISTING_USER =                "DELETE FROM $user$ WHERE username = ?;";
+    /**
+     * Elenco delle query da far eseguire ai vari metodi della classe UserDAO
+     */
+    private static final String QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER = "SELECT * " +
+                                                                          "FROM $user$" +
+                                                                          "WHERE id = ?;";
+    private static final String QUERY_SELECT_ALL_GROUPS_OF_A_USER = "SELECT group_id " +
+                                                                    "FROM $usergroup$" +
+                                                                    "WHERE user_id = ?;";
+    private static final String QUERY_SELECT_ALL_INFORMATIONS_OF_EVERY_USER = "SELECT *" +
+                                                                             "FROM $user$;";
+    private static final String QUERY_INSERT_NEW_USER_WITH_ID = "INSERT INTO $user$ (id, username, password) VALUES (?, ?, ?);";
+    private static final String QUERY_INSERT_NEW_USER_WITHOUT_ID = "INSERT INTO $user$ (username, password) VALUES (?, ?);";
+    private static final String QUERY_DELETE_AN_EXISTING_USER = "DELETE FROM $user$ WHERE id = ?;";
+    private static final String QUERY_SELECT_ID_FROM_HIS_CREDENTIALS = "SELECT id FROM $user$ WHERE username = ? AND password = ?;";
 
 
 
 
 
-    //prendo solo i dati elementari dell'utente che mi interessa (dal suo id a tutti gli altri dati)
+    /**
+     * Metodo che prende solo i dati elementari dell'utente che mi interessa passando dal suo id
+     * @param user oggetto contenente il solo identificatore dell'entità
+     * @return
+     * @throws Exception
+     */
+    @Override
     public User getRaw(User user) throws Exception {
 
         //creazione della query di ricerca nel DB di tipo "DBQuery"
@@ -74,41 +75,139 @@ public class UserDAO implements IDao<User> {
         DatabaseUtil.getInstance().executeQuery(querySelectAllInformationsOfAUser);
 
         //prendo il risultato della query
-        ResultSet resultOfQuerySelectAllInformationsOfAUser = querySelectAllInformationsOfAUser.getResultSet();
+        ResultSet rS = querySelectAllInformationsOfAUser.getResultSet();
         //controllo il risultato della query (faccio ".next()" perché senò punterei a una cella inesistente)
-        if(resultOfQuerySelectAllInformationsOfAUser == null || !resultOfQuerySelectAllInformationsOfAUser.next()) throw new UserNotFoundException("user not found");
+        if(rS == null || !rS.next()) throw new UserNotFoundException(" with this id:"+user.getId());
 
         //creo l'oggetto da ritornare
-        User rawUserWithAllInformation = new User();
+        User rawUserWithAllPrimaryInformation = new User();
         //imposto i valori letti da database
-        rawUserWithAllInformation.setId      (resultOfQuerySelectAllInformationsOfAUser.getInt   ("id"));
-        rawUserWithAllInformation.setUsername(resultOfQuerySelectAllInformationsOfAUser.getString("username"));
-        rawUserWithAllInformation.setPassword(resultOfQuerySelectAllInformationsOfAUser.getString("password"));
-        rawUserWithAllInformation.setNotifies(getNotifies(user));
+        rawUserWithAllPrimaryInformation.setId(rS.getInt("id"));
+        rawUserWithAllPrimaryInformation.setUsername(rS.getString("username"));
+        rawUserWithAllPrimaryInformation.setPassword(rS.getString("password"));
+        rawUserWithAllPrimaryInformation.setNotifies(getNotifies(user));
 
-        System.out.println(rawUserWithAllInformation);
+        System.out.println(rawUserWithAllPrimaryInformation);
 
-        return rawUserWithAllInformation;
+        return rawUserWithAllPrimaryInformation;
     }
 
 
-    public List<Notify> getNotifies(User user) throws Exception {
-        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER, user.getId());
-        return null;
-    }
-
-
-    //mi dà tutti i gruppi che hanno come partecipante quello che gli dico io (tramite l'id)
+    /**
+     * Metodo che mi dà tutti i gruppi che hanno come partecipante quello che gli dico io (tramite il suo id)
+     * @param user oggetto contenente il solo identificatore dell'entità
+     * @return savedUser
+     * @throws Exception
+     */
     @Override
     public User get(User user) throws Exception {
         User savedUser = getRaw(user);
 
+        //TODO non dovrebbe essere "savedUser"?
         List<Group> groups = groupsOfUser(user);
         savedUser.setGroups(groups);
 
         return savedUser;
     }
 
+
+
+
+    /**
+     * Metodo che restituisce tutti gli utenti presenti nel DB
+     * @return Un arraylist di tutti gli user presenti nella tabella user nel database
+     * @throws Exception Errore nel esequzione della query SQL
+     */
+    @Override
+    public ArrayList<User> getAll() throws Exception {
+        //creazione della query di ricerca nel DB di tipo "DBQuery"
+        DBQuery querySelectAllInformationsOfEveryUser = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_EVERY_USER);
+
+        //esecuzione della query
+        DatabaseUtil.getInstance().executeQuery(querySelectAllInformationsOfEveryUser);
+
+        //"rS" prende il risultato della query appena fatta
+        ResultSet rS = querySelectAllInformationsOfEveryUser.getResultSet();
+        //se la query non da risultati o non c'è niente dopo (perché il primo carattere non è nulla) allora viene lanciata l'eccezione
+        if(rS == null || !rS.next()) throw new SQLException("query error");
+
+        //creazione di una lista bean in cui metto le informazioni prese dalla query
+        ArrayList<User> usersList = new ArrayList<>();
+
+        //ciclo while per prendere tutti i dati dell'utente che mi ha returnato la query
+        while(rS.next()) {
+            User rawUserWithAllInformation = new User();
+
+            rawUserWithAllInformation.setId(rS.getInt("id"));
+            rawUserWithAllInformation.setUsername(rS.getString("username"));
+            rawUserWithAllInformation.setPassword(rS.getString("password"));
+            usersList.add(rawUserWithAllInformation);
+        }
+
+        return usersList;
+    }
+
+
+    /**
+     * Metodo che aggiunge un nuovo utente al DB
+     * @param user dean di un utente che si vuole aggiungere(registrare) nel database se non è presente
+     * @throws Exception errore nella esecuzione della query
+     */
+    @Override
+    public void save(User user) throws Exception {
+        DBQuery queryInsert;
+
+        if(user.getId()!=0){
+            queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_USER_WITH_ID, user.getId(), user.getUsername(), user.getPassword());
+        }else{
+            queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_USER_WITHOUT_ID, user.getUsername(), user.getPassword());
+        }
+
+        DatabaseUtil.getInstance().executeQuery(queryInsert);
+        ResultSet rS = queryInsert.getResultSet();
+
+        if(rS!=null)throw new Exception();
+        //TODO chiedere a cla
+        //if(user.getId()==0) user.setId(queryInsert.getKey());
+
+        queryInsert.close();
+    }
+
+    /**
+     * NOT USED
+     */
+    @Override
+    public void update(User user, String[] params) throws Exception {
+        //faccio la ricerca in base all'username che mi ha passato l'utente che vuole cambiare la password
+        UserDAO.getInstance().save(user);
+
+    }
+
+
+    /**
+     * Eliminazione di un utente presente nel dB
+     * @param user dean di un utente che si vuole eliminare nel database se presente
+     * @throws Exception errore nella esecuzione della query o errore nella generazione della chiave
+     */
+    @Override
+    public void delete(User user) throws Exception {
+        DBQuery queryDeleteUser = DatabaseUtil.getInstance().createQuery(QUERY_DELETE_AN_EXISTING_USER, user.getId());
+        DatabaseUtil.getInstance().executeQuery(queryDeleteUser);
+        ResultSet resultSetDeleteUser = queryDeleteUser.getResultSet();
+
+        //controllare sto if
+        if(resultSetDeleteUser!=null) throw new UserNotFoundException(""+user.getId());
+
+        queryDeleteUser.close();
+    }
+
+
+
+
+    public List<Notify> getNotifies(User user) throws Exception {
+        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER, user.getId());
+        return null;
+    }
 
     public List<Group> groupsOfUser(User user) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_GROUPS_OF_A_USER, user.getId());
@@ -135,70 +234,9 @@ public class UserDAO implements IDao<User> {
     }
 
 
-    @Override
-    public ArrayList<User> getAll() throws Exception {
-        //creazione della query di ricerca nel DB di tipo "DBQuery"
-        DBQuery querySelectAllInformationsOfEveryUser = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_EVERY_USER);
-
-        //esecuzione della query
-        DatabaseUtil.getInstance().executeQuery(querySelectAllInformationsOfEveryUser);
-
-        //"resultOfQuerySelectAllInformationsOfEveryUser" prende il risultato della query appena fatta
-        ResultSet resultOfQuerySelectAllInformationsOfEveryUser = querySelectAllInformationsOfEveryUser.getResultSet();
-        //se la query non da risultati o non c'è niente dopo (perché il primo carattere non è nulla) allora viene lanciata l'eccezione
-        if(resultOfQuerySelectAllInformationsOfEveryUser == null || !resultOfQuerySelectAllInformationsOfEveryUser.next()) throw new UserNotFoundException("User not found");
-
-        //creazione di una lista bean in cui metto le informazioni prese dalla query
-        ArrayList<User> usersList = new ArrayList<>();
-
-        //ciclo while per prendere tutti i dati dell'utente che mi ha returnato la query
-        while(resultOfQuerySelectAllInformationsOfEveryUser.next()) {
-            User user = new User();
-            user.setId      (resultOfQuerySelectAllInformationsOfEveryUser.getInt   ("id"));
-            user.setUsername(resultOfQuerySelectAllInformationsOfEveryUser.getString("username"));
-            user.setPassword(resultOfQuerySelectAllInformationsOfEveryUser.getString("password"));
-            usersList.add(user);
-        }
-
-        return usersList;
-    }
-
-    //metodo che aggiunge un nuovo user tramite query di insert
-    @Override
-    public void save(User user) throws Exception {
-        DBQuery queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_USER, user.getUsername(), user.getPassword());
-        DatabaseUtil.getInstance().executeQuery(queryInsert);
-
-        //TODO controlli vari per la corretta esecuzione della query
-        queryInsert.close();
-    }
-
-    //modifica delle informazioni di un utente presente nel dB
-    @Override
-    public void update(User user, String[] params) throws Exception {
-        DBQuery queryUpdatePassword = DatabaseUtil.getInstance().createQuery(QUERY_UPDATE_THE_PASSWORD_OF_AN_EXISTING_USER, user.getUsername());
-        DatabaseUtil.getInstance().executeQuery(queryUpdatePassword);
-        ResultSet resultSet = queryUpdatePassword.getResultSet();
-
-        //if(resultSet!=null) throw new UserNotFoundException("User not found");
-
-        queryUpdatePassword.close();
-    }
-
-    //eliminazione di un utente presente nel dB
-    @Override
-    public void delete(User user) throws Exception {
-        DBQuery queryDeleteUser = DatabaseUtil.getInstance().createQuery(QUERY_DELETE_AN_EXISTING_USER, user.getUsername());
-        DatabaseUtil.getInstance().executeQuery(queryDeleteUser);
-        ResultSet resultSetDeleteUser = queryDeleteUser.getResultSet();
-
-        //if(resultSet!=null) throw new UserNotFoundException("User not found");
-
-        queryDeleteUser.close();
-    }
-
-
-    ////////////////////////QUESTA COSA è STANDARD QUINDI COPIA E INCOLLA SE SERVE////////////////////
+    /**
+     * QUESTA COSA è STANDARD QUINDI COPIA E INCOLLA SE SERVE
+     */
     private static final Logger LOGGER = Logger.getLogger(UserDAO.class.getName());
     //main di test
     public static void main(String[] args) throws Exception {
@@ -211,27 +249,20 @@ public class UserDAO implements IDao<User> {
             System.exit(1);
             return;
         }
-        //essendo uh singleton devo ogni volta crearlo
-        User userTest1 = new User();
-        userTest1.setUsername("Giovanni Giorgio Vincenzini");
-        userTest1.setPassword("39");
 
+        //test
+        User user = UserDAO.getInstance().get(new User(3));
+        System.out.println(user);
 
-        User userTest2 = new User();
-        userTest2.setUsername("Paperon dei Paperoni");
-        userTest2.setPassword("39XlMp780!39XlMp780!39XlMp780!39XlMp780!39XlMp780");
+        UserDAO.getInstance().save(new User("cicco","palla"));
+        UserDAO.getInstance().save(new User(13,"malloni","palla"));
+        UserDAO.getInstance().delete(new User("malloni","palla"));
 
-        System.out.println(userTest1);
-        System.out.println(userTest2);
-
-        UserDAO.getInstance().save(userTest1);
-        UserDAO.getInstance().save(userTest2);
-
-        //mi aspetto di non vedere più nel DB lo userTest1
-        UserDAO.getInstance().delete(userTest1);
-
-        //TODO risolvere il problema degli ID che non vedo incrementati
-        //UserDAO.getInstance().getRaw(userTest1);
+        ArrayList<User> users = UserDAO.getInstance().getAll();
+        System.out.println("\nTUTTI I BRO:\n");
+        for(int i=0; i<users.size(); i++){
+            System.out.println(users.get(i));
+        }
 
     }
 

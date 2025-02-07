@@ -3,14 +3,18 @@ package it.unipv.ingsw.lasout.model.vault;
 public class Transaction {
 	
 	private int id;
-	private double importo;
-	private String descrizione;
+	private double amount;
+	private String notes;
 	
-	public Transaction(int id, double importo, String descrizione) {
+	public Transaction(int id, double amount, String notes) {
 		
 		this.id = id;
-		this.importo = importo;
-		this.descrizione = descrizione;
+		this.amount = amount;
+		this.notes = notes;
+	}
+
+	public Transaction() {
+		
 	}
 
 	public int getId() {
@@ -21,20 +25,20 @@ public class Transaction {
 		this.id = id;
 	}
 
-	public double getImporto() {
-		return importo;
+	public double getAmount() {
+		return amount;
 	}
 
-	public void setImporto(double importo) {
-		this.importo = importo;
+	public void setAmount(double amount) {
+		this.amount = amount;
 	}
 
-	public String getDescrizione() {
-		return descrizione;
+	public String getNotes() {
+		return notes;
 	}
 
-	public void setDescrizione(String descrizione) {
-		this.descrizione = descrizione;
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 	
 }
