@@ -10,7 +10,7 @@ public interface IDao<T> {
      * @param oggetto ogetto contenente il solo identificatore dell'entità
      * @return l'oggetto caricato con i suoi dati PRIMITIVI
      * contiene anche gli oggetti di relazioni  1-1, 1-N
-     * Per avere anche le relazioni  N-N
+     * Per avere anche le relazioni  N-N usare get
      * @throws Exception
      */
     T getRaw(T oggetto) throws Exception;

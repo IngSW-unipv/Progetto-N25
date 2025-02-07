@@ -16,7 +16,7 @@ public class DBQuery {
 
 
     public DBQuery(String query, Object... params) {
-        this.query = query;
+        setQuery(query);
         this.params = params;
         this.prepareStatementBehavior = new DefaultPrepareStatementBehavior();
     }
@@ -77,14 +77,14 @@ public class DBQuery {
     }
 
     public void setQuery(String query) {
-        this.query = query;
+        this.query = query.replace("\\'", "`").replace("$", "`").replace("£", "`");
     }
 
     public Object[] getParams() {
         return params;
     }
 
-    public   void setParams(Object... params){
+    public void setParams(Object... params){
         this.params = params;
     }
 
@@ -154,9 +154,7 @@ public class DBQuery {
 
         public DBQuery build(){
 
-            queryString = queryString.replace("\\'", "`");
-            queryString = queryString.replace("$", "`");
-            queryString = queryString.replace("£", "`");
+
             DBQuery dbQuery = new DBQuery(queryString, params);
 
             dbQuery.setPrepareStatementBehavior(prepareStatementBehavior);
