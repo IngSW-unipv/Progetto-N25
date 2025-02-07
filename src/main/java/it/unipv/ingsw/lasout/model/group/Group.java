@@ -58,6 +58,14 @@ public class Group {
     public long getId() {return id;}
     public void setId(long id) {this.id = id;}
 
+    public void delateMember(User user){
+        members.removeIf(member -> member.getId() == user.getId() && member.getId() != admin.getId());
+    }
+
+    public void addMember(User user){
+        members.add(user);
+    }
+
     @Override
     public String toString() {
         return "Group{" +

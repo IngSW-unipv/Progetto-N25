@@ -152,12 +152,6 @@ public class GroupDao implements IGroupDao{
     }
 
     /**
-     * NOT USED
-     */
-    @Override
-    public void update(Group group, String[] params) throws Exception {}
-
-    /**
      *
      * @param group pojo con i dati da scrivere sul db con id l'id del gruppo da aggiornare
      * @throws Exception error in sql execute
@@ -243,33 +237,5 @@ public class GroupDao implements IGroupDao{
         }
         if(query!=null) query.close();
     }
-
-    private static final Logger LOGGER = Logger.getLogger(GroupDao.class.getName());
-    public static void main(String []args) throws Exception {
-
-        try {
-            DatabaseUtil.getInstance().prepare();
-            DatabaseUtil.getInstance().initialize();
-        } catch (IOException | SQLException e) {
-            LOGGER.severe("Couldn't initialize database: \n" + e);
-            System.exit(1);
-            return;
-        }
-
-        Group group = GroupDao.getInstance().get(new Group(2));
-        System.out.println(group);
-
-        List<User> users = new ArrayList<>();
-        users.add(new User(1));
-        users.add(new User(2));
-        users.add(new User(3));
-
-        GroupDao.getInstance().save(new Group("VacanzaChieti", new User(2),users));
-        GroupDao.getInstance().delete(new Group(1));
-        GroupDao.getInstance().save(new Group(1,"VacanzaChieti", new User(2), users));
-        GroupDao.getInstance().delete(new Group(1));
-    }
-
-
 }
 

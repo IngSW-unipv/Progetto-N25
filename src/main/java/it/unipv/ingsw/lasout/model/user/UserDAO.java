@@ -129,7 +129,7 @@ public class UserDAO implements IDao<User> {
         //"rS" prende il risultato della query appena fatta
         ResultSet rS = querySelectAllInformationsOfEveryUser.getResultSet();
         //se la query non da risultati o non c'è niente dopo (perché il primo carattere non è nulla) allora viene lanciata l'eccezione
-        if(rS == null || !rS.next()) throw new SQLException("query error");
+        if(rS == null) throw new SQLException("query error");
 
         //creazione di una lista bean in cui metto le informazioni prese dalla query
         ArrayList<User> usersList = new ArrayList<>();
@@ -173,13 +173,8 @@ public class UserDAO implements IDao<User> {
         queryInsert.close();
     }
 
-    /**
-     * NOT USED
-     */
     @Override
-    public void update(User user, String[] params) throws Exception {
-        //faccio la ricerca in base all'username che mi ha passato l'utente che vuole cambiare la password
-        UserDAO.getInstance().save(user);
+    public void update(User user) throws Exception {
 
     }
 

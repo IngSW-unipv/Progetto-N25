@@ -84,13 +84,12 @@ public class VaultDAO implements IVaultDAO{
 		query.close();
 		
 	}
-	
+
 	@Override
-	public void update(Vault t, String[] params) throws Exception {
-		// TODO Auto-generated method stub
-		
+	public void update(Vault vault) throws Exception {
+
 	}
-	
+
 	@Override
 	public void delete(Vault t) throws Exception {
 		

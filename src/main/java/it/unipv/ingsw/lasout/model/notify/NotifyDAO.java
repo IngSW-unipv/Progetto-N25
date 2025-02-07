@@ -143,7 +143,7 @@ public class NotifyDAO implements IDao<Notify> {
         DatabaseUtil.getInstance().executeQuery(update);
 
         if(update.getUpdateCount() > 0){
-            update.setQuery(DELETE_TYPE);
+            //update.setQuery(DELETE_TYPE);
             update.close();
         }
 
@@ -151,9 +151,10 @@ public class NotifyDAO implements IDao<Notify> {
     }
 
     @Override
-    public void update(Notify notify, String[] params) throws Exception {
+    public void update(Notify notify) throws Exception {
 
     }
+
 
     @Override
     public void delete(Notify notify) throws Exception {

@@ -82,12 +82,11 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
         queryInsert.close();
     }
 
-
-
     @Override
-    public void update(VirtualVault virtualVault, String[] params) throws Exception {
+    public void update(VirtualVault virtualVault) throws Exception {
 
     }
+
 
     @Override
     public void delete(VirtualVault virtualVault) throws Exception {
@@ -125,4 +124,6 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
 
 
     }
+
+
 }

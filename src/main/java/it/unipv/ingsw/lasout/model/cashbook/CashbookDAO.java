@@ -148,9 +148,10 @@ public class CashbookDAO implements ICashbookDAO {
     }
 
     @Override
-    public void update(Cashbook cashbook, String[] params) throws Exception {
+    public void update(Cashbook cashbook) throws Exception {
 
     }
+
 
     @Override
     public void delete(Cashbook cashbook) throws Exception {
