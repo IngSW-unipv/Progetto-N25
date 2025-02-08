@@ -192,7 +192,7 @@ public class CashbookDAO implements ICashbookDAO {
     /**
      * Codice che implementa l'eliminazione della relazione N a N nel database
      */
-    public void deleteAssociation(Cashbook cashbook) throws Exception {
+    private void deleteAssociation(Cashbook cashbook) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_FROM_CASHBOOKTRANSACTIONS, cashbook.getId());
 
         DatabaseUtil.getInstance().executeQuery(query);
@@ -205,7 +205,7 @@ public class CashbookDAO implements ICashbookDAO {
     /**
      * Codice che implementa l'aggiunta della relazione N a N nel database
      */
-    public void saveAssociation(Cashbook cashbook) throws Exception {
+    private void saveAssociation(Cashbook cashbook) throws Exception {
         DBQuery query = null;
         for(Transaction t : cashbook.getTransactionList()){
             query = DatabaseUtil.getInstance().createQuery(INSERT_IN_CASHBOOKTRANSACTIONS, t.getId(), cashbook.getId());

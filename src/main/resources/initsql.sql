@@ -24,7 +24,7 @@ CREATE TABLE `vault`               (id INTEGER AUTO_INCREMENT, user_id INT, sald
 CREATE TABLE `creditcard`          (numerocarta VARCHAR(16) NOT NULL, mese INT NOT NULL, anno INT NOT NULL, cvv INT NOT NULL, vault_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id) REFERENCES vault(id));
 CREATE TABLE `paypal`              (numerocarta VARCHAR(16) NOT NULL, vault_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id) REFERENCES vault(id));
 CREATE TABLE `currentaccount`      (iban VARCHAR(34) NOT NULL, vault_id INT, PRIMARY KEY(iban), FOREIGN KEY (vault_id) REFERENCES vault(id));
-CREATE TABLE `transactions`        (id INT NOT NULL, amount DOUBLE NULL, sender INT NULL, receiver INT NULL, type TINYINT NULL, note VARCHAR(120) NULL,PRIMARY KEY (id));
+CREATE TABLE `transactions`        (id INT NOT NULL, amount DOUBLE NULL, sender INT NULL, receiver INT NULL, date VARCHAR(10) NULL, type TINYINT NULL, note VARCHAR(120) NULL,PRIMARY KEY (id));
 CREATE TABLE `cashbook`            (id INTEGER AUTO_INCREMENT, user_id INTEGER , name VARCHAR(50) NOT NULL, PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES user(id));
 CREATE TABLE `cashbooktransactions` (transaction_id INT REFERENCES `transaction`(id), cashbook_id INT REFERENCES `cashbook`(id), PRIMARY KEY(transaction_id, cashbook_id));
 CREATE TABLE `virtualvault`         (id INTEGER AUTO_INCREMENT, user_id INT, balance DOUBLE, PRIMARY KEY(id), FOREIGN KEY (user_id) REFERENCES user(id));

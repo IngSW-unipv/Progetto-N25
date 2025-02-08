@@ -6,6 +6,8 @@ public class Transaction {
 	private double amount;
 	private int senderID;
 	private int receiverID;
+
+	private String date;
 	private int type;
 	private String notes;
 
@@ -29,11 +31,12 @@ public class Transaction {
 		this.receiverID = receiverID;
 	}
 
-	public Transaction(int id, double amount, int senderID, int receiverID, int type, String notes) {
+	public Transaction(int id, double amount, int senderID, int receiverID, String date, int type, String notes) {
 		this.id = id;
 		this.amount = amount;
 		this.senderID = senderID;
 		this.receiverID = receiverID;
+		this.date = date;
 		this.type = type;
 		this.notes = notes;
 	}
@@ -76,6 +79,14 @@ public class Transaction {
 
 	public void setAmount(double amount) {
 		this.amount = amount;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
 	}
 
 	public String getNotes() {
