@@ -1,5 +1,7 @@
 package it.unipv.ingsw.lasout.model.cashbook;
 
+import it.unipv.ingsw.lasout.model.transaction.Transaction;
+
 import java.util.List;
 
 public class Cashbook {

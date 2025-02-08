@@ -1,4 +1,4 @@
-package it.unipv.ingsw.lasout.model.cashbook;
+package it.unipv.ingsw.lasout.model.transaction;
 
 public class Transaction {
 	

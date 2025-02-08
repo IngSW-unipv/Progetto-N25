@@ -1,5 +1,9 @@
 package it.unipv.ingsw.lasout.model.cashbook;
 
+import it.unipv.ingsw.lasout.model.transaction.Transaction;
+
+import java.util.List;
+
 public class CashbookFacade {
     private CashbookFacade() {
 
@@ -13,8 +17,18 @@ public class CashbookFacade {
     }
 
 
-    public boolean addTransaction(Transaction transaction) {
+    public boolean addTransaction(Cashbook cashbook, Transaction transaction) {
+        try{
+            Cashbook c=CashbookDAO.getInstance().get(cashbook);
+            List<Transaction> t = c.getTransactionList();
+            t.add(transaction);
+            c.setTransactionList(t);
+            CashbookDAO.getInstance().update(c);
+        } catch (Exception e) {
+            return false;
+        }
 
+        return true;
     }
 
 

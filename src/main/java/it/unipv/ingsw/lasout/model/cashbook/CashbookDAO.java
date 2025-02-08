@@ -6,6 +6,7 @@ import java.util.List;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.transaction.Transaction;
 
 public class CashbookDAO implements ICashbookDAO {
     /**
