@@ -176,25 +176,8 @@ public class UserDAO implements IDao<User> {
 
         queryInsert.close();
     }
-    /*
-    public int saveUser(User user) throws Exception {
-        DBQuery queryInsert;
 
-        if(user.getId()!=0){
-            queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_USER_WITH_ID, user.getId(), user.getUsername(), user.getPassword());
-        }else{
-            queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_USER_WITHOUT_ID, user.getUsername(), user.getPassword());
-        }
 
-        DatabaseUtil.getInstance().executeQuery(queryInsert);
-        ResultSet rS = queryInsert.getResultSet();
-
-        if(rS!=null)throw new Exception();
-
-        queryInsert.close();
-        return rS.getInt("id");
-    }
-    */
     @Override
     public void update(User user) throws Exception {
         delete(user);
@@ -221,17 +204,21 @@ public class UserDAO implements IDao<User> {
 
 
 
+
     public List<User> getFriends(User  user){
+
         List<User> friends = new ArrayList<>();
-
-
 
         return friends;
     }
 
+
     public List<Notify> getNotifications(User  user) throws Exception {
+
         return NotifyDAO.getInstance().notifiesOf(user);
+
     }
+
 
     /**
      *
@@ -246,12 +233,12 @@ public class UserDAO implements IDao<User> {
 
         DatabaseUtil.getInstance().executeQuery(query);
 
-        ResultSet resultSet = query.getResultSet();
-        if(resultSet == null) return groups;
+        ResultSet rS = query.getResultSet();
+        if(rS == null) return groups;
 
-        while(resultSet.next()) {
+        while(rS.next()) {
             Group group = new Group();
-            group.setId(resultSet.getInt("group_id"));
+            group.setId(rS.getInt("group_id"));
             Group groupOf  = GroupDao.getInstance().getRaw(group);
             groups.add(groupOf);
         }
@@ -263,7 +250,13 @@ public class UserDAO implements IDao<User> {
 
     }
 
-    public User userSearchBasedOnTheirCredentials(User user) throws Exception {
+    /**
+     * Metodo che fa la query di ricerca sul DB per cercare l'id di un utente che mi viene passato
+     * @param user utente che mi viene passato per controllare qual'è il suo id
+     * @return fictitiousUser con solamente l'id dell utente con quelle date credenziali
+     * @throws Exception nel caso in cui non venga trovato nessuno user con quelle credenziali
+     */
+    public User userSearchIdBasedOnTheirCredentials(User user) throws Exception {
         //creazione della query di ricerca nel DB di tipo "DBQuery"
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_CREDENTIALS, user.getUsername(), user.getPassword(), user.getEmail());
 
@@ -273,9 +266,10 @@ public class UserDAO implements IDao<User> {
         //prendo il risultato della query
         ResultSet rS = querySelect.getResultSet();
         //controllo il risultato della query
-        if(rS == null) throw new UserNotFoundException(" with this id:"+user.getId());
+        if(rS == null || !rS.next()) throw new UserNotFoundException(" with this id:"+user.getId());
 
         User fictitiousUser = new User(rS.getInt("id"));
+        //User fictitiousUser = get(new User(rS.getInt("id")));
 
         querySelect.close();
         return fictitiousUser;

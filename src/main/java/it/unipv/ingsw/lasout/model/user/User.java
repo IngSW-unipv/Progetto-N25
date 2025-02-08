@@ -1,6 +1,5 @@
 package it.unipv.ingsw.lasout.model.user;
 
-import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 
@@ -118,6 +117,7 @@ public class User {
 
     public String getEmail() {return email;}
     public void setEmail(String email) {this.email = email;}
+
 
     public List<Group> getGroups() {
         return groups;
