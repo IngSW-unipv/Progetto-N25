@@ -14,9 +14,6 @@ public class SuperMain {
         ProgettoN25.main(args);
 
 
-        Notify notify = new Notify(1L, new User(1));
-        notify.setDescription("LEZZO");
-        notify.setNotifyAction(new AcceptFriendRequestNotifyAction());
-        NotifyDAO.getInstance().save(notify);
+
     }
 }
