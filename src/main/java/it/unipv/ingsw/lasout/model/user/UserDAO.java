@@ -91,7 +91,7 @@ public class UserDAO implements IDao<User> {
         rawUserWithAllPrimaryInformation.setId(rS.getInt("id"));
         rawUserWithAllPrimaryInformation.setUsername(rS.getString("username"));
         rawUserWithAllPrimaryInformation.setPassword(rS.getString("password"));
-        rawUserWithAllPrimaryInformation.setNotifies(getNotifications(user));
+
 
         //System.out.println(rawUserWithAllPrimaryInformation);
 
