@@ -13,7 +13,7 @@ DROP TABLE IF EXISTS
     `transactions`,
     `virtualvault`
 ;
-CREATE TABLE `user`                (id INTEGER PRIMARY KEY AUTO_INCREMENT, username VARCHAR(50) NOT NULL, password VARCHAR(50) NOT NULL);
+CREATE TABLE `user`                (id INTEGER PRIMARY KEY AUTO_INCREMENT, username VARCHAR(50) NOT NULL, password VARCHAR(50) NOT NULL, email VARCHAR(50) NOT NULL);
 CREATE TABLE `group`               (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(45), user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE);
 CREATE TABLE `usergroup`           (user_id INT REFERENCES `user`(id), group_id INT REFERENCES `group`(id), PRIMARY KEY(user_id, group_id));
 CREATE TABLE `notify`              (id INTEGER AUTO_INCREMENT, user_id INT REFERENCES user(id) ON DELETE CASCADE,`description` TEXT NOT NULL, `type` CHAR(100), PRIMARY KEY(id, user_id));
@@ -28,14 +28,14 @@ CREATE TABLE `cashbooktransactions` (transaction_id INT REFERENCES `transaction`
 CREATE TABLE `virtualvault`         (id INTEGER AUTO_INCREMENT, user_id INT, balance DOUBLE, PRIMARY KEY(id), FOREIGN KEY (user_id) REFERENCES user(id));
 
 
-INSERT INTO `user` (username, password)
+INSERT INTO `user` (username, password, email)
     VALUES
-    ("dada","ciao"),
-    ("cla","miao"),
-    ("dema","bau"),
-    ("buso","pluto"),
-    ("tia","paperino"),
-    ("davide","gatto");
+    ("dada","ciao","aaa@hotmail.com"),
+    ("cla","miao","bbb@ubuntumail.com"),
+    ("dema","bau","ccc@gmail.com"),
+    ("buso","pluto","ddd@sku.org"),
+    ("tia","paperino","eee@it.gmail"),
+    ("davide","gatto","fff");
 
 INSERT INTO `group` (name, user_id)
 VALUES

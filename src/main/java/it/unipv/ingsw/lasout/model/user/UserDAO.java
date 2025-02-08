@@ -9,12 +9,10 @@ import it.unipv.ingsw.lasout.model.group.GroupDao;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class UserDAO implements IDao<User> {
 
@@ -50,10 +48,10 @@ public class UserDAO implements IDao<User> {
                                                                     "WHERE user_id = ?;";
     private static final String QUERY_SELECT_ALL_INFORMATIONS_OF_EVERY_USER = "SELECT *" +
                                                                              "FROM $user$;";
-    private static final String QUERY_INSERT_NEW_USER_WITH_ID = "INSERT INTO $user$ (id, username, password) VALUES (?, ?, ?);";
-    private static final String QUERY_INSERT_NEW_USER_WITHOUT_ID = "INSERT INTO $user$ (username, password) VALUES (?, ?);";
+    private static final String QUERY_INSERT_NEW_USER_WITH_ID = "INSERT INTO $user$ (id, username, password, email) VALUES (?, ?, ?, ?);";
+    private static final String QUERY_INSERT_NEW_USER_WITHOUT_ID = "INSERT INTO $user$ (username, password, email) VALUES (?, ?, ?);";
     private static final String QUERY_DELETE_AN_EXISTING_USER = "DELETE FROM $user$ WHERE id = ?;";
-    private static final String QUERY_SELECT_ID_FROM_HIS_CREDENTIALS = "SELECT id FROM $user$ WHERE username = ? AND password = ?;";
+    private static final String QUERY_SELECT_ID_FROM_HIS_CREDENTIALS = "SELECT id FROM $user$ WHERE username = ? AND password = ? AND email = ?;";
 
 
 
@@ -69,13 +67,13 @@ public class UserDAO implements IDao<User> {
     public User getRaw(User user) throws Exception {
 
         //creazione della query di ricerca nel DB di tipo "DBQuery"
-        DBQuery querySelectAllInformationsOfAUser = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER, user.getId());
+        DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER, user.getId());
 
         //eseguo la query
-        DatabaseUtil.getInstance().executeQuery(querySelectAllInformationsOfAUser);
+        DatabaseUtil.getInstance().executeQuery(querySelect);
 
         //prendo il risultato della query
-        ResultSet rS = querySelectAllInformationsOfAUser.getResultSet();
+        ResultSet rS = querySelect.getResultSet();
         //controllo il risultato della query (faccio ".next()" perché senò punterei a una cella inesistente)
         if(rS == null || !rS.next()) throw new UserNotFoundException(" with this id:"+user.getId());
 
@@ -85,6 +83,7 @@ public class UserDAO implements IDao<User> {
         rawUserWithAllPrimaryInformation.setId(rS.getInt("id"));
         rawUserWithAllPrimaryInformation.setUsername(rS.getString("username"));
         rawUserWithAllPrimaryInformation.setPassword(rS.getString("password"));
+        rawUserWithAllPrimaryInformation.setEmail(rS.getString("email"));
         rawUserWithAllPrimaryInformation.setNotifies(getNotifies(user));
 
         //System.out.println(rawUserWithAllPrimaryInformation);
@@ -118,26 +117,28 @@ public class UserDAO implements IDao<User> {
     @Override
     public ArrayList<User> getAll() throws Exception {
         //creazione della query di ricerca nel DB di tipo "DBQuery"
-        DBQuery querySelectAllInformationsOfEveryUser = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_EVERY_USER);
+        DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_EVERY_USER);
 
         //esecuzione della query
-        DatabaseUtil.getInstance().executeQuery(querySelectAllInformationsOfEveryUser);
+        DatabaseUtil.getInstance().executeQuery(querySelect);
 
         //"rS" prende il risultato della query appena fatta
-        ResultSet rS = querySelectAllInformationsOfEveryUser.getResultSet();
+        ResultSet rS = querySelect.getResultSet();
         //se la query non da risultati o non c'è niente dopo (perché il primo carattere non è nulla) allora viene lanciata l'eccezione
-        if(rS == null) throw new SQLException("query error");
+        if(rS == null) throw new SQLException("querySelect error");
 
         //creazione di una lista bean in cui metto le informazioni prese dalla query
         ArrayList<User> usersList = new ArrayList<>();
 
-        //ciclo while per prendere tutti i dati dell'utente che mi ha returnato la query
+        //ciclo while per prendere tutti i dati dell'utente che mi ha restituito la query
         while(rS.next()) {
             User rawUserWithAllInformation = new User();
 
             rawUserWithAllInformation.setId(rS.getInt("id"));
             rawUserWithAllInformation.setUsername(rS.getString("username"));
             rawUserWithAllInformation.setPassword(rS.getString("password"));
+            rawUserWithAllInformation.setEmail(rS.getString("email"));
+
             usersList.add(rawUserWithAllInformation);
         }
 
@@ -155,6 +156,23 @@ public class UserDAO implements IDao<User> {
         DBQuery queryInsert;
 
         if(user.getId()!=0){
+            queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_USER_WITH_ID, user.getId(), user.getUsername(), user.getPassword(), user.getEmail());
+        }else{
+            queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_USER_WITHOUT_ID, user.getUsername(), user.getPassword(), user.getEmail());
+        }
+
+        DatabaseUtil.getInstance().executeQuery(queryInsert);
+        ResultSet rS = queryInsert.getResultSet();
+
+        if(rS!=null)throw new Exception();
+
+        queryInsert.close();
+    }
+    /*
+    public int saveUser(User user) throws Exception {
+        DBQuery queryInsert;
+
+        if(user.getId()!=0){
             queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_USER_WITH_ID, user.getId(), user.getUsername(), user.getPassword());
         }else{
             queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_USER_WITHOUT_ID, user.getUsername(), user.getPassword());
@@ -166,8 +184,9 @@ public class UserDAO implements IDao<User> {
         if(rS!=null)throw new Exception();
 
         queryInsert.close();
+        return rS.getInt("id");
     }
-
+    */
     @Override
     public void update(User user) throws Exception {
         delete(user);
@@ -192,14 +211,26 @@ public class UserDAO implements IDao<User> {
         queryDeleteUser.close();
     }
 
-
-
-
+    /**
+     * Altri metodi necessari
+     */
+    /**
+     *
+     * @param user
+     * @return
+     * @throws Exception
+     */
     public List<Notify> getNotifies(User user) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER, user.getId());
         return null;
     }
 
+    /**
+     *
+     * @param user
+     * @return
+     * @throws Exception
+     */
     public List<Group> groupsOfUser(User user) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_GROUPS_OF_A_USER, user.getId());
 
@@ -223,4 +254,26 @@ public class UserDAO implements IDao<User> {
         return groups;
 
     }
+
+    public User userSearchBasedOnTheirCredentials(User user) throws Exception {
+        //creazione della query di ricerca nel DB di tipo "DBQuery"
+        DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_CREDENTIALS, user.getUsername(), user.getPassword(), user.getEmail());
+
+        //eseguo la query
+        DatabaseUtil.getInstance().executeQuery(querySelect);
+
+        //prendo il risultato della query
+        ResultSet rS = querySelect.getResultSet();
+        //controllo il risultato della query
+        if(rS == null) throw new UserNotFoundException(" with this id:"+user.getId());
+
+        User fictitiousUser = new User(rS.getInt("id"));
+
+        querySelect.close();
+        return fictitiousUser;
+    }
+
+
+
+
 }
