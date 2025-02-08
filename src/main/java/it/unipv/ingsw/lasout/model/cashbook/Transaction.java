@@ -4,10 +4,9 @@ public class Transaction {
 	
 	private int id;
 	private double amount;
+	private String date;
 	private int senderID;
 	private int receiverID;
-
-	private String date;
 	private int type;
 	private String notes;
 
@@ -29,6 +28,13 @@ public class Transaction {
 		this.amount = amount;
 		this.senderID = senderID;
 		this.receiverID = receiverID;
+	}
+
+	public Transaction(int id, double amount, String date, int type) {
+		this.id = id;
+		this.amount = amount;
+		this.date = date;
+		this.type = type;
 	}
 
 	public Transaction(int id, double amount, int senderID, int receiverID, String date, int type, String notes) {
