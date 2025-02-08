@@ -1,17 +1,35 @@
 package it.unipv.ingsw.lasout.model.vault;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+
 public class PaymentMethodFactory {
 
-	public static PaymentMethod createPayment(String method, String numeroCarta, String dataScadenza, String cvv, String iban) {
-        switch (method.toLowerCase()) {
-            case "carta_credito":
-                return new CreditCard(numeroCarta, dataScadenza, cvv);
-            case "paypal":
-                return new PayPal(numeroCarta);
-            case "conto_corrente":
-                return new CurrentAccount(iban);
-            default:
-                throw new IllegalArgumentException("Metodo di pagamento '" + method + "' non supportato.");
-        }
-    }
+	private static Map<String, String> classes;
+	
+	public static PaymentMethod getInstance(String key) {
+		
+		String className = classes.get(key);
+		
+		Class<?> clazz = null;
+		
+		try {
+			clazz = Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		PaymentMethod pm = null;
+		
+		try {
+			pm = (PaymentMethod) clazz.getDeclaredConstructor().newInstance();
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+		}
+		
+		return pm;
+		
+	}
+	
 }
