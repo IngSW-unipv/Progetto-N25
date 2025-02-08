@@ -1,16 +1,10 @@
 package it.unipv.ingsw.lasout.model.cashbook;
 
-import it.unipv.ingsw.lasout.database.DatabaseUtil;
-import it.unipv.ingsw.lasout.model.vault.Transaction;
-
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.logging.Logger;
 
 public class Cashbook {
     private int id;
+    private int userId;
     private String name;
     private List<Transaction> transactionList;
 
@@ -22,21 +16,18 @@ public class Cashbook {
         this.id = id;
     }
 
-    public Cashbook(int id, String name, List<Transaction> transactionList) {
+    public Cashbook(int id, int userId, String name) {
         this.id = id;
+        this.userId = userId;
+        this.name = name;
+    }
+
+    public Cashbook(int id, int userId, String name, List<Transaction> transactionList) {
+        this.id = id;
+        this.userId = userId;
         this.name = name;
         this.transactionList = transactionList;
     }
-
-
-    public String getName(){
-        return name;
-    }
-
-    public void setName(String name){
-        this.name = name;
-    }
-
 
     public int getId() {
         return id;
@@ -46,6 +37,22 @@ public class Cashbook {
         this.id = id;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
     public List<Transaction> getTransactionList() {
         return transactionList;
     }
@@ -53,6 +60,8 @@ public class Cashbook {
     public void setTransactionList(List<Transaction> transactionList) {
         this.transactionList = transactionList;
     }
+
+
 
     @Override
     public String toString() {

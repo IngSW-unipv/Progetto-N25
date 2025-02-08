@@ -22,7 +22,7 @@ CREATE TABLE `vault`               (id INTEGER AUTO_INCREMENT, user_id INT, sald
 CREATE TABLE `creditcard`          (numerocarta VARCHAR(16) NOT NULL, mese INT NOT NULL, anno INT NOT NULL, cvv INT NOT NULL, vault_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id) REFERENCES vault(id));
 CREATE TABLE `paypal`              (numerocarta VARCHAR(16) NOT NULL, vault_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id) REFERENCES vault(id));
 CREATE TABLE `currentaccount`      (iban VARCHAR(34) NOT NULL, vault_id INT, PRIMARY KEY(iban), FOREIGN KEY (vault_id) REFERENCES vault(id));
-CREATE TABLE `transactions`         (id INT NOT NULL, amount DOUBLE NULL,type TINYINT NULL,sender VARCHAR(45) NULL, receiver VARCHAR(55) NULL,note VARCHAR(120) NULL,PRIMARY KEY (id));
+CREATE TABLE `transactions`        (id INT NOT NULL, amount DOUBLE NULL, sender INT NULL, receiver INT NULL, type TINYINT NULL, note VARCHAR(120) NULL,PRIMARY KEY (id));
 CREATE TABLE `cashbook`            (id INTEGER AUTO_INCREMENT, user_id INTEGER , name VARCHAR(50) NOT NULL, PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES user(id));
 CREATE TABLE `cashbooktransactions` (transaction_id INT REFERENCES `transaction`(id), cashbook_id INT REFERENCES `cashbook`(id), PRIMARY KEY(transaction_id, cashbook_id));
 CREATE TABLE `virtualvault`         (id INTEGER AUTO_INCREMENT, user_id INT, balance DOUBLE, PRIMARY KEY(id), FOREIGN KEY (user_id) REFERENCES user(id));
@@ -67,13 +67,24 @@ INSERT INTO cashbook (user_id, name) VALUES
     (2, "guadagno"),
     (3, "risparmio"),
     (4, "ciao"),
-    (6, "dafult");
+    (6, "dafault"),
+    (2, "viaggio"),
+    (3, "ristorante"),
+    (4, "carte"),
+    (6, "divano");
 
-INSERT INTO transactions (id, amount, type, sender, receiver, note) VALUES
-    (1, 100.00, 0, 'Alice', 'Bob', 'Payment for services'),
-    (2, 50.00, 1, 'Bob', 'Charlie', 'Refund'),
-    (3, 200.00, 1, 'Alice', 'David', 'Gift'),
-    (4, 75.50, 0, 'Eve', 'Frank', 'Purchase');
+INSERT INTO transactions (id, amount, sender, receiver, type, note) VALUES
+    (1, 150.00, 301, 401, 1, 'Acquisto attrezzatura sportiva'),
+    (2, 2000.00, 302, 402, 3, 'Pagamento affitto mensile'),
+    (3, 35.00, 303, 403, 1, 'Cena al fast food'),
+    (4, 500.00, 304, 404, 2, 'Regalo matrimonio'),
+    (5, 250.00, 305, 405, 3, 'Riparazione smartphone'),
+    (6, 15.00, 306, 406, 1, 'Colazione al bar'),
+    (7, 1200.00, 307, 407, 3, 'Acquisto elettrodomestico'),
+    (8, 60.00, 308, 408, 1, 'Abbonamento streaming'),
+    (9, 350.00, 309, 409, 2, 'Prestito a un amico'),
+    (10, 100.00, 310, 410, 1, 'Ricarica cellulare');
+
 
 INSERT INTO cashbooktransactions (transaction_id, cashbook_id) VALUES
     (1, 1),
