@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -36,20 +37,23 @@ public class NotifyDAO implements IDao<Notify> {
     private static final String QUERY_GET_RAW_NOTIFY_1 =
             "SELECT *" +
                     "FROM \\'notify\\' " +
-                    "WHERE user_id = ? AND id = ?;";
+                    "WHERE id = ?;";
     private static final String QUERY_GET_ALL_NOTIFY_1 =
             "SELECT *" +
                     "FROM \\'notify\\';";
-
     private static final String SELECT_TYPE =
             "SELECT \\'type\\'" +
-                    "FROM \\'notify\\' WHERE user_id = ? AND id = ?;";
+                    "FROM \\'notify\\' WHERE id = ?;";
     private static final String QUERY_SAVE_NOTIFY_1 =
             "INSERT INTO \\'notify\\' " +
                     "(user_id, id, description, type) VALUES (?, ?, ?, ?);";
     private static final String QUERY_UPDATE_NOTIFY_1 =
             "UPDATE \\'notify\\' " +
-                    "SET user_id = ?, id = ?, \\'description\\' = ?, \\'type\\' = ? WHERE user_id = ? AND id = ?;";
+                    "SET user_id = ?, id = ?, \\'description\\' = ?, \\'type\\' = ? WHERE id = ?;";
+    private static final String QUERY_GET_NOTIFIES_OF_USER =
+            "SELECT *" +
+                    "FROM \\'notify\\' " +
+                    "WHERE user_id = ?;";
 
 
 
@@ -76,14 +80,14 @@ public class NotifyDAO implements IDao<Notify> {
 
     @Override
     public Notify getRaw(Notify notify) throws Exception {
-        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_RAW_NOTIFY_1, notify.getUserID(), notify.getId());
+        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_RAW_NOTIFY_1, notify.getId());
 
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
         if(rs == null || !rs.next()) throw new RuntimeException("ResultSet is null or empty");
 
         Long id = notify.getId();
-        User user = UserDAO.getInstance().get(new User(notify.getUserID()));
+        User user = UserDAO.getInstance().getRaw(new User(rs.getInt("user_id")));
         String description = rs.getString("description");
 
         String type = rs.getString("type");
@@ -91,9 +95,9 @@ public class NotifyDAO implements IDao<Notify> {
         AbstractNotifyActionFactory factory = (AbstractNotifyActionFactory) clazz.getDeclaredConstructor().newInstance();
         INotifyAction iiNotifyAction =  factory.create();
 
-        Notify returnNotify  = new Notify(id, user);
+        Notify returnNotify  = new Notify(id);
+        returnNotify.setUser(user);
         returnNotify.setDescription(description);
-
         iiNotifyAction.load(returnNotify);
         returnNotify.setNotifyAction(iiNotifyAction);
 
@@ -122,14 +126,37 @@ public class NotifyDAO implements IDao<Notify> {
         ResultSet rs = query.getResultSet();
         while(rs.next()){
             Long id = rs.getLong("id");
-            User user = new User(rs.getInt("user_id"));
-            Notify notify = get(new Notify(id, user));
+            Notify notify = get(new Notify(id));
             all.add(notify);
         }
 
         query.close();
 
         return all;
+    }
+
+    public List<Notify> notifiesOf(User user) throws Exception {
+
+        DBQuery dbQuery = DBQuery.Builder.create()
+                .query(QUERY_GET_NOTIFIES_OF_USER)
+                .params(user.getId())
+                .build();
+
+        DatabaseUtil.getInstance().executeQuery(dbQuery);
+        ResultSet resultSet = dbQuery.getResultSet();
+
+        if(resultSet == null) throw new RuntimeException("ResultSet is null or empty");
+
+        List<Notify> notifies = new ArrayList<>();
+        while(resultSet.next()){
+
+            long id = resultSet.getLong("id");
+            Notify notify = get(new Notify(id));
+            notifies.add(notify);
+        }
+
+        return notifies;
+
     }
 
     /**
@@ -143,7 +170,7 @@ public class NotifyDAO implements IDao<Notify> {
 
         DBQuery query =  DBQuery.Builder.create()
                 .query(SELECT_TYPE)
-                .params(notify.getUserID(), notify.getId())
+                .params( notify.getId())
                 .build();
         try{
             update(notify, query);
@@ -172,7 +199,7 @@ public class NotifyDAO implements IDao<Notify> {
 
         String type = resultSet.getString("type");
         query.setQuery(QUERY_UPDATE_NOTIFY_1);
-        query.setParams(notify.getUserID(), notify.getId(), notify.getDescription(), notify.getNotifyType(), notify.getUserID(), notify.getId());
+        query.setParams(notify.getUserID(), notify.getId(), notify.getDescription(), notify.getNotifyType(),  notify.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
         Class<?> clazz =  getClass(type);
@@ -191,7 +218,7 @@ public class NotifyDAO implements IDao<Notify> {
 
         update(notify, DBQuery.Builder.create()
                 .query(SELECT_TYPE)
-                .params(notify.getUserID(), notify.getId())
+                .params(notify.getId())
                 .build());
 
     }

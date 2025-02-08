@@ -7,6 +7,7 @@ import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
 import it.unipv.ingsw.lasout.model.notify.Notify;
+import it.unipv.ingsw.lasout.model.notify.NotifyDAO;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 
 import java.sql.ResultSet;
@@ -40,6 +41,7 @@ public class UserDAO implements IDao<User> {
     /**
      * Elenco delle query da far eseguire ai vari metodi della classe UserDAO
      */
+
     private static final String QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER = "SELECT * " +
                                                                           "FROM $user$" +
                                                                           "WHERE id = ?;";
@@ -52,6 +54,12 @@ public class UserDAO implements IDao<User> {
     private static final String QUERY_INSERT_NEW_USER_WITHOUT_ID = "INSERT INTO $user$ (username, password, email) VALUES (?, ?, ?);";
     private static final String QUERY_DELETE_AN_EXISTING_USER = "DELETE FROM $user$ WHERE id = ?;";
     private static final String QUERY_SELECT_ID_FROM_HIS_CREDENTIALS = "SELECT id FROM $user$ WHERE username = ? AND password = ? AND email = ?;";
+
+    private static final String QUERY_SELECT_ALL_NOTIFIES_OF_USER  = "" +
+            "SELECT id " +
+            "FROM \\'notify\\'" +
+            "WHERE user_id =  ?;";
+
 
 
 
@@ -75,7 +83,7 @@ public class UserDAO implements IDao<User> {
         //prendo il risultato della query
         ResultSet rS = querySelect.getResultSet();
         //controllo il risultato della query (faccio ".next()" perché senò punterei a una cella inesistente)
-        if(rS == null || !rS.next()) throw new UserNotFoundException(" with this id:"+user.getId());
+        if(rS == null || !rS.next()) throw new UserNotFoundException("With this id:"+user.getId());
 
         //creo l'oggetto da ritornare
         User rawUserWithAllPrimaryInformation = new User();
@@ -83,7 +91,6 @@ public class UserDAO implements IDao<User> {
         rawUserWithAllPrimaryInformation.setId(rS.getInt("id"));
         rawUserWithAllPrimaryInformation.setUsername(rS.getString("username"));
         rawUserWithAllPrimaryInformation.setPassword(rS.getString("password"));
-        rawUserWithAllPrimaryInformation.setEmail(rS.getString("email"));
         rawUserWithAllPrimaryInformation.setNotifies(getNotifies(user));
 
         //System.out.println(rawUserWithAllPrimaryInformation);
@@ -105,6 +112,7 @@ public class UserDAO implements IDao<User> {
         List<Group> groups = groupsOfUser(user);
         savedUser.setGroups(groups);
 
+        savedUser.setNotifies(getNotifications(user));
         return savedUser;
     }
 
@@ -211,18 +219,18 @@ public class UserDAO implements IDao<User> {
         queryDeleteUser.close();
     }
 
-    /**
-     * Altri metodi necessari
-     */
-    /**
-     *
-     * @param user
-     * @return
-     * @throws Exception
-     */
-    public List<Notify> getNotifies(User user) throws Exception {
-        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER, user.getId());
-        return null;
+
+
+    public List<User> getFriends(User  user){
+        List<User> friends = new ArrayList<>();
+
+
+
+        return friends;
+    }
+
+    public List<Notify> getNotifications(User  user) throws Exception {
+        return NotifyDAO.getInstance().notifiesOf(user);
     }
 
     /**

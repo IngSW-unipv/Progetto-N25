@@ -13,9 +13,8 @@ public class Notify {
     //Uso una HAS-A perchè mi è più versalite di una generalizzazione, non fa parte strettamente del dominio
     private INotifyAction notifyAction;
 
-    public Notify(Long id, User user) {
+    public Notify(Long id) {
         this.id = id;
-        this.user = user;
     }
 
 
