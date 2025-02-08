@@ -13,12 +13,12 @@ public class AcceptFriendRequestNotifyAction implements INotifyAction {
 
     private static final String QUERY_LOAD_1 = "SELECT *" +
             " FROM \\'friendnotify\\'" +
-            " WHERE id = ? AND to_user_id = ?;";
+            " WHERE id = ?;";
     private static final String QUERY_DELETE_1 = "DELETE" +
             " FROM \\'friendnotify\\'" +
-            " WHERE id = ? AND to_user_id = ?;";
+            " WHERE id = ?;";
     private static final String QUERY_UPDATE = "UPDATE \\'friendnotify\\'" +
-            " SET to_user_id = ?, from_user_id = ? WHERE to_user_id = ? AND id = ?;";
+            " SET to_user_id = ?, from_user_id = ? WHERE id = ?;";
     private static final String QUERY_SAVE = "INSERT INTO \\'friendnotify\\'" +
             " (id, to_user_id, from_user_id) VALUES (?, ?, ?)";
 
@@ -50,14 +50,14 @@ public class AcceptFriendRequestNotifyAction implements INotifyAction {
     public void load(Notify notify) throws Exception{
         DBQuery query = DBQuery.Builder.create()
                 .query(QUERY_LOAD_1)
-                .params(notify.getId(), notify.getUserID())
+                .params(notify.getId())
                 .build();
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet resultSet = query.getResultSet();
         if(resultSet == null || !resultSet.next()) throw new RuntimeException(String.format("Could not find friend notify  with id '%s' and user_id '%s'", notify.getId(), notify.getUserID()));
 
-        User fromID = UserDAO.getInstance().get(new User(resultSet.getInt("from_user_id")));
-        User toID = UserDAO.getInstance().get(new User(resultSet.getInt("to_user_id")));
+        User fromID = UserDAO.getInstance().getRaw(new User(resultSet.getInt("from_user_id")));
+        User toID = UserDAO.getInstance().getRaw(new User(resultSet.getInt("to_user_id")));
 
         this.from = fromID;
         this.to = toID;
@@ -69,7 +69,7 @@ public class AcceptFriendRequestNotifyAction implements INotifyAction {
     public void delete(Notify notify) throws Exception {
         DBQuery dbQuery =  DBQuery.Builder.create()
                 .query(QUERY_DELETE_1)
-                .params(notify.getUserID(), notify.getId())
+                .params(notify.getId())
                 .build();
         DatabaseUtil.getInstance().executeQuery(dbQuery);
         dbQuery.close();
@@ -79,7 +79,7 @@ public class AcceptFriendRequestNotifyAction implements INotifyAction {
     public void save(Notify notify) throws Exception {
         DBQuery dbQuery =  DBQuery.Builder.create()
                 .query(QUERY_UPDATE)
-                .params(to.getId(),  from.getId(), notify.getUserID(), notify.getId())
+                .params(to.getId(),  from.getId(), notify.getId())
                 .build();
         DatabaseUtil.getInstance().executeQuery(dbQuery);
         if(dbQuery.getUpdateCount() == 0){
