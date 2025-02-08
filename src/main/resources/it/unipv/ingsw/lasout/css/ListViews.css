@@ -36,51 +36,83 @@
 	-fx-font-family: 'Open Sans SemiBold';
 }
 
-#custList {
-	-fx-background-color: -mfx-purple;
-	-fx-background-radius: 10;
-	-fx-border-color: -mfx-purple;
-	-fx-border-radius: 10;
+#notifiesList {
 	-fx-padding: 4;
 }
 
-#custList .virtual-flow {
+#notifiesList .virtual-flow {
 	-fx-background-color: transparent;
 }
 
-#custList:focused {
-	-fx-border-color: -mfx-purple;
+#notifiesList:focused {
 }
 
-#custList .virtual-flow .mfx-list-cell {
+#notifiesList .virtual-flow .mfx-list-cell {
 	-fx-background-color: transparent;
-	-fx-border-color: transparent;
+	-fx-border-color: transparent transparent -mfx-purple-03 transparent;
 	-fx-background-radius: 10;
 	-fx-border-radius: 10;
+	-fx-pref-height: 100; /* Altezza preferita */
+	-fx-min-height: 100;
 }
 
-#custList .virtual-flow .mfx-list-cell .data-label {
+#notifiesList .virtual-flow .mfx-list-cell .data-label {
 	-fx-text-fill: white;
 }
+.close-btn {
+	-fx-background-color: transparent;
+}
 
-#custList .virtual-flow .mfx-list-cell .user-icon {
+
+.white{
+	-fx-font-family: 'Open Sans SemiBold';
+	-fx-font-size: 14;
+}
+
+
+#notifiesList .virtual-flow .mfx-list-cell .user-icon {
 	-mfx-color: white;
 }
 
-#custList .virtual-flow .mfx-list-cell:hover,
-#custList .virtual-flow .mfx-list-cell:selected {
-	-fx-background-color: rgba(255, 255, 255, 0.3);
+#notifiesList .virtual-flow .mfx-list-cell:hover,
+#notifiesList .virtual-flow .mfx-list-cell:selected {
+	-fx-background-color: -mfx-purple-03;
 }
 
-#custList .virtual-flow .mfx-list-cell .mfx-ripple-generator {
+#notifiesList .virtual-flow .mfx-list-cell .mfx-ripple-generator {
 	-mfx-auto-clip: true;
 }
 
-#custList .virtual-flow .mfx-list-cell:selected .mfx-ripple-generator {
+#notifiesList .virtual-flow .mfx-list-cell:selected .mfx-ripple-generator {
 	-mfx-paused: true;
 }
 
+#dlt {
+	-fx-scale-x: 1;
+	-fx-scale-y: 1;
+	-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 0, 0, 0, 0);
+	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.deleteBtn {
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
+	-fx-border-radius: 3;
+	-fx-text-fill: transparent;
+	-fx-font-family: 'Open Sans SemiBold';
+	-fx-font-size: 14;
+}
+
 .mfx-button {
+	-fx-background-color: -mfx-purple;
+	-fx-border-color: -mfx-purple;
+	-fx-border-radius: 3;
+	-fx-text-fill: white;
+	-fx-font-family: 'Open Sans SemiBold';
+	-fx-font-size: 14;
+}
+
+.additional-info {
 	-fx-background-color: -mfx-purple;
 	-fx-border-color: -mfx-purple;
 	-fx-border-radius: 3;

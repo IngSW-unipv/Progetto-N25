@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.model.notify;
 
+import io.github.palexdev.mfxresources.fonts.MFXFontIcon;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.dao.IDao;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
@@ -147,13 +148,18 @@ public class NotifyDAO implements IDao<Notify> {
 
         if(resultSet == null) throw new RuntimeException("ResultSet is null or empty");
 
+        int i = 0;
+
         List<Notify> notifies = new ArrayList<>();
         while(resultSet.next()){
 
             long id = resultSet.getLong("id");
             Notify notify = get(new Notify(id));
             notifies.add(notify);
+            i++;
         }
+
+
 
         return notifies;
 

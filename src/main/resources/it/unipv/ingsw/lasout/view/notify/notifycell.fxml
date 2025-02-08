@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.mfxresources.fonts.MFXFontIcon?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane alignment="TOP_LEFT" maxWidth="-Infinity" minHeight="150" stylesheets="@../../css/ListViews.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <opaqueInsets>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </opaqueInsets>
+   <children>
+      <VBox maxWidth="1.7976931348623157E308" spacing="20.0">
+         <padding>
+            <Insets bottom="8.0" left="8.0" right="8.0" top="16.0" />
+         </padding>
+         <children>
+            <HBox fx:id="information" maxWidth="1.7976931348623157E308" />
+            <Label fx:id="text" maxWidth="1.7976931348623157E308" style="-fx-font-size: 14;" styleClass="white" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." wrapText="true" />
+            <HBox fx:id="hBox" alignment="BOTTOM_LEFT" spacing="35.0">
+               <children>
+                  <MFXFontIcon fx:id="dlt" description="fas-trash" onMouseClicked="#delete" size="20" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      
+   </children>
+</StackPane>

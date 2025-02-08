@@ -1,9 +1,8 @@
 package it.unipv.ingsw.lasout.model.notify.action;
 
-import it.unipv.ingsw.lasout.database.DBQuery;
-import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.notify.Notify;
-import it.unipv.ingsw.lasout.model.notify.NotifyDAO;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 
 public class EmptyNotifyAction implements INotifyAction{
 
@@ -15,7 +14,12 @@ public class EmptyNotifyAction implements INotifyAction{
     }
 
     @Override
-    public void build() {
+    public void build(HBox information, HBox box) {
+
+        Label label =  new Label("Notifica di sistema");
+        label.getStyleClass().add("additiona-info");
+        label.applyCss();
+        information.getChildren().add(label);
 
     }
 

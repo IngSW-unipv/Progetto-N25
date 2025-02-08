@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<GridPane alignment="CENTER" hgap="20.0" styleClass="grid-pane" stylesheets="@it/unipv/ingsw/lasout/css/Buttons.css" vgap="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane alignment="CENTER" hgap="20.0" styleClass="grid-pane" stylesheets="@../css/Buttons.css" vgap="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints halignment="CENTER" />
         <ColumnConstraints halignment="CENTER" />

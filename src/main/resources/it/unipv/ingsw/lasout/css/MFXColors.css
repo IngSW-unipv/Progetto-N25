@@ -26,6 +26,8 @@
 	-mfx-red: #EF6E6B;
 	-mfx-yellow: #FFEA00;
 
+	-mfx-purple-03: rgba(122,14,217, 0.3);
+	-mfx-pink-01: rgb(225,108,212);
 
 	-mfx-text-he: rgba(0, 0, 0, 0.87); /* High Emphasis */
 	-mfx-text-me: rgba(0, 0, 0, 0.60); /* Medium Emphasis*/

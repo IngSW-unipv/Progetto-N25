@@ -1,6 +1,7 @@
 package it.unipv.ingsw.lasout.model.notify.action;
 
 import it.unipv.ingsw.lasout.model.notify.Notify;
+import javafx.scene.layout.HBox;
 
 public class SendMoneyNotifyAction implements INotifyAction{
 
@@ -13,7 +14,7 @@ public class SendMoneyNotifyAction implements INotifyAction{
     }
 
     @Override
-    public void build() {
+    public void build(HBox hBox, HBox box) {
 
     }
 

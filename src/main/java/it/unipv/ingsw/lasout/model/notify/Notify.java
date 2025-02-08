@@ -16,6 +16,10 @@ public class Notify {
     public Notify(Long id) {
         this.id = id;
     }
+    public Notify(Long id, String description) {
+        this.id = id;
+        this.description = description;
+    }
 
 
     public long getUserID(){

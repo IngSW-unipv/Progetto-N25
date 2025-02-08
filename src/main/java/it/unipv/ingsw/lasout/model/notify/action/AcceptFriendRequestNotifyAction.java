@@ -1,12 +1,14 @@
 package it.unipv.ingsw.lasout.model.notify.action;
 
+import io.github.palexdev.materialfx.controls.MFXButton;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 
-import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 
 public class AcceptFriendRequestNotifyAction implements INotifyAction {
@@ -42,7 +44,23 @@ public class AcceptFriendRequestNotifyAction implements INotifyAction {
     }
 
     @Override
-    public void build() {
+    public void build(HBox information, HBox footer) {
+
+
+        if(information == null) return;
+
+        Label label =  new Label("Richiesta di amicizia da: "  +from.getUsername());
+        label.getStyleClass().add("additiona-info");
+        label.applyCss();
+        information.getChildren().add(label);
+
+
+        if(footer == null) return;
+
+
+        MFXButton accetta  = new MFXButton("Accetta");
+        MFXButton rifiuta  = new MFXButton("Rifiuta");
+        footer.getChildren().addAll(accetta,  rifiuta);
 
     }
 
