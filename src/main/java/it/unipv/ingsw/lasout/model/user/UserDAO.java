@@ -74,7 +74,7 @@ public class UserDAO implements IDao<User> {
      * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente del quale si vogliono i dati
      */
     @Override
-    public User getRaw(User user) throws Exception {
+    public User getRaw(User user) throws SQLException, UserNotFoundException{
 
         //creazione della query di ricerca nel DB di tipo "DBQuery"
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER, user.getId());
@@ -85,7 +85,7 @@ public class UserDAO implements IDao<User> {
         //prendo il risultato della query
         ResultSet rS = querySelect.getResultSet();
         //controllo il risultato della query (faccio ".next()" perché senò punterei a una cella inesistente)
-        if(rS == null || !rS.next()) throw new UserNotFoundException("With this id:"+user.getId());
+        if(rS == null || !rS.next()) throw new UserNotFoundException(" with this id:"+user.getId());
 
         //creo l'oggetto da ritornare
         User rawUserWithAllPrimaryInformation = new User();
@@ -108,7 +108,7 @@ public class UserDAO implements IDao<User> {
      * @throws Exception
      */
     @Override
-    public User get(User user) throws Exception {
+    public User get(User user) throws SQLException, UserNotFoundException, Exception {
         User savedUser = getRaw(user);
 
         List<Group> groups = groupsOfUser(user);
@@ -237,7 +237,7 @@ public class UserDAO implements IDao<User> {
      * @return
      * @throws Exception
      */
-    public List<Group> groupsOfUser(User user) throws Exception {
+    public List<Group> groupsOfUser(User user) throws SQLException, UserNotFoundException, Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_GROUPS_OF_A_USER, user.getId());
 
         List<Group> groups = new ArrayList<>();
@@ -278,7 +278,7 @@ public class UserDAO implements IDao<User> {
         //prendo il risultato della query
         ResultSet rS = querySelect.getResultSet();
         //controllo il risultato della query
-        if(rS == null || !rS.next()) throw new UserNotFoundException(""+user.getId()+" "+user.getUsername());
+        if(rS == null || !rS.next()) throw new UserNotFoundException(user.getId()+" "+user.getUsername());
 
         //se invece è stato trovato salvo l'id dell'utente appena trovato in un utente fittizio
         User fictitiousUser = new User(rS.getInt("id"));

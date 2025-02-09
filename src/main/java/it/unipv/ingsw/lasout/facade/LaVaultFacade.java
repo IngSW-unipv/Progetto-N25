@@ -2,19 +2,35 @@ package it.unipv.ingsw.lasout.facade;
 
 import it.unipv.ingsw.lasout.facade.friend.FriendFacade;
 import it.unipv.ingsw.lasout.facade.notify.NotifyFacade;
+import it.unipv.ingsw.lasout.facade.user.ISessionFacade;
+import it.unipv.ingsw.lasout.facade.user.IUserFacade;
 
+import java.io.IOException;
 import java.util.Properties;
 
 public class LaVaultFacade {
 
+    private static final LaVaultFacade INSTANCE = new LaVaultFacade();
+    public static LaVaultFacade getInstance() {
+        return INSTANCE;
+    }
 
+    private IUserFacade userFacade;
+    private ISessionFacade sessionFacade;
     private FriendFacade friendFacade;
     private NotifyFacade notifyFacade;
 
-    private LaVaultFacade() throws Exception {
+    private LaVaultFacade() {
 
-        this.notifyFacade = (NotifyFacade) loadClass("notify").getDeclaredConstructor().newInstance();
-        this.friendFacade = (FriendFacade) loadClass("friend").getDeclaredConstructor().newInstance();
+        try{
+            this.notifyFacade = (NotifyFacade) loadClass("notify").getDeclaredConstructor().newInstance();
+            this.friendFacade = (FriendFacade) loadClass("friend").getDeclaredConstructor().newInstance();
+            this.sessionFacade = (ISessionFacade) loadClass("session").getDeclaredConstructor().newInstance();
+            this.userFacade = (IUserFacade) loadClass("user").getDeclaredConstructor().newInstance();
+        }catch (Exception e){
+
+        }
+
     }
 
     private Class<?> loadClass(String propertyName) throws Exception {
@@ -30,5 +46,13 @@ public class LaVaultFacade {
 
     public NotifyFacade getNotifyFacade() {
         return notifyFacade;
+    }
+
+    public ISessionFacade getSessionFacade() {
+        return sessionFacade;
+    }
+
+    public IUserFacade getUserFacade() {
+        return userFacade;
     }
 }

@@ -41,4 +41,4 @@ src/main/resources/app.properties
 ### Davide's main ###
 src/main/java/it/unipv/ingsw/lasout/mains
 ### Dema's main ###
-src/main/java/it/unipv/ingsw/lasout/model/user/main
+src/main/java/it/unipv/ingsw/lasout/main
