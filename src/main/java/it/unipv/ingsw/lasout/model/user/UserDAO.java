@@ -8,6 +8,7 @@ import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.notify.NotifyDAO;
+import it.unipv.ingsw.lasout.model.user.exception.UserAlreadyExistException;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 
 import java.sql.ResultSet;
@@ -67,9 +68,10 @@ public class UserDAO implements IDao<User> {
 
     /**
      * Metodo che prende solo i dati elementari dell'utente che mi interessa passando dal suo id
-     * @param user oggetto contenente il solo identificatore dell'entità
-     * @return
-     * @throws Exception
+     * @param user oggetto utente di cui mi interessa solamente il suo id
+     * @return un utente con i suoi soli dati elementari ()
+     * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
+     * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente del quale si vogliono i dati
      */
     @Override
     public User getRaw(User user) throws Exception {
@@ -120,10 +122,10 @@ public class UserDAO implements IDao<User> {
     /**
      * Metodo che restituisce tutti gli utenti presenti nel DB
      * @return Un arraylist di tutti gli user presenti nella tabella user nel database
-     * @throws Exception Errore nel esequzione della query SQL
+     * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
      */
     @Override
-    public ArrayList<User> getAll() throws Exception {
+    public ArrayList<User> getAll() throws SQLException {
         //creazione della query di ricerca nel DB di tipo "DBQuery"
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_EVERY_USER);
 
@@ -155,12 +157,13 @@ public class UserDAO implements IDao<User> {
 
 
     /**
-     * Metodo che aggiunge un nuovo utente al DB
-     * @param user dean di un utente che si vuole aggiungere(registrare) nel database se non è presente
-     * @throws Exception errore nella esecuzione della query
+     * Metodo che aggiunge un nuovo utente al Database tenendo conto dell'opzione "update" che avrà id=0
+     * @param user oggetto da salvare, con tutte le sue informazioni
+     * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
+     * @throws UserAlreadyExistException eccezione nel caso in cui la query abbia già trovato l'utente con uguali credenziali
      */
     @Override
-    public void save(User user) throws Exception {
+    public void save(User user) throws SQLException, UserAlreadyExistException {
         DBQuery queryInsert;
 
         if(user.getId()!=0){
@@ -172,14 +175,21 @@ public class UserDAO implements IDao<User> {
         DatabaseUtil.getInstance().executeQuery(queryInsert);
         ResultSet rS = queryInsert.getResultSet();
 
-        if(rS!=null)throw new Exception();
+        if(rS!=null)throw new UserAlreadyExistException(user.getUsername());
 
         queryInsert.close();
     }
 
 
+    /**
+     * Metodo di update fatto unendo i 2 metodi di delete e save dello user per semplicità
+     * @param user utente del quale voglio modificare la password
+     * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
+     * @throws UserNotFoundException eccezione nel caso in cui la query del metodo "delete" non trovi l'account dell'utente che si vuole eliminare
+     * @throws UserAlreadyExistException eccezione nel caso in cui la query del metodo "save" abbia già trovato l'utente con uguali credenziali
+     */
     @Override
-    public void update(User user) throws Exception {
+    public void update(User user) throws SQLException, UserNotFoundException, UserAlreadyExistException {
         delete(user);
         save(user);
     }
@@ -187,17 +197,18 @@ public class UserDAO implements IDao<User> {
 
     /**
      * Eliminazione di un utente presente nel dB
-     * @param user dean di un utente che si vuole eliminare nel database se presente
-     * @throws Exception errore nella esecuzione della query o errore nella generazione della chiave
+     * @param user utente del quale voglio eliminare l'account
+     * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
+     * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente che si vuole eliminare
      */
     @Override
-    public void delete(User user) throws Exception {
+    public void delete(User user) throws SQLException, UserNotFoundException {
         DBQuery queryDeleteUser = DatabaseUtil.getInstance().createQuery(QUERY_DELETE_AN_EXISTING_USER, user.getId());
         DatabaseUtil.getInstance().executeQuery(queryDeleteUser);
         ResultSet resultSetDeleteUser = queryDeleteUser.getResultSet();
 
-        //controllare sto if
-        if(resultSetDeleteUser!=null) throw new UserNotFoundException(""+user.getId());
+        //se il resultSet è nullo vuol dire che non ha trovato nessun utente da eliminare con quel'id
+        if(resultSetDeleteUser!=null) throw new UserNotFoundException(user.getUsername());
 
         queryDeleteUser.close();
     }
@@ -254,9 +265,10 @@ public class UserDAO implements IDao<User> {
      * Metodo che fa la query di ricerca sul DB per cercare l'id di un utente che mi viene passato
      * @param user utente che mi viene passato per controllare qual'è il suo id
      * @return fictitiousUser con solamente l'id dell utente con quelle date credenziali
-     * @throws Exception nel caso in cui non venga trovato nessuno user con quelle credenziali
+     * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
+     * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente con le credenziali che ha dato
      */
-    public User userSearchIdBasedOnTheirCredentials(User user) throws Exception {
+    public User userSearchIdBasedOnTheirCredentials(User user) throws SQLException, UserNotFoundException {
         //creazione della query di ricerca nel DB di tipo "DBQuery"
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_CREDENTIALS, user.getUsername(), user.getPassword(), user.getEmail());
 
@@ -266,9 +278,12 @@ public class UserDAO implements IDao<User> {
         //prendo il risultato della query
         ResultSet rS = querySelect.getResultSet();
         //controllo il risultato della query
-        if(rS == null || !rS.next()) throw new UserNotFoundException(" with this id:"+user.getId());
+        if(rS == null || !rS.next()) throw new UserNotFoundException(""+user.getId()+" "+user.getUsername());
 
+        //se invece è stato trovato salvo l'id dell'utente appena trovato in un utente fittizio
         User fictitiousUser = new User(rS.getInt("id"));
+
+        //se volessi restituire tutte le info dell'utente userei questo qua sotto:
         //User fictitiousUser = get(new User(rS.getInt("id")));
 
         querySelect.close();
