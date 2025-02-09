@@ -51,7 +51,7 @@ public class ListViewsController implements Initializable {
 
 
         try {
-            notifies.addAll(NotifyDAO.getInstance().notifiesOf(new User(TempSession.INSTANCE.getLoggedUser().getId())));
+            notifies.addAll(NotifyDAO.getInstance().notifiesOf(new User(1)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
