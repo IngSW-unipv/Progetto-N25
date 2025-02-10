@@ -29,6 +29,7 @@ public class VirtualVaultFacade {
         try{
             //Controllo se uno user è loggato
             if(LaVaultFacade.getInstance().getSessionFacade().isLogged()){
+
                 VirtualVaultDAO.getInstance().save(virtualVault);
             }
         } catch (Exception e){
@@ -83,18 +84,19 @@ public class VirtualVaultFacade {
         }
 
         VirtualVault v = new VirtualVault();;
-        VirtualVault v2 = new VirtualVault();;
+        //VirtualVault v2 = new VirtualVault();;
         //Prova con user
-        User user = new User("cla", "miao", "bbb@ubuntumail.com");
+        User user = new User("cla", "miao", "bbb@gmail.com");
         LaVaultFacade.getInstance().getSessionFacade().login(user);
-        System.out.println("It's logged in"+LaVaultFacade.getInstance().getSessionFacade().isLogged());
+        System.out.println("It's logged in "+LaVaultFacade.getInstance().getSessionFacade().isLogged());
+        //System.out.println("questo è il mio id "+LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().getId());
 
-          v.setOwner(new User(3));
-          v.setID(3);
-          v.setBalance(2);
-//        v2.setOwner(new User(5));
-//        v2.setID(5);
-//        v2.setBalance(2000);
+        v.setName("IL PRIMO");
+        v.setOwner(new User(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().getId()));
+        v.setBalance(2000);
+//       v2.setOwner(new User(5));
+//       v2.setID(5);
+//       v2.setBalance(2000);
 
 
 
