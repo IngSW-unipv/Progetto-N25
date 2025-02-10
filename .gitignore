@@ -38,7 +38,11 @@ build/
 .DS_Store
 
 src/main/resources/app.properties
-### Davide's main ###
 src/main/java/it/unipv/ingsw/lasout/mains
+
+.gitignore
+src/main/java/it/unipv/ingsw/lasout/SuperMain.java
+
+/src/main/java/it/unipv/ingsw/lasout/testdada/
 ### Dema's main ###
 src/main/java/it/unipv/ingsw/lasout/main

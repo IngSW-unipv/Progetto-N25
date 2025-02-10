@@ -21,19 +21,6 @@ import java.util.logging.Logger;
 
 public class NotifyDAO implements IDao<Notify> {
 
-    private static final Logger LOGGER = Logger.getLogger(NotifyDAO.class.getName());
-    private static final NotifyDAO INSTANCE = new NotifyDAO();
-    public static NotifyDAO getInstance() {
-        return INSTANCE;
-    }
-
-    private final Map<String, Class<?>> classes = new HashMap<>();
-
-    private NotifyDAO() {
-
-        populateMap();
-
-    }
 
     private static final String QUERY_GET_RAW_NOTIFY_1 =
             "SELECT *" +
@@ -56,6 +43,21 @@ public class NotifyDAO implements IDao<Notify> {
                     "FROM \\'notify\\' " +
                     "WHERE user_id = ?;";
 
+
+
+    private static final Logger LOGGER = Logger.getLogger(NotifyDAO.class.getName());
+    private static final NotifyDAO INSTANCE = new NotifyDAO();
+    public static NotifyDAO getInstance() {
+        return INSTANCE;
+    }
+
+    private final Map<String, Class<?>> classes = new HashMap<>();
+
+    private NotifyDAO() {
+
+        populateMap();
+
+    }
 
 
     private void populateMap(){

@@ -16,4 +16,6 @@ module it.unipv.ingsw.lasout {
     opens it.unipv.ingsw.lasout.controller to javafx.fxml;
     exports it.unipv.ingsw.lasout.controller.notify;
     opens it.unipv.ingsw.lasout.controller.notify to javafx.fxml;
+    opens it.unipv.ingsw.lasout.controller.home to javafx.fxml;
+    exports it.unipv.ingsw.lasout.testdada;
 }

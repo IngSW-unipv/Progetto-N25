@@ -27,11 +27,13 @@
 	-mfx-yellow: #FFEA00;
 
 	-mfx-purple-03: rgba(122,14,217, 0.3);
+	-mfx-purple-001: rgba(122,14,217, 0.05);
 	-mfx-pink-01: rgb(225,108,212);
 
-	-mfx-text-he: rgba(0, 0, 0, 0.87); /* High Emphasis */
-	-mfx-text-me: rgba(0, 0, 0, 0.60); /* Medium Emphasis*/
-	-mfx-text-disabled: rgba(0, 0, 0, 0.38); /* Disabled */
+	-mfx-text-he: rgba(0, 0, 0, 0.87);
+	-mfx-text-me: rgba(0, 0, 0, 0.60);
+	-mfx-text-disabled: rgba(0, 0, 0, 0.38);
+
 
 	-common-gradient: linear-gradient(to right bottom, #c4008b, #d00085, #dc007f, #e60b79, #ef1872, #f5276b, #fa3564, #fe415e, #ff5158, #ff5f52, #ff6c4e, #ff794b);
 	-secondary-gradient: linear-gradient(to right bottom, #1ec400, #00bd3a, #00b654, #00ae67, #00a574, #00a280, #009e8a, #009a91, #009b9d, #009ba8, #009bb2, #009abb);

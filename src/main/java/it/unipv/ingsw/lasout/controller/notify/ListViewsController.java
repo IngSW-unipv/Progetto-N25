@@ -2,6 +2,7 @@ package it.unipv.ingsw.lasout.controller.notify;
 
 import io.github.palexdev.materialfx.controls.MFXListView;
 import io.github.palexdev.materialfx.utils.others.FunctionalStringConverter;
+import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.notify.NotifyDAO;
 import it.unipv.ingsw.lasout.model.user.User;
@@ -23,11 +24,13 @@ public class ListViewsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+
         ObservableList<Notify> notifies = FXCollections.observableArrayList();
 
 
         try {
-            notifies.addAll(NotifyDAO.getInstance().notifiesOf(new User(1)));
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
