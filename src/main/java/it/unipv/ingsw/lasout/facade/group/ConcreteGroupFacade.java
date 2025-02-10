@@ -1,6 +1,8 @@
 package it.unipv.ingsw.lasout.facade.group;
 
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.facade.LaVaultFacade;
+import it.unipv.ingsw.lasout.facade.exception.ExecutorNotAdminException;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
 import it.unipv.ingsw.lasout.model.group.spesa.Spesa;
@@ -15,8 +17,11 @@ import java.util.logging.Logger;
 
 public class ConcreteGroupFacade implements GroupFacade {
 
-    private ConcreteGroupFacade() {}
+    private ConcreteGroupFacade() {
+    }
+
     private static ConcreteGroupFacade instance;
+
     public static ConcreteGroupFacade getInstance() {
         if (instance == null) {
             instance = new ConcreteGroupFacade();
@@ -68,12 +73,15 @@ public class ConcreteGroupFacade implements GroupFacade {
     @Override
     public boolean removeUserFromGroup(Group group, List<User> userList) {
 
+        if (!group.isAdmin(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser())) return false;
         Group g;
 
         try {
+            if (!group.isAdmin(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser()))
+                throw new ExecutorNotAdminException("removeUserFromGroup list must be admin");
             g = getGroup(group);
             for (User u : userList) {
-                if (!g.isAdmin(u)){
+                if (!g.isAdmin(u)) {
                     g.deleteMember(u);
                 }
             }
@@ -87,9 +95,10 @@ public class ConcreteGroupFacade implements GroupFacade {
 
     @Override
     public boolean removeUserFromGroup(Group group, User user) {
-
         Group g;
         try {
+            if (!group.isAdmin(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser()))
+                throw new ExecutorNotAdminException("removeUserFromGroup must be admin");
             g = getGroup(group);
             if (!g.isAdmin(user)) {
                 g.deleteMember(user);
@@ -103,9 +112,10 @@ public class ConcreteGroupFacade implements GroupFacade {
 
     @Override
     public boolean addUserToGroup(Group group, User user) {
-
         Group g;
         try {
+            if (!group.isAdmin(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser()))
+                throw new ExecutorNotAdminException("addUserToGroup must be admin");
             g = getGroup(group);
             g.addMember(user);
             editGroup(g);
@@ -117,22 +127,27 @@ public class ConcreteGroupFacade implements GroupFacade {
 
     @Override
     public boolean leaveGroup(Group group, User user) {
-
         Group g = getGroup(group);
+        if (g == null) return false;
         if (g.isAdmin(user)) return false;
-
         return removeUserFromGroup(g, user);
+    }
 
+    @Override
+    public boolean leaveGroup(Group group) {
+        Group g = getGroup(group);
+        if (g == null) return false;
+        User user = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
+        if (g.isAdmin(user)) return false;
+        return removeUserFromGroup(g, user);
     }
 
     @Override
     public boolean addSpesaToGroup(Group group, Spesa spesa) {
         try {
-
             Group g = getGroup(group);
             g.addSpesa(spesa);
             editGroup(g);
-
         } catch (Exception e) {
             return false;
         }
@@ -156,8 +171,8 @@ public class ConcreteGroupFacade implements GroupFacade {
         List<Spesa> listaSpese = new ArrayList<Spesa>();
         try {
             Group g = getGroup(group);
-            listaSpese=g.getSpese();
-        }catch (Exception e){
+            listaSpese = g.getSpese();
+        } catch (Exception e) {
             return null;
         }
         return listaSpese;
@@ -165,7 +180,8 @@ public class ConcreteGroupFacade implements GroupFacade {
 
 
     private static final Logger LOGGER = Logger.getLogger(ConcreteGroupFacade.class.getName());
-    public static void main(String []args) throws Exception {
+
+    public static void main(String[] args) throws Exception {
 
         try {
             DatabaseUtil.getInstance().prepare();
@@ -176,7 +192,7 @@ public class ConcreteGroupFacade implements GroupFacade {
             return;
         }
 
-        List<User> userList=new ArrayList<>();
+        List<User> userList = new ArrayList<>();
 
         userList.add(UserDAO.getInstance().get(new User(1)));
         userList.add(UserDAO.getInstance().get(new User(2)));
@@ -192,14 +208,13 @@ public class ConcreteGroupFacade implements GroupFacade {
 
         //System.out.println(ConcreteGroupFacade.getInstance().deleteGroup(new Group(7)));
 
-        System.out.println(ConcreteGroupFacade.getInstance().addSpesaToGroup(new Group(7), new Spesa(new User(1), new Group(7),600,"prova")));
-        System.out.println(ConcreteGroupFacade.getInstance().addSpesaToGroup(new Group(7), new Spesa(new User(2), new Group(7),200,"prova2")));
+        System.out.println(ConcreteGroupFacade.getInstance().addSpesaToGroup(new Group(7), new Spesa(new User(1), new Group(7), 600, "prova")));
+        System.out.println(ConcreteGroupFacade.getInstance().addSpesaToGroup(new Group(7), new Spesa(new User(2), new Group(7), 200, "prova2")));
 
         System.out.println(ConcreteGroupFacade.getInstance().leaveGroup(new Group(7), new User(2)));
-        System.out.println(ConcreteGroupFacade.getInstance().addSpesaToGroup(new Group(7), new Spesa(new User(3), new Group(7),100,"prova2")));
+        System.out.println(ConcreteGroupFacade.getInstance().addSpesaToGroup(new Group(7), new Spesa(new User(3), new Group(7), 100, "prova2")));
 
         System.out.println(ConcreteGroupFacade.getInstance().remuveSpesaFromGroup(new Group(7), new Spesa(4)));
-
 
 
 //        List<User> userList=new ArrayList<>();
@@ -211,7 +226,6 @@ public class ConcreteGroupFacade implements GroupFacade {
 //        System.out.println(ConcreteGroupFacade.getInstance().removeUserFromGroup(new Group(1), userList));
 //        //ConcreteGroupFacade.getInstance().addUserToGroup(new Group(1), new User(3));
 //        //System.out.println(ConcreteGroupFacade.getInstance().leaveGroup(new Group(1), new User(3)));
-
 
 
     }

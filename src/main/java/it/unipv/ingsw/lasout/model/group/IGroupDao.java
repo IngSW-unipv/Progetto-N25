@@ -8,7 +8,9 @@ import java.util.List;
 public interface IGroupDao extends IDao<Group> {
 
     List<User> members(Group group) throws Exception;
+
     void deleteAssociation(Group group) throws Exception;
+
     void saveAssociation(Group group) throws Exception;
 
 }
