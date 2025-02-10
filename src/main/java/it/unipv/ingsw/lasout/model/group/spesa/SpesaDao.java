@@ -38,12 +38,10 @@ public class SpesaDao implements ISpesaDao{
     @Override
     public Spesa get(Spesa spesa) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(GET_SPESA_FROMID, spesa.getId());
-
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
 
         if(!rs.next()) throw new Exception();
-
         Spesa s = new Spesa();
         s.setId(rs.getInt(1));
         s.setEsecutore(new User(rs.getInt(2)));
@@ -84,7 +82,6 @@ public class SpesaDao implements ISpesaDao{
     @Override
     public void delete(Spesa spesa) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELATE_SPESA_FORM_ID, spesa.getId());
-
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
 

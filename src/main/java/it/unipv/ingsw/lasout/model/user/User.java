@@ -136,6 +136,10 @@ public class User {
         this.notifies = notifies;
     }
 
+    public boolean equals(User user) {
+        return this.id==user.getId();
+    }
+
     @Override
     public String toString() {
         return "User{" +

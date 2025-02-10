@@ -137,7 +137,6 @@ public class GroupDao implements IGroupDao{
      */
     @Override
     public void save(Group group) throws Exception {
-
         DBQuery query;
         if(group.getId()!=0){
             //usa l'id del carry (praticmante
@@ -151,10 +150,8 @@ public class GroupDao implements IGroupDao{
 
         if(rs!=null)throw new CantSaveException("Group not saved");
         if(group.getId()==0) group.setId(query.getKey());
-
         //INSERT nella tabella usergroup
         saveAssociation(group);
-
         for(int i=0; group.getSpese().size()>i;i++){
             SpesaDao.getInstance().save(group.getSpese().get(i));
             System.out.println("passo"+i);
@@ -169,10 +166,8 @@ public class GroupDao implements IGroupDao{
      */
     @Override
     public void update(Group group) throws Exception {
-
         delete(group);
         save(group);
-
     }
 
     /**
@@ -184,12 +179,10 @@ public class GroupDao implements IGroupDao{
     @Override
     public void delete(Group group) throws CantDeleteException, SQLException {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELATE_GROUP_FROM_ID, group.getId());
-
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
 
         if(rs!=null)throw new CantDeleteException("Group not deleted");
-
         deleteAssociation(group);
         query.close();
     }
@@ -251,9 +244,5 @@ public class GroupDao implements IGroupDao{
         }
         if(query!=null) query.close();
     }
-
-
-
-
 }
 

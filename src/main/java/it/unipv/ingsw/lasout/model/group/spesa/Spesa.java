@@ -73,6 +73,10 @@ public class Spesa {
         this.group = group;
     }
 
+    public boolean equals(Spesa spesa) {
+        return this.id == spesa.id;
+    }
+
     @Override
     public String toString() {
         return "Spesa{" +

@@ -60,7 +60,7 @@ public class Group {
     public void setId(long id) {this.id = id;}
 
     public void deleteMember(User user){
-        members.removeIf(member -> member.getId() == user.getId() && member.getId() != admin.getId());
+        members.removeIf(member -> member.equals(user) && !isAdmin(member));
     }
 
     public void addMember(User user){
@@ -72,12 +72,11 @@ public class Group {
     }
 
     public void deleteSpesa(Spesa spesa){
-        spese.removeIf(spese -> spese.getId() == spesa.getId());
+        spese.removeIf(spese -> spese.equals(spesa));
     }
 
-
     public boolean isAdmin(User user){
-        return admin.getId() == user.getId();
+        return admin.equals(user);
     }
 
     @Override

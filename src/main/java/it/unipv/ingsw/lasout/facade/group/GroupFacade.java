@@ -70,6 +70,13 @@ public interface GroupFacade {
     boolean leaveGroup(Group group, User user);
 
     /**
+     * permette di lasciare un gruppo del utente della sessione
+     * @param group carry con l'id del gruppo che si vuole lasciare
+     * @return confemra di successo
+     */
+    boolean leaveGroup(Group group);
+
+    /**
      * Permette di aggiungere una spesa di gruppo alla lista delle sepse di un gruppo
      * @param group carry con l'id del gruppo a cui si vuole aggiungere la spesa
      * @param spesa pojo della sepsa che si vuole aggiungiere

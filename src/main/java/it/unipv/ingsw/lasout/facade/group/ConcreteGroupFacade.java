@@ -1,8 +1,11 @@
 package it.unipv.ingsw.lasout.facade.group;
 
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.facade.LaVaultFacade;
+import it.unipv.ingsw.lasout.facade.exception.ExecutorNotAdminException;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
+import it.unipv.ingsw.lasout.model.group.exception.CantDeleteException;
 import it.unipv.ingsw.lasout.model.group.spesa.Spesa;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
@@ -68,9 +71,11 @@ public class ConcreteGroupFacade implements GroupFacade {
     @Override
     public boolean removeUserFromGroup(Group group, List<User> userList) {
 
+        if(!group.isAdmin(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser())) return false;
         Group g;
 
         try {
+            if(!group.isAdmin(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser())) throw new ExecutorNotAdminException("removeUserFromGroup list must be admin");
             g = getGroup(group);
             for (User u : userList) {
                 if (!g.isAdmin(u)){
@@ -87,9 +92,9 @@ public class ConcreteGroupFacade implements GroupFacade {
 
     @Override
     public boolean removeUserFromGroup(Group group, User user) {
-
         Group g;
         try {
+            if(!group.isAdmin(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser())) throw new ExecutorNotAdminException("removeUserFromGroup must be admin");
             g = getGroup(group);
             if (!g.isAdmin(user)) {
                 g.deleteMember(user);
@@ -103,13 +108,13 @@ public class ConcreteGroupFacade implements GroupFacade {
 
     @Override
     public boolean addUserToGroup(Group group, User user) {
-
         Group g;
         try {
+            if(!group.isAdmin(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser())) throw new ExecutorNotAdminException("addUserToGroup must be admin");
             g = getGroup(group);
             g.addMember(user);
             editGroup(g);
-        } catch (Exception e) {
+        } catch (Exception e){
             return false;
         }
         return true;
@@ -117,22 +122,27 @@ public class ConcreteGroupFacade implements GroupFacade {
 
     @Override
     public boolean leaveGroup(Group group, User user) {
-
-        Group g = getGroup(group);
+        Group g =getGroup(group);
+        if(g==null) return false;
         if (g.isAdmin(user)) return false;
-
         return removeUserFromGroup(g, user);
+    }
 
+    @Override
+    public boolean leaveGroup(Group group) {
+        Group g = getGroup(group);
+        if(g==null) return false;
+        User user = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
+        if (g.isAdmin(user)) return false;
+        return removeUserFromGroup(g, user);
     }
 
     @Override
     public boolean addSpesaToGroup(Group group, Spesa spesa) {
         try {
-
             Group g = getGroup(group);
             g.addSpesa(spesa);
             editGroup(g);
-
         } catch (Exception e) {
             return false;
         }
