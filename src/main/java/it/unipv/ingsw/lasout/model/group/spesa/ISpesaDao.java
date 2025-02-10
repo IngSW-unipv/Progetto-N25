@@ -8,6 +8,7 @@ import java.util.List;
 public interface ISpesaDao extends IDao<Spesa> {
 
     List<Spesa> getGroupSpese(Group group) throws Exception;
+
     static SpesaDao getIstance() {
         return null;
     }
