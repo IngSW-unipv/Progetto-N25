@@ -163,13 +163,18 @@ public class CashbookDAO implements ICashbookDAO {
     }
 
     /**
-     * Update dei dati riguardanti un cashbook con conseguente modifica delle relazioni ad esso collegate
-     * @param cashbook carrier contentente solo l'id del cashbook da aggiornare
-     * @throws Exception errore nell'esecuzione della query sql
+     * Codice che implementa l'aggiunta della relazione N a N nel database
      */
-    public void update(Cashbook cashbook) throws Exception {
-        delete(cashbook);
-        save(cashbook);
+    private void saveAssociation(Cashbook cashbook) throws Exception {
+        DBQuery query = null;
+        for(Transaction t : cashbook.getTransactionList()){
+            query = DatabaseUtil.getInstance().createQuery(INSERT_IN_CASHBOOKTRANSACTIONS, cashbook.getId(), t.getId());
+            DatabaseUtil.getInstance().executeQuery(query);
+            ResultSet rs = query.getResultSet();
+
+            if(rs!=null)throw new Exception();
+        }
+        if(query!=null) query.close();
     }
 
 
@@ -205,18 +210,13 @@ public class CashbookDAO implements ICashbookDAO {
     }
 
     /**
-     * Codice che implementa l'aggiunta della relazione N a N nel database
+     * Update dei dati riguardanti un cashbook con conseguente modifica delle relazioni ad esso collegate
+     * @param cashbook carrier contentente solo l'id del cashbook da aggiornare
+     * @throws Exception errore nell'esecuzione della query sql
      */
-    private void saveAssociation(Cashbook cashbook) throws Exception {
-        DBQuery query = null;
-        for(Transaction t : cashbook.getTransactionList()){
-            query = DatabaseUtil.getInstance().createQuery(INSERT_IN_CASHBOOKTRANSACTIONS, t.getId(), cashbook.getId());
-            DatabaseUtil.getInstance().executeQuery(query);
-            ResultSet rs = query.getResultSet();
-
-            if(rs!=null)throw new Exception();
-        }
-        if(query!=null) query.close();
+    public void update(Cashbook cashbook) throws Exception {
+        delete(cashbook);
+        save(cashbook);
     }
 
 }
