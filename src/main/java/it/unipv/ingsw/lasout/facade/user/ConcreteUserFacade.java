@@ -8,9 +8,6 @@ import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 import java.sql.SQLException;
 
 public class ConcreteUserFacade implements IUserFacade {
-    private User loggedUser;
-
-    //createAccount,deleteAccount,updateAccount?
 
     /**
      * Metodo di aggiunta dell'account di un utente al DB
@@ -18,15 +15,21 @@ public class ConcreteUserFacade implements IUserFacade {
      */
     @Override
     public boolean createAccount(User userCarrier) {
-
+        User u= new User();
         try{
             /*
-            cerco che l'utente che mi è stato passato non sia già presente nel DB, almeno lancerà un eccezione
+            faccio questo if perché poi almeno lo user sa se entrare nel metodo di ricerca con
+            username-password oppure email-password (per discriminare le due cose)
+             */
+            if(userCarrier.getUsername()==null && userCarrier.getEmail()!=null) userCarrier.setInsertEmail(true);
+
+            /*
+            cerco che l'utente che mi è stato passato NON sia già presente nel DB, almeno lancerà un eccezione
             di "utente non trovato" che verrà presa dal catch(UserNotFoundException e) e solo dopo esserci entrato
             potrò salvare il nuovo account dell'utente nel DB
              */
-            UserDAO.getInstance().userSearchIdBasedOnTheirCredentials(userCarrier);
-            System.out.println("Utente "+userCarrier.getUsername()+" già presente nel sistema, metti un'altro username!");
+            u = UserDAO.getInstance().userSearchIdBasedOnTheirCredentials(userCarrier);
+            System.out.println("Utente già presente nel sistema, metti un'altro username!");
             return false;
         } catch (SQLException sqlException) {
             System.out.println(sqlException.getMessage());
@@ -56,17 +59,27 @@ public class ConcreteUserFacade implements IUserFacade {
     @Override
     public boolean deleteAccount(User userCarrier) {
         //utente di appoggio che serve a contenere solo l'id dell'utente del quale si vuole eliminare l'account
-        User uId;
+        User u = new User();
 
         try{
-            uId = UserDAO.getInstance().userSearchIdBasedOnTheirCredentials(userCarrier);
+            /*
+            faccio questo if perché poi almeno lo user sa se entrare nel metodo di ricerca con
+            username-password oppure email-password (per discriminare le due cose)
+             */
+            if(userCarrier.getUsername()==null && userCarrier.getEmail()!=null) userCarrier.setInsertEmail(true);
+
+            u = UserDAO.getInstance().userSearchIdBasedOnTheirCredentials(userCarrier);
             if(LaVaultFacade.getInstance().getSessionFacade().isLogged()){
-                UserDAO.getInstance().delete(uId);
+                /*
+                dato che il metodo delete cancella la tupla controllando l'id di un certo user devo andare a prendere l'id
+                dell'utente vero e proprio con le sue credenziali che mi viene passato (userCarrier)
+                 */
+                UserDAO.getInstance().delete(u);
                 LaVaultFacade.getInstance().getSessionFacade().logout();
                 return true;
             }
         }catch (UserNotFoundException e){
-            System.out.println("User not found, impossible to delete this account");
+            System.out.println("Utente non trovato, impossibile eliminare l'account");
             return false;
         }catch (SQLException sqlException){
             System.out.println(sqlException.getMessage());
@@ -85,8 +98,14 @@ public class ConcreteUserFacade implements IUserFacade {
     public boolean updateAccount(User userCarrier, String newPassword){
         User u = new User();
         try{
+            /*
+            faccio questo if perché poi almeno lo user sa se entrare nel metodo di ricerca con
+            username-password oppure email-password (per discriminare le due cose)
+             */
+            if(userCarrier.getUsername()==null && userCarrier.getEmail()!=null) userCarrier.setInsertEmail(true);
+
             //controlla che l'utente sia registrato e restituisce un utenteFittizio col suo id
-            u=UserDAO.getInstance().userSearchIdBasedOnTheirCredentials(userCarrier);
+            u = UserDAO.getInstance().userSearchIdBasedOnTheirCredentials(userCarrier);
             //modifico la password di questo utenti fittizio (quindi ora avrà l'id dell'utente originale e la nuova password)
             u.setPassword(newPassword);
             //System.out.println(u);

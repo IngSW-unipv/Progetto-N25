@@ -8,7 +8,7 @@ public class ConcreteSessionFacade implements ISessionFacade {
     private boolean isLoggedIn;
     private User loggedUser;
 
-    //costruttore con loggedUser presettate a null
+    //costruttore con loggedUser presettate
     public ConcreteSessionFacade() {
         isLoggedIn = false;
         loggedUser = null;
@@ -35,12 +35,19 @@ public class ConcreteSessionFacade implements ISessionFacade {
 
     /**
      * Metodo per il login che prende in ingresso i dati di un utente e tramite "UserDAO":
-     * 1) setta un utente (loggedUser) con solo il suo id
+     * 1) setta un utente (loggedUser) con solo il suo id;
      * 2) modifica la variabile booleana (true se ha loggato correttamente; false (settata di default dal costruttore) negli altri casi)
      * @param userCarrier utente fittizio con le sue credenziali: username, password ed email
      */
+    @Override
     public void login(User userCarrier) {
         try {
+            /*
+            faccio questo if perché poi almeno lo user sa se entrare nel metodo di ricerca con
+            username-password oppure email-password (per discriminare le due cose)
+             */
+            if(userCarrier.getUsername()==null && userCarrier.getEmail()!=null) userCarrier.setInsertEmail(true);
+
             loggedUser = UserDAO.getInstance().userSearchIdBasedOnTheirCredentials(userCarrier);
             isLoggedIn = true;
         } catch (Exception sql) {
@@ -49,8 +56,9 @@ public class ConcreteSessionFacade implements ISessionFacade {
     }
 
     /**
-     * Se l'utente inserito è presente nel db e ha già effettuato il login allora posso fargli fare il logout
+     * Metodo che slogga l'utente inserito se e solo se è presente nel db e ha già effettuato il login allora posso fargli fare il logout
      */
+    @Override
     public void logout() {
         /*
         se l'utente che mi viene passato ha già effettuato il login (passando i vari controlli)
@@ -61,6 +69,7 @@ public class ConcreteSessionFacade implements ISessionFacade {
             loggedUser = null;
         }
         else{
+            isLoggedIn = true;
             System.out.println("User non ha fatto prima il login");
         }
     }
