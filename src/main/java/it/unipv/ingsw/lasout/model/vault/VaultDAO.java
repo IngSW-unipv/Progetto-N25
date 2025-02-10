@@ -18,11 +18,42 @@ public class VaultDAO implements IVaultDAO{
         return INSTANCE;
     }
     
-    private static final String GET_RAW = "SELECT * FROM £virtualvault£ WHERE id = ?;";
-    private static final String GET_ALL_VAULT = "SELECT * FROM £virtualvault£, £vault£ WHERE virtualvault.id = vault.id" ;
-    private static final String INSERT_A_NEW_VAULT = "INSERT INTO £virtualvault£ (id) VALUES (?)";
+    private static final String GET_RAW = "SELECT * FROM \\'virtualvault\\' WHERE id = ?;";
+    private static final String GET_ALL_VAULT_BY_ID = "SELECT vault.id as vaultid FROM \\'virtualvault\\', \\'vault\\' WHERE virtualvault.id = vault.virtualvault_id" ;
+    private static final String GET_ALL_VAULT_BY_NAME = "SELECT DISTINCT vault.id FROM \\'vault\\', \\'virtualvault\\' WHERE virtualvault.nome = 'Vault'";
+    private static final String INSERT_A_NEW_VAULT = "INSERT INTO \\'virtualvault\' (id) VALUES (?)";
     private static final String DELETE_AN_EXISTING_VAULT = "DELETE FROM £virtualvault£ WHERE id = ?";
     
+    
+	public List<Vault> getAllbyName() throws Exception {
+			
+			DBQuery query = DatabaseUtil.getInstance().createQuery(GET_ALL_VAULT_BY_NAME);
+			DatabaseUtil.getInstance().executeQuery(query);
+			
+			ResultSet result = query.getResultSet();
+		
+			List<Vault> vaults = new ArrayList<Vault>();
+			
+			if (result == null) {
+		        System.out.println("Errore: ResultSet è null!");
+		        return vaults; // Restituisco lista vuota
+		    }
+			
+			
+			while (result.next()) {
+		        Vault vault = new Vault();
+	
+		        // DEBUG: Stampo per vedere il valore letto dal DB
+		        int id = result.getInt("id");
+		        
+		        vault.setID(id);
+		        vaults.add(vault);
+		    }
+			
+			query.close();
+		
+			return vaults;
+		}
 
 	@Override
 	public Vault getRaw(Vault oggetto) throws Exception {
@@ -33,13 +64,15 @@ public class VaultDAO implements IVaultDAO{
 		ResultSet result = query.getResultSet();
 		
 		// nel database, l'id messo non corrisponde ad un vault
-		if(result == null) throw new RuntimeException("This is not a vault");
+		if(result == null  || !result.next()) throw new RuntimeException("This is not a vault");
 		
 		// se supera l'eccezione, vuol dire che nel result ho un vault, quindi posso restituirlo
-		
 		Vault vault = new Vault();
 		
 		vault.setID(result.getInt("id"));
+		
+		
+		query.close();
 		
 		return vault;
 		
@@ -54,17 +87,31 @@ public class VaultDAO implements IVaultDAO{
 	@Override
 	public List<Vault> getAll() throws Exception {
 		
-		DBQuery query = DatabaseUtil.getInstance().createQuery(GET_ALL_VAULT);
+		DBQuery query = DatabaseUtil.getInstance().createQuery(GET_ALL_VAULT_BY_ID);
 		DatabaseUtil.getInstance().executeQuery(query);
 		
-		ResultSet result = query.getResultSet();
+		if (query == null) {
+	        throw new RuntimeException("Errore: la query è NULL!");
+	    }
 		
+		ResultSet result = query.getResultSet();
+	
 		List<Vault> vaults = new ArrayList<Vault>();
 		
+		if (result == null) {
+	        System.out.println("Errore: ResultSet è null!");
+	        return vaults; // Restituisco lista vuota
+	    }
+		
 		while (result.next()) {
-			Vault vault = new Vault();
-			vault.setID(result.getInt("id"));
-		}
+	        Vault vault = new Vault();
+
+	        // DEBUG: Stampo per vedere il valore letto dal DB
+	        int id = result.getInt("vaultid");
+	        
+	        vault.setID(id);
+	        vaults.add(vault);
+	    }
 		
 		query.close();
 	
@@ -93,25 +140,16 @@ public class VaultDAO implements IVaultDAO{
 	@Override
 	public void delete(Vault t) throws Exception {
 		
-		DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_AN_EXISTING_VAULT);
+		DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_AN_EXISTING_VAULT,  t.getID());
+		
 		DatabaseUtil.getInstance().executeQuery(query);
 		
 		ResultSet result = query.getResultSet();
 		
+		if(result != null) throw new Exception();
+		
 		query.close();
 		
 	} 
-	private static final Logger LOGGER = Logger.getLogger(VaultDAO.class.getName());
-	public static void main(String []args) throws Exception {
-
-        try {
-            DatabaseUtil.getInstance().prepare();
-            DatabaseUtil.getInstance().initialize();
-        } catch (IOException | SQLException e) {
-            LOGGER.severe("Couldn't initialize database: \n" + e);
-            System.exit(1);
-            return;
-        }
-    }
 
 }

@@ -22,7 +22,7 @@ CREATE TABLE `usergroup`             (user_id INT REFERENCES `user`(id), group_i
 CREATE TABLE `friend`                (user_id INT REFERENCES `user`(id) ON DELETE CASCADE, friend_user_id INT REFERENCES `user`(id) ON DELETE CASCADE, PRIMARY KEY(user_id, friend_user_id));
 CREATE TABLE `notify`                (id INTEGER AUTO_INCREMENT, user_id INT REFERENCES user(id) ON DELETE CASCADE,`description` TEXT NOT NULL, `type` CHAR(100), PRIMARY KEY(id));
 CREATE TABLE `friendnotify`          (id INTEGER , to_user_id INT, from_user_id INT REFERENCES `user`(id) ON DELETE CASCADE, PRIMARY KEY(id, to_user_id), FOREIGN KEY (id) REFERENCES `notify`(id) ON DELETE CASCADE);
-CREATE TABLE `virtualvault`          (id INTEGER AUTO_INCREMENT, name VARCHAR(50) NOT NULL, user_id INT, balance DOUBLE, PRIMARY KEY(id), FOREIGN KEY (user_id) REFERENCES user(id));
+CREATE TABLE `virtualvault`          (id INTEGER AUTO_INCREMENT, nome VARCHAR(10), user_id INT, balance DOUBLE, PRIMARY KEY(id), FOREIGN KEY (user_id) REFERENCES user(id));
 CREATE TABLE `vault`                 (id INTEGER AUTO_INCREMENT, virtualvault_id INTEGER, PRIMARY KEY(id), FOREIGN KEY (virtualvault_id) REFERENCES virtualvault(id));
 CREATE TABLE `creditcard`            (numerocarta VARCHAR(16) NOT NULL, mese INT NOT NULL, anno INT NOT NULL, cvv INT NOT NULL, vault_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id) REFERENCES vault(id));
 CREATE TABLE `paypal`                (numerocarta VARCHAR(16) NOT NULL, vault_id INT, PRIMARY KEY(numerocarta), FOREIGN KEY (vault_id) REFERENCES vault(id));
@@ -92,3 +92,13 @@ INSERT INTO cashbooktransactions (transaction_id, cashbook_id) VALUES
 INSERT INTO spese (user_id, group_id,amount,note) VALUES
     (1,1 , 100, 'prova1'),
     (1,1,50,'prva2');
+    
+
+INSERT INTO virtualvault (nome, user_id, balance) VALUES
+    ('Vault', 1, 200),
+    ('Vacanza', 1, 300),
+    ('Vault', 2, 500);
+    
+INSERT INTO vault (virtualvault_id) VALUES
+	(1),
+    (3);
