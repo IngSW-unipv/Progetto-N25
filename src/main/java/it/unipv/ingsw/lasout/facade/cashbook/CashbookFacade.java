@@ -1,10 +1,12 @@
-package it.unipv.ingsw.lasout.model.cashbook;
+package it.unipv.ingsw.lasout.facade.cashbook;
 
+import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
+import it.unipv.ingsw.lasout.model.cashbook.CashbookDAO;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
 
 import java.util.List;
 
-public class CashbookFacade {
+public class CashbookFacade implements ICashbookFacade {
     private CashbookFacade() {
 
     }
@@ -19,7 +21,7 @@ public class CashbookFacade {
 
     public boolean addTransaction(Cashbook cashbook, Transaction transaction) {
         try{
-            Cashbook c=CashbookDAO.getInstance().get(cashbook);
+            Cashbook c= CashbookDAO.getInstance().get(cashbook);
             List<Transaction> t = c.getTransactionList();
             t.add(transaction);
             c.setTransactionList(t);
