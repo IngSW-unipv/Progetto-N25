@@ -1,15 +1,10 @@
 package it.unipv.ingsw.lasout.model.virtualVault;
 
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
-import it.unipv.ingsw.lasout.model.group.Group;
-import it.unipv.ingsw.lasout.model.group.GroupFacade;
 import it.unipv.ingsw.lasout.model.user.User;
-import it.unipv.ingsw.lasout.model.user.UserDAO;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 public class VirtualVaultFacade {

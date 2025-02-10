@@ -1,8 +1,15 @@
 package it.unipv.ingsw.lasout.model.group;
 
 
+import com.mysql.cj.CancelQueryTask;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.group.exception.CantDeleteException;
+import it.unipv.ingsw.lasout.model.group.exception.CantSaveException;
+import it.unipv.ingsw.lasout.model.group.exception.NoResoultException;
+import it.unipv.ingsw.lasout.model.group.spesa.ISpesaDao;
+import it.unipv.ingsw.lasout.model.group.spesa.Spesa;
+import it.unipv.ingsw.lasout.model.group.spesa.SpesaDao;
 import it.unipv.ingsw.lasout.model.user.User;
 
 import java.io.IOException;
@@ -53,13 +60,12 @@ public class GroupDao implements IGroupDao{
      * @throws Exception non trovato gruppo con l'id inserito
      */
     @Override
-    public Group get(Group fictitiousGroup) throws Exception {
+    public Group get(Group fictitiousGroup) throws NoResoultException, SQLException {
         DBQuery query = DatabaseUtil.getInstance().createQuery(GET_GROUP_FROM_ID, fictitiousGroup.getId());
-
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
 
-        if(!rs.next()) throw new Exception();
+        if(!rs.next()) throw new NoResoultException("no resoult found");
 
         //creazione del pojo
         Group group = new Group();
@@ -67,6 +73,7 @@ public class GroupDao implements IGroupDao{
         group.setName(rs.getString("name"));
         group.setAdmin(new User(rs.getInt("user_id")));
         group.setMembers(members(new Group(rs.getInt("id"))));
+        group.setSpese(SpesaDao.getInstance().getGroupSpese(new Group(rs.getInt("id"))));
 
         query.close();
         return group;
@@ -78,9 +85,8 @@ public class GroupDao implements IGroupDao{
      * @throws Exception Errore nel esecuzione della query o mancata connesioine al db
      */
     @Override
-    public List<Group> getAll() throws Exception {
+    public List<Group> getAll() throws SQLException {
         DBQuery query = DatabaseUtil.getInstance().createQuery(GAT_ALL_GROUP);
-
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
 
@@ -91,6 +97,7 @@ public class GroupDao implements IGroupDao{
             group.setName(rs.getString("name"));
             group.setAdmin(new User(rs.getInt("admin")));
             group.setMembers(members(new Group(rs.getInt("id"))));
+            group.setSpese(ISpesaDao.getIstance().getGroupSpese(new Group(rs.getInt("id"))));
             groups.add(group);
         }
 
@@ -104,13 +111,12 @@ public class GroupDao implements IGroupDao{
      * @return un pojo group contenente solo le informazioni raw
      * @throws Exception Errore nel esecuzione della query o mancata connesioine al db
      */
-    public Group getRaw(Group fictitiousGroup) throws Exception {
+    public Group getRaw(Group fictitiousGroup) throws NoResoultException, SQLException {
         DBQuery query = DatabaseUtil.getInstance().createQuery(GET_GROUP_FROM_ID, fictitiousGroup.getId());
-
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
 
-        if(!rs.next()) throw new Exception();
+        if(!rs.next()) throw new NoResoultException("no resoult found");
         Group group = new Group();
         group.setId(rs.getInt("id"));
         group.setName(rs.getString("name"));
@@ -143,11 +149,16 @@ public class GroupDao implements IGroupDao{
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
 
-        if(rs!=null)throw new Exception();
+        if(rs!=null)throw new CantSaveException("Group not saved");
         if(group.getId()==0) group.setId(query.getKey());
 
         //INSERT nella tabella usergroup
         saveAssociation(group);
+
+        for(int i=0; group.getSpese().size()>i;i++){
+            SpesaDao.getInstance().save(group.getSpese().get(i));
+            System.out.println("passo"+i);
+        }
         query.close();
     }
 
@@ -156,6 +167,7 @@ public class GroupDao implements IGroupDao{
      * @param group pojo con i dati da scrivere sul db con id l'id del gruppo da aggiornare
      * @throws Exception error in sql execute
      */
+    @Override
     public void update(Group group) throws Exception {
 
         delete(group);
@@ -170,17 +182,19 @@ public class GroupDao implements IGroupDao{
      * @throws Exception errore nel esequzione della query sql
      */
     @Override
-    public void delete(Group group) throws Exception {
+    public void delete(Group group) throws CantDeleteException, SQLException {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELATE_GROUP_FROM_ID, group.getId());
 
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
 
-        if(rs!=null)throw new Exception();
+        if(rs!=null)throw new CantDeleteException("Group not deleted");
 
         deleteAssociation(group);
         query.close();
     }
+
+
 
     /**
      * UserGroupDAO: retituisce la lista bi user di un gruppo dalla relazione usergroup (many to many)
@@ -188,9 +202,9 @@ public class GroupDao implements IGroupDao{
      * @return Lista di user con solo il loro id (per evitare ricorsione e loop)
      * @throws Exception Errore nel esecuzione della query sql
      */
-    public List<User> members(Group group) throws Exception{
+    @Override
+    public List<User> members(Group group) throws SQLException{
         DBQuery query = DatabaseUtil.getInstance().createQuery(GET_USER_FROM_USERGROUP, group.getId());
-
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
 
@@ -211,13 +225,13 @@ public class GroupDao implements IGroupDao{
      * @throws Exception errore nel esequzione della query sql
      * Sostituiblie da un delete on cascate
      */
-    public void deleteAssociation(Group group) throws Exception {
+    @Override
+    public void deleteAssociation(Group group) throws CantSaveException, SQLException {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELATE_ASSO_FROM_USERGROUP, group.getId());
-
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
 
-        if(rs!=null)throw new Exception();
+        if(rs!=null)throw new CantDeleteException("can't delete assocation");
         query.close();
     }
 
@@ -226,16 +240,20 @@ public class GroupDao implements IGroupDao{
      * @param group carry con l'id del gruppo e la lista delli user per creare l'associazioni many to many
      * @throws Exception errore nel esequzione della query sql
      */
+    @Override
     public void saveAssociation(Group group) throws Exception {
         DBQuery query = null;
         for(User u : group.getMembers()){
             query = DatabaseUtil.getInstance().createQuery(INSERT_ASSO_FROM_USERGROUP,u.getId(),group.getId());
             DatabaseUtil.getInstance().executeQuery(query);
             ResultSet rs = query.getResultSet();
-
-            if(rs!=null)throw new Exception();
+            if(rs!=null)throw new CantSaveException("can't save association");
         }
         if(query!=null) query.close();
     }
+
+
+
+
 }
 

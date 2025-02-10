@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.model.group;
 
+import it.unipv.ingsw.lasout.model.group.spesa.Spesa;
 import it.unipv.ingsw.lasout.model.user.User;
 
 import java.util.List;
@@ -29,6 +30,8 @@ public class Group {
     }
 
 
+
+
     public List<User> getMembers() {
         return members;
     }
@@ -39,7 +42,6 @@ public class Group {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -47,7 +49,6 @@ public class Group {
     public List<Spesa> getSpese() {
         return spese;
     }
-
     public void setSpese(List<Spesa> spese) {
         this.spese = spese;
     }
@@ -58,12 +59,25 @@ public class Group {
     public long getId() {return id;}
     public void setId(long id) {this.id = id;}
 
-    public void delateMember(User user){
+    public void deleteMember(User user){
         members.removeIf(member -> member.getId() == user.getId() && member.getId() != admin.getId());
     }
 
     public void addMember(User user){
         members.add(user);
+    }
+
+    public void addSpesa(Spesa spesa){
+        spese.add(spesa);
+    }
+
+    public void deleteSpesa(Spesa spesa){
+        spese.removeIf(spese -> spese.getId() == spesa.getId());
+    }
+
+
+    public boolean isAdmin(User user){
+        return admin.getId() == user.getId();
     }
 
     @Override
