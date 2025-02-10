@@ -16,6 +16,6 @@ public interface ISessionFacade {
     User getLoggedUser();
 
 
-    User login(User user);
-    boolean logout();
+    void login(User user);
+    void logout();
 }
