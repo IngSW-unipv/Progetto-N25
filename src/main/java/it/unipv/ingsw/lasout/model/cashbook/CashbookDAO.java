@@ -7,6 +7,7 @@ import java.util.List;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
+import it.unipv.ingsw.lasout.model.transaction.TransactionDAO;
 
 public class CashbookDAO implements ICashbookDAO {
     /**
@@ -40,7 +41,7 @@ public class CashbookDAO implements ICashbookDAO {
     private static final String DELETE_CASHBOOK_FROM_ID = "DELETE FROM £cashbook£ WHERE id = ?";
     private static final String INSERT_IN_CASHBOOKTRANSACTIONS = "INSERT INTO £cashbooktransactions£ (cashbook_id, transaction_id) VALUES(?,?)";
     private static final String INSERT_CASHBOOK_ID = "INSERT INTO £cashbook£ (id, user_id, name) VALUES(?,?,?)";
-    private static final String INSERT_CASHBOOK_NOID = "INSERT INTO £cashbook£ (id, user_id, name) VALUES (?, ?, ?);";
+    private static final String INSERT_CASHBOOK_NOID = "INSERT INTO £cashbook£ (user_id, name) VALUES (?, ?);";
 
     /**
      * Voglio ottenere un CashBook dal DB solo tramite il suo ID
@@ -127,7 +128,9 @@ public class CashbookDAO implements ICashbookDAO {
             //ogni volta trovo un nuovo pojo e lo inserisco nella lista
             Transaction t = new Transaction();
             //settare parametri
-            t.setId(rs.getInt("transaction_id"));
+            Transaction carrierTransaction = new Transaction();
+            carrierTransaction.setId(rs.getInt("transaction_id"));
+            TransactionDAO.getInstance().get(carrierTransaction);
             transactionList.add(t);
         }
 
