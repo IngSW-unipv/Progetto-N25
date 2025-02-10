@@ -69,4 +69,13 @@ public class Cashbook {
     public String toString() {
         return String.format("Cashbook{id=%d, name='%s'}", id, name);
     }
+
+
+    public void removeTransaction(Transaction transaction) {
+        transactionList.remove(transaction);
+    }
+
+    public void addTransaction(Transaction transaction) {
+        transactionList.add(transaction);
+    }
 }

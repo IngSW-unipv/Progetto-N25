@@ -22,7 +22,7 @@ CREATE TABLE `usergroup`           (user_id INT REFERENCES `user`(id), group_id 
 CREATE TABLE `friend`              ( user_id INT REFERENCES `user`(id) ON DELETE CASCADE, friend_user_id INT REFERENCES `user`(id) ON DELETE CASCADE, PRIMARY KEY(user_id, friend_user_id));
 CREATE TABLE `notify`              (id INTEGER AUTO_INCREMENT, user_id INT REFERENCES user(id) ON DELETE CASCADE,`description` TEXT NOT NULL, `type` CHAR(100), PRIMARY KEY(id));
 CREATE TABLE `friendnotify`        (id INTEGER , to_user_id INT, from_user_id INT REFERENCES `user`(id) ON DELETE CASCADE, PRIMARY KEY(id, to_user_id), FOREIGN KEY (id) REFERENCES `notify`(id) ON DELETE CASCADE);
-CREATE TABLE `transactions`         (id INT NOT NULL, amount DOUBLE NULL,type TINYINT NULL,sender VARCHAR(45) NULL, receiver VARCHAR(55) NULL,note VARCHAR(120) NULL,PRIMARY KEY (id));
+CREATE TABLE `transactions`         (id INT NOT NULL, type INT, amount DOUBLE NULL, category VARCHAR(50) NULL, note VARCHAR(120) NULL, PRIMARY KEY (id));
 CREATE TABLE `cashbooktransactions` (cashbook_id INT REFERENCES `cashbook`(id), transaction_id INT REFERENCES `transactions`(id), PRIMARY KEY(cashbook_id, transaction_id));
 CREATE TABLE `virtualvault`         (id INTEGER AUTO_INCREMENT, user_id INT, balance DOUBLE, PRIMARY KEY(id), FOREIGN KEY (user_id) REFERENCES user(id));
 CREATE TABLE `vault`               (id INTEGER AUTO_INCREMENT, virtualvault_id INTEGER, PRIMARY KEY(id), FOREIGN KEY (virtualvault_id) REFERENCES virtualvault(id));
@@ -77,11 +77,11 @@ INSERT INTO cashbook (user_id, name) VALUES
     (4, 'ciao'),
     (6, 'dafult');
 
-INSERT INTO transactions (id, amount, type, sender, receiver, note) VALUES
-    (1, 100.00, 0, 'Alice', 'Bob', 'Payment for services'),
-    (2, 50.00, 1, 'Bob', 'Charlie', 'Refund'),
-    (3, 200.00, 1, 'Alice', 'David', 'Gift'),
-    (4, 75.50, 0, 'Eve', 'Frank', 'Purchase');
+INSERT INTO transactions (id, type, amount, category, note) VALUES
+    (1, 0, -100.00, 'Payment', 'Payment for services'),
+    (2, 1, 50.00, 'Refund', 'Refund'),
+    (3, 1, 200.00, 'Gift', 'Gift'),
+    (4, 0, -75.50, 'Payment', 'Purchase');
 
 INSERT INTO cashbooktransactions (transaction_id, cashbook_id) VALUES
     (1, 1),
