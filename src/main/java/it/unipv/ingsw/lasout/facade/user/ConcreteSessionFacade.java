@@ -4,8 +4,6 @@ import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 
-import java.sql.SQLException;
-
 public class ConcreteSessionFacade implements ISessionFacade {
     private boolean isLoggedIn;
     private User loggedUser;
@@ -16,11 +14,19 @@ public class ConcreteSessionFacade implements ISessionFacade {
         loggedUser = null;
     }
 
+    /**
+     * Metodo che restituisce un true se l'utente è loggato e false se non ha fatto prima il login
+     * @return isLoggedIn
+     */
     @Override
     public boolean isLogged() {
         return isLoggedIn;
     }
 
+    /**
+     * Metodo che restituisce uno user con solamente il suo id e gli altri campi a null
+     * @return loggedUser: user con id
+     */
     @Override
     public User getLoggedUser() {
         return loggedUser;
@@ -28,33 +34,34 @@ public class ConcreteSessionFacade implements ISessionFacade {
 
 
     /**
-     * Metodo per il login che prende in ingresso i dati di un utente e tramite "UserDAO" restituisce un utente
-     * con solo il suo id e gli modifica anche la variabile booleana per sapere se ha loggato
-     * correttamente nell'applicazione
+     * Metodo per il login che prende in ingresso i dati di un utente e tramite "UserDAO":
+     * 1) setta un utente (loggedUser) con solo il suo id
+     * 2) modifica la variabile booleana (true se ha loggato correttamente; false (settata di default dal costruttore) negli altri casi)
      * @param userCarrier utente fittizio con le sue credenziali: username, password ed email
-     * @return l'utente con solamente l'id al quale erano associate username, email e password
      */
-    public User login(User userCarrier) {
+    public void login(User userCarrier) {
         try {
             loggedUser = UserDAO.getInstance().userSearchIdBasedOnTheirCredentials(userCarrier);
             isLoggedIn = true;
-            return loggedUser;
         } catch (Exception sql) {
-            return null;
+            System.out.println(sql.getMessage());
         }
     }
 
     /**
      * Se l'utente inserito è presente nel db e ha già effettuato il login allora posso fargli fare il logout
-     * @return false se
      */
-    public boolean logout() {
+    public void logout() {
         /*
         se l'utente che mi viene passato ha già effettuato il login (passando i vari controlli)
         allora posso fare il suo logout
          */
-        if(!isLogged()) return false;
-        loggedUser = null;
-        return true;
+        if(isLogged()){
+            isLoggedIn = false;
+            loggedUser = null;
+        }
+        else{
+            System.out.println("User non ha fatto prima il login");
+        }
     }
 }

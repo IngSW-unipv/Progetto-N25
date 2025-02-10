@@ -55,6 +55,7 @@ public class UserDAO implements IDao<User> {
     private static final String QUERY_INSERT_NEW_USER_WITHOUT_ID = "INSERT INTO $user$ (username, password, email) VALUES (?, ?, ?);";
     private static final String QUERY_DELETE_AN_EXISTING_USER = "DELETE FROM $user$ WHERE id = ?;";
     private static final String QUERY_SELECT_ID_FROM_HIS_CREDENTIALS = "SELECT id FROM $user$ WHERE username = ? AND password = ? AND email = ?;";
+    private static final String QUERY_UPDATE_PASSWORD = "UPDATE $user$ SET password = ? WHERE id = ?;";
 
     private static final String QUERY_SELECT_ALL_NOTIFIES_OF_USER  = "" +
             "SELECT id " +
@@ -190,8 +191,22 @@ public class UserDAO implements IDao<User> {
      */
     @Override
     public void update(User user) throws SQLException, UserNotFoundException, UserAlreadyExistException {
+        /*
         delete(user);
         save(user);
+         */
+
+
+        //creazione della query di ricerca nel DB di tipo "DBQuery"
+        DBQuery queryUpdate = DatabaseUtil.getInstance().createQuery(QUERY_UPDATE_PASSWORD, user.getPassword(), user.getId());
+
+        //esecuzione della query
+        DatabaseUtil.getInstance().executeQuery(queryUpdate);
+
+        //"rS" prende il risultato della query appena fatta
+        ResultSet rS = queryUpdate.getResultSet();
+        //se la query non da risultati o non c'è niente dopo (perché il primo carattere non è nulla) allora viene lanciata l'eccezione
+        if(rS != null) throw new SQLException("querySelect error");
     }
 
 
@@ -237,7 +252,7 @@ public class UserDAO implements IDao<User> {
      * @return
      * @throws Exception
      */
-    public List<Group> groupsOfUser(User user) throws SQLException, UserNotFoundException, Exception {
+    public List<Group> groupsOfUser(User user) throws SQLException, UserNotFoundException {
         DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_GROUPS_OF_A_USER, user.getId());
 
         List<Group> groups = new ArrayList<>();
