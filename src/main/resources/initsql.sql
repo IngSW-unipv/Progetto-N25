@@ -21,7 +21,7 @@ CREATE TABLE `usergroup`           (user_id INT REFERENCES `user`(id), group_id 
 CREATE TABLE `friend`              ( user_id INT REFERENCES `user`(id) ON DELETE CASCADE, friend_user_id INT REFERENCES `user`(id) ON DELETE CASCADE, PRIMARY KEY(user_id, friend_user_id));
 CREATE TABLE `notify`              (id INTEGER AUTO_INCREMENT, user_id INT REFERENCES user(id) ON DELETE CASCADE,`description` TEXT NOT NULL, `type` CHAR(100), PRIMARY KEY(id));
 CREATE TABLE `friendnotify`        (id INTEGER , to_user_id INT, from_user_id INT REFERENCES `user`(id) ON DELETE CASCADE, PRIMARY KEY(id, to_user_id), FOREIGN KEY (id) REFERENCES `notify`(id) ON DELETE CASCADE);
-CREATE TABLE `cashbook`            (id INTEGER AUTO_INCREMENT, user_id INTEGER , name VARCHAR(50) NOT NULL, PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES user(id));
+CREATE TABLE `cashbook`            (id INTEGER AUTO_INCREMENT, user_id INTEGER , name VARCHAR(50) NOT NULL, PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE);
 CREATE TABLE `transactions`         (id INT NOT NULL, amount DOUBLE NULL,type TINYINT NULL,sender VARCHAR(45) NULL, receiver VARCHAR(55) NULL,note VARCHAR(120) NULL,PRIMARY KEY (id));
 CREATE TABLE `cashbooktransactions` (transaction_id INT REFERENCES `transactions`(id), cashbook_id INT REFERENCES `cashbook`(id), PRIMARY KEY(transaction_id, cashbook_id));
 CREATE TABLE `virtualvault`         (id INTEGER AUTO_INCREMENT, user_id INT, balance DOUBLE, PRIMARY KEY(id), FOREIGN KEY (user_id) REFERENCES user(id));

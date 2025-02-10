@@ -1,6 +1,8 @@
-package it.unipv.ingsw.lasout.model.user;
+package it.unipv.ingsw.lasout.facade.user;
 
-public interface SessionFacade {
+import it.unipv.ingsw.lasout.model.user.User;
+
+public interface ISessionFacade {
     /**
      * Metodo che restituisce un true se l'utente ha effettuato con successo il login
      * @return
@@ -12,4 +14,8 @@ public interface SessionFacade {
      * @return
      */
     User getLoggedUser();
+
+
+    User login(User user);
+    boolean logout();
 }
