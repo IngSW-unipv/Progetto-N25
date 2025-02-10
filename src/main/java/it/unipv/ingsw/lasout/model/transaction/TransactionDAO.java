@@ -38,8 +38,8 @@ public class TransactionDAO implements ITransactionDAO{
     private static final String DELETE_FROM_CASHBOOKTRANSACTIONS = "DELETE FROM £cashbooktransactions£ WHERE transaction_id = ?";
     private static final String DELETE_TRANSACTION_FROM_ID = "DELETE FROM £transaction£ WHERE id = ?";
     private static final String INSERT_IN_CASHBOOKTRANSACTIONS = "INSERT INTO £cashbooktransactions£ (cashbook_id, transaction_id) VALUES(?,?)";
-    private static final String INSERT_TRANSACTION_ID = "INSERT INTO £transaction£ (id, type, amount, date, category, notes) VALUES(?,?,?,?,?,?)";
-    private static final String INSERT_TRANSACTION_NOID = "INSERT INTO £transaction£ (type, amount, date, category, notes) VALUES (?, ?, ?, ?, ?);";
+    private static final String INSERT_TRANSACTION_ID = "INSERT INTO £transaction£ (id, type, amount, date, category, note) VALUES(?,?,?,?,?,?)";
+    private static final String INSERT_TRANSACTION_NOID = "INSERT INTO £transaction£ (type, amount, date, category, note) VALUES (?, ?, ?, ?, ?);";
 
     /**
      * Voglio ottenere un CashBook dal DB solo tramite il suo ID
@@ -62,7 +62,7 @@ public class TransactionDAO implements ITransactionDAO{
         savedTransaction.setType(resultSet.getInt("type"));
         savedTransaction.setAmount(resultSet.getInt("amount"));
         savedTransaction.setCategory(resultSet.getString("category"));
-        savedTransaction.setNotes(resultSet.getString("notes"));
+        savedTransaction.setNotes(resultSet.getString("note"));
 
         query.close();
         return savedTransaction;
@@ -97,7 +97,7 @@ public class TransactionDAO implements ITransactionDAO{
             transaction.setType(rs.getInt("type"));
             transaction.setAmount(rs.getInt("amount"));
             transaction.setCategory(rs.getString("category"));
-            transaction.setNotes(rs.getString("notes"));
+            transaction.setNotes(rs.getString("note"));
             transactionsList.add(transaction);
         }
 

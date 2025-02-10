@@ -52,6 +52,8 @@ public class CashbookFacade implements ICashbookFacade {
         return true;
     }
 
+
+
     @Override
     public boolean editCashbook(Cashbook cashbook){
         try{
@@ -80,11 +82,14 @@ public class CashbookFacade implements ICashbookFacade {
             c=getCashbook(cashbook);
             if(!transaction.isImmutable()){
                 c.removeTransaction(transaction);
+                CashbookDAO.getInstance().update(c);
             }
             editCashbook(c);
         } catch (Exception e) {
             return false;
         }
+
+
 
         return true;
     }

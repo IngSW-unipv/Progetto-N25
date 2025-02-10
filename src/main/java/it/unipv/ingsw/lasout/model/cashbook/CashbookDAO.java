@@ -126,11 +126,11 @@ public class CashbookDAO implements ICashbookDAO {
         List<Transaction> transactionList = new ArrayList<Transaction>();
         while(rs.next()){
             //ogni volta trovo un nuovo pojo e lo inserisco nella lista
-            Transaction t = new Transaction();
             //settare parametri
+            Transaction t;
             Transaction carrierTransaction = new Transaction();
             carrierTransaction.setId(rs.getInt("transaction_id"));
-            TransactionDAO.getInstance().get(carrierTransaction);
+            t=TransactionDAO.getInstance().get(carrierTransaction);
             transactionList.add(t);
         }
 
@@ -160,8 +160,10 @@ public class CashbookDAO implements ICashbookDAO {
         if(rs!=null)throw new Exception();
 
 
-        //INSERT nella tabella usergroup
-        saveAssociation(cashbook);
+        //INSERT nella tabella cashbooktransactions se ci sono transazioni da salvare
+        if(cashbook.getTransactionList()!=null)
+            saveAssociation(cashbook);
+
         query.close();
     }
 
@@ -194,6 +196,7 @@ public class CashbookDAO implements ICashbookDAO {
 
         ResultSet rs = query.getResultSet();
         if(rs!=null)throw new Exception();
+
 
         deleteAssociation(cashbook);
         query.close();
