@@ -12,7 +12,6 @@ import java.util.List;
  */
 public class User {
 
-
     //attributi utente
     private long id;
     private String username;
@@ -51,6 +50,7 @@ public class User {
     public User(String email, String password, boolean insertEmail){
         this.email = email;
         this.password = password;
+        this.insertEmail = insertEmail;
     }
 
     /**
