@@ -16,5 +16,8 @@ public interface NotifyFacade {
 
     boolean sendFriendRequest(User from, User  to);
 
+    boolean sendPayRequestByUser(User from, User to, double value);
+    boolean sendPayRequestByGroup(Group from, User to, double value);
+
     boolean sendInviteGroupRequest(Group from, User to);
 }
