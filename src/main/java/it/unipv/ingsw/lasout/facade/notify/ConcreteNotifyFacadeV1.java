@@ -31,6 +31,16 @@ public class ConcreteNotifyFacadeV1 implements NotifyFacade{
     }
 
     @Override
+    public boolean sendPayRequestByUser(User from, User to, double value) {
+        return false;
+    }
+
+    @Override
+    public boolean sendPayRequestByGroup(Group from, User to, double value) {
+        return false;
+    }
+
+    @Override
     public boolean sendInviteGroupRequest(Group from, User to) {
 
         Notify notify = Notify.Builder.groupRequestNotify()
