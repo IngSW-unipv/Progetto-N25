@@ -33,7 +33,6 @@ public class LaVaultFacade {
         }catch (Exception e){
             throw new RuntimeException(e);
         }
-
     }
 
     private Class<?> loadClass(String propertyName) throws Exception {

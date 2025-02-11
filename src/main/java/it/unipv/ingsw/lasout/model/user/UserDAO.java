@@ -35,7 +35,7 @@ public class UserDAO implements IUserDAO {
     /**
      * Rendo il costruttore privato
      */
-    private UserDAO(){
+    public UserDAO(){
 
     }
 
