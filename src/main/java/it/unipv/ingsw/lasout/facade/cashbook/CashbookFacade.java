@@ -1,9 +1,10 @@
 package it.unipv.ingsw.lasout.facade.cashbook;
 
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
-import it.unipv.ingsw.lasout.model.cashbook.CashbookDAO;
 import it.unipv.ingsw.lasout.model.cashbook.ICashbookDAO;
+import it.unipv.ingsw.lasout.model.transaction.ModifiableTransaction;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
+import it.unipv.ingsw.lasout.model.transaction.exception.CannotEditTransactionException;
 import it.unipv.ingsw.lasout.util.DaoFactory;
 
 import java.util.List;
@@ -11,8 +12,8 @@ import java.util.List;
 public class CashbookFacade implements ICashbookFacade {
 
     private ICashbookDAO cashBookDAO;
-    private CashbookFacade() {
-        cashBookDAO= DaoFactory.getCashbookDAO();
+    public CashbookFacade() {
+        cashBookDAO = DaoFactory.getCashbookDAO();
     }
 
     private static CashbookFacade instance;
@@ -85,14 +86,29 @@ public class CashbookFacade implements ICashbookFacade {
 
         try{
             c=getCashbook(cashbook);
-            if(!transaction.isImmutable()){
-                c.removeTransaction(transaction);
-                cashBookDAO.update(c);
-            }
+            c.removeTransaction((ModifiableTransaction) transaction);
+            cashBookDAO.update(c);
             editCashbook(c);
         } catch (Exception e) {
             return false;
         }
+        return true;
+    }
+
+    @Override
+    public boolean editTransactionInCashbook(Cashbook cashbook, Transaction transaction) {
+        Cashbook c;
+        try{
+            c=getCashbook(cashbook);
+            c.removeTransaction(transaction);
+            cashBookDAO.update(c);
+            editCashbook(c);
+        } catch (CannotEditTransactionException e) {
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+
         return true;
     }
 

@@ -16,4 +16,6 @@ public interface ICashbookFacade {
 
     boolean removeTransactionFromCashbook(Cashbook cashbook, Transaction transaction);
 
+    boolean editTransactionInCashbook(Cashbook cashbook, Transaction transaction);
+
 }
