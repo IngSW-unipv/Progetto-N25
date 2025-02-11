@@ -7,6 +7,7 @@ import java.util.List;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
+import it.unipv.ingsw.lasout.model.transaction.TransactionDAO;
 
 public class CashbookDAO implements ICashbookDAO {
     /**
@@ -40,16 +41,17 @@ public class CashbookDAO implements ICashbookDAO {
     private static final String DELETE_CASHBOOK_FROM_ID = "DELETE FROM £cashbook£ WHERE id = ?";
     private static final String INSERT_IN_CASHBOOKTRANSACTIONS = "INSERT INTO £cashbooktransactions£ (cashbook_id, transaction_id) VALUES(?,?)";
     private static final String INSERT_CASHBOOK_ID = "INSERT INTO £cashbook£ (id, user_id, name) VALUES(?,?,?)";
+    private static final String INSERT_CASHBOOK_NOID = "INSERT INTO £cashbook£ (user_id, name) VALUES (?, ?);";
 
     /**
      * Voglio ottenere un CashBook dal DB solo tramite il suo ID
-     * @param fictitiousCashbook ogetto contenente il solo identificatore dell'entità
+     * @param carrierCashbook ogetto contenente il solo identificatore dell'entità
      * @return un Cashbook contenente solo le informazioni raw, ovvero privo delle sue transazioni
      * @throws Exception Errore nell'esecuzione della query o mancata connessione al db
      */
     @Override
-    public Cashbook getRaw(Cashbook fictitiousCashbook) throws Exception {
-        DBQuery query = DatabaseUtil.getInstance().createQuery(GET_CASHBOOK_FROM_ID, fictitiousCashbook.getId());
+    public Cashbook getRaw(Cashbook carrierCashbook) throws Exception {
+        DBQuery query = DatabaseUtil.getInstance().createQuery(GET_CASHBOOK_FROM_ID, carrierCashbook.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
         ResultSet resultSet = query.getResultSet();
@@ -60,6 +62,7 @@ public class CashbookDAO implements ICashbookDAO {
         Cashbook savedCashbook = new Cashbook();
         savedCashbook.setId(resultSet.getInt("id"));
         savedCashbook.setName(resultSet.getString("name"));
+        savedCashbook.setUserId(resultSet.getInt("user_id"));
 
         query.close();
         return savedCashbook;
@@ -73,20 +76,11 @@ public class CashbookDAO implements ICashbookDAO {
      */
     @Override
     public Cashbook get(Cashbook carrierCashbook) throws Exception {
-        DBQuery query = DatabaseUtil.getInstance().createQuery(GET_CASHBOOK_FROM_ID, carrierCashbook.getId());
-        DatabaseUtil.getInstance().executeQuery(query);
+        Cashbook savedCashbook = getRaw(carrierCashbook);
 
-        ResultSet resultSet = query.getResultSet();
-        if(!resultSet.next()) {
-            throw new RuntimeException("Cashbook not found");
-        }
+        List<Transaction> transactions = getTransactionsFromDB(carrierCashbook);
+        savedCashbook.setTransactionList(transactions);
 
-        Cashbook savedCashbook = new Cashbook();
-        savedCashbook.setId(resultSet.getInt("id"));
-        savedCashbook.setName(resultSet.getString("name"));
-        savedCashbook.setTransactionList(getTransactionsFromDB(new Cashbook(resultSet.getInt("id"))));
-
-        query.close();
         return savedCashbook;
     }
 
@@ -107,6 +101,7 @@ public class CashbookDAO implements ICashbookDAO {
             cashbook.setId(rs.getInt("id"));
             cashbook.setName(rs.getString("name"));
             cashbook.setTransactionList(getTransactionsFromDB(new Cashbook(rs.getInt("id"))));
+
             cashbooksList.add(cashbook);
         }
 
@@ -131,9 +126,11 @@ public class CashbookDAO implements ICashbookDAO {
         List<Transaction> transactionList = new ArrayList<Transaction>();
         while(rs.next()){
             //ogni volta trovo un nuovo pojo e lo inserisco nella lista
-            Transaction t = new Transaction();
             //settare parametri
-            t.setId(rs.getInt("transaction_id"));
+            Transaction t;
+            Transaction carrierTransaction = new Transaction();
+            carrierTransaction.setId(rs.getInt("transaction_id"));
+            t=TransactionDAO.getInstance().get(carrierTransaction);
             transactionList.add(t);
         }
 
@@ -148,26 +145,41 @@ public class CashbookDAO implements ICashbookDAO {
      */
     @Override
     public void save(Cashbook cashbook) throws Exception {
-        DBQuery query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_ID, cashbook.getId(), cashbook.getUserId(), cashbook.getName());
+        DBQuery query;
+
+        if(cashbook.getId()!=0){
+            query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_ID, cashbook.getId(), cashbook.getUserId(), cashbook.getName());
+        }
+        else{
+            query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_NOID, cashbook.getUserId(), cashbook.getName());
+        }
+
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet rs = query.getResultSet();
 
         if(rs!=null)throw new Exception();
-        if(cashbook.getId()==0) cashbook.setId((int)query.getKey());
 
-        //INSERT nella tabella usergroup
-        saveAssociation(cashbook);
+
+        //INSERT nella tabella cashbooktransactions se ci sono transazioni da salvare
+        if(cashbook.getTransactionList()!=null)
+            saveAssociation(cashbook);
+
         query.close();
     }
 
     /**
-     * Update dei dati riguardanti un cashbook con conseguente modifica delle relazioni ad esso collegate
-     * @param cashbook carrier contentente solo l'id del cashbook da aggiornare
-     * @throws Exception errore nell'esecuzione della query sql
+     * Codice che implementa l'aggiunta della relazione N a N nel database
      */
-    public void update(Cashbook cashbook) throws Exception {
-        delete(cashbook);
-        save(cashbook);
+    private void saveAssociation(Cashbook cashbook) throws Exception {
+        DBQuery query = null;
+        for(Transaction t : cashbook.getTransactionList()){
+            query = DatabaseUtil.getInstance().createQuery(INSERT_IN_CASHBOOKTRANSACTIONS, cashbook.getId(), t.getId());
+            DatabaseUtil.getInstance().executeQuery(query);
+            ResultSet rs = query.getResultSet();
+
+            if(rs!=null)throw new Exception();
+        }
+        if(query!=null) query.close();
     }
 
 
@@ -180,11 +192,11 @@ public class CashbookDAO implements ICashbookDAO {
     @Override
     public void delete(Cashbook cashbook) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_CASHBOOK_FROM_ID, cashbook.getId());
-
         DatabaseUtil.getInstance().executeQuery(query);
-        ResultSet rs = query.getResultSet();
 
+        ResultSet rs = query.getResultSet();
         if(rs!=null)throw new Exception();
+
 
         deleteAssociation(cashbook);
         query.close();
@@ -204,18 +216,13 @@ public class CashbookDAO implements ICashbookDAO {
     }
 
     /**
-     * Codice che implementa l'aggiunta della relazione N a N nel database
+     * Update dei dati riguardanti un cashbook con conseguente modifica delle relazioni ad esso collegate
+     * @param cashbook carrier contentente solo l'id del cashbook da aggiornare
+     * @throws Exception errore nell'esecuzione della query sql
      */
-    private void saveAssociation(Cashbook cashbook) throws Exception {
-        DBQuery query = null;
-        for(Transaction t : cashbook.getTransactionList()){
-            query = DatabaseUtil.getInstance().createQuery(INSERT_IN_CASHBOOKTRANSACTIONS, t.getId(), cashbook.getId());
-            DatabaseUtil.getInstance().executeQuery(query);
-            ResultSet rs = query.getResultSet();
-
-            if(rs!=null)throw new Exception();
-        }
-        if(query!=null) query.close();
+    public void update(Cashbook cashbook) throws Exception {
+        delete(cashbook);
+        save(cashbook);
     }
 
 }

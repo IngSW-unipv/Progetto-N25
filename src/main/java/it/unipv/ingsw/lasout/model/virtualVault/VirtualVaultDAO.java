@@ -10,6 +10,7 @@ import it.unipv.ingsw.lasout.model.vault.Vault;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -22,9 +23,10 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
 
     //Varie query
     private static final String QUERY_RAW_1 = "SELECT * FROM $virtualvault$ WHERE id = ? AND user_id = ?";
-    private static final String QUERY_INSERT_NEW_VIRTUALVAULT_NOID= "INSERT INTO $virtualvault$ (user_id, balance) VALUES (?, ?)";
-    private static final String QUERY_INSERT_NEW_VIRTUALVAULT_ID= "INSERT INTO $virtualvault$ (id, user_id, balance) VALUES (?, ?, ?)";
-    private static final String QUERY_DELETE_AN_EXISTING_VIRTUALVAULT =      "DELETE FROM $virtualvault$ WHERE id = ?";
+    private static final String QUERY_INSERT_NEW_VIRTUALVAULT_NOID= "INSERT INTO $virtualvault$ (name, user_id, balance) VALUES (?, ?, ?)";
+    private static final String QUERY_INSERT_NEW_VIRTUALVAULT_ID= "INSERT INTO $virtualvault$ (id, name, user_id, balance) VALUES (?, ?, ?, ?)";
+    private static final String QUERY_DELETE_AN_EXISTING_VIRTUALVAULT = "DELETE FROM $virtualvault$ WHERE id = ?";
+    private static final String GET_ALL_VIRTUALVAULT =  "SELECT * FROM £virtualvault£ WHERE virtualvault.id = ?" ;
 
     @Override
     public VirtualVault getRaw(VirtualVault oggetto) throws Exception {
@@ -56,20 +58,38 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
 
     @Override
     public List<VirtualVault> getAll() throws Exception {
-        return List.of();
+        DBQuery query = DatabaseUtil.getInstance().createQuery(GET_ALL_VIRTUALVAULT, VirtualVault.class);
+        DatabaseUtil.getInstance().executeQuery(query);
+
+        ResultSet rs = query.getResultSet();
+
+        if(rs == null) throw new SQLException("querySelect error");
+
+        List<VirtualVault> virtualVaults = new ArrayList<VirtualVault>();
+
+        while (rs.next()) {
+
+            VirtualVault vVault = new VirtualVault();
+            vVault.setID(rs.getInt("id"));
+            vVault.setBalance(rs.getDouble("balance"));
+            vVault.setOwner(UserDAO.getInstance().get(new User(rs.getInt("user_id"))));
+
+            virtualVaults.add(vVault);
+        }
+
+        query.close();
+        return virtualVaults;
     }
 
     @Override
     public void save(VirtualVault virtualVault) throws Exception {
         //Query per l'aggiunta di un virtualvault
-
-
         DBQuery queryInsert;
 
         if(virtualVault.getID()!=0){
-            queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_VIRTUALVAULT_ID, virtualVault.getID(), virtualVault.getOwner().getId(), virtualVault.getBalance());
+            queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_VIRTUALVAULT_ID, virtualVault.getID(), virtualVault.getName(), virtualVault.getOwner().getId(), virtualVault.getBalance());
         }else{
-            queryInsert = DatabaseUtil.getInstance().createGeneratedKeyQuery(QUERY_INSERT_NEW_VIRTUALVAULT_NOID, virtualVault.getOwner().getId(), virtualVault.getBalance());
+            queryInsert = DatabaseUtil.getInstance().createGeneratedKeyQuery(QUERY_INSERT_NEW_VIRTUALVAULT_NOID, virtualVault.getName(), virtualVault.getOwner().getId(), virtualVault.getBalance());
         }
 
         DatabaseUtil.getInstance().executeQuery(queryInsert);
@@ -116,17 +136,18 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
         VirtualVault v = new VirtualVault();;
         VirtualVault v2 = new VirtualVault();;
 
+        v.setName("IL PRIMO");
         v.setOwner(new User(1));
-        v.setID(1);
+        //v.setID(1);
         v.setBalance(2);
-        v2.setOwner(new User(2));
-        v2.setID(2);
-        v2.setBalance(2000);
+//        v2.setOwner(new User(2));
+//        v2.setID(2);
+//        v2.setBalance(2000);
 
         VirtualVaultDAO.getInstance().save(v);
-        VirtualVaultDAO.getInstance().save(v2);
-        VirtualVaultDAO.getInstance().delete(v2);
-
+        //VirtualVaultDAO.getInstance().save(v2);
+        //VirtualVaultDAO.getInstance().delete(v2);
+        //VirtualVaultDAO.getInstance().getAll();
 
 
     }

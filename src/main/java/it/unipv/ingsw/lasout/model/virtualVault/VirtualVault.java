@@ -12,6 +12,7 @@ import java.util.Scanner;
 public class VirtualVault implements IVault{
     private int ID;
     private double balance;
+    private String name;
     private User owner;
     private IVaultData behavior;
 
@@ -30,15 +31,16 @@ public class VirtualVault implements IVault{
     public VirtualVault() {
         this.balance = balance;
     }
-
-    public VirtualVault(int ID, double balance, User owner, IVaultData behavior) {
-        this.ID = ID;
+    public VirtualVault(double balance, String name, int ID, User owner, IVaultData behavior) {
         this.balance = balance;
+        this.name = name;
+        this.ID = ID;
         this.owner = owner;
         this.behavior = behavior;
     }
 
-
+    public String getName() {return name;}
+    public void setName(String name) {this.name = name;}
 
     @Override
     public int getID() {

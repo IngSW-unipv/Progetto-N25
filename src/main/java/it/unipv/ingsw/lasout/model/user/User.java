@@ -18,6 +18,7 @@ public class User {
     private String username;
     private String password;
     private String email;
+    boolean insertEmail;
     private List<Group> groups;
     private List<User> friends;
     private List<Notify> notifies;
@@ -32,7 +33,7 @@ public class User {
     }
 
     /**
-     * COSTRUTTORE
+     * COSTRUTTORE usato per cercare l'id dell'utente passandogli username e password
      * @param username
      * @param password
      */
@@ -42,7 +43,18 @@ public class User {
     }
 
     /**
-     *
+     *  COSTRUTTORE usato per cercare l'id dell'utente passandogli email e password
+     * @param email
+     * @param password
+     * @param insertEmail signature per discriminare dal costruttore precedente
+     */
+    public User(String email, String password, boolean insertEmail){
+        this.email = email;
+        this.password = password;
+    }
+
+    /**
+     * Usato per la registrazione e aggiunta dell'account al DB
      * @param username
      * @param password
      * @param email
@@ -118,6 +130,8 @@ public class User {
     public String getEmail() {return email;}
     public void setEmail(String email) {this.email = email;}
 
+    public boolean isInsertEmail() {return insertEmail;}
+    public void setInsertEmail(boolean insertEmail) {this.insertEmail = insertEmail;}
 
     public List<Group> getGroups() {
         return groups;
@@ -134,6 +148,10 @@ public class User {
     }
     public void setNotifies(List<Notify> notifies) {
         this.notifies = notifies;
+    }
+
+    public boolean equals(User user) {
+        return this.id==user.getId();
     }
 
     @Override

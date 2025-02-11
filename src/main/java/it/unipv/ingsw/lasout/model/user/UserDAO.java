@@ -54,7 +54,10 @@ public class UserDAO implements IDao<User> {
     private static final String QUERY_INSERT_NEW_USER_WITH_ID = "INSERT INTO $user$ (id, username, password, email) VALUES (?, ?, ?, ?);";
     private static final String QUERY_INSERT_NEW_USER_WITHOUT_ID = "INSERT INTO $user$ (username, password, email) VALUES (?, ?, ?);";
     private static final String QUERY_DELETE_AN_EXISTING_USER = "DELETE FROM $user$ WHERE id = ?;";
-    private static final String QUERY_SELECT_ID_FROM_HIS_CREDENTIALS = "SELECT id FROM $user$ WHERE username = ? AND password = ? AND email = ?;";
+    private static final String QUERY_SELECT_ID_FROM_HIS_USERNAME_PASSWORD = "SELECT id FROM $user$ WHERE username = ? AND password = ?;";
+    private static final String QUERY_SELECT_ID_FROM_HIS_EMAIL_PASSWORD = "SELECT id FROM $user$ WHERE email = ? AND password = ?;";
+    private static final String QUERY_SELECT_ID_FROM_HIS_CREDENTIALS_FOR_CREATING_ACCOUNT = "SELECT id FROM $user$ WHERE username = ? AND email = ? AND password = ?;";
+    private static final String QUERY_UPDATE_PASSWORD = "UPDATE $user$ SET password = ? WHERE id = ?;";
 
     private static final String QUERY_SELECT_ALL_NOTIFIES_OF_USER  = "" +
             "SELECT id " +
@@ -190,8 +193,19 @@ public class UserDAO implements IDao<User> {
      */
     @Override
     public void update(User user) throws SQLException, UserNotFoundException, UserAlreadyExistException {
-        delete(user);
-        save(user);
+
+        //creazione della query di ricerca nel DB di tipo "DBQuery"
+        DBQuery queryUpdate = DatabaseUtil.getInstance().createQuery(QUERY_UPDATE_PASSWORD, user.getPassword(), user.getId());
+
+        //esecuzione della query
+        DatabaseUtil.getInstance().executeQuery(queryUpdate);
+
+        //"rS" prende il risultato della query appena fatta
+        ResultSet rS = queryUpdate.getResultSet();
+        //se la query non da risultati o non c'è niente dopo (perché il primo carattere non è nulla) allora viene lanciata l'eccezione
+        if(rS != null) throw new SQLException("querySelect error");
+
+        queryUpdate.close();
     }
 
 
@@ -214,9 +228,12 @@ public class UserDAO implements IDao<User> {
     }
 
 
-
-
-    public List<User> getFriends(User  user){
+    /**
+     * Metodo che serve ad associare una lista di amici (altri utenti) a un certo utente
+     * @param user utente che avrà una determinata lista di amici
+     * @return la lista di amici
+     */
+    public List<User> getFriends(User user){
 
         List<User> friends = new ArrayList<>();
 
@@ -224,7 +241,13 @@ public class UserDAO implements IDao<User> {
     }
 
 
-    public List<Notify> getNotifications(User  user) throws Exception {
+    /**
+     * Metodo che serve ad associare la lista di tutte le notifiche a un determinato utente
+     * @param user utente che avrà una determinata lista di notifiche
+     * @return la lista delle notifiche
+     * @throws Exception eccezione lanciata dalla classe NotifyDAO
+     */
+    public List<Notify> getNotifications(User user) throws Exception {
 
         return NotifyDAO.getInstance().notifiesOf(user);
 
@@ -237,7 +260,7 @@ public class UserDAO implements IDao<User> {
      * @return
      * @throws Exception
      */
-    public List<Group> groupsOfUser(User user) throws SQLException, UserNotFoundException, Exception {
+    public List<Group> groupsOfUser(User user) throws SQLException, UserNotFoundException {
         DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_GROUPS_OF_A_USER, user.getId());
 
         List<Group> groups = new ArrayList<>();
@@ -263,14 +286,38 @@ public class UserDAO implements IDao<User> {
 
     /**
      * Metodo che fa la query di ricerca sul DB per cercare l'id di un utente che mi viene passato
-     * @param user utente che mi viene passato per controllare qual'è il suo id
+     * Per discriminare se mandare l'utente in un metodo o nell'altro uso la variabile booleana nel bean che se è true
+     * vuol dire che lo username è nullo e la email no, allora cercherò l'utente tramite email-password
+     * @param user utente che mi viene passato per controllare qual è il suo id
      * @return fictitiousUser con solamente l'id dell utente con quelle date credenziali
      * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
      * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente con le credenziali che ha dato
      */
     public User userSearchIdBasedOnTheirCredentials(User user) throws SQLException, UserNotFoundException {
-        //creazione della query di ricerca nel DB di tipo "DBQuery"
-        DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_CREDENTIALS, user.getUsername(), user.getPassword(), user.getEmail());
+        User fictitiousUser = null;
+
+        //lo cerco con la combo username-password
+        if(user.getUsername() != null && user.getPassword() != null && user.getEmail() == null) fictitiousUser = userSearchIdBasedOnTheirUsernameAndPassword(user);
+
+        //lo cerco con la combo email-password
+        if(user.getUsername() == null && user.getPassword() != null && user.getEmail() != null) fictitiousUser = userSearchIdBasedOnTheirEmailAndPassword(user);
+
+        //lo cerco con la combo username-email-password
+        if(user.getUsername() != null && user.getPassword() != null && user.getEmail() != null) fictitiousUser = userNotSearchedForCreateAccount(user);
+
+        return fictitiousUser;
+    }
+
+    /**
+     * Metodo che fa la query di ricerca sul DB per cercare l'id di un utente che mi viene passato con solo username e password
+     * @param user utente che mi viene passato per controllare qual è il suo id
+     * @return fictitiousUser con solamente l'id dell utente con quelle date credenziali
+     * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
+     * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente con le credenziali che ha dato
+     */
+    private User userSearchIdBasedOnTheirUsernameAndPassword(User user) throws SQLException, UserNotFoundException {
+        //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
+        DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_USERNAME_PASSWORD, user.getUsername(), user.getPassword());
 
         //eseguo la query
         DatabaseUtil.getInstance().executeQuery(querySelect);
@@ -278,19 +325,77 @@ public class UserDAO implements IDao<User> {
         //prendo il risultato della query
         ResultSet rS = querySelect.getResultSet();
         //controllo il risultato della query
-        if(rS == null || !rS.next()) throw new UserNotFoundException(user.getId()+" "+user.getUsername());
+        if(rS == null || !rS.next()) throw new UserNotFoundException("");
 
         //se invece è stato trovato salvo l'id dell'utente appena trovato in un utente fittizio
-        User fictitiousUser = new User(rS.getInt("id"));
+        User idUser = new User(rS.getInt("id"));
 
         //se volessi restituire tutte le info dell'utente userei questo qua sotto:
-        //User fictitiousUser = get(new User(rS.getInt("id")));
+        //User idUser = get(new User(rS.getInt("id")));
 
         querySelect.close();
-        return fictitiousUser;
+        return idUser;
     }
 
+    /**
+     * Metodo che fa la query di ricerca sul DB per cercare l'id di un utente che mi viene passato con solo username e password
+     * @param user utente che mi viene passato per controllare qual è il suo id
+     * @return idUser con solamente l'id dell utente con quelle date credenziali
+     * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
+     * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente con le credenziali che ha dato
+     */
+    private User userSearchIdBasedOnTheirEmailAndPassword(User user) throws SQLException, UserNotFoundException {
+        //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
+        DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_EMAIL_PASSWORD, user.getEmail(), user.getPassword());
 
+        //eseguo la query
+        DatabaseUtil.getInstance().executeQuery(querySelect);
 
+        //prendo il risultato della query
+        ResultSet rS = querySelect.getResultSet();
+        //controllo il risultato della query
+        if(rS == null || !rS.next()) throw new UserNotFoundException("");
+
+        //se invece è stato trovato salvo l'id dell'utente appena trovato in un utente fittizio
+        User idUser = new User(rS.getInt("id"));
+
+        //se volessi restituire tutte le info dell'utente userei questo qua sotto:
+        //User idUser = get(new User(rS.getInt("id")));
+
+        querySelect.close();
+        return idUser;
+    }
+
+    /**
+     * Metodo che serve solo per sollevare l'eccezione nel caso in cui l'utente provi a registrarsi con le stesse credenziali
+     * con le quali si era già registrato.
+     * Se solleva l'eccezione di utente non trovato allora la registrazione del suo account andrà a buon fine
+     * @param user utente con tutte le sue credenziali (username, email, password)
+     * @return idUser con solamente l'id dell utente con quelle date credenziali (qui non mi interessa perché sto metodo serve esclusivamente per la creazione dell'account)
+     * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
+     * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente con le credenziali che ha dato
+     */
+    private User userNotSearchedForCreateAccount(User user) throws SQLException, UserNotFoundException {
+
+        //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
+        DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_CREDENTIALS_FOR_CREATING_ACCOUNT, user.getUsername(), user.getEmail(), user.getPassword());
+
+        //eseguo la query
+        DatabaseUtil.getInstance().executeQuery(querySelect);
+
+        //prendo il risultato della query
+        ResultSet rS = querySelect.getResultSet();
+        //controllo il risultato della query
+        if(rS == null || !rS.next()) throw new UserNotFoundException("");
+
+        //se invece è stato trovato salvo l'id dell'utente appena trovato in un utente fittizio
+        User idUser = new User(rS.getInt("id"));
+
+        //se volessi restituire tutte le info dell'utente userei questo qua sotto:
+        //User idUser = get(new User(rS.getInt("id")));
+
+        querySelect.close();
+        return idUser;
+    }
 
 }
