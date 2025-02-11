@@ -25,13 +25,13 @@ public class LaVaultFacade {
     private LaVaultFacade() {
 
         try{
+            this.userFacade = (IUserFacade) loadClass("user").getDeclaredConstructor().newInstance();
             this.notifyFacade = (NotifyFacade) loadClass("notify").getDeclaredConstructor().newInstance();
             this.friendFacade = (FriendFacade) loadClass("friend").getDeclaredConstructor().newInstance();
             this.sessionFacade = (ISessionFacade) loadClass("session").getDeclaredConstructor().newInstance();
-            this.userFacade = (IUserFacade) loadClass("user").getDeclaredConstructor().newInstance();
             this.groupFacade = (GroupFacade) loadClass("group").getDeclaredConstructor().newInstance();
         }catch (Exception e){
-
+            throw new RuntimeException(e);
         }
 
     }

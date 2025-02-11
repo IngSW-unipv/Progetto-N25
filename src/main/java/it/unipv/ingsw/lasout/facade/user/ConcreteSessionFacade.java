@@ -1,8 +1,9 @@
 package it.unipv.ingsw.lasout.facade.user;
 
+import it.unipv.ingsw.lasout.model.user.EmailPassword;
+import it.unipv.ingsw.lasout.model.user.UserCredentialsStrategy;
 import it.unipv.ingsw.lasout.model.user.User;
-import it.unipv.ingsw.lasout.model.user.UserDAO;
-import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
+import it.unipv.ingsw.lasout.model.user.UsernamePassword;
 
 public class ConcreteSessionFacade implements ISessionFacade {
     private boolean isLoggedIn;
@@ -15,7 +16,7 @@ public class ConcreteSessionFacade implements ISessionFacade {
     }
 
     /**
-     * Metodo che restituisce un true se l'utente è loggato e false se non ha fatto prima il login
+     * Metodo che restituisce un true se l'utente è loggato e false se non ha fatto prima il serchUser
      * @return isLoggedIn
      */
     @Override
@@ -34,7 +35,7 @@ public class ConcreteSessionFacade implements ISessionFacade {
 
 
     /**
-     * Metodo per il login che prende in ingresso i dati di un utente e tramite "UserDAO":
+     * Metodo per il serchUser che prende in ingresso i dati di un utente e tramite "UserDAO":
      * 1) setta un utente (loggedUser) con solo il suo id;
      * 2) modifica la variabile booleana (true se ha loggato correttamente; false (settata di default dal costruttore) negli altri casi)
      * @param userCarrier utente fittizio con le sue credenziali: username, password ed email
@@ -42,13 +43,16 @@ public class ConcreteSessionFacade implements ISessionFacade {
     @Override
     public void login(User userCarrier) {
         try {
-            /*
-            faccio questo if perché poi almeno lo user sa se entrare nel metodo di ricerca con
-            username-password oppure email-password (per discriminare le due cose)
-             */
-            if(userCarrier.getUsername()==null && userCarrier.getEmail()!=null) userCarrier.setInsertEmail(true);
+            UserCredentialsStrategy userCredentialsStrategy;
+            if (userCarrier.getUsername().contains("@")) userCredentialsStrategy = new EmailPassword();
+            else userCredentialsStrategy = new UsernamePassword();
 
-            loggedUser = UserDAO.getInstance().userSearchIdBasedOnTheirCredentials(userCarrier);
+            /*
+            usando un il factory:
+            UserCredentialsStrategy userCredentialsStrategy = UserCredentialsFactory.createUserCredentials(userCarrier);
+             */
+
+            userCredentialsStrategy.serchUser(userCarrier);
             isLoggedIn = true;
         } catch (Exception sql) {
             System.out.println(sql.getMessage());
@@ -56,12 +60,12 @@ public class ConcreteSessionFacade implements ISessionFacade {
     }
 
     /**
-     * Metodo che slogga l'utente inserito se e solo se è presente nel db e ha già effettuato il login allora posso fargli fare il logout
+     * Metodo che slogga l'utente inserito se e solo se è presente nel db e ha già effettuato il serchUser allora posso fargli fare il logout
      */
     @Override
     public void logout() {
         /*
-        se l'utente che mi viene passato ha già effettuato il login (passando i vari controlli)
+        se l'utente che mi viene passato ha già effettuato il serchUser (passando i vari controlli)
         allora posso fare il suo logout
          */
         if(isLogged()){
@@ -70,7 +74,7 @@ public class ConcreteSessionFacade implements ISessionFacade {
         }
         else{
             isLoggedIn = true;
-            System.out.println("User non ha fatto prima il login");
+            System.out.println("User non ha fatto prima il serchUser");
         }
     }
 }
