@@ -27,11 +27,12 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
     private static final String QUERY_INSERT_NEW_VIRTUALVAULT_ID= "INSERT INTO $virtualvault$ (id, name, user_id, balance) VALUES (?, ?, ?, ?)";
     private static final String QUERY_DELETE_AN_EXISTING_VIRTUALVAULT = "DELETE FROM $virtualvault$ WHERE id = ?";
     private static final String GET_ALL_VIRTUALVAULT =  "SELECT * FROM £virtualvault£ WHERE virtualvault.id = ?" ;
+    private static final String GET_BALANCE_FROM_VAULT =  "SELECT balance FROM £virtualvault£ WHERE  virtualvault.id = ? AND user_id = ?" ;
 
     @Override
-    public VirtualVault getRaw(VirtualVault oggetto) throws Exception {
+    public VirtualVault getRaw(VirtualVault virtualVault) throws Exception {
         //Creo la query raw per prendere i dati e gli passo oggetto che prende ID, owner e l'accoppiata dei due
-        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_RAW_1, oggetto.getID(), oggetto.getOwner().getId());
+        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_RAW_1, virtualVault.getID(), virtualVault.getOwner().getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
         ResultSet rs = query.getResultSet();
@@ -116,6 +117,15 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
 
         //Chiusura query
         queryDelete.close();
+    }
+
+    public void getBalanceFromVault(Vault vault) throws Exception{
+        //Query per l'aggiunta di un virtualvault
+        DBQuery querygetBalance = DatabaseUtil.getInstance().createQuery(GET_BALANCE_FROM_VAULT, vault.getID(), vault.getOwner().getId());
+        DatabaseUtil.getInstance().executeQuery(querygetBalance);
+
+        //Chiusura query
+        querygetBalance.close();
     }
 
 
