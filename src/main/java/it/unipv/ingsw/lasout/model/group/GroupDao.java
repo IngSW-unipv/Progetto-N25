@@ -50,6 +50,7 @@ public class GroupDao implements IGroupDao {
         } catch (Exception e) {
             System.out.println("la droga fa male, ma male male "+e.getMessage());
             throw new RuntimeException(e);
+
         }
     }
 

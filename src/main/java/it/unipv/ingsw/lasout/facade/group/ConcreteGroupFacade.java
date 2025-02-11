@@ -24,7 +24,7 @@ public class ConcreteGroupFacade implements GroupFacade {
 
     private IGroupDao groupDao;
 
-    private ConcreteGroupFacade() {
+    public ConcreteGroupFacade() {
         Properties properties  = new Properties();
         try {
             properties.load(LaVaultFacade.class.getResourceAsStream("/app.properties"));
@@ -140,10 +140,9 @@ public class ConcreteGroupFacade implements GroupFacade {
 
     @Override
     public boolean invite(Group group, User user) {
-        if (!group.isAdmin(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser())) throw new ExecutorNotAdminException("addUserToGroup must be admin");
-        //return getInstance().getNotifyFacade().sendInviteGroupRequest(group, user);
-        //TODO cambiare return
-        return true;
+        if (!group.isAdmin(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser()))
+            throw new ExecutorNotAdminException("addUserToGroup must be admin");
+        return LaVaultFacade.getInstance().getNotifyFacade().sendInviteGroupRequest(group, user);
     }
 
     @Override
