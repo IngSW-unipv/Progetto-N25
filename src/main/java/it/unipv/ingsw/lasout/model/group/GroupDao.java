@@ -3,19 +3,26 @@ package it.unipv.ingsw.lasout.model.group;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.facade.LaVaultFacade;
+import it.unipv.ingsw.lasout.facade.notify.NotifyFacade;
 import it.unipv.ingsw.lasout.model.group.exception.CantDeleteException;
 import it.unipv.ingsw.lasout.model.group.exception.CantSaveException;
 import it.unipv.ingsw.lasout.model.group.exception.NoResoultException;
 import it.unipv.ingsw.lasout.model.group.spesa.ISpesaDao;
+import it.unipv.ingsw.lasout.model.group.spesa.Spesa;
 import it.unipv.ingsw.lasout.model.group.spesa.SpesaDao;
 import it.unipv.ingsw.lasout.model.user.User;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class GroupDao implements IGroupDao {
+
+    private ISpesaDao spesaDao;
 
     /**
      * Istanza singola del GroupDao (implementazione singleton)
@@ -33,11 +40,19 @@ public class GroupDao implements IGroupDao {
     }
 
     /**
-     * Rendo il costruttore privato
+     * Rendo il costruttore privato e creo un istanza con un factory di ISpesaDao
      */
-    private GroupDao() {
-        super();
+    public GroupDao()  {
+        try {
+            Properties properties  = new Properties();
+            properties.load(LaVaultFacade.class.getResourceAsStream("/app.properties"));
+            this.spesaDao = (ISpesaDao) Class.forName(properties.getProperty("dao.spesa")).getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            System.out.println("la droga fa male, ma male male "+e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
+
 
     private static final String GET_GROUP_FROM_ID = "SELECT * FROM £group£ WHERE id = ?";
     private static final String GAT_ALL_GROUP = "SELECT * FROM £group£";
@@ -69,7 +84,7 @@ public class GroupDao implements IGroupDao {
         group.setName(rs.getString("name"));
         group.setAdmin(new User(rs.getInt("user_id")));
         group.setMembers(members(new Group(rs.getInt("id"))));
-        group.setSpese(SpesaDao.getInstance().getGroupSpese(new Group(rs.getInt("id"))));
+        group.setSpese(spesaDao.getGroupSpese(new Group(rs.getInt("id"))));
 
         query.close();
         return group;
@@ -92,7 +107,7 @@ public class GroupDao implements IGroupDao {
             group.setName(rs.getString("name"));
             group.setAdmin(new User(rs.getInt("admin")));
             group.setMembers(members(new Group(rs.getInt("id"))));
-            group.setSpese(ISpesaDao.getIstance().getGroupSpese(new Group(rs.getInt("id"))));
+            group.setSpese(spesaDao.getGroupSpese(new Group(rs.getInt("id"))));
             groups.add(group);
         }
 
@@ -147,8 +162,7 @@ public class GroupDao implements IGroupDao {
         //INSERT nella tabella usergroup
         saveAssociation(group);
         for (int i = 0; group.getSpese().size() > i; i++) {
-            SpesaDao.getInstance().save(group.getSpese().get(i));
-            System.out.println("passo" + i);
+            spesaDao.save(group.getSpese().get(i));
         }
         query.close();
     }
@@ -239,6 +253,14 @@ public class GroupDao implements IGroupDao {
             if (rs != null) throw new CantSaveException("can't save association");
         }
         if (query != null) query.close();
+    }
+
+    public ISpesaDao getSpesaDao() {
+        return spesaDao;
+    }
+
+    public void setSpesaDao(ISpesaDao spesaDao) {
+        this.spesaDao = spesaDao;
     }
 }
 

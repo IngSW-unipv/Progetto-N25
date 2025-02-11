@@ -111,4 +111,12 @@ public interface GroupFacade {
      */
     List<Spesa> getSpeseFromGroup(Group group);
 
+    /**
+     *Invia la richiesta di entrare in un gruppo ad un utente, generando la notifica
+     * @param group carry conl'id a cui si vuole aggiungiere l'user
+     * @param user carry conl'id del user inviato
+     * @return
+     */
+    boolean invite(Group group, User user);
+
 }

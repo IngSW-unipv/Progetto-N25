@@ -1,24 +1,39 @@
 package it.unipv.ingsw.lasout.facade.group;
 
+import io.github.palexdev.materialfx.effects.ripple.base.IRippleGenerator;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.facade.exception.ExecutorNotAdminException;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
+import it.unipv.ingsw.lasout.model.group.IGroupDao;
+import it.unipv.ingsw.lasout.model.group.spesa.ISpesaDao;
 import it.unipv.ingsw.lasout.model.group.spesa.Spesa;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
 
 import java.io.IOException;
+import java.io.SyncFailedException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 public class ConcreteGroupFacade implements GroupFacade {
 
+    private IGroupDao groupDao;
+
     private ConcreteGroupFacade() {
+        Properties properties  = new Properties();
+        try {
+            properties.load(LaVaultFacade.class.getResourceAsStream("/app.properties"));
+            this.groupDao = (IGroupDao) Class.forName(properties.getProperty("dao.group")).getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     private static ConcreteGroupFacade instance;
 
@@ -33,7 +48,7 @@ public class ConcreteGroupFacade implements GroupFacade {
     @Override
     public boolean newGroup(Group group) {
         try {
-            GroupDao.getInstance().save(group);
+            groupDao.save(group);
         } catch (Exception e) {
             return false;
         }
@@ -43,7 +58,7 @@ public class ConcreteGroupFacade implements GroupFacade {
     @Override
     public Group getGroup(Group group) {
         try {
-            return GroupDao.getInstance().get(group);
+            return groupDao.get(group);
         } catch (Exception e) {
             return null;
         }
@@ -52,7 +67,7 @@ public class ConcreteGroupFacade implements GroupFacade {
     @Override
     public boolean editGroup(Group group) {
         try {
-            GroupDao.getInstance().update(group);
+            groupDao.update(group);
         } catch (Exception e) {
             return false;
         }
@@ -62,7 +77,7 @@ public class ConcreteGroupFacade implements GroupFacade {
     @Override
     public boolean deleteGroup(Group group) {
         try {
-            GroupDao.getInstance().delete(group);
+            groupDao.delete(group);
         } catch (Exception e) {
             return false;
         }
@@ -114,14 +129,20 @@ public class ConcreteGroupFacade implements GroupFacade {
     public boolean addUserToGroup(Group group, User user) {
         Group g;
         try {
-            if (!group.isAdmin(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser()))
-                throw new ExecutorNotAdminException("addUserToGroup must be admin");
             g = getGroup(group);
             g.addMember(user);
             editGroup(g);
         } catch (Exception e) {
             return false;
         }
+        return true;
+    }
+
+    @Override
+    public boolean invite(Group group, User user) {
+        if (!group.isAdmin(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser())) throw new ExecutorNotAdminException("addUserToGroup must be admin");
+        //return getInstance().getNotifyFacade().sendInviteGroupRequest(group, user);
+        //TODO cambiare return
         return true;
     }
 
@@ -215,17 +236,6 @@ public class ConcreteGroupFacade implements GroupFacade {
         System.out.println(ConcreteGroupFacade.getInstance().addSpesaToGroup(new Group(7), new Spesa(new User(3), new Group(7), 100, "prova2")));
 
         System.out.println(ConcreteGroupFacade.getInstance().remuveSpesaFromGroup(new Group(7), new Spesa(4)));
-
-
-//        List<User> userList=new ArrayList<>();
-//
-//        userList.add(UserDAO.getInstance().get(new User(1)));
-//        userList.add(UserDAO.getInstance().get(new User(2)));
-//        userList.add(UserDAO.getInstance().get(new User(3)));
-//
-//        System.out.println(ConcreteGroupFacade.getInstance().removeUserFromGroup(new Group(1), userList));
-//        //ConcreteGroupFacade.getInstance().addUserToGroup(new Group(1), new User(3));
-//        //System.out.println(ConcreteGroupFacade.getInstance().leaveGroup(new Group(1), new User(3)));
 
 
     }

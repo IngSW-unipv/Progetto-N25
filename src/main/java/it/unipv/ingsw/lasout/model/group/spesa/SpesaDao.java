@@ -27,7 +27,7 @@ public class SpesaDao implements ISpesaDao {
         return INSTANCE;
     }
 
-    private SpesaDao() {
+    public SpesaDao() {
         super();
     }
 

@@ -6,6 +6,7 @@ import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
+import it.unipv.ingsw.lasout.model.group.IGroupDao;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.notify.NotifyDAO;
 import it.unipv.ingsw.lasout.model.user.exception.UserAlreadyExistException;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO implements IDao<User> {
+
 
     /**
      * Istanza singola del GroupDao (implementazione singleton)
