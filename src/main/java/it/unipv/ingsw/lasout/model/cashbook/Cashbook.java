@@ -1,6 +1,8 @@
 package it.unipv.ingsw.lasout.model.cashbook;
 
+import it.unipv.ingsw.lasout.model.transaction.ModifiableTransaction;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
+import it.unipv.ingsw.lasout.model.transaction.exception.CannotEditTransactionException;
 
 import java.util.List;
 
@@ -71,8 +73,12 @@ public class Cashbook {
     }
 
 
-    public void removeTransaction(Transaction transaction) {
-        transactionList.remove(transaction);
+    public void removeTransaction(Transaction transaction) throws CannotEditTransactionException {
+        try{
+            transactionList.remove((ModifiableTransaction)transaction);
+        } catch (Exception e) {
+            throw new CannotEditTransactionException();
+        }
     }
 
     public void addTransaction(Transaction transaction) {

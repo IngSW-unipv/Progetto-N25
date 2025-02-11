@@ -29,7 +29,7 @@ public class CashbookDAO implements ICashbookDAO {
     /**
      * Rendo il costruttore privato
      */
-    private CashbookDAO(){
+    public CashbookDAO(){
         super();
     }
 
