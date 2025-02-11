@@ -1,0 +1,21 @@
+@import '../fonts/Fonts.css';
+@import 'MFXColors.css';
+
+
+
+.root{
+
+
+    -fx-background-color: white;
+
+}
+
+.nav-pane{
+
+    -fx-background-color: white;
+
+}
+
+.btn-active{
+    -fx-text-fill: -mfx-purple;
+}

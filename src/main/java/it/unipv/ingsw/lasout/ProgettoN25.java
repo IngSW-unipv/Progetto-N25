@@ -50,7 +50,7 @@ public class ProgettoN25 extends Application {
                 .build()
                 .setGlobal();
 
-        scene = new Scene(loadFXML("primary"));
+        scene = new Scene(loadFXML("it/unipv/ingsw/lasout/view/home/home"));
         stage.setScene(scene);
         stage.show();
     }

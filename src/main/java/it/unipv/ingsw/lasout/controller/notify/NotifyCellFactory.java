@@ -125,6 +125,7 @@ public class NotifyCellFactory extends MFXListCell<Notify> {
         pane.prefWidthProperty().bind(this.widthProperty());
 
 
+
         text.setText(data.getDescription());
         getChildren().add(node);
 

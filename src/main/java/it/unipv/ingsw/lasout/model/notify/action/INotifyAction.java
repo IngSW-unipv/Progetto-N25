@@ -6,13 +6,10 @@ import javafx.scene.layout.HBox;
 public interface INotifyAction {
 
 
-    void accept();
     void build(HBox information, HBox footer);
     void load(Notify notify) throws Exception;
     void delete(Notify notify) throws Exception;
     void save(Notify notify) throws Exception;
-
-
     String type();
 
 
