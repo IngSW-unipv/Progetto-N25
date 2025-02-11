@@ -1,13 +1,21 @@
 package it.unipv.ingsw.lasout.facade.user;
 
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
+import it.unipv.ingsw.lasout.model.user.IUserDAO;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
+import it.unipv.ingsw.lasout.util.DaoFactory;
 
 import java.sql.SQLException;
 
 public class ConcreteUserFacade implements IUserFacade {
+
+    private IUserDAO userDAO;
+
+    public ConcreteUserFacade() {
+        userDAO=DaoFactory.getUserDAO();
+    }
 
     /**
      * Metodo di aggiunta dell'account di un utente al DB
@@ -28,7 +36,7 @@ public class ConcreteUserFacade implements IUserFacade {
             di "utente non trovato" che verrà presa dal catch(UserNotFoundException e) e solo dopo esserci entrato
             potrò salvare il nuovo account dell'utente nel DB
              */
-            u = UserDAO.getInstance().userSearchIdBasedOnTheirCredentials(userCarrier);
+            u = userDAO.userSearchIdBasedOnTheirCredentials(userCarrier);
             System.out.println("Utente già presente nel sistema, metti un'altro username!");
             return false;
         } catch (SQLException sqlException) {
@@ -37,9 +45,9 @@ public class ConcreteUserFacade implements IUserFacade {
         }catch (UserNotFoundException e){
             //serve perché la "save" può lanciare un eccezione sulla query che devo gestire qua
             try {
-                UserDAO.getInstance().save(userCarrier);
+                userDAO.save(userCarrier);
                 return true;
-            }catch (SQLException sqlException){
+            }catch (Exception sqlException){
                 System.out.println(sqlException.getMessage());
             }
         }
@@ -68,13 +76,13 @@ public class ConcreteUserFacade implements IUserFacade {
              */
             if(userCarrier.getUsername()==null && userCarrier.getEmail()!=null) userCarrier.setInsertEmail(true);
 
-            u = UserDAO.getInstance().userSearchIdBasedOnTheirCredentials(userCarrier);
+            u = userDAO.userSearchIdBasedOnTheirCredentials(userCarrier);
             if(LaVaultFacade.getInstance().getSessionFacade().isLogged()){
                 /*
                 dato che il metodo delete cancella la tupla controllando l'id di un certo user devo andare a prendere l'id
                 dell'utente vero e proprio con le sue credenziali che mi viene passato (userCarrier)
                  */
-                UserDAO.getInstance().delete(u);
+                userDAO.delete(u);
                 LaVaultFacade.getInstance().getSessionFacade().logout();
                 return true;
             }
@@ -83,6 +91,8 @@ public class ConcreteUserFacade implements IUserFacade {
             return false;
         }catch (SQLException sqlException){
             System.out.println(sqlException.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         return false;
     }
@@ -105,12 +115,12 @@ public class ConcreteUserFacade implements IUserFacade {
             if(userCarrier.getUsername()==null && userCarrier.getEmail()!=null) userCarrier.setInsertEmail(true);
 
             //controlla che l'utente sia registrato e restituisce un utenteFittizio col suo id
-            u = UserDAO.getInstance().userSearchIdBasedOnTheirCredentials(userCarrier);
+            u = userDAO.userSearchIdBasedOnTheirCredentials(userCarrier);
             //modifico la password di questo utenti fittizio (quindi ora avrà l'id dell'utente originale e la nuova password)
             u.setPassword(newPassword);
             //System.out.println(u);
             //solo dopo esser stato trovato nel DB l'utente può aggiornare la sua password
-            UserDAO.getInstance().update(u);
+            userDAO.update(u);
             return true;
         }catch (UserNotFoundException e){
             System.out.println(e.getMessage());
@@ -118,6 +128,8 @@ public class ConcreteUserFacade implements IUserFacade {
         }catch (SQLException sqlException){
             System.out.println(sqlException.getMessage());
             return false;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

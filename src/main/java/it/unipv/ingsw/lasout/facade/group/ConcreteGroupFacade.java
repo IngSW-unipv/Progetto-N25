@@ -11,6 +11,7 @@ import it.unipv.ingsw.lasout.model.group.spesa.ISpesaDao;
 import it.unipv.ingsw.lasout.model.group.spesa.Spesa;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
+import it.unipv.ingsw.lasout.util.DaoFactory;
 
 import java.io.IOException;
 import java.io.SyncFailedException;
@@ -25,13 +26,7 @@ public class ConcreteGroupFacade implements GroupFacade {
     private IGroupDao groupDao;
 
     public ConcreteGroupFacade() {
-        Properties properties  = new Properties();
-        try {
-            properties.load(LaVaultFacade.class.getResourceAsStream("/app.properties"));
-            this.groupDao = (IGroupDao) Class.forName(properties.getProperty("dao.group")).getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        groupDao= DaoFactory.getGroupDAO();
     }
 
 

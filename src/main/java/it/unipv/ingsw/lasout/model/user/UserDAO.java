@@ -1,13 +1,10 @@
 package it.unipv.ingsw.lasout.model.user;
 
 
-import it.unipv.ingsw.lasout.dao.IDao;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
-import it.unipv.ingsw.lasout.model.group.IGroupDao;
-import it.unipv.ingsw.lasout.model.notify.INotifyDAO;
 import it.unipv.ingsw.lasout.model.notify.MySQLNotifyDAO;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.user.exception.UserAlreadyExistException;
@@ -18,7 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDAO implements IDao<User> {
+public class UserDAO implements IUserDAO {
 
 
     /**
@@ -120,7 +117,7 @@ public class UserDAO implements IDao<User> {
         List<Group> groups = groupsOfUser(user);
         savedUser.setGroups(groups);
 
-        savedUser.setNotifies(getNotifications(user));
+       // savedUser.setNotifies(getNotifications(user));
         return savedUser;
     }
 
@@ -236,6 +233,7 @@ public class UserDAO implements IDao<User> {
      * @param user utente che avrà una determinata lista di amici
      * @return la lista di amici
      */
+    @Override
     public List<User> getFriends(User user){
 
         List<User> friends = new ArrayList<>();
@@ -250,6 +248,7 @@ public class UserDAO implements IDao<User> {
      * @return la lista delle notifiche
      * @throws Exception eccezione lanciata dalla classe NotifyDAO
      */
+    @Override
     public List<Notify> getNotifications(User user) throws Exception {
 
         return MySQLNotifyDAO.getInstance().notifiesOf(user);
@@ -263,6 +262,7 @@ public class UserDAO implements IDao<User> {
      * @return
      * @throws Exception
      */
+    @Override
     public List<Group> groupsOfUser(User user) throws SQLException, UserNotFoundException {
         DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_GROUPS_OF_A_USER, user.getId());
 
@@ -296,6 +296,7 @@ public class UserDAO implements IDao<User> {
      * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
      * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente con le credenziali che ha dato
      */
+    @Override
     public User userSearchIdBasedOnTheirCredentials(User user) throws SQLException, UserNotFoundException {
         User fictitiousUser = null;
 
@@ -318,7 +319,8 @@ public class UserDAO implements IDao<User> {
      * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
      * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente con le credenziali che ha dato
      */
-    private User userSearchIdBasedOnTheirUsernameAndPassword(User user) throws SQLException, UserNotFoundException {
+    @Override
+    public User userSearchIdBasedOnTheirUsernameAndPassword(User user) throws SQLException, UserNotFoundException {
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_USERNAME_PASSWORD, user.getUsername(), user.getPassword());
 
@@ -347,7 +349,8 @@ public class UserDAO implements IDao<User> {
      * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
      * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente con le credenziali che ha dato
      */
-    private User userSearchIdBasedOnTheirEmailAndPassword(User user) throws SQLException, UserNotFoundException {
+    @Override
+    public User userSearchIdBasedOnTheirEmailAndPassword(User user) throws SQLException, UserNotFoundException {
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_EMAIL_PASSWORD, user.getEmail(), user.getPassword());
 
@@ -378,7 +381,8 @@ public class UserDAO implements IDao<User> {
      * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
      * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente con le credenziali che ha dato
      */
-    private User userNotSearchedForCreateAccount(User user) throws SQLException, UserNotFoundException {
+    @Override
+    public User userNotSearchedForCreateAccount(User user) throws SQLException, UserNotFoundException {
 
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_CREDENTIALS_FOR_CREATING_ACCOUNT, user.getUsername(), user.getEmail(), user.getPassword());

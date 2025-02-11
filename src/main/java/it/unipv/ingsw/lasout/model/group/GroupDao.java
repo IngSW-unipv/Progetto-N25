@@ -44,7 +44,7 @@ public class GroupDao implements IGroupDao {
      * Rendo il costruttore privato e creo un istanza con un factory di ISpesaDao
      */
     public GroupDao()  {
-        spesaDao = DaoFactory.getSpesaDAO();
+        spesaDao= DaoFactory.getSpesaDAO();
     }
 
 
