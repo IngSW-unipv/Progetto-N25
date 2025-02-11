@@ -1,6 +1,8 @@
 package it.unipv.ingsw.lasout.model.notify;
 
+import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.InviteGroupRequestNotifyAction;
 import it.unipv.ingsw.lasout.model.user.User;
 
 public class Notify {
@@ -12,6 +14,10 @@ public class Notify {
 
     //Uso una HAS-A perchè mi è più versalite di una generalizzazione, non fa parte strettamente del dominio
     private INotifyAction notifyAction;
+
+    public Notify() {
+    }
+
 
     public Notify(Long id) {
         this.id = id;
@@ -69,5 +75,77 @@ public class Notify {
 
     public String getNotifyType() {
         return notifyAction.type();
+    }
+
+
+    public static class Builder {
+
+        protected User sendTo;
+        protected INotifyAction action;
+        protected String description;
+        protected Long id;
+
+        public static Builder empty(){
+            return new GroupBuilder();
+        }
+        public static GroupBuilder groupRequestNotify(){
+            return new GroupBuilder();
+        }
+
+        public Builder to(User  user){
+            this.sendTo = user;
+            return this;
+        }
+
+        public Builder  description(String description){
+            this.description = description;
+            return this;
+        }
+
+        public Builder id(long id){
+            this.id = id;
+            return this;
+        }
+
+        public Notify build(){
+            Notify notify = new Notify();
+            notify.setUser(sendTo);
+            notify.setDescription(description);
+            notify.setId(id);
+            return notify;
+        }
+
+        public static class GroupBuilder extends Builder{
+
+            private User user;
+            private Group group;
+
+            public GroupBuilder() {
+                this.action = new InviteGroupRequestNotifyAction();
+            }
+
+            public GroupBuilder sendTo(User user){
+                this.user = user;
+                return this;
+            }
+
+            public GroupBuilder group(Group group){
+                this.group = group;
+                return this;
+            }
+
+            public Notify build(){
+
+                Notify notify = super.build();
+                notify.setUser(user);
+                notify.setNotifyAction(action);
+                return notify;
+            }
+
+
+        }
+
+
+
     }
 }

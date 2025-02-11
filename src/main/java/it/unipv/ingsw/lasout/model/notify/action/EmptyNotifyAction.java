@@ -6,12 +6,7 @@ import javafx.scene.layout.HBox;
 
 public class EmptyNotifyAction implements INotifyAction{
 
-
-
-    @Override
-    public void accept() {
-
-    }
+    private Notify notify;
 
     @Override
     public void build(HBox information, HBox box) {
@@ -37,6 +32,16 @@ public class EmptyNotifyAction implements INotifyAction{
     @Override
     public void save(Notify notify) throws Exception {
 
+    }
+
+    @Override
+    public Notify getNotify() {
+        return notify;
+    }
+
+    @Override
+    public void setNotify(Notify notify) {
+        this.notify = notify;
     }
 
     @Override

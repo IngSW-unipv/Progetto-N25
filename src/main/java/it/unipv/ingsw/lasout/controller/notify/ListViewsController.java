@@ -4,7 +4,6 @@ import io.github.palexdev.materialfx.controls.MFXListView;
 import io.github.palexdev.materialfx.utils.others.FunctionalStringConverter;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.notify.Notify;
-import it.unipv.ingsw.lasout.model.notify.NotifyDAO;
 import it.unipv.ingsw.lasout.model.user.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -45,6 +44,8 @@ public class ListViewsController implements Initializable {
         notifiesList.setCellFactory(person -> new NotifyCellFactory(notifiesList, person));
         notifiesList.features().enableBounceEffect();
         notifiesList.features().enableSmoothScrolling(0.5);
+
+
     }
 
 

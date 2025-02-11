@@ -12,6 +12,7 @@ import it.unipv.ingsw.lasout.model.group.spesa.ISpesaDao;
 import it.unipv.ingsw.lasout.model.group.spesa.Spesa;
 import it.unipv.ingsw.lasout.model.group.spesa.SpesaDao;
 import it.unipv.ingsw.lasout.model.user.User;
+import it.unipv.ingsw.lasout.util.DaoFactory;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -43,15 +44,7 @@ public class GroupDao implements IGroupDao {
      * Rendo il costruttore privato e creo un istanza con un factory di ISpesaDao
      */
     public GroupDao()  {
-        try {
-            Properties properties  = new Properties();
-            properties.load(LaVaultFacade.class.getResourceAsStream("/app.properties"));
-            this.spesaDao = (ISpesaDao) Class.forName(properties.getProperty("dao.spesa")).getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            System.out.println("la droga fa male, ma male male "+e.getMessage());
-            throw new RuntimeException(e);
-
-        }
+        spesaDao = DaoFactory.getSpesaDAO();
     }
 
 

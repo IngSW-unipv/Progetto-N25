@@ -3,6 +3,7 @@ package it.unipv.ingsw.lasout.model.notify.action;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
@@ -11,7 +12,10 @@ import javafx.scene.layout.HBox;
 
 import java.sql.ResultSet;
 
-public class AcceptFriendRequestNotifyAction implements INotifyAction {
+public class FriendRequestNotifyAction implements INotifyAction {
+
+
+
 
     private static final String QUERY_LOAD_1 = "SELECT *" +
             " FROM \\'friendnotify\\'" +
@@ -24,9 +28,10 @@ public class AcceptFriendRequestNotifyAction implements INotifyAction {
     private static final String QUERY_SAVE = "INSERT INTO \\'friendnotify\\'" +
             " (id, to_user_id, from_user_id) VALUES (?, ?, ?)";
 
+
+    private Notify notify;
     private User from;
     private User to;
-
 
 
     public void setFrom(User from) {
@@ -38,10 +43,6 @@ public class AcceptFriendRequestNotifyAction implements INotifyAction {
     }
 
 
-    @Override
-    public void accept() {
-
-    }
 
     @Override
     public void build(HBox information, HBox footer) {
@@ -59,6 +60,12 @@ public class AcceptFriendRequestNotifyAction implements INotifyAction {
 
 
         MFXButton accetta  = new MFXButton("Accetta");
+
+        accetta.setOnAction(listener->{
+
+
+        });
+
         MFXButton rifiuta  = new MFXButton("Rifiuta");
         footer.getChildren().addAll(accetta,  rifiuta);
 
@@ -106,6 +113,16 @@ public class AcceptFriendRequestNotifyAction implements INotifyAction {
             DatabaseUtil.getInstance().executeQuery(dbQuery);
         }
         dbQuery.close();
+    }
+
+    @Override
+    public Notify getNotify() {
+        return null;
+    }
+
+    @Override
+    public void setNotify(Notify notify) {
+        this.notify = notify;
     }
 
     @Override

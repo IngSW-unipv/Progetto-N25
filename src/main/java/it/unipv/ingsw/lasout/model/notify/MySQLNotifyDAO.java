@@ -5,6 +5,7 @@ import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.dao.IDao;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.persistance.MySQLEmptyNotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.notify.factory.AbstractNotifyActionFactory;
 import it.unipv.ingsw.lasout.model.notify.factory.EmptyNotifyActionFactory;
 import it.unipv.ingsw.lasout.model.user.User;
@@ -19,7 +20,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Logger;
 
-public class NotifyDAO implements IDao<Notify> {
+public class MySQLNotifyDAO implements INotifyDAO {
 
 
     private static final String QUERY_GET_RAW_NOTIFY_1 =
@@ -45,15 +46,16 @@ public class NotifyDAO implements IDao<Notify> {
 
 
 
-    private static final Logger LOGGER = Logger.getLogger(NotifyDAO.class.getName());
-    private static final NotifyDAO INSTANCE = new NotifyDAO();
-    public static NotifyDAO getInstance() {
+    private static final Logger LOGGER = Logger.getLogger(MySQLNotifyDAO.class.getName());
+    private static final MySQLNotifyDAO INSTANCE = new MySQLNotifyDAO();
+    public static MySQLNotifyDAO getInstance() {
         return INSTANCE;
     }
 
     private final Map<String, Class<?>> classes = new HashMap<>();
+    private final Map<String, Class<?>> persistence = new HashMap<>();
 
-    private NotifyDAO() {
+    public MySQLNotifyDAO() {
 
         populateMap();
 
@@ -63,9 +65,22 @@ public class NotifyDAO implements IDao<Notify> {
     private void populateMap(){
         Properties properties = new Properties();
         try {
-            properties.load(NotifyDAO.class.getResourceAsStream("/factories.properties"));
+            properties.load(MySQLNotifyDAO.class.getResourceAsStream("/factories.properties"));
         } catch (IOException e) {
             LOGGER.severe("Could not load notify factories");
+        }
+        properties.forEach((key, value) -> {
+            try {
+                classes.put((String) key, Class.forName(value.toString()));
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        try {
+            properties.load(MySQLNotifyDAO.class.getResourceAsStream("/notifyperistence.properties"));
+        } catch (IOException e) {
+            LOGGER.severe("Could not load notify action persistence");
         }
         properties.forEach((key, value) -> {
             try {
@@ -80,6 +95,13 @@ public class NotifyDAO implements IDao<Notify> {
     private Class<?> getClass(String key){
         return classes.getOrDefault(key, EmptyNotifyActionFactory.class);
     }
+    private Class<?> getPersistenceClass(String key){
+        return persistence.getOrDefault(key, MySQLEmptyNotifyActionPersistence.class);
+    }
+
+
+
+
 
     @Override
     public Notify getRaw(Notify notify) throws Exception {
@@ -101,7 +123,9 @@ public class NotifyDAO implements IDao<Notify> {
         Notify returnNotify  = new Notify(id);
         returnNotify.setUser(user);
         returnNotify.setDescription(description);
-        iiNotifyAction.load(returnNotify);
+
+        //iiNotifyAction.load(returnNotify);
+
         returnNotify.setNotifyAction(iiNotifyAction);
 
         query.close();
@@ -176,6 +200,7 @@ public class NotifyDAO implements IDao<Notify> {
     public void save(Notify notify) throws Exception {
 
 
+        //TODO: if null
         DBQuery query =  DBQuery.Builder.create()
                 .query(SELECT_TYPE)
                 .params( notify.getId())

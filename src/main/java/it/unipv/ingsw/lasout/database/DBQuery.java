@@ -48,6 +48,7 @@ public class DBQuery {
         flush();
     }
 
+
     public Connection getConnection() {
         return connection;
     }

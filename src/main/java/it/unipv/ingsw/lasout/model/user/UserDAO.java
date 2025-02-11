@@ -7,8 +7,9 @@ import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
 import it.unipv.ingsw.lasout.model.group.IGroupDao;
+import it.unipv.ingsw.lasout.model.notify.INotifyDAO;
+import it.unipv.ingsw.lasout.model.notify.MySQLNotifyDAO;
 import it.unipv.ingsw.lasout.model.notify.Notify;
-import it.unipv.ingsw.lasout.model.notify.NotifyDAO;
 import it.unipv.ingsw.lasout.model.user.exception.UserAlreadyExistException;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 
@@ -251,7 +252,7 @@ public class UserDAO implements IDao<User> {
      */
     public List<Notify> getNotifications(User user) throws Exception {
 
-        return NotifyDAO.getInstance().notifiesOf(user);
+        return MySQLNotifyDAO.getInstance().notifiesOf(user);
 
     }
 
