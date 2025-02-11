@@ -31,9 +31,9 @@
 | Attore primario: utente |
 | Attore secondario: nessuno |
 | Precondizioni: l’utente deve aver creato l'account (deve aver effettuato la registrazione) |
-| Sequenza degli eventi principali: L’utente apre l’applicazione L’utente cliccando il tasto “login” inserisce username, email, password Il sistema verifica che le informazioni siano valide e che siano presenti nel server L’utente viene fatto accedere all’applicazione |
+| Sequenza degli eventi principali: L’utente apre l’applicazione L’utente cliccando il tasto “login” inserisce username-password o email-password Il sistema verifica che le informazioni siano valide e che siano presenti nel server L’utente viene fatto accedere all’applicazione |
 | Postcondizioni: l’utente si trova nella schermata principale dell’applicazione |
-| Sequenza di eventi alternativi: L’utente cerca di effettuare il login senza essersi prima registrato Il server manda un messaggio d’errore dicendo che lo username inserito non è presente all’interno del sistema La richiesta di login da parte dell’utente viene respinta e viene rimandato alla pagina del login L’utente cerca di effettuare il login con password errata, anche in questo caso verrà rimandato alla pagina di login |
+| Sequenza di eventi alternativi: L’utente cerca di effettuare il login senza essersi prima registrato Il server manda un messaggio d’errore dicendo che lo username o email (associato alla password) inserito non è presente all’interno del sistema La richiesta di login da parte dell’utente viene respinta e viene rimandato alla pagina del login L’utente cerca di effettuare il login con password errata, anche in questo caso verrà rimandato alla pagina di login |
 
 | Caso d’uso 2: Gestione Vault |
 | :---- |
@@ -61,7 +61,7 @@
 | Sequenza degli eventi principali: L’utente si reca nella sezione: ”Vault” L’utente seleziona l’opzione per depositare denaro sul Vault Seleziona il metodo di pagamento tra quelli registrati L’utente specifica l’importo  L’utente conferma l’operazione Viene inviata alla banca una richiesta di pagamento al metodo selezionato La banca approva la transazione Il saldo del Vault verrà ricaricato |
 | Postcondizioni: Il Vault verrà ricaricato con l’importo selezionato |
 | Sequenza di eventi alternativi:  La banca rifiuta la transazione Il saldo del Vault rimarrà invariato il saldo della carta è insufficiente Il saldo del Vault rimarrà invariato |
-| **Caso d’uso 2.5: Prelievo dal Vault** |
+| **Caso d’uso 2.4: Prelievo dal Vault** |
 | Breve descrizione: l’utente preleva denaro dal Vault per inviarlo ad una carta o un conto tra quelli memorizzati (registrati) |
 | Attore primario: utente |
 | Attore secondario: banca |
@@ -69,7 +69,7 @@
 | Sequenza degli eventi principali: L’utente richiede il prelievo di un ammontare di denaro presente nel Vault Specifica la carta o conto di destinazione (precedentemente registrati) Specifica l’importo da prelevare  Viene contattato l’istituto finanziario a cui appartiene la carta o conto selezionato Viene inviato il denaro |
 | Postcondizioni: il saldo nel Vault diminuisce e il saldo del metodo di pagamento selezionato viene incrementato |
 | Sequenza di eventi alternativi: l’utente richiede di prelevare di più di quanto ci sia effettivamente sul Vault l’operazione gli verrà negata dal sistema i saldi (Vault e della carta\\conto) rimarranno invariati |
-| **Caso d’uso 2.6: Esecuzione pagamento fisico/online** |
+| **Caso d’uso 2.5: Esecuzione pagamento fisico/online** |
 | Breve descrizione: l’utente vuole eseguire un pagamento fisico o online utilizzando l’app  |
 | Attore primario: utente |
 | Attore secondario: banca |
@@ -77,7 +77,7 @@
 | Sequenza degli eventi principali:  l’utente si reca sul sito o presso il negozio fisico che supporta il metodo di pagamento selezionato viene generata la richiesta di pagamento da parte dell’iban o carta di credito del richiedente denaro l’utente approva la cessione di denaro viene inviata alla banca una richiesta di trasferimento di denaro da un conto a un altro |
 | Postcondizioni: il pagamento va a buon fine |
 | Sequenza di eventi alternativi: pagamento rifiutato |
-| **Caso d’uso 2.8: Storico movimenti del Vault** |
+| **Caso d’uso 2.6: Storico movimenti del Vault** |
 | Breve descrizione: l’utente vuole consultare lo storico delle delle spese eseguite tramite il Vault che sono state registrate nell’applicazione |
 | Attore primario: utente |
 | Attore secondario: nessuno |
@@ -96,7 +96,7 @@
 | Sequenza degli eventi principali: L’utente1 entra nell’apposita area premendo il pulsante di invio del denaro L’utente1 specifica l’importo da inviare L’utente1 conferma l’operazione Il saldo dal Vault dell’utente1 viene scalato dell’importo appena confermato e il saldo dal Vault dell'utente2 viene incrementato dell’importo inserito dall'utente La transazione viene registrata |
 | Postcondizioni: l’invio del denaro va a buon fine decrementando il saldo nel Vault dell’utente1 e incrementando quello dell’utente2  |
 | Sequenza di eventi alternativi: il denaro inviato dall’utente1 è maggiore di quello che in realtà ha nel suo Vault, allora: non viene prelevata nessuna somma dal Vault dell’utente1  il sistema invia un messaggio d’errore all’utente1 e i saldi dei Vault dei due utenti rimangono invariati |
-| **Caso d’uso 3.3: Storico delle transazioni tra 2 utenti** |
+| **Caso d’uso 3.2: Storico delle transazioni tra utenti** |
 | Breve descrizione: consente di visualizzare una lista delle transazioni tra due utenti (ricezione, invio, annullamento) |
 | Attore primario: utente1 |
 | Attori secondari: utente2 |
@@ -104,7 +104,7 @@
 | Sequenza degli eventi principali: L’utente1 entra nell’apposita sezione L’utente1 clicca sull’ utente del quale vuole conoscere lo storico delle transazioni (utente2) Il sistema genera l’elenco delle transazioni relative ai due utenti |
 | Postcondizioni: l’utente1 visualizza la lista transazioni fatte con l’utente2 |
 | Sequenza di eventi alternativi: nessuna |
-| **Caso d’uso 3.4: Generazione notifica** |
+| **Caso d’uso 3.3: Generazione notifica** |
 | Breve descrizione: l’applicazione invia una notifica all’utente (destinatario) di ricezione o richiesta importo (natura della notifica) sulla base di un altro utente (mittente) |
 | Attore primario: utente1 (mittente) |
 | Attore secondario: utente2 (destinatario) |
@@ -252,24 +252,16 @@
 | Sequenza degli eventi principali:  l’utente seleziona il VirtualVault seleziona il saldo con il quale ricaricare il VirtualVault viene controllato se il saldo da trasferire è disponibile nel Vault il denaro viene spostato sul VirtualVault |
 | Postcondizioni:  |
 | Sequenza di eventi alternativi:  |
-| **Caso d’uso 7.4: Creazione di un obiettivo (data da raggiungere)** |
-| Breve descrizione: si vuole creare un obiettivo di soldi raccolti per il VirtualVault e la data in cui deve essere raggiunto |
+| **Caso d’uso 7.4: Creazione di un obiettivo da raggiungere** |
+| Breve descrizione: si vuole creare un obiettivo di soldi da risparmiare per il VirtualVault, specificando la data entro la quale deve essere raggiunto. Il software calcolerà l’importo da versare di giorno in giorno per raggiungerlo entro la data prestabilita e questo verrà automaticamente detratto dal Vault. |
 | Attore primario: utente |
 | Attore secondario: nessuno |
 | Precondizioni:  |
 | Sequenza degli eventi principali:  viene calcolato l'obiettivo il VirtualVault viene eliminato nella data stabilita |
 | Postcondizioni:  |
 | Sequenza di eventi alternativi:  |
-| **Caso d’uso 7.5: Movimento automatico** |
-| Breve descrizione: si vuole attivare nel VirtualVault la funzionalità che permette di risparmiare trasferendo automaticamente denaro dal Vault al VirtualVault con una cadenza specificata |
-| Attore primario: utente |
-| Attore secondario: nessuno |
-| Precondizioni:  |
-| Sequenza degli eventi principali:  l’utente abilita la funzione di trasferimento automatico di denaro il denaro viene prelevato automaticamente dal Vault seguendo la cadenza specificata |
-| Postcondizioni:  |
-| Sequenza di eventi alternativi:  |
-| **Caso d’uso 7.6: Visualizzazione informazioni** |
-| Breve descrizione: si vuole visualizzare lo stato dell'obiettivo e il saldo del VirtualVault |
+| **Caso d’uso 7.5: Visualizzazione informazioni** |
+| Breve descrizione: si vuole visualizzare il saldo del VirtualVault, l'obiettivo di risparmio da raggiungere e quanto è stato già versato per raggiungerlo |
 | Attore primario: utente |
 | Attore secondario: nessuno |
 | Precondizioni:  |
@@ -280,63 +272,63 @@
 | Caso d’uso 8: CashBook |
 | :---- |
 | **Caso d’uso 8.1: Creazione di un Cashbook personale** |
-| Breve descrizione: l’utente ha la possibilità di creare una nuova lista (che chiameremo Cashbook) in cui sono elencati i suoi movimenti di denaro (simil budget e finanze) |
+| Breve descrizione: l’utente ha la possibilità di accedere alla lista di movimenti eseguiti dal Vault (questa lista sarà denominata Cashbook), e oltre a questa lista ha la possibilità di crearne ulteriori per aggiungere manualmente le transazioni eseguite in contanti (simil budget e finanze) |
 | Attore primario: utente |
 | Attore secondario: nessuno |
 | Precondizioni: l’utente deve essere registrato e aver effettuato il login |
-| Sequenza degli eventi principali: L’utente si reca nella sezione apposita dell’applicazione L’utente clicca il pulsante per la creazione del suo Cashbook personalizzato L’utente gli da un nome |
+| Sequenza degli eventi principali: L’utente si reca nella sezione apposita dell’applicazione L’utente clicca il pulsante per la creazione del suo Cashbook personalizzato L’utente gli assegna un nome |
 | Postcondizioni: il nuovo CashBook viene registrato nell’account dell’utente |
 | Sequenza di eventi alternativi:  C’è già un Cashbook con lo stesso nome che ha appena scelto allora: il sistema non gli permetterà di crearlo mandando un messaggio d’errore non verrà aggiunto nessun Cashbook all’account dell'utente |
 | **Caso d’uso 8.2: Eliminazione di un Cashbook** |
-| Breve descrizione: l’utente ha la possibilità di eliminare un Cashbook esistente |
+| Breve descrizione: l’utente ha la possibilità di eliminare un Cashbook esistente, eccetto il cashbook principale |
 | Attore primario: utente |
 | Attore secondario: nessuno |
 | Precondizioni: l’utente deve essere registrato, aver effettuato il login e che il Cashbook che vuole eliminare sia presente sul suo account |
 | Sequenza degli eventi principali:  L’utente si reca nella sezione apposita dell’applicazione L’utente clicca sul Cashbook che desidera eliminare L’utente clicca il pulsante per eliminarlo definitivamente |
 | Postcondizioni: Eliminazione del CashBook dall’account dell’utente ed eventuale trasferimento automatico dei soldi dal Cashbook appena eliminato al suo Vault |
-| Sequenza di eventi alternativi: nessuna |
+| Sequenza di eventi alternativi: L’utente prova ad eliminare il Cashbook principale L’utente viene avvertito dell’impossibilità di eseguire tale operazione |
 | **Caso d’uso 8.3: Aggiunta di un movimento** |
 | **Caso d’uso 8.3.1: Automatico** |
-| Breve descrizione: il sistema sotto l'approvazione dell’utente aggiunge in maniera  automatica una qualsiasi transazione (spesa o entrata) al Cashbook principale (quello di default) |
+| Breve descrizione: il sistema aggiunge in maniera  automatica una qualsiasi transazione (spesa o entrata) eseguita dal Vault al Cashbook principale (quello di default) |
 | Attore primario: utente |
 | Attore secondario: nessuno |
 | Precondizioni: l’utente deve essere registrato e aver effettuato il login  |
-| Sequenza degli eventi principali:  L’utente effettua una qualsiasi transazione (invio, ricezione, richiesta, pagamento di una spesa,...) L’utente si reca nella sezione apposita dell’applicazione |
-| Postcondizioni: l’utente può vedere nel Cashbook principale la spesa appena effettuata con il suo relativo importo e categoria al quale appartiene |
-| Sequenza di eventi alternativi:  L’utente decide che il movimento deve essere registrato anche in un Cashbook personalizzato deciso da lui (ovviamente precedentemente creato) e potrà vedere la transazione sia in quello principale (di default) che il quello scelto |
+| Sequenza degli eventi principali:  L’utente effettua una qualsiasi transazione (invio, ricezione, richiesta, pagamento di una spesa...) L’utente si reca nella sezione apposita dell’applicazione e visualizza il default Cashbook che conterrà l’operazione appena eseguita |
+| Postcondizioni: l’utente può vedere nel Cashbook principale la spesa appena effettuata con il suo relativo importo e categoria (detto anche tipo) al quale appartiene |
+| Sequenza di eventi alternativi:  L’utente decide che il movimento deve essere registrato anche in un Cashbook personalizzato deciso da lui (ovviamente precedentemente creato) L’utente si reca nel default Cashbook, nel quale è già stata registrata la transazione L’utente seleziona la transazione da copiare sul Cashbook personalizzato L’utente seleziona il Cashbook nel quale importare la transazione L’utente potrà vedere la transazione sia nel Cashbook principale (di default) che in quello personalizzato |
 | **Caso d’uso 8.3.2: Manuale** |
-| Breve descrizione: l’utente ha la possibilità di aggiungere manualmente un movimento di denaro al Cashbook principale (perché magari ha pagato in contanti senza passare dal Vault) |
+| Breve descrizione: l’utente ha la possibilità di aggiungere manualmente un movimento di denaro al Cashbook principale o ad un Cashbook personalizzato (ad esempio per tracciare un pagamento in contanti quindi non tracciabile dal Vault) |
 | Attore primario: utente |
 | Attore secondario: nessuno |
 | Precondizioni: l’utente deve essere registrato e aver effettuato il login |
 | Sequenza degli eventi principali:  L’utente si reca nella sezione apposita dell’applicazione L’utente crea il movimento specificando: importo (obbligatorio) data (obbligatoria) categoria (obbligatoria) un breve commento (facoltativo) per indicare il motivo della spesa o il tipo di spesa svolta L’utente conferma la creazione |
-| Postcondizioni: l’utente vede nel Cashbook principale la transazione appena aggiunta con i suoi relativi dati |
-| Sequenza di eventi alternativi:  L’utente aggiunge il movimento ad un Cashbook personalizzato deciso da lui (ovviamente precedentemente creato) e potrà vedere la transazione sia in quello principale (di default) che il quello scelto L’utente non rispetta il formato o il fatto che alcuni campi (importo, data, categoria) devono essere obbligatori, allora il sistema manda un messaggio d’errore per far capire all’utente che deve modificare qualcosa rispettando anche i loro formati |
+| Postcondizioni: l’utente vede nel Cashbook principale la transazione appena aggiunta con i suoi relativi dati. |
+| Sequenza di eventi alternativi:  L’utente importa un movimento dal Cashbook principale ad un Cashbook personalizzato deciso da lui (ovviamente precedentemente creato) e potrà vedere la transazione sia in quello principale (di default) che in quello personalizzato Oppure L’utente non rispetta il formato o il fatto che alcuni campi (importo, data, categoria) devono essere obbligatori, allora il sistema manda un messaggio d’errore per far capire all’utente che deve modificare qualcosa rispettando anche i loro formati |
 | **Caso d’uso 8.4: Rimozione di un movimento** |
 | Breve descrizione: l’utente ha la possibilità di eliminare un dato movimento dal Cashbook che vuole |
 | Attore primario: utente |
 | Attore secondario: nessuno |
 | Precondizioni: l’utente deve essere registrato, aver effettuato il login e il movimento nel Cashbook che vuole eliminare deve essere effettivamente presente |
 | Sequenza degli eventi principali:  L’utente si reca nella sezione apposita dell’applicazione L’utente clicca sul Cashbook desiderato L’utente clicca sul movimento che vuole cancellare L’utente clicca il pulsante per eliminarlo definitivamente |
-| Postcondizioni: Eliminazione del movimento desiderato all’interno del CashBook scelto dall’utente |
-| Sequenza di eventi alternativi: nessuna |
+| Postcondizioni: Eliminazione del movimento desiderato all’interno del CashBook scelto dall’utente. L’eliminazione di un movimento dal Cashbook principale comporta l’eliminazione del movimento da tutti i Cashbook che importano il movimento |
+| Sequenza di eventi alternativi: L’utente prova ad eliminare un movimento Automatico L’utente riceve una segnalazione che riporta l’impossibilità di eliminare tale movimento |
 | **Caso d’uso 8.5: Modifica di un movimento** |
-| Breve descrizione: l’utente ha la possibilità di modificare i dati un dato movimento dal Cashbook che vuole |
+| Breve descrizione: l’utente vuole modificare informazioni riguardanti un movimento in un determinato Cashbook |
 | Attore primario: utente |
 | Attore secondario: nessuno |
 | Precondizioni: l’utente deve essere registrato, aver effettuato il login e il movimento nel Cashbook che vuole modificare deve essere effettivamente presente |
-| Sequenza degli eventi principali:  L’utente si reca nella sezione apposita dell’applicazione L’utente clicca sul Cashbook desiderato L’utente clicca sul movimento che vuole modificare L’utente può modificare: importo (che deve rimanere obbligatorio) data (che deve rimanere obbligatoria) categoria (che deve rimanere obbligatoria) eliminandolo, aggiungendo o togliendo parole al breve commento (che rimane facoltativo) L’utente clicca il pulsante per confermare le modifiche |
+| Sequenza degli eventi principali:  L’utente si reca nella sezione apposita dell’applicazione L’utente clicca sul Cashbook desiderato L’utente clicca sul movimento che vuole modificare L’utente può modificare, se si tratta di una transazione Manuale: importo (che deve rimanere obbligatorio) data (che deve rimanere obbligatoria) categoria (che deve rimanere obbligatoria) commento (che rimane facoltativo) L’utente clicca il pulsante per confermare le modifiche |
 | Postcondizioni: l’utente vede il movimento con i dati modificati |
-| Sequenza di eventi alternativi: l’utente non rispetta il formato o il fatto che alcuni campi (importo, data, categoria) devono essere obbligatori, allora il sistema manda un messaggio d’errore per far capire all’utente che deve modificare qualcosa rispettando anche i loro formati |
+| Sequenza di eventi alternativi: L’utente prova a modificare una transazione Automatica, in quel momento riceverà un avvertimento L’utente non rispetta il formato o il fatto che alcuni campi (importo, data, categoria) devono essere obbligatori, allora il sistema manda un messaggio d’errore per far capire all’utente che deve modificare qualcosa rispettando anche i loro formati |
 | **Caso d’uso 8.6: Visualizzazione Storico** |
-| Breve descrizione: l’utente ha la possibilità di visualizzare lo storico di un determinato Cashbook |
+| Breve descrizione: l’utente ha la possibilità di visualizzare lo storico di un determinato Cashbook esistente |
 | Attore primario: utente |
 | Attore secondario: nessuno |
-| Precondizioni: l’utente deve essere registrato, aver effettuato il login e (se vuol vedere lo storico di un Cashbook personalizzato) deve essere presente il Cashbook in questione (se invece vuole vedere lo storico del Cashbook principale allora è già presente di default) |
+| Precondizioni: l’utente deve essere registrato, aver effettuato il login e, per visualizzare lo storico di un Cashbook, questo deve essere già stato creato in passato (il Cashbook principale è sempre presente di default) |
 | Sequenza degli eventi principali:  L’utente si reca nella sezione apposita dell’applicazione L’utente clicca sul Cashbook desiderato |
 | Postcondizioni: l’utente vede lo storico del Cashbook da lui selezionato |
 | Sequenza di eventi alternativi:  |
-| **Caso d’uso 8.7: Sommario** |
+| **Caso d’uso 8.7: Filtra per data** |
 | Breve descrizione: l’utente ha la possibilità di visualizzare entrate e uscite effettuate in un periodo di tempo specificato dall’utente stesso |
 | Attore primario: utente |
 | Attore secondario: nessuno |
