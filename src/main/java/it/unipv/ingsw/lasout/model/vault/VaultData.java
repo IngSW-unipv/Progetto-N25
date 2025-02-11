@@ -3,6 +3,8 @@ package it.unipv.ingsw.lasout.model.vault;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethod;
+
 public class VaultData implements IVaultData{
 	
 	private List<PaymentMethod> paymentMethods;

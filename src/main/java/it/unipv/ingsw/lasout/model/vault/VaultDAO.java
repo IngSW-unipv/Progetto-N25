@@ -43,7 +43,7 @@ public class VaultDAO implements IVaultDAO{
 			while (result.next()) {
 		        Vault vault = new Vault();
 	
-		        // DEBUG: Stampo per vedere il valore letto dal DB
+		        
 		        int id = result.getInt("id");
 		        
 		        vault.setID(id);

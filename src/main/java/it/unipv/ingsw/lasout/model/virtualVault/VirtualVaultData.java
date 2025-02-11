@@ -1,7 +1,7 @@
 package it.unipv.ingsw.lasout.model.virtualVault;
 
 import it.unipv.ingsw.lasout.model.vault.IVaultData;
-import it.unipv.ingsw.lasout.model.vault.PaymentMethod;
+import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethod;
 
 import java.util.List;
 

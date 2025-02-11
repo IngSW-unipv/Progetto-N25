@@ -1,17 +1,21 @@
 package it.unipv.ingsw.lasout.model.vault;
 
 import it.unipv.ingsw.lasout.model.user.User;
+import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethod;
 
 import java.util.List;
 
 public class Vault implements IVault{
 	
 	private IVault vault;
+	private int id;
 	private User user;
 	private double saldo;
 	private List<PaymentMethod> methods;
 
-	public Vault(User user, double saldo, List<PaymentMethod> methods) {
+	public Vault(IVault vault, int id, User user, double saldo, List<PaymentMethod> methods) {
+		this.vault = vault;
+		this.id = id;
 		this.user = user;
 		this.saldo = saldo;
 		this.methods = methods;
@@ -19,12 +23,24 @@ public class Vault implements IVault{
 
 	public Vault() {
 	}
+	
+	public Vault(int id) {
+		this.id = id;
+	}
 
 	public Vault(IVault vault) {
         this.vault = vault;
         vault.setIVaultData(new VaultData());
     }
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public double getSaldo() {
 		return saldo;
 	}
