@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.facade.group;
 
+import it.unipv.ingsw.lasout.model.group.Debito;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.spesa.Spesa;
 import it.unipv.ingsw.lasout.model.user.User;
@@ -119,4 +120,36 @@ public interface GroupFacade {
      */
     boolean invite(Group group, User user);
 
+
+    /**
+     *  ritorna una lista di debiti di altri utenti di un gruppo verso lo user indicato
+     * @param group carry con l'id del gruppo di cui si vuole i debiti
+     * @param user carry con l'id del utente di cui si vogliono i debiti verso di lui
+     * @return lista di debiti verso l'utente inserito
+     */
+    List<Debito> getDebitFromGroupByUser(Group group, User user);
+
+
+    /**
+     *  riotorna la lista di altri utneti verso l'utente loggato di un gruppo
+     * @param group carry con l'id del gruppo da cui si vuole i debiti
+     * @return lista di debiti verso l'utente loggato
+     */
+    List<Debito> getDebitFromGroupByLogedUser(Group group);
+
+
+    /**
+     * ritorna la lista di tutti i debiti di un gruppo
+     * @param group carry con l'id del gruppo di cui si vuole la lista di debiti
+     * @return la lista di debiti del grupo inserito
+     */
+    List<Debito> getDebitiFromGroup(Group group);
+
+
+    /**
+     * Finalizza i debiti di un gruppo generando le richieste di payMe tra i vari utenti
+     * @param group carry con l'id del gruppo di cui si vuole finalizare i debiti
+     * @return
+     */
+    boolean finalizzaDebiti(Group group);
 }

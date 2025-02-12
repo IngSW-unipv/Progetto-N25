@@ -91,7 +91,15 @@ INSERT INTO cashbooktransactions (transaction_id, cashbook_id) VALUES
 
 INSERT INTO spese (user_id, group_id,amount,note) VALUES
     (1,1 , 100, 'prova1'),
-    (1,1,50,'prva2');
+    (2,1 , 36.5, 'prova1'),
+    (3,1 , 15, 'prova1'),
+    (3,1 , 19.8, 'prova1'),
+    (3,1 , 122, 'prova1'),
+    (2,1 , 13.9, 'prova1'),
+    (1,1 , 83, 'prova1'),
+    (1,1 , 56, 'prova1'),
+    (2,1,700,'prva2');
+
     
 
 INSERT INTO virtualvault (nome, user_id, balance) VALUES

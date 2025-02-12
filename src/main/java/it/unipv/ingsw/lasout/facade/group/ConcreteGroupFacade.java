@@ -1,24 +1,20 @@
 package it.unipv.ingsw.lasout.facade.group;
 
-import io.github.palexdev.materialfx.effects.ripple.base.IRippleGenerator;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.facade.exception.ExecutorNotAdminException;
+import it.unipv.ingsw.lasout.model.group.Debito;
 import it.unipv.ingsw.lasout.model.group.Group;
-import it.unipv.ingsw.lasout.model.group.GroupDao;
 import it.unipv.ingsw.lasout.model.group.IGroupDao;
-import it.unipv.ingsw.lasout.model.group.spesa.ISpesaDao;
 import it.unipv.ingsw.lasout.model.group.spesa.Spesa;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
 import it.unipv.ingsw.lasout.util.DaoFactory;
 
 import java.io.IOException;
-import java.io.SyncFailedException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 public class ConcreteGroupFacade implements GroupFacade {
@@ -77,6 +73,16 @@ public class ConcreteGroupFacade implements GroupFacade {
             return false;
         }
         return true;
+    }
+
+    public List<User> getUsersFromGroup(Group group) {
+        List<User> listauser = null;
+        try {
+            listauser= groupDao.get(group).getMembers();
+        }catch (Exception e) {
+            return null;
+        }
+        return listauser;
     }
 
 
@@ -193,6 +199,61 @@ public class ConcreteGroupFacade implements GroupFacade {
         return listaSpese;
     }
 
+    @Override
+    public List<Debito> getDebitFromGroupByUser(Group group, User user) {
+
+        List<Debito> listaDebiti = new ArrayList<>();
+        Group g = getGroup(group);
+        List<Spesa> listaSpesa = g.getSpese();
+        List<User> membri = g.getMembers();
+
+        for(User u : membri) {
+            if(!u.equals(user)) listaDebiti.add(new Debito(user, u, 0));
+        }
+
+        for(Spesa spesa : listaSpesa) {
+            if(user.equals(spesa.getEsecutore())){
+               double div= spesa.getAmount()/ membri.size();
+               for(Debito d : listaDebiti) {
+                   d.addDebito(div);
+               }
+            }
+        }
+        return listaDebiti;
+    }
+
+    @Override
+    public List<Debito> getDebitFromGroupByLogedUser(Group group){
+        return  getDebitFromGroupByUser(group,LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
+    }
+
+    @Override
+    public List<Debito> getDebitiFromGroup(Group group) {
+        List<Debito> listaDebiti = new ArrayList<>();
+        Group g = getGroup(group);
+        List<User> membri = g.getMembers();
+
+        for(User u : membri) {
+            listaDebiti.addAll(getDebitFromGroupByUser(group, u));
+        }
+        return listaDebiti;
+    }
+
+    @Override
+    public boolean finalizzaDebiti(Group group) {
+        Group g = getGroup(group);
+        if (!g.isAdmin(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser())) return false;
+        List<Debito> listaDebiti = getDebitiFromGroup(g);
+        for (Debito d : listaDebiti) {
+            LaVaultFacade.getInstance().getNotifyFacade().sendPayRequestByUser(d.getCreditore(),d.getDebitore(),d.getDebito());
+        }
+        return true;
+    }
+
+
+
+
+
 
     private static final Logger LOGGER = Logger.getLogger(ConcreteGroupFacade.class.getName());
 
@@ -230,6 +291,13 @@ public class ConcreteGroupFacade implements GroupFacade {
         System.out.println(ConcreteGroupFacade.getInstance().addSpesaToGroup(new Group(7), new Spesa(new User(3), new Group(7), 100, "prova2")));
 
         System.out.println(ConcreteGroupFacade.getInstance().remuveSpesaFromGroup(new Group(7), new Spesa(4)));
+
+
+        List<Debito> d=ConcreteGroupFacade.getInstance().getDebitiFromGroup(new Group(1));
+        for (int i=0; i<d.size(); i++){
+          System.out.println(d.get(i).getDebitore().getId()+" deve  "+d.get(i).getDebito() +" a "+ d.get(i).getCreditore().getId());
+        }
+
 
 
     }
