@@ -1,20 +1,19 @@
 package it.unipv.ingsw.lasout.util;
 
 import it.unipv.ingsw.lasout.dao.IDao;
-import it.unipv.ingsw.lasout.model.cashbook.CashbookDAO;
 import it.unipv.ingsw.lasout.model.cashbook.ICashbookDAO;
 import it.unipv.ingsw.lasout.model.group.IGroupDao;
 import it.unipv.ingsw.lasout.model.group.spesa.ISpesaDao;
 import it.unipv.ingsw.lasout.model.notify.INotifyDAO;
 import it.unipv.ingsw.lasout.model.user.IUserDAO;
 import it.unipv.ingsw.lasout.model.vault.IVaultDAO;
+import it.unipv.ingsw.lasout.model.virtualVault.IVirtualVaultDAO;
 import it.unipv.ingsw.lasout.model.virtualVault.VirtualVaultDAO;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 public class DaoFactory {
 
@@ -41,9 +40,7 @@ public class DaoFactory {
         return get(IUserDAO.class);
     }
 
-    public static VirtualVaultDAO getVirtualVaultDAO() {
-        return get(VirtualVaultDAO.class);
-    }
+    public static VirtualVaultDAO getVirtualVaultDAO() {return (VirtualVaultDAO) get(IVirtualVaultDAO.class);}
 
     public static ICashbookDAO getCashbookDAO() {
         return get(ICashbookDAO.class);
