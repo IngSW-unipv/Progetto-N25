@@ -5,16 +5,26 @@ import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.virtualVault.VirtualVault;
 import it.unipv.ingsw.lasout.model.virtualVault.VirtualVaultDAO;
+import it.unipv.ingsw.lasout.model.virtualVault.IVirtualVaultDAO;
+import it.unipv.ingsw.lasout.util.DaoFactory;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-public class VirtualVaultFacade {
+public class VirtualVaultFacade implements IVirtualVaultFacade {
+    //
+    private IVirtualVaultDAO virtualVaultDAO;
 
 
-    private VirtualVaultFacade(){}
+
+    public VirtualVaultFacade(){
+        virtualVaultDAO = DaoFactory.getVirtualVaultDAO();
+
+    }
+
     private static VirtualVaultFacade instance;
+
     public static VirtualVaultFacade getInstance(){
         if(instance==null){
             instance = new VirtualVaultFacade();
@@ -22,8 +32,7 @@ public class VirtualVaultFacade {
         return instance;
     }
 
-
-    //Creazione nuovo VirtualVault
+    @Override
     public boolean newVirtualVault(VirtualVault virtualVault, User user){
 
         try{
@@ -38,6 +47,7 @@ public class VirtualVaultFacade {
         return true;
     }
 
+    @Override
     //Serve per restituire un pojo di VirtualVault
     public boolean getVirtualVault(VirtualVault virtualVault){
         try{
@@ -47,7 +57,7 @@ public class VirtualVaultFacade {
         }
         return true;
     }
-
+    @Override
     //Serve per modificare i virtualVault
     public boolean editVirtualVault(VirtualVault virtualVault){
         try{
@@ -57,7 +67,7 @@ public class VirtualVaultFacade {
         }
         return true;
     }
-
+    @Override
     //Serve per eliminare i virtualVault
     public boolean deleteVirtualVault(VirtualVault virtualVault){
         try{
@@ -93,7 +103,7 @@ public class VirtualVaultFacade {
 
         v.setName("IL PRIMO");
         v.setOwner(new User(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().getId()));
-        v.setBalance(2000);
+        v.setBalance(7000);
 //       v2.setOwner(new User(5));
 //       v2.setID(5);
 //       v2.setBalance(2000);

@@ -1,11 +1,11 @@
 package it.unipv.ingsw.lasout.model.virtualVault;
 
-import it.unipv.ingsw.lasout.dao.IDao;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.user.IUserDAO;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
-import it.unipv.ingsw.lasout.model.vault.Vault;
+import it.unipv.ingsw.lasout.util.DaoFactory;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -14,7 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class VirtualVaultDAO implements IDao<VirtualVault> {
+public class VirtualVaultDAO implements IVirtualVaultDAO {
+    //
+    private IUserDAO userDAO;
+    //
+    public VirtualVaultDAO() {
+        userDAO = DaoFactory.getUserDAO();
+
+    }
     public static final VirtualVaultDAO INSTANCE = new VirtualVaultDAO();
     public static VirtualVaultDAO getInstance() {
         return INSTANCE;
@@ -38,7 +45,8 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
         ResultSet rs = query.getResultSet();
 
         int id = rs.getInt("ID");
-        User user = UserDAO.getInstance().get(new User(rs.getInt("user_id")));
+        User user = userDAO.get(new User(rs.getInt("user_id")));
+
         double balance = rs.getDouble("balance");
 
         VirtualVault vVault = new VirtualVault(id, user);
@@ -82,7 +90,7 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
         return virtualVaults;
     }
 
-
+    @Override
     public double getBalanceFromVault(VirtualVault virtualVault) throws Exception{
         double b = 0.0;
         DBQuery queryGetBalanceFromVault;
@@ -122,7 +130,7 @@ public class VirtualVaultDAO implements IDao<VirtualVault> {
             }
 
         }else {
-            System.out.println("Importo che vuoi inserire troppo alto  "+virtualVault.getBalance()+"\nNel vault hai a disposizione: "+VirtualVaultDAO.getInstance().getBalanceFromVault(virtualVault));
+            System.out.println("Importo che vuoi inserire troppo alto  "+virtualVault.getBalance()+"\nNel vault hai a disposizione: "+ VirtualVaultDAO.getInstance().getBalanceFromVault(virtualVault));
         }
 
 
