@@ -160,7 +160,7 @@ public class CashbookDAO implements ICashbookDAO {
         if(rs!=null)throw new Exception();
 
 
-        //INSERT nella tabella cashbooktransactions se ci sono transazioni da salvare
+        //INSERT nella tabella cashbooktransactions solo se ci sono transazioni da salvare
         if(cashbook.getTransactionList()!=null)
             saveAssociation(cashbook);
 
@@ -197,8 +197,9 @@ public class CashbookDAO implements ICashbookDAO {
         ResultSet rs = query.getResultSet();
         if(rs!=null)throw new Exception();
 
+        if(cashbook.getTransactionList()!=null)
+            deleteAssociation(cashbook);
 
-        deleteAssociation(cashbook);
         query.close();
     }
 

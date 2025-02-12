@@ -1,5 +1,7 @@
 package it.unipv.ingsw.lasout.model.transaction;
 
+import java.util.Locale;
+
 public class Transaction {
 	
 	private int id;
@@ -89,7 +91,10 @@ public class Transaction {
 		this.notes = notes;
 	}
 
-    public boolean isImmutable(){
-		return false;
+	@Override
+	public String toString() {
+		return String.format(Locale.US, "Transaction{id=%d, type=%d, amount=%.2f, date='%s', category='%s', note='%s'}",
+								id, type, amount, date, category, notes);
 	}
+
 }

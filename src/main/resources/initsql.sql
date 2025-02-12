@@ -30,7 +30,7 @@ CREATE TABLE `currentaccount`        (id INTEGER AUTO_INCREMENT, iban VARCHAR(34
 CREATE TABLE `spese`                 (id INTEGER AUTO_INCREMENT, user_id INT, group_id INT, amount DOUBLE, note VARCHAR(55), PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES `user`(id), FOREIGN KEY (group_id) REFERENCES  `group`(id) ON DELETE CASCADE);
 CREATE TABLE `paymentmethod`         (id INTEGER AUTO_INCREMENT, id_vault INTEGER, type VARCHAR(10), PRIMARY KEY(id), FOREIGN KEY (id_vault) REFERENCES vault(id));
 CREATE TABLE `cashbook`              (id INTEGER AUTO_INCREMENT, user_id INTEGER , name VARCHAR(50) NOT NULL, PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE);
-CREATE TABLE `transactions`          (id INT NOT NULL, type TINYINT NULL, amount DOUBLE NULL, category VARCHAR(50) NULL, note VARCHAR(120) NULL, PRIMARY KEY (id));
+CREATE TABLE `transactions`          (id INT NOT NULL, type TINYINT NULL, amount DOUBLE NULL, date VARCHAR(10), category VARCHAR(50) NULL, note VARCHAR(120) NULL, PRIMARY KEY (id));
 CREATE TABLE `cashbooktransactions`  (cashbook_id INT REFERENCES `cashbook`(id), transaction_id INT REFERENCES `transactions`(id), PRIMARY KEY(cashbook_id, transaction_id));
 
 
@@ -76,11 +76,11 @@ INSERT INTO cashbook (user_id, name) VALUES
     (4, 'ciao'),
     (6, 'dafult');
 
-INSERT INTO transactions (id, type, amount, category, note) VALUES
-    (1, 0, -100.00,  'Bob', 'Payment for services'),
-    (2, 1, 50.00,  'Charlie', 'Refund'),
-    (3, 1, -200.00,  'David', 'Gift'),
-    (4, 0, 75.50,  'Frank', 'Purchase');
+INSERT INTO transactions (id, type, amount, date, category, note) VALUES
+    (1, 0, -100.00, '2021',  'Bob', 'Payment for services'),
+    (2, 1, 50.00, '2021', 'Charlie', 'Refund'),
+    (3, 1, -200.00, '2021',  'David', 'Gift'),
+    (4, 0, 75.50, '2021', 'Frank', 'Purchase');
 
 INSERT INTO cashbooktransactions (transaction_id, cashbook_id) VALUES
     (1, 1),

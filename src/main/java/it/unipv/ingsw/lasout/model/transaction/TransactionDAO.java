@@ -2,7 +2,6 @@ package it.unipv.ingsw.lasout.model.transaction;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
-import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -36,10 +35,10 @@ public class TransactionDAO implements ITransactionDAO{
     private static final String GET_TRANSACTION_FROM_ID = "SELECT * FROM £transactions£ WHERE id=?;";
     private static final String GET_TRANSACTIONS_FROM_CASHBOOKTRANSACTIONS = "SELECT * FROM £cashbooktransactions£ WHERE transaction_id = ?;";
     private static final String DELETE_FROM_CASHBOOKTRANSACTIONS = "DELETE FROM £cashbooktransactions£ WHERE transaction_id = ?";
-    private static final String DELETE_TRANSACTION_FROM_ID = "DELETE FROM £transaction£ WHERE id = ?";
+    private static final String DELETE_TRANSACTION_FROM_ID = "DELETE FROM £transactions£ WHERE id = ?";
     private static final String INSERT_IN_CASHBOOKTRANSACTIONS = "INSERT INTO £cashbooktransactions£ (cashbook_id, transaction_id) VALUES(?,?)";
-    private static final String INSERT_TRANSACTION_ID = "INSERT INTO £transaction£ (id, type, amount, date, category, note) VALUES(?,?,?,?,?,?)";
-    private static final String INSERT_TRANSACTION_NOID = "INSERT INTO £transaction£ (type, amount, date, category, note) VALUES (?, ?, ?, ?, ?);";
+    private static final String INSERT_TRANSACTION_ID = "INSERT INTO £transactions£ (id, type, amount, date, category, note) VALUES(?,?,?,?,?,?)";
+    private static final String INSERT_TRANSACTION_NOID = "INSERT INTO £transactions£ (type, amount, date, category, note) VALUES (?, ?, ?, ?, ?);";
 
     /**
      * Voglio ottenere un CashBook dal DB solo tramite il suo ID
@@ -60,7 +59,8 @@ public class TransactionDAO implements ITransactionDAO{
         Transaction savedTransaction = new Transaction();
         savedTransaction.setId(resultSet.getInt("id"));
         savedTransaction.setType(resultSet.getInt("type"));
-        savedTransaction.setAmount(resultSet.getInt("amount"));
+        savedTransaction.setAmount(resultSet.getDouble("amount"));
+        savedTransaction.setDate(resultSet.getString("date"));
         savedTransaction.setCategory(resultSet.getString("category"));
         savedTransaction.setNotes(resultSet.getString("note"));
 
@@ -91,13 +91,16 @@ public class TransactionDAO implements ITransactionDAO{
 
         ResultSet rs = query.getResultSet();
         List<Transaction> transactionsList = new ArrayList<Transaction>();
+
         while(rs.next()){
             Transaction transaction = new Transaction();
             transaction.setId(rs.getInt("id"));
             transaction.setType(rs.getInt("type"));
-            transaction.setAmount(rs.getInt("amount"));
+            transaction.setAmount(rs.getDouble("amount"));
+            transaction.setDate(rs.getString("date"));
             transaction.setCategory(rs.getString("category"));
             transaction.setNotes(rs.getString("note"));
+
             transactionsList.add(transaction);
         }
 
@@ -115,10 +118,10 @@ public class TransactionDAO implements ITransactionDAO{
         DBQuery query;
 
         if(transaction.getId()!=0){
-            query = DatabaseUtil.getInstance().createQuery(INSERT_TRANSACTION_ID, transaction.getId(), transaction.getAmount(), transaction.getCategory(), transaction.getNotes());
+            query = DatabaseUtil.getInstance().createQuery(INSERT_TRANSACTION_ID, transaction.getId(), transaction.getType(), transaction.getAmount(), transaction.getDate(), transaction.getCategory(), transaction.getNotes());
         }
         else{
-            query = DatabaseUtil.getInstance().createQuery(INSERT_TRANSACTION_NOID, transaction.getAmount(), transaction.getCategory(), transaction.getNotes());
+            query = DatabaseUtil.getInstance().createQuery(INSERT_TRANSACTION_NOID, transaction.getType(), transaction.getAmount(), transaction.getDate(), transaction.getCategory(), transaction.getNotes());
         }
 
         DatabaseUtil.getInstance().executeQuery(query);
