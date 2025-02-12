@@ -9,7 +9,7 @@ public class EmailPassword implements UserCredentialsStrategy {
         User userId = new User();
         if(user.getUsername().contains("@")){
             user.setEmail(user.getUsername());
-            user.setUsername(null);
+            //user.setUsername(null);
             userId= UserDAO.getInstance().userSearchIdBasedOnTheirEmailAndPassword(user);
             return userId;
         }

@@ -4,6 +4,9 @@ import it.unipv.ingsw.lasout.model.user.EmailPassword;
 import it.unipv.ingsw.lasout.model.user.UserCredentialsStrategy;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UsernamePassword;
+import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
+
+import java.sql.SQLException;
 
 public class ConcreteSessionFacade implements ISessionFacade {
     private boolean isLoggedIn;
@@ -52,9 +55,11 @@ public class ConcreteSessionFacade implements ISessionFacade {
             UserCredentialsStrategy userCredentialsStrategy = UserCredentialsFactory.createUserCredentials(userCarrier);
              */
 
-            userCredentialsStrategy.serchUser(userCarrier);
+            this.loggedUser = userCredentialsStrategy.serchUser(userCarrier);
             isLoggedIn = true;
-        } catch (Exception sql) {
+        } catch (UserNotFoundException e) {
+            System.out.println("User not found");
+        }catch (SQLException sql){
             System.out.println(sql.getMessage());
         }
     }
@@ -74,7 +79,7 @@ public class ConcreteSessionFacade implements ISessionFacade {
         }
         else{
             isLoggedIn = true;
-            System.out.println("User non ha fatto prima il serchUser");
+            System.out.println("User has never done the login");
         }
     }
 }

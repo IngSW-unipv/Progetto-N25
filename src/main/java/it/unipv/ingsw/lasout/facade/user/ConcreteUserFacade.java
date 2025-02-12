@@ -12,33 +12,24 @@ import java.sql.SQLException;
 
 public class ConcreteUserFacade implements IUserFacade {
 
-    private IUserDAO userDAO;
+    private final IUserDAO userDAO;
 
     public ConcreteUserFacade() {
         userDAO=DaoFactory.getUserDAO();
     }
 
     /**
-     * Metodo di aggiunta dell'account di un utente al DB
+     * Metodo di aggiunta dell'account di un utente al DB.
+     * Cerco che l'utente NON sia già presente nel DB, almeno lancerà un eccezione
+     * di "utente non trovato" che verrà presa dal catch(UserNotFoundException e) e solo dopo esserci entrato
+     * potrò salvare il nuovo account dell'utente nel DB
      * @param userCarrier utente fittizio con le sue credenziali: username, password ed email
      */
     @Override
     public boolean createAccount(User userCarrier) {
-        User u= new User();
         try{
-            /*
-            faccio questo if perché poi almeno lo user sa se entrare nel metodo di ricerca con
-            username-password oppure email-password (per discriminare le due cose)
-             */
-            if(userCarrier.getUsername()==null && userCarrier.getEmail()!=null) userCarrier.setInsertEmail(true);
-
-            /*
-            cerco che l'utente che mi è stato passato NON sia già presente nel DB, almeno lancerà un eccezione
-            di "utente non trovato" che verrà presa dal catch(UserNotFoundException e) e solo dopo esserci entrato
-            potrò salvare il nuovo account dell'utente nel DB
-             */
-            u = userDAO.userNotSearchedForCreateAccount(userCarrier);
-            System.out.println("Utente già presente nel sistema, metti un'altro username!");
+            userDAO.userNotSearchedForCreateAccount(userCarrier);
+            System.out.print("User already exist, impossible to CREATE your account. Please use another username.");
             return false;
         } catch (SQLException sqlException) {
             System.out.println(sqlException.getMessage());
@@ -57,8 +48,12 @@ public class ConcreteUserFacade implements IUserFacade {
 
 
     /**
-     * Metodo di eliminazione dell'account di un certo utente
-     * @param userCarrier
+     * Metodo di eliminazione dell'account di un certo utente.
+     * Cerco l'utente con logica di discriminazione di username-password o email-password e controllo che
+     * sia presente nel DB almeno posso cancellare il suo account.
+     * Dato che il metodo delete cancella la tupla interessandosi solo dell'id di un certo user devo andare a prendere l'id
+     * dell'utente vero e proprio con le sue credenziali che mi viene passato (userCarrier)
+     * @param userCarrier utente passatomi
      *
      * TODO 1: Il sistema chiede all’utente su quale conto\carta inviare tutto il denaro del suo Vault
      *         Il sistema verifica che le informazioni siano valide
@@ -68,10 +63,8 @@ public class ConcreteUserFacade implements IUserFacade {
     @Override
     public boolean deleteAccount(User userCarrier) {
         try{
-            /*
-            cerco che l'utente che mi è stato passato (con logica di discriminazione di username-password o email-password)
-            sia presente nel DB almeno posso cancellare il suo account
-             */
+            User u=new User();
+
             UserCredentialsStrategy userCredentialsStrategy;
             if (userCarrier.getUsername().contains("@")) userCredentialsStrategy = new EmailPassword();
             else userCredentialsStrategy = new UsernamePassword();
@@ -83,27 +76,29 @@ public class ConcreteUserFacade implements IUserFacade {
             else userCredentialsStrategy = new UsernamePassword();
             */
 
-            /*
-            dato che il metodo delete cancella la tupla controllando l'id di un certo user devo andare a prendere l'id
-            dell'utente vero e proprio con le sue credenziali che mi viene passato (userCarrier)
-            */
-            userDAO.delete(userCredentialsStrategy.serchUser(userCarrier));
-            LaVaultFacade.getInstance().getSessionFacade().logout();
-            return true;
+            if(LaVaultFacade.getInstance().getSessionFacade().isLogged()){
+                u=userCredentialsStrategy.serchUser(userCarrier);
+                userDAO.delete(u);
+                LaVaultFacade.getInstance().getSessionFacade().logout();
+                return true;
+            }else System.out.println("User has never done the login");
+
         }catch (UserNotFoundException e){
-            System.out.println("Utente non trovato, impossibile eliminare l'account");
+            System.out.println("User not found, impossible to DELETE your account");
             return false;
         }catch (SQLException sqlException){
             System.out.println(sqlException.getMessage());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
         return false;
     }
 
 
     /**
-     * Metodo che aggiorna la password di un utente che è già registrato nell'applicazione
+     * Metodo che aggiorna la password di un utente che è già registrato nell'applicazione.
+     * Cerco l'utente con logica di discriminazione di username-password o email-password e controllo che
+     * sia presente nel DB almeno posso modificargli la password.
      * @param userCarrier utente con le sue credenziali (username, email e password)
      * @param newPassword nuova password che l'utente vuole aggiornare dell'account
      * @return true se la password è stata cambiata correttamente (false per gli altri casi in cui non si è riusciti a modificarla)
@@ -112,12 +107,6 @@ public class ConcreteUserFacade implements IUserFacade {
     public boolean updateAccount(User userCarrier, String newPassword){
         User u = new User();
         try{
-            /*
-            cerco che l'utente che mi è stato passato (con logica di discriminazione di username-password o email-password)
-            NON sia già presente nel DB, almeno lancerà un eccezione di "utente non trovato" che verrà presa dal
-            catch(UserNotFoundException e) e solo dopo esserci entrato potrò salvare il nuovo account dell'utente nel DB
-             */
-
             UserCredentialsStrategy userCredentialsStrategy;
             if (userCarrier.getUsername().contains("@")) userCredentialsStrategy = new EmailPassword();
             else userCredentialsStrategy = new UsernamePassword();
@@ -129,14 +118,20 @@ public class ConcreteUserFacade implements IUserFacade {
             else userCredentialsStrategy = new UsernamePassword();
             */
 
-            //solo dopo esser stato trovato nel DB l'utente può aggiornare la sua password
-            userDAO.update(userCredentialsStrategy.serchUser(userCarrier), newPassword);
-            return true;
-        }catch (UserNotFoundException | SQLException e){
-            System.out.println(e.getMessage());
+            //solo dopo esser stato trovato nel DB e aver effettuato il login, l'utente può aggiornare la sua password
+            if(LaVaultFacade.getInstance().getSessionFacade().isLogged()){
+                userDAO.update(userCredentialsStrategy.serchUser(userCarrier), newPassword);
+                return true;
+            }else{
+                System.out.println("User has never done the login");
+                return false;
+            }
+        }catch (UserNotFoundException e){
+            System.out.println("User not found, impossible to UPDATE your account");
             return false;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
+            return false;
         }
     }
 

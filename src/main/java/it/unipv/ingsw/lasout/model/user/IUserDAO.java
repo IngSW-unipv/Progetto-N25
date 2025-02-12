@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface IUserDAO extends IDao<User> {
+
     void update(User user, String newPassword) throws SQLException, UserNotFoundException, UserAlreadyExistException;
 
     List<User> getFriends(User user);

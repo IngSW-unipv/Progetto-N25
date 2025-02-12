@@ -185,7 +185,7 @@ public class UserDAO implements IUserDAO {
 
     @Override
     public void update(User user) throws Exception {
-
+        //TODO
     }
 
 
@@ -196,7 +196,6 @@ public class UserDAO implements IUserDAO {
      * @throws UserNotFoundException eccezione nel caso in cui la query del metodo "delete" non trovi l'account dell'utente che si vuole eliminare
      * @throws UserAlreadyExistException eccezione nel caso in cui la query del metodo "save" abbia già trovato l'utente con uguali credenziali
      */
-    @Override
     public void update(User user, String newPassword) throws SQLException, UserNotFoundException, UserAlreadyExistException {
 
         //creazione della query di ricerca nel DB di tipo "DBQuery"
@@ -309,7 +308,8 @@ public class UserDAO implements IUserDAO {
     public User userSearchIdBasedOnTheirUsernameAndPassword(User user) throws SQLException, UserNotFoundException {
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_USERNAME_PASSWORD, user.getUsername(), user.getPassword());
-        return searchByQuery(querySelect);
+        User uId = searchByQuery(querySelect);
+        return uId;
     }
 
     /**
@@ -323,7 +323,8 @@ public class UserDAO implements IUserDAO {
     public User userSearchIdBasedOnTheirEmailAndPassword(User user) throws SQLException, UserNotFoundException {
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_EMAIL_PASSWORD, user.getEmail(), user.getPassword());
-        return searchByQuery(querySelect);
+        User uId = searchByQuery(querySelect);
+        return uId;
     }
 
     /**
@@ -340,7 +341,8 @@ public class UserDAO implements IUserDAO {
 
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_CREDENTIALS_FOR_CREATING_ACCOUNT, user.getUsername(), user.getEmail(), user.getPassword());
-        return searchByQuery(querySelect);
+        User uId = searchByQuery(querySelect);
+        return uId;
     }
 
     /**

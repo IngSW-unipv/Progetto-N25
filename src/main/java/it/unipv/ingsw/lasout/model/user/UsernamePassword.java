@@ -9,7 +9,7 @@ public class UsernamePassword implements UserCredentialsStrategy {
     public User serchUser(User user) throws SQLException, UserNotFoundException {
         User userId = new User();
         if(!user.getUsername().contains("@")){
-            userId=UserDAO.getInstance().userSearchIdBasedOnTheirUsernameAndPassword(user);
+            userId = UserDAO.getInstance().userSearchIdBasedOnTheirUsernameAndPassword(user);
             return userId;
         }
         return null;
