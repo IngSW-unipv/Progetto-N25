@@ -34,7 +34,8 @@ public class LaVaultFacade {
             this.groupFacade = (GroupFacade) loadClass("group").getDeclaredConstructor().newInstance();
             this.virtualVaultFacade = (VirtualVaultFacade) loadClass("virtualvault").getDeclaredConstructor().newInstance();
         }catch (Exception e){
-            throw new RuntimeException(e);
+            //throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
     }
 

@@ -66,7 +66,7 @@ public class ConcreteUserFacade implements IUserFacade {
             User u=new User();
 
             UserCredentialsStrategy userCredentialsStrategy;
-            if (userCarrier.getUsername().contains("@")) userCredentialsStrategy = new EmailPassword();
+            if (userCarrier.getUsername() != null && userCarrier.getUsername().contains("@")) userCredentialsStrategy = new EmailPassword();
             else userCredentialsStrategy = new UsernamePassword();
 
             /*
@@ -75,10 +75,11 @@ public class ConcreteUserFacade implements IUserFacade {
             if (userCarrier.getUsername().contains("@")) userCredentialsStrategy = new EmailPassword();
             else userCredentialsStrategy = new UsernamePassword();
             */
-
             if(LaVaultFacade.getInstance().getSessionFacade().isLogged()){
-                u=userCredentialsStrategy.serchUser(userCarrier);
-                userDAO.delete(u);
+                System.out.println(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
+                //u = userCredentialsStrategy.searchUser(userCarrier);
+                System.out.println(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
+                userDAO.delete(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
                 LaVaultFacade.getInstance().getSessionFacade().logout();
                 return true;
             }else System.out.println("User has never done the login");
@@ -108,7 +109,7 @@ public class ConcreteUserFacade implements IUserFacade {
         User u = new User();
         try{
             UserCredentialsStrategy userCredentialsStrategy;
-            if (userCarrier.getUsername().contains("@")) userCredentialsStrategy = new EmailPassword();
+            if (userCarrier.getUsername() != null && userCarrier.getUsername().contains("@")) userCredentialsStrategy = new EmailPassword();
             else userCredentialsStrategy = new UsernamePassword();
 
             /*
@@ -120,7 +121,8 @@ public class ConcreteUserFacade implements IUserFacade {
 
             //solo dopo esser stato trovato nel DB e aver effettuato il login, l'utente può aggiornare la sua password
             if(LaVaultFacade.getInstance().getSessionFacade().isLogged()){
-                userDAO.update(userCredentialsStrategy.serchUser(userCarrier), newPassword);
+                userDAO.update(userCredentialsStrategy.searchUser(userCarrier), newPassword);
+                //userCarrier.setPassword(newPassword);
                 return true;
             }else{
                 System.out.println("User has never done the login");

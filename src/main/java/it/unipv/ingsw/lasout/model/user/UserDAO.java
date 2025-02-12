@@ -308,8 +308,7 @@ public class UserDAO implements IUserDAO {
     public User userSearchIdBasedOnTheirUsernameAndPassword(User user) throws SQLException, UserNotFoundException {
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_USERNAME_PASSWORD, user.getUsername(), user.getPassword());
-        User uId = searchByQuery(querySelect);
-        return uId;
+        return searchByQuery(querySelect);
     }
 
     /**
@@ -323,8 +322,7 @@ public class UserDAO implements IUserDAO {
     public User userSearchIdBasedOnTheirEmailAndPassword(User user) throws SQLException, UserNotFoundException {
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_EMAIL_PASSWORD, user.getEmail(), user.getPassword());
-        User uId = searchByQuery(querySelect);
-        return uId;
+        return searchByQuery(querySelect);
     }
 
     /**
@@ -341,8 +339,7 @@ public class UserDAO implements IUserDAO {
 
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_CREDENTIALS_FOR_CREATING_ACCOUNT, user.getUsername(), user.getEmail(), user.getPassword());
-        User uId = searchByQuery(querySelect);
-        return uId;
+        return searchByQuery(querySelect);
     }
 
     /**
@@ -365,8 +362,6 @@ public class UserDAO implements IUserDAO {
         //se invece è stato trovato salvo l'id dell'utente appena trovato in un utente fittizio
         User idUser = new User(rS.getInt("id"));
 
-        //se volessi restituire tutte le info dell'utente userei questo qua sotto:
-        //User idUser = get(new User(rS.getInt("id")));
 
         querySelect.close();
         return idUser;

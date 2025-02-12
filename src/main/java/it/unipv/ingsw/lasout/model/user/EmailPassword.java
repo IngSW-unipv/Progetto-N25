@@ -5,14 +5,14 @@ import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 import java.sql.SQLException;
 
 public class EmailPassword implements UserCredentialsStrategy {
-    public User serchUser(User user) throws SQLException, UserNotFoundException {
+    @Override
+    public User searchUser(User user) throws SQLException, UserNotFoundException {
         User userId = new User();
-        if(user.getUsername().contains("@")){
+        //if(user.getUsername().contains("@")){
             user.setEmail(user.getUsername());
             //user.setUsername(null);
-            userId= UserDAO.getInstance().userSearchIdBasedOnTheirEmailAndPassword(user);
+            userId = UserDAO.getInstance().userSearchIdBasedOnTheirEmailAndPassword(user);
             return userId;
-        }
-        return null;
+        //}
     }
 }

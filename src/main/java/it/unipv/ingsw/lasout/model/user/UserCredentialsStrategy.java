@@ -15,5 +15,5 @@ public interface UserCredentialsStrategy {
      * @throws SQLException
      * @throws UserNotFoundException
      */
-    public User serchUser(User user) throws SQLException , UserNotFoundException;
+    public User searchUser(User user) throws SQLException , UserNotFoundException;
 }
