@@ -12,37 +12,27 @@ public class ConcreteSessionFacade implements ISessionFacade {
     private boolean isLoggedIn;
     private User loggedUser;
 
-    //costruttore con loggedUser presettate
+    /**
+     * COSTRUTTORE con variabili presettate di default
+     */
     public ConcreteSessionFacade() {
         isLoggedIn = false;
         loggedUser = null;
     }
 
-    /**
-     * Metodo che restituisce un true se l'utente è loggato e false se non ha fatto prima il serchUser
-     * @return isLoggedIn
-     */
+
     @Override
     public boolean isLogged() {
         return isLoggedIn;
     }
 
-    /**
-     * Metodo che restituisce uno user con solamente il suo id e gli altri campi a null
-     * @return loggedUser: user con id
-     */
+
     @Override
     public User getLoggedUser() {
         return loggedUser;
     }
 
 
-    /**
-     * Metodo per il serchUser che prende in ingresso i dati di un utente e tramite "UserDAO":
-     * 1) setta un utente (loggedUser) con solo il suo id;
-     * 2) modifica la variabile booleana (true se ha loggato correttamente; false (settata di default dal costruttore) negli altri casi)
-     * @param userCarrier utente fittizio con le sue credenziali: username, password ed email
-     */
     @Override
     public void login(User userCarrier) {
         try {
@@ -65,9 +55,7 @@ public class ConcreteSessionFacade implements ISessionFacade {
         }
     }
 
-    /**
-     * Metodo che slogga l'utente inserito se e solo se è presente nel db e ha già effettuato il serchUser allora posso fargli fare il logout
-     */
+
     @Override
     public void logout() {
         /*

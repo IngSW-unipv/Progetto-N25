@@ -9,7 +9,6 @@ import it.unipv.ingsw.lasout.model.notify.MySQLNotifyDAO;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.user.exception.UserAlreadyExistException;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -36,13 +35,11 @@ public class UserDAO implements IUserDAO {
      * Rendo il costruttore privato
      */
     public UserDAO(){
-
     }
 
     /**
      * Elenco delle query da far eseguire ai vari metodi della classe UserDAO
      */
-
     private static final String QUERY_SELECT_ALL_INFORMATIONS_OF_A_USER = "SELECT * " +
                                                                           "FROM $user$" +
                                                                           "WHERE id = ?;";
@@ -58,11 +55,6 @@ public class UserDAO implements IUserDAO {
     private static final String QUERY_SELECT_ID_FROM_HIS_EMAIL_PASSWORD = "SELECT id FROM $user$ WHERE email = ? AND password = ?;";
     private static final String QUERY_SELECT_ID_FROM_HIS_CREDENTIALS_FOR_CREATING_ACCOUNT = "SELECT id FROM $user$ WHERE username = ? AND email = ? AND password = ?;";
     private static final String QUERY_UPDATE_PASSWORD = "UPDATE $user$ SET password = ? WHERE id = ?;";
-
-    private static final String QUERY_SELECT_ALL_NOTIFIES_OF_USER  = "" +
-            "SELECT id " +
-            "FROM \\'notify\\'" +
-            "WHERE user_id =  ?;";
 
 
 
@@ -92,43 +84,45 @@ public class UserDAO implements IUserDAO {
 
         //creo l'oggetto da ritornare
         User rawUserWithAllPrimaryInformation = new User();
+
         //imposto i valori letti da database
         rawUserWithAllPrimaryInformation.setId(rS.getInt("id"));
         rawUserWithAllPrimaryInformation.setUsername(rS.getString("username"));
         rawUserWithAllPrimaryInformation.setPassword(rS.getString("password"));
-
-
-        //System.out.println(rawUserWithAllPrimaryInformation);
+        rawUserWithAllPrimaryInformation.setEmail(rS.getString("email"));
 
         return rawUserWithAllPrimaryInformation;
     }
 
 
     /**
-     * Metodo che mi dà tutti i gruppi che hanno come partecipante quello che gli dico io (tramite il suo id)
+     * Metodo che mi dà tutte le informazioni di un dato utente (tramite il suo id)
      * @param user oggetto contenente il solo identificatore dell'entità
-     * @return savedUser
-     * @throws Exception
+     * @return l'utente con tutte le sue informazioni
+     * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
+     * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente del quale si vogliono i dati
      */
     @Override
-    public User get(User user) throws SQLException, UserNotFoundException, Exception {
+    public User get(User user) throws SQLException, UserNotFoundException {
+        //per semplicità uso la getRaw per la ricerca delle sue informazioni base\primitive (id, username, email, password)
         User savedUser = getRaw(user);
 
         List<Group> groups = groupsOfUser(user);
         savedUser.setGroups(groups);
 
-       // savedUser.setNotifies(getNotifications(user));
+        //savedUser.setNotifies(getNotifications(user));
         return savedUser;
     }
 
 
     /**
-     * Metodo che restituisce tutti gli utenti presenti nel DB
-     * @return Un arraylist di tutti gli user presenti nella tabella user nel database
+     * Metodo che restituisce tutti gli utenti presenti nel DB con i loro dati primitivi
+     * @return Una lista di tutti gli user presenti nella table user nel DB
      * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
      */
     @Override
     public ArrayList<User> getAll() throws SQLException {
+
         //creazione della query di ricerca nel DB di tipo "DBQuery"
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_INFORMATIONS_OF_EVERY_USER);
 
@@ -154,13 +148,12 @@ public class UserDAO implements IUserDAO {
 
             usersList.add(rawUserWithAllInformation);
         }
-
         return usersList;
     }
 
 
     /**
-     * Metodo che aggiunge un nuovo utente al Database tenendo conto dell'opzione "update" che avrà id=0
+     * Metodo che aggiunge un nuovo utente al Database
      * @param user oggetto da salvare, con tutte le sue informazioni
      * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
      * @throws UserAlreadyExistException eccezione nel caso in cui la query abbia già trovato l'utente con uguali credenziali
@@ -183,20 +176,15 @@ public class UserDAO implements IUserDAO {
         queryInsert.close();
     }
 
+
     @Override
-    public void update(User user) throws Exception {
-        //TODO
+    public void update(User userCarrier) throws Exception {
+        delete(userCarrier);
+        save(userCarrier);
     }
 
-
-    /**
-     * Metodo di update fatto unendo i 2 metodi di delete e save dello user per semplicità
-     * @param user utente del quale voglio modificare la password
-     * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
-     * @throws UserNotFoundException eccezione nel caso in cui la query del metodo "delete" non trovi l'account dell'utente che si vuole eliminare
-     * @throws UserAlreadyExistException eccezione nel caso in cui la query del metodo "save" abbia già trovato l'utente con uguali credenziali
-     */
-    public void update(User user, String newPassword) throws SQLException, UserNotFoundException, UserAlreadyExistException {
+    @Override
+    public void updatePassword(User user, String newPassword) throws SQLException, UserNotFoundException {
 
         //creazione della query di ricerca nel DB di tipo "DBQuery"
         DBQuery queryUpdate = DatabaseUtil.getInstance().createQuery(QUERY_UPDATE_PASSWORD, newPassword, user.getId());
@@ -214,7 +202,7 @@ public class UserDAO implements IUserDAO {
 
 
     /**
-     * Eliminazione di un utente presente nel dB
+     * Eliminazione dell'account di un utente presente nel dB
      * @param user utente del quale voglio eliminare l'account
      * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
      * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente che si vuole eliminare
@@ -237,11 +225,7 @@ public class UserDAO implements IUserDAO {
 
 
 
-    /**
-     * Metodo che serve ad associare una lista di amici (altri utenti) a un certo utente
-     * @param user utente che avrà una determinata lista di amici
-     * @return la lista di amici
-     */
+
     @Override
     public List<User> getFriends(User user){
 
@@ -251,12 +235,7 @@ public class UserDAO implements IUserDAO {
     }
 
 
-    /**
-     * Metodo che serve ad associare la lista di tutte le notifiche a un determinato utente
-     * @param user utente che avrà una determinata lista di notifiche
-     * @return la lista delle notifiche
-     * @throws Exception eccezione lanciata dalla classe NotifyDAO
-     */
+
     @Override
     public List<Notify> getNotifications(User user) throws Exception {
 
@@ -265,12 +244,6 @@ public class UserDAO implements IUserDAO {
     }
 
 
-    /**
-     *
-     * @param user
-     * @return
-     * @throws Exception
-     */
     @Override
     public List<Group> groupsOfUser(User user) throws SQLException, UserNotFoundException {
         DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ALL_GROUPS_OF_A_USER, user.getId());
@@ -297,17 +270,10 @@ public class UserDAO implements IUserDAO {
     }
 
 
-    /**
-     * Metodo che fa la query di ricerca sul DB per cercare l'id di un utente che mi viene passato con solo username e password
-     * @param user utente che mi viene passato per controllare qual è il suo id
-     * @return passo l'esecuzione della query al metodo searchByQuery
-     * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
-     * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente con le credenziali che ha dato
-     */
     @Override
-    public User userSearchIdBasedOnTheirUsernameAndPassword(User user) throws SQLException, UserNotFoundException {
+    public User userSearchIdBasedOnTheirUsernameAndPassword(User userCarrier) throws SQLException, UserNotFoundException {
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
-        DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_USERNAME_PASSWORD, user.getUsername(), user.getPassword());
+        DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_USERNAME_PASSWORD, userCarrier.getUsername(), userCarrier.getPassword());
 
         //eseguo la query
         DatabaseUtil.getInstance().executeQuery(querySelect);
@@ -317,29 +283,28 @@ public class UserDAO implements IUserDAO {
         //controllo il risultato della query
         if(rS == null || !rS.next()) throw new UserNotFoundException("");
 
-        //se invece è stato trovato salvo l'id dell'utente appena trovato in un utente fittizio
-        User userIdEmailPassword = new User();
+        //salvo tutte le info dell'utente passatomi
+        User user = new User();
+        userCarrier.setId(rS.getInt("id"));
+        user = get(userCarrier);
 
-        userIdEmailPassword.setId(rS.getInt("id"));
-        userIdEmailPassword.setUsername(user.getUsername());
-        userIdEmailPassword.setPassword(user.getPassword());
+        /*
+        se volesi restituire solamente id e le credenziali
+        user.setId(rS.getInt("id"));
+        user.setUsername(userCarrier.getUsername());
+        user.setPassword(userCarrier.getPassword());
+        */
 
 
         querySelect.close();
-        return userIdEmailPassword;
+        return user;
     }
 
-    /**
-     * Metodo che fa la query di ricerca sul DB per cercare l'id di un utente che mi viene passato con solo username e password
-     * @param user utente che mi viene passato per controllare qual è il suo id
-     * @return passo l'esecuzione della query al metodo searchByQuery
-     * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
-     * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente con le credenziali che ha dato
-     */
+
     @Override
-    public User userSearchIdBasedOnTheirEmailAndPassword(User user) throws SQLException, UserNotFoundException {
+    public User userSearchIdBasedOnTheirEmailAndPassword(User userCarrier) throws SQLException, UserNotFoundException {
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
-        DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_EMAIL_PASSWORD, user.getEmail(), user.getPassword());
+        DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_EMAIL_PASSWORD, userCarrier.getEmail(), userCarrier.getPassword());
 
         //eseguo la query
         DatabaseUtil.getInstance().executeQuery(querySelect);
@@ -349,27 +314,23 @@ public class UserDAO implements IUserDAO {
         //controllo il risultato della query
         if(rS == null || !rS.next()) throw new UserNotFoundException("");
 
-        //se invece è stato trovato salvo l'id dell'utente appena trovato in un utente fittizio
-        User userIdEmailPassword = new User();
+        //salvo tutte le info dell'utente passatomi
+        User user = new User();
+        userCarrier.setId(rS.getInt("id"));
+        user = get(userCarrier);
 
+        /*
         userIdEmailPassword.setId(rS.getInt("id"));
         userIdEmailPassword.setEmail(user.getEmail());
         userIdEmailPassword.setPassword(user.getPassword());
+         */
 
 
         querySelect.close();
-        return userIdEmailPassword;
+        return user;
     }
 
-    /**
-     * Metodo che serve solo per sollevare l'eccezione nel caso in cui l'utente provi a registrarsi con le stesse credenziali
-     * con le quali si era già registrato.
-     * Se solleva l'eccezione di utente non trovato allora la registrazione del suo account andrà a buon fine
-     * @param user utente con tutte le sue credenziali (username, email, password)
-     * @return passo l'esecuzione della query al metodo searchByQuery
-     * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
-     * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente con le credenziali che ha dato
-     */
+
     @Override
     public User userNotSearchedForCreateAccount(User user) throws SQLException, UserNotFoundException {
 
