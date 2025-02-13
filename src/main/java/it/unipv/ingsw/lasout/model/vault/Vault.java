@@ -2,6 +2,7 @@ package it.unipv.ingsw.lasout.model.vault;
 
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethod;
+import it.unipv.ingsw.lasout.model.virtualVault.VirtualVault;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ public class Vault implements IVault{
 	private IVault vault;
 	private int id;
 	private User user;
+	private VirtualVault vv_id;
 	private double saldo;
 	private List<PaymentMethod> methods;
 
@@ -73,6 +75,14 @@ public class Vault implements IVault{
 		this.vault = vault;
 	}
 
+	public VirtualVault getVv_id() {
+		return vv_id;
+	}
+
+	public void setVv_id(VirtualVault vv_id) {
+		this.vv_id = vv_id;
+	}
+
 	@Override
     public String toString() {
         return "Vault{" +
@@ -112,8 +122,7 @@ public class Vault implements IVault{
 
 	@Override
 	public void setOwner(User owner) {
-		this.user = owner;
-		
+		this.user = owner;		
 	}
 
 	@Override

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-
 public class VaultDAO implements IVaultDAO{
 
 	private static final VaultDAO INSTANCE = new VaultDAO();
@@ -21,7 +20,8 @@ public class VaultDAO implements IVaultDAO{
     private static final String GET_RAW = "SELECT * FROM \\'virtualvault\\' WHERE id = ?;";
     private static final String GET_ALL_VAULT_BY_ID = "SELECT vault.id as vaultid FROM \\'virtualvault\\', \\'vault\\' WHERE virtualvault.id = vault.virtualvault_id" ;
     private static final String GET_ALL_VAULT_BY_NAME = "SELECT DISTINCT vault.id FROM \\'vault\\', \\'virtualvault\\' WHERE virtualvault.nome = 'Vault'";
-    private static final String INSERT_A_NEW_VAULT = "INSERT INTO \\'virtualvault\' (id) VALUES (?)";
+    private static final String INSERT_A_NEW_VAULT_IN_VIRTUALVAULT = "INSERT INTO \\'virtualvault\\' (nome, user_id, balance) VALUES ('Vault', ?, 0)";
+    private static final String INSERT_A_NEW_VAULT = "INSERT INTO \\'vault\\' (virtualvault_id) VALUES (?)";
     private static final String DELETE_AN_EXISTING_VAULT = "DELETE FROM £virtualvault£ WHERE id = ?";
     
     
@@ -121,7 +121,7 @@ public class VaultDAO implements IVaultDAO{
 	@Override
 	public void save(Vault oggetto) throws Exception {
 		
-		DBQuery query = DatabaseUtil.getInstance().createQuery(INSERT_A_NEW_VAULT, oggetto.getID());
+		DBQuery query = DatabaseUtil.getInstance().createQuery(INSERT_A_NEW_VAULT_IN_VIRTUALVAULT, oggetto.getOwner().getId());
 		DatabaseUtil.getInstance().executeQuery(query);
 		
 		ResultSet result = query.getResultSet();
@@ -130,6 +130,17 @@ public class VaultDAO implements IVaultDAO{
 				
 		query.close();
 		
+	}
+	
+	public void saveInVault(Vault oggetto) throws Exception {
+		DBQuery query = DatabaseUtil.getInstance().createQuery(INSERT_A_NEW_VAULT, oggetto.getVv_id());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet result = query.getResultSet();
+		
+		if(result != null) throw new Exception();
+				
+		query.close();
 	}
 
 	@Override
