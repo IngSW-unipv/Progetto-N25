@@ -9,6 +9,7 @@ import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 import it.unipv.ingsw.lasout.util.DaoFactory;
 
 import java.sql.SQLException;
+import java.util.Scanner;
 
 public class ConcreteUserFacade implements IUserFacade {
 
@@ -62,26 +63,23 @@ public class ConcreteUserFacade implements IUserFacade {
      */
     @Override
     public boolean deleteAccount(User userCarrier) {
+        Scanner scanner = new Scanner(System.in);
+        String conferma;
+
         try{
-            User u=new User();
-
-            UserCredentialsStrategy userCredentialsStrategy;
-            if (userCarrier.getUsername() != null && userCarrier.getUsername().contains("@")) userCredentialsStrategy = new EmailPassword();
-            else userCredentialsStrategy = new UsernamePassword();
-
-            /*
-            METODO ALTERNATIVO USANDO IL FACTORY
-            UserCredentialsStrategy userCredentialsStrategy = UserCredentialsFactory.createUserCredentials(userCarrier);
-            if (userCarrier.getUsername().contains("@")) userCredentialsStrategy = new EmailPassword();
-            else userCredentialsStrategy = new UsernamePassword();
-            */
             if(LaVaultFacade.getInstance().getSessionFacade().isLogged()){
-                System.out.println(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
-                //u = userCredentialsStrategy.searchUser(userCarrier);
-                System.out.println(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
-                userDAO.delete(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
-                LaVaultFacade.getInstance().getSessionFacade().logout();
-                return true;
+                System.out.println("Write: 'Sono sicuro' if you want to delete this account: ");
+                conferma = scanner.nextLine();
+                if(conferma.equals("Sono sicuro")){
+                    userDAO.delete(userCarrier);
+                    System.out.println("Account successfully deleted");
+                    LaVaultFacade.getInstance().getSessionFacade().logout();
+                    return true;
+                }else{
+                    System.out.println("ERRORE, impossible to delete your account");
+                    return false;
+                }
+
             }else System.out.println("User has never done the login");
 
         }catch (UserNotFoundException e){
@@ -106,23 +104,12 @@ public class ConcreteUserFacade implements IUserFacade {
      */
     @Override
     public boolean updateAccount(User userCarrier, String newPassword){
-        User u = new User();
         try{
-            UserCredentialsStrategy userCredentialsStrategy;
-            if (userCarrier.getUsername() != null && userCarrier.getUsername().contains("@")) userCredentialsStrategy = new EmailPassword();
-            else userCredentialsStrategy = new UsernamePassword();
-
-            /*
-            METODO ALTERNATIVO USANDO IL FACTORY
-            UserCredentialsStrategy userCredentialsStrategy = UserCredentialsFactory.createUserCredentials(userCarrier);
-            if (userCarrier.getUsername().contains("@")) userCredentialsStrategy = new EmailPassword();
-            else userCredentialsStrategy = new UsernamePassword();
-            */
-
             //solo dopo esser stato trovato nel DB e aver effettuato il login, l'utente può aggiornare la sua password
             if(LaVaultFacade.getInstance().getSessionFacade().isLogged()){
-                userDAO.update(userCredentialsStrategy.searchUser(userCarrier), newPassword);
-                //userCarrier.setPassword(newPassword);
+                userDAO.update(userCarrier, newPassword);
+                //modifico la password di loggedUser almeno la vedrò aggiornata se facessi getLoggedUser dopo questo update
+                LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().setPassword(newPassword);
                 return true;
             }else{
                 System.out.println("User has never done the login");

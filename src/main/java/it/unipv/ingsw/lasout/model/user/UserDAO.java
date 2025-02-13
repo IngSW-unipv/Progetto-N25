@@ -308,7 +308,25 @@ public class UserDAO implements IUserDAO {
     public User userSearchIdBasedOnTheirUsernameAndPassword(User user) throws SQLException, UserNotFoundException {
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_USERNAME_PASSWORD, user.getUsername(), user.getPassword());
-        return searchByQuery(querySelect);
+
+        //eseguo la query
+        DatabaseUtil.getInstance().executeQuery(querySelect);
+
+        //prendo il risultato della query
+        ResultSet rS = querySelect.getResultSet();
+        //controllo il risultato della query
+        if(rS == null || !rS.next()) throw new UserNotFoundException("");
+
+        //se invece è stato trovato salvo l'id dell'utente appena trovato in un utente fittizio
+        User userIdEmailPassword = new User();
+
+        userIdEmailPassword.setId(rS.getInt("id"));
+        userIdEmailPassword.setUsername(user.getUsername());
+        userIdEmailPassword.setPassword(user.getPassword());
+
+
+        querySelect.close();
+        return userIdEmailPassword;
     }
 
     /**
@@ -322,7 +340,25 @@ public class UserDAO implements IUserDAO {
     public User userSearchIdBasedOnTheirEmailAndPassword(User user) throws SQLException, UserNotFoundException {
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_EMAIL_PASSWORD, user.getEmail(), user.getPassword());
-        return searchByQuery(querySelect);
+
+        //eseguo la query
+        DatabaseUtil.getInstance().executeQuery(querySelect);
+
+        //prendo il risultato della query
+        ResultSet rS = querySelect.getResultSet();
+        //controllo il risultato della query
+        if(rS == null || !rS.next()) throw new UserNotFoundException("");
+
+        //se invece è stato trovato salvo l'id dell'utente appena trovato in un utente fittizio
+        User userIdEmailPassword = new User();
+
+        userIdEmailPassword.setId(rS.getInt("id"));
+        userIdEmailPassword.setEmail(user.getEmail());
+        userIdEmailPassword.setPassword(user.getPassword());
+
+
+        querySelect.close();
+        return userIdEmailPassword;
     }
 
     /**
@@ -339,18 +375,7 @@ public class UserDAO implements IUserDAO {
 
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_CREDENTIALS_FOR_CREATING_ACCOUNT, user.getUsername(), user.getEmail(), user.getPassword());
-        return searchByQuery(querySelect);
-    }
 
-    /**
-     * Metodo di esecuzione della query di ricerca
-     * @param querySelect mi arriva dai 3 metodi precedenti la query da eseguire
-     * @return lo user con solamente il suo id (e tutti gli altri campi nulli)
-     * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
-     * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente con le credenziali che ha dato
-     */
-    @Override
-    public User searchByQuery(DBQuery querySelect) throws SQLException, UserNotFoundException {
         //eseguo la query
         DatabaseUtil.getInstance().executeQuery(querySelect);
 
@@ -366,5 +391,4 @@ public class UserDAO implements IUserDAO {
         querySelect.close();
         return idUser;
     }
-
 }

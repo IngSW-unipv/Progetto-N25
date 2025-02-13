@@ -25,6 +25,4 @@ public interface IUserDAO extends IDao<User> {
     User userSearchIdBasedOnTheirEmailAndPassword(User user) throws SQLException, UserNotFoundException;
 
     User userNotSearchedForCreateAccount(User user) throws SQLException, UserNotFoundException;
-
-    User searchByQuery(DBQuery querySelect) throws SQLException, UserNotFoundException;
 }

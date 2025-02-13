@@ -56,6 +56,7 @@ public class ConcreteSessionFacade implements ISessionFacade {
              */
 
             this.loggedUser = userCredentialsStrategy.searchUser(userCarrier);
+            //System.out.println("LOGGED USER-->" + loggedUser); //username con credenziali di login + il suo id
             this.isLoggedIn = true;
         } catch (UserNotFoundException e) {
             System.out.println("User not found");
