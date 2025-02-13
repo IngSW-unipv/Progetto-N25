@@ -14,7 +14,7 @@ public interface IVault {
     double getBalance();
     
     // metodo per settare il saldo del Vault
-    void setBalance(double balance);
+    double setBalance(double balance);
 
     // metodo per avere il proprietario del Vault
     User getOwner();
