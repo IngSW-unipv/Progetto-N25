@@ -6,6 +6,7 @@ import it.unipv.ingsw.lasout.model.transaction.ModifiableTransaction;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.model.transaction.exception.CannotEditTransactionException;
 import it.unipv.ingsw.lasout.util.DaoFactory;
+import it.unipv.ingsw.lasout.model.user.User;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class CashbookFacade implements ICashbookFacade {
     }
 
     @Override
-    public boolean newCashbook(Cashbook cashbook) {
+    public boolean addCashbook(Cashbook cashbook) {
         try {
             cashBookDAO.save(cashbook);
         } catch (Exception e) {
@@ -35,30 +36,13 @@ public class CashbookFacade implements ICashbookFacade {
     }
 
     @Override
-    public Cashbook getCashbook(Cashbook cashbook){
+    public Cashbook getCashbook(Cashbook carrierCashbook){
         try{
-            return cashBookDAO.get(cashbook);
+            return cashBookDAO.get(carrierCashbook);
         } catch (Exception e) {
             return null;
         }
     }
-
-    @Override
-    public boolean addTransactionToCashbook(Cashbook cashbook, Transaction transaction) {
-        try{
-            Cashbook c= cashBookDAO.get(cashbook);
-            List<Transaction> t = c.getTransactionList();
-            t.add(transaction);
-            c.setTransactionList(t);
-            cashBookDAO.update(c);
-        } catch (Exception e) {
-            return false;
-        }
-
-        return true;
-    }
-
-
 
     @Override
     public boolean editCashbook(Cashbook cashbook){
@@ -81,22 +65,31 @@ public class CashbookFacade implements ICashbookFacade {
     }
 
     @Override
-    public boolean removeTransactionFromCashbook(Cashbook cashbook, Transaction transaction){
-        Cashbook c;
-
+    public List<Cashbook> getAllCashbooks(User carrierUser){
         try{
-            c=getCashbook(cashbook);
-            c.removeTransaction((ModifiableTransaction) transaction);
+            return cashBookDAO.getAllUserCashbooks(carrierUser);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean addTransaction(Cashbook cashbook, Transaction transaction) {
+        try{
+            Cashbook c= cashBookDAO.get(cashbook);
+            List<Transaction> t = c.getTransactionList();
+            t.add(transaction);
+            c.setTransactionList(t);
             cashBookDAO.update(c);
-            editCashbook(c);
         } catch (Exception e) {
             return false;
         }
+
         return true;
     }
 
     @Override
-    public boolean editTransactionInCashbook(Cashbook cashbook, Transaction transaction) {
+    public boolean editTransaction(Cashbook cashbook, Transaction transaction) {
         Cashbook c;
         try{
             c=getCashbook(cashbook);
@@ -109,6 +102,19 @@ public class CashbookFacade implements ICashbookFacade {
             return false;
         }
 
+        return true;
+    }
+
+    @Override
+    public boolean removeTransaction(Cashbook cashbook, Transaction transaction){
+        try{
+            Cashbook c = getCashbook(cashbook);
+            c.removeTransaction((ModifiableTransaction) transaction);
+            cashBookDAO.update(c);
+            editCashbook(c);
+        } catch (Exception e) {
+            return false;
+        }
         return true;
     }
 

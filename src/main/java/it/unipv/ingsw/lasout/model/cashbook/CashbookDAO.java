@@ -8,6 +8,7 @@ import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.model.transaction.TransactionDAO;
+import it.unipv.ingsw.lasout.model.user.User;
 
 public class CashbookDAO implements ICashbookDAO {
     /**
@@ -37,6 +38,7 @@ public class CashbookDAO implements ICashbookDAO {
     private static final String GET_ALL_CASHBOOKS = "SELECT * FROM £cashbook£";
     private static final String GET_CASHBOOK_FROM_ID = "SELECT * FROM £cashbook£ WHERE id=?;";
     private static final String GET_TRANSACTIONS_FROM_CASHBOOKTRANSACTIONS = "SELECT * FROM £cashbooktransactions£ WHERE cashbook_id = ?;";
+    private static final String GET_ALL_USER_CASHBOOKS = "SELECT * FROM £cashbook£ WHERE user_id = ?;";
     private static final String DELETE_FROM_CASHBOOKTRANSACTIONS = "DELETE FROM £cashbooktransactions£ WHERE cashbook_id = ?";
     private static final String DELETE_CASHBOOK_FROM_ID = "DELETE FROM £cashbook£ WHERE id = ?";
     private static final String INSERT_IN_CASHBOOKTRANSACTIONS = "INSERT INTO £cashbooktransactions£ (cashbook_id, transaction_id) VALUES(?,?)";
@@ -226,4 +228,28 @@ public class CashbookDAO implements ICashbookDAO {
         save(cashbook);
     }
 
+    @Override
+    public List<Cashbook> getAllUserCashbooks(User carrierUser) throws Exception {
+        DBQuery query = DatabaseUtil.getInstance().createQuery(GET_ALL_USER_CASHBOOKS, carrierUser.getId());
+        DatabaseUtil.getInstance().executeQuery(query);
+
+        ResultSet rs = query.getResultSet();
+        if(rs==null)throw new Exception();
+
+        //lista di pojo
+        List<Cashbook> cashbooksList = new ArrayList<Cashbook>();
+        while(rs.next()){
+            //ogni volta trovo un nuovo pojo e lo inserisco nella lista
+            //settare parametri
+            Cashbook carrierCashbook = new Cashbook();
+            carrierCashbook.setId(rs.getInt("id"));
+            //riciclo funzione già esistente per completare
+            carrierCashbook=get(carrierCashbook);
+
+            cashbooksList.add(carrierCashbook);
+        }
+
+        query.close();
+        return cashbooksList;
+    }
 }

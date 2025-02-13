@@ -5,6 +5,7 @@ import it.unipv.ingsw.lasout.model.cashbook.ICashbookDAO;
 import it.unipv.ingsw.lasout.model.group.IGroupDao;
 import it.unipv.ingsw.lasout.model.group.spesa.ISpesaDao;
 import it.unipv.ingsw.lasout.model.notify.INotifyDAO;
+import it.unipv.ingsw.lasout.model.transaction.ITransactionDAO;
 import it.unipv.ingsw.lasout.model.user.IUserDAO;
 import it.unipv.ingsw.lasout.model.vault.IVaultDAO;
 import it.unipv.ingsw.lasout.model.virtualVault.IVirtualVaultDAO;
@@ -45,6 +46,8 @@ public class DaoFactory {
     public static ICashbookDAO getCashbookDAO() {
         return get(ICashbookDAO.class);
     }
+
+    public static ITransactionDAO getTransactionDAO() {return get(ITransactionDAO.class);}
 
     private static <T> T get(Class<T> clazz){
         if (lodadedDao.containsKey(clazz)) {
