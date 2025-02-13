@@ -107,13 +107,12 @@ public class Vault implements IVault{
 
 	@Override
 	public User getOwner() {
-		// TODO Auto-generated method stub
-		return null;
+		return user;
 	}
 
 	@Override
 	public void setOwner(User owner) {
-		// TODO Auto-generated method stub
+		this.user = owner;
 		
 	}
 

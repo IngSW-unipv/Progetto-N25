@@ -1,12 +1,14 @@
 package it.unipv.ingsw.lasout.model.vault.paymentmethod;
 
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.group.exception.CantDeleteException;
+import it.unipv.ingsw.lasout.model.group.exception.CantSaveException;
+import it.unipv.ingsw.lasout.model.group.exception.NoResoultException;
 import it.unipv.ingsw.lasout.model.vault.Vault;
 
 public class CreditCard implements PaymentMethod {
@@ -82,7 +84,7 @@ public class CreditCard implements PaymentMethod {
 	@Override
 	public String getMethodName() {
 
-		return "Carta di credito: " + numeroCarta;
+		return "CreditCard";
 	}
 
 	@Override
@@ -127,6 +129,8 @@ public class CreditCard implements PaymentMethod {
 			
 			cc.add(creditcard);
 		}
+		
+		query.close();
 
 		return cc;
 	}
@@ -142,26 +146,33 @@ public class CreditCard implements PaymentMethod {
 
 		ResultSet rs = query.getResultSet();
 
-		if (rs == null)
-			throw new RuntimeException("Error");
+		if (!rs.next()) throw new NoResoultException("No resoult found");
 
 		CreditCard cc = new CreditCard();
 		
-		cc.setId(rs.getInt("id"));
 		cc.setNumeroCarta(rs.getString("numerocarta"));
 		cc.setMese(rs.getInt("mese"));
 		cc.setAnno(rs.getInt("anno"));
 		cc.setCvv(rs.getInt("cvv"));	
 		cc.setId_vault(rs.getInt("vault_id"));
 
+		query.close();
 		return cc;
 
 	}
 
 	@Override
 	public void delete(PaymentMethod paymentmethod) throws Exception {
-		// TODO Auto-generated method stub
-
+		CreditCard ccParam = (CreditCard) paymentmethod;
+		
+		DBQuery query = DatabaseUtil.getInstance().createQuery("DELETE FROM \\'creditcard\\' WHERE id = ?", ccParam.getId());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet rs = query.getResultSet();
+		
+		if (rs != null) throw new CantDeleteException("Can't delete card");
+		
+		query.close();
 	}
 
 	@Override
@@ -169,15 +180,14 @@ public class CreditCard implements PaymentMethod {
 		
 		CreditCard ccParam = (CreditCard) paymentmethod;
 
-		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO creditcard (numerocarta, mese, anno, cvv, vault_id) VALUES\r\n"
+		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'creditcard\\' (numerocarta, mese, anno, cvv, vault_id) VALUES\r\n"
 				+ "	(?, ?, ?, ?, ?, ?);", ccParam.getNumeroCarta(), ccParam.getMese(), ccParam.getAnno(), ccParam.getCvv(), ccParam.getId_vault());
 		
 		DatabaseUtil.getInstance().executeQuery(query);
 
 		ResultSet rs = query.getResultSet();
 
-		if (rs == null)
-			throw new RuntimeException("Error");
+		if (rs != null) throw new CantSaveException("Card not saved");
 		
 		query.close();
 	}
