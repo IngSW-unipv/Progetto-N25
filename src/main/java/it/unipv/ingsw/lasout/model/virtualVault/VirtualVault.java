@@ -4,9 +4,6 @@ import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.vault.IVault;
 import it.unipv.ingsw.lasout.model.vault.IVaultData;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-
 
 //Pojo
 public class VirtualVault implements IVault{
@@ -58,8 +55,9 @@ public class VirtualVault implements IVault{
     }
 
     @Override
-    public void setBalance(double balance) {
+    public double setBalance(double balance) {
         this.balance = balance;
+        return balance;
     }
 
     @Override

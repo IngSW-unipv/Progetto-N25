@@ -110,10 +110,11 @@ public class Vault implements IVault{
 	}
 
 	@Override
-	public void setBalance(double balance) {
+	public double setBalance(double balance) {
 		// TODO Auto-generated method stub
-		
-	}
+
+        return balance;
+    }
 
 	@Override
 	public User getOwner() {
