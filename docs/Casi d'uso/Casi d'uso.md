@@ -7,25 +7,25 @@
 | Attore primario: utente |
 | Attore secondario: nessuno |
 | Precondizioni: nessuna |
-| Sequenza degli eventi principali: L’utente apre l’applicazione L’utente cliccando l’apposito pulsante inserisce username, email, password Il sistema verifica che le informazioni siano valide Le informazioni sono state approvate dal server L’account viene registrato nel sistema |
+| Sequenza degli eventi principali: L’utente apre l’applicazione Cliccando l’apposito pulsante, l’utente inserisce username, email, password Il sistema verifica che le informazioni siano valide Le informazioni sono state approvate dal server L’account viene registrato nel sistema |
 | Postcondizioni: l’utente si è registrato e ha creato il suo account |
-| Sequenza di eventi alternativi: Il server rileva che l’email ha già un account associato L’account non viene registrato |
+| Sequenza di eventi alternativi: Il server rileva che c’è già un account con quelle credenziali L’account non viene registrato |
 | **Caso d’uso 1.2: Eliminazione account** |
-| Breve descrizione: l’utente vuole eliminare il proprio un account |
+| Breve descrizione: l’utente vuole eliminare il proprio account |
 | Attore primario: utente |
 | Attore secondario: nessuno |
-| Precondizioni: l’utente deve essere registrato, aver effettuato il login (quindi nel sistema deve già essere presente l’account che l’utente vuole eliminare) |
-| Sequenza degli eventi principali: L’utente entra nell’apposita sezione per poter eliminare il suo account Il sistema chiede all’utente su quale conto\\carta inviare tutto il denaro del suo Vault Il sistema verifica che le informazioni siano valide Le informazioni vengono approvate L’account viene eliminato dal sistema |
-| Postcondizioni: l’utente ha eliminato il proprio account senza perdere il proprio denaro del Vault |
-| Sequenza di eventi alternativi: nessuna |
+| Precondizioni: l’utente deve essere registrato all’applicazione e aver effettuato il login |
+| Sequenza degli eventi principali: L’utente entra nell’apposita sezione per poter eliminare il suo account Il sistema chiede all’utente su quale conto\\carta inviare tutto il denaro del suo Vault (non implementata) Il sistema chiede conferma all’utente dicendogli di scrivere una frase Il sistema verifica che le informazioni siano valide Le informazioni vengono approvate L’account viene eliminato dal sistema |
+| Postcondizioni: l’account dell’utente viene eliminato |
+| Sequenza di eventi alternativi:  Le informazioni non vengono approvate dal sistema l’account non viene liminato |
 | **Caso d’uso 1.3: Cambio password** |
 | Breve descrizione: l’utente vuole cambiare la password al proprio account |
 | Attore primario: utente |
 | Attore secondario: nessuno |
-| Precondizioni: l’utente deve essere registrato (quindi nel sistema deve già essere presente l’account del quale l’utente vuole modificare la password) |
-| Sequenza degli eventi principali: L'utente apre l’applicazione L’utente al momento del login clicca il pulsante per modificare la password Il sistema chiede all’utente di inserire la mail dell’account in questione Il sistema chiede all’utente di inserire la vecchia password e quella nuova Il sistema verifica che le informazioni siano valide Le informazioni vengono approvate |
+| Precondizioni: l’utente deve essere registrato e aver effettuato il login |
+| Sequenza degli eventi principali: L'utente entra nell’apposita sezione per poter modificare la sua password Il sistema chiede all’utente di inserire le credenziali dell’account in questione Il sistema chiede all’utente di inserire la nuova password che andrà a modificare quella vecchia Il sistema verifica che le informazioni siano valide Le informazioni vengono approvate |
 | Postcondizioni: la password dell’account dell’utente è stata reimpostata |
-| Sequenza di eventi alternativi: la mail inserita non è stata trovata nel sistema,allora: viene richiesta un’altra mail |
+| Sequenza di eventi alternativi: l’utente inserisce delle credenziali errate la sua password non viene modificata |
 | **Caso d’uso 1.4: Login** |
 | Breve descrizione: L’utente si collega all’applicazione col proprio account |
 | Attore primario: utente |
@@ -157,7 +157,7 @@
 | Precondizioni:  |
 | Sequenza degli eventi principali:  l’utente agisce sull’interfaccia approvando per seguire la procedura di creazione di un gruppo l’utente inserisce il nome del gruppo il sistema crea il gruppo che avrà come unico partecipante l’utente che ha creato il gruppo, il quale sarà l’amministratore |
 | Postcondizioni: a seguito di questa operazione l’amministratore potrà aggiungere in qualsiasi momento membri al gruppo |
-| Sequenza di eventi alternativi:  |
+| Sequenza di eventi alternativi: il gruppo non si riesce a creare l’operazione viene annullata senza creare nulla |
 | **Caso d’uso 5.2: Invito a partecipare a un gruppo** |
 | Breve descrizione: l’amministratore invia ad un utente un invito a partecipare ad un gruppo e dovrà decidere se accettare oppure declinare la proposta |
 | Attore primario: amministratore del gruppo |
@@ -165,23 +165,23 @@
 | Precondizioni: l’utente deve essere registrato alla piattaforma |
 | Sequenza degli eventi principali:  l’amministratore invia una richiesta per partecipare al gruppo ad un utente l’utente riceve l’invito di partecipazione al gruppo con specificato il nome del gruppo e gli utenti partecipanti l’utente accetta la proposta viene aggiunto come membro del gruppo e può contribuire quindi alle spese condivise create dal gruppo |
 | Postcondizioni:  |
-| Sequenza di eventi alternativi:  l’utente rifiuta la proposta l’utente non diventa membro del gruppo l'amministratore viene informato di questa decisione |
+| Sequenza di eventi alternativi:  l’utente rifiuta la proposta l’utente non diventa membro del gruppo |
 | **Caso d’uso 5.3: Rimozione di membri dal gruppo** |
 | Breve descrizione: l’amministratore vuole rimuovere un utente dal gruppo |
 | Attore primario: amministratore |
 | Attore secondario: utente da rimuovere |
 | Precondizioni:  |
 | Sequenza degli eventi principali:  l’utente amministratore seleziona l’utente da rimuovere conferma la rimozione l’utente non fa più parte del gruppo |
-| Postcondizioni: eventuali spese incomplete a carico dell’utente rimosso verranno eliminate ed i fondi degli utenti che già ne hanno versati verranno rimosse |
-| Sequenza di eventi alternativi:  |
+| Postcondizioni: viene eseguito un ricalcolo dei debiti sui restanti partecipanti |
+| Sequenza di eventi alternativi:  errore nel abbandonare il gruppo l’utente e ancora dentro al gruppo l'utente non e amministratore  l'utente non viene tolto dal gruppo  |
 | **Caso d’uso 5.4: Abbandono di un gruppo** |
 | Breve descrizione: un utente vuole rimuoversi da un gruppo |
 | Attore primario: utente |
 | Attore secondario: nessuno |
-| Precondizioni:  |
-| Sequenza degli eventi principali:  l’utente seleziona il gruppo da cui rimuoversi la piattaforma comprende la richiesta e procede con la rimozione la piattaforma notifica l’amministratore dell’abbandono da parte dell’utente  |
-| Postcondizioni: eventuali spese incomplete a carico dell’utente rimosso verranno eliminate ed i fondi degli utenti che già ne hanno versati verranno rimossi |
-| Sequenza di eventi alternativi:  |
+| Precondizioni: l’utente e dentro al gruppo da cui vuole uscire |
+| Sequenza degli eventi principali:  l’utente seleziona il gruppo da cui rimuoversi la piattaforma comprende la richiesta e procede con la rimozione |
+| Postcondizioni:  viene eseguito un ricalco dei debiti sui restanti partecipanti |
+| Sequenza di eventi alternativi:  errore nel abbandonare il gruppo l'utente e ancora dentro il gruppo |
 | **Caso d’uso 5.5: Eliminazione di un gruppo** |
 | Breve descrizione: un utente vuole eliminare un gruppo di cui è amministratore |
 | Attore primario: amministratore |
@@ -189,42 +189,34 @@
 | Precondizioni: l’utente a fare la richiesta deve essere amministratore del gruppo |
 | Sequenza degli eventi principali:  l’amministratore seleziona il gruppo da eliminare approva la richiesta di eliminazione tutte le raccolte e le spese condivise saranno eliminate |
 | Postcondizioni:  |
-| Sequenza di eventi alternativi:  |
+| Sequenza di eventi alternativi:  errore nell'eliminazione del gruppo il gruppo non e stato eliminato l’utente non e amministratore il gruppo non viene eliminato |
 
 | Caso d’uso 6: Gestione spese di gruppo |
 | :---- |
-| **Caso d’uso 6.1: Creazione di una raccolta di denaro** |
-| Breve descrizione: Un gruppo ha la possibilità di raccogliere denaro per far eseguire poi una spesa all’amministratore. Ogni membro del gruppo potrà partecipare aggiungendo la propria quota derivante da una suddivisione in parti uguali dell'obiettivo specificato. |
-| Attore primario: amministratore del gruppo |
-| Attore secondario: altri membri del gruppo |
-| Precondizioni: gli utenti devono far parte del gruppo |
-| Sequenza degli eventi principali: l’amministratore del gruppo inserisce una spesa che il proprietario del gruppo vuole effettuare in futuro fornendo una breve descrizione l’applicazione riceve in input l’ammontare di denaro totale l’applicazione dividerà in parti uguali il denaro sul numero di partecipanti del gruppo.  ogni volta che un membro del gruppo pagherà la sua parte, il totale mancante diminuirà una volta completata la raccolta i soldi vengono spostati nel vault dell’amministratore  l’amministratore può quindi utilizzare i soldi per procedere con il pagamento della spesa |
-| Postcondizioni:  |
-| Sequenza di eventi alternativi:  |
-| **Caso d’uso 6.2: Aggiunta di spesa condivisa** |
+| **Caso d’uso 6.1: Aggiunta di spesa condivisa** |
 | Breve descrizione: un utente vuole aggiungere una spesa condivisa il cui importo verrà suddiviso tra i membri del gruppo |
 | Attore primario: membro del gruppo |
-| Attore secondario:  |
-| Precondizioni:  |
-| Sequenza degli eventi principali:  viene indicato il nome, il tipo di spesa, una descrizione facoltativa e l’importo il sistema procederà a suddividere in parti uguali la spesa tra i vari utenti |
+| Attore secondario: nessuno |
+| Precondizioni: partecipare al gruppo a cui si vuole aggiungere la spesa |
+| Sequenza degli eventi principali:  viene indicato il nome, il tipo di spesa, una descrizione facoltativa e l’importo il sistema provvederà a suddividere in parti uguali la spesa tra i vari utenti |
 | Postcondizioni: l’ammontare verrà sommato ai debiti individuali dei vari utenti, e si procederà solo una volta terminata la finalizzazione dei debiti al pagamento dell’importo dovuto |
-| Sequenza di eventi alternativi:  |
-| **Caso d’uso 6.3: Eliminazione spesa condivisa** |
+| Sequenza di eventi alternativi:  errore nell'inserimento della spesa la spesa non e stata inserita e non sara visualizzata |
+| **Caso d’uso 6.2: Eliminazione spesa condivisa** |
 | Breve descrizione: Si vuole eliminare una spesa condivisa aggiunta per errore oppure perché non più necessaria. |
 | Attore primario: membro del gruppo |
 | Attore secondario: nessuno |
 | Precondizioni: nel gruppo è stata creata una spesa condivisa |
 | Sequenza degli eventi principali: il membro del gruppo che ha creato la spesa condivisa agisce sull’interfaccia grafica seleziona la spesa di gruppo che vuole eliminare comunica al sistema l’eliminazione della spesa la spesa viene eliminata |
 | Postcondizioni: nessun membro del gruppo dovrà più alcuna cifra riguardante quella spesa condivisa |
-| Sequenza di eventi alternativi:  |
-| **Caso d’uso 6.4: Richiesta Split  (Finalizzazione spese di gruppo)** |
+| Sequenza di eventi alternativi:  errore nel eliminazione della spesa la spesa e ancora presente   |
+| **Caso d’uso 6.3: Richiesta Split  (Finalizzazione spese di gruppo)** |
 | Breve descrizione: serve ad approvare l’azzeramento di debiti tra gli utenti, in quanto le spese condivise non sono un trasferimento immediato di denaro, ma rappresentano una lista di debiti e crediti, e per utilizzare il minor numero di transazioni per ogni utente |
 | Attore primario: Amministratore del gruppo |
 | Attore secondario: Gruppo |
 | Precondizioni: sono state effettuate una o più spese condivise e si vuole procedere con l’invio effettivo del denaro |
-| Sequenza degli eventi principali:  l’amministratore vuole che tutti i debiti tra i membri del gruppo vengano azzerati procede tramite l’interfaccia ad approvare le spese condivise tutti i debiti vengono formalizzati sarà richiesto agli utenti partecipanti di inviare la propria somma di denaro dovuta, calcolata dall’applicazione  |
+| Sequenza degli eventi principali:  l’amministratore vuole che tutti i debiti tra i membri del gruppo vengano azzerati procede tramite l’interfaccia ad approvare le spese condivise tutti i debiti vengono formalizzati sarà richiesto agli utenti partecipanti di inviare la propria somma di denaro dovuta, calcolata dall’applicazione tramite richiesta payme |
 | Postcondizioni: gli utenti devono pagare la somma dovuta |
-| Sequenza di eventi alternativi:  |
+| Sequenza di eventi alternativi:  errore nel esecuzione dello split  non viene inviata nessuna richiesta |
 
 | Caso d’uso 7: VirtualVault |
 | :---- |

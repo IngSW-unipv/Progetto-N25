@@ -159,7 +159,7 @@ public class UserDAO implements IUserDAO {
      * @throws UserAlreadyExistException eccezione nel caso in cui la query abbia già trovato l'utente con uguali credenziali
      */
     @Override
-    public void save(User user) throws SQLException, UserAlreadyExistException {
+    public void save(User user) throws SQLException {
         DBQuery queryInsert;
 
         if(user.getId()!=0){
@@ -169,9 +169,6 @@ public class UserDAO implements IUserDAO {
         }
 
         DatabaseUtil.getInstance().executeQuery(queryInsert);
-        ResultSet rS = queryInsert.getResultSet();
-
-        if(rS!=null)throw new UserAlreadyExistException(user.getUsername());
 
         queryInsert.close();
     }
