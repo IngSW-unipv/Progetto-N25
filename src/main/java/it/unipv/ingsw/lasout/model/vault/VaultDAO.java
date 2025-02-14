@@ -2,6 +2,7 @@ package it.unipv.ingsw.lasout.model.vault;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.virtualVault.VirtualVault;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -18,6 +19,7 @@ public class VaultDAO implements IVaultDAO{
     }
     
     private static final String GET_RAW = "SELECT * FROM \\'virtualvault\\' WHERE id = ?;";
+    private static final String GET_VAULTID_BY_USER_ID = "SELECT id FROM \\'virtualvault\\' WHERE user_id = ? AND nome = 'Vault'";
     private static final String GET_ALL_VAULT_BY_ID = "SELECT vault.id as vaultid FROM \\'virtualvault\\', \\'vault\\' WHERE virtualvault.id = vault.virtualvault_id" ;
     private static final String GET_ALL_VAULT_BY_NAME = "SELECT DISTINCT vault.id FROM \\'vault\\', \\'virtualvault\\' WHERE virtualvault.nome = 'Vault'";
     private static final String INSERT_A_NEW_VAULT_IN_VIRTUALVAULT = "INSERT INTO \\'virtualvault\\' (nome, user_id, balance) VALUES ('Vault', ?, 0)";
@@ -80,6 +82,7 @@ public class VaultDAO implements IVaultDAO{
 
 	@Override
 	public Vault get(Vault vault) throws Exception {
+		
 		return null;
 		
 	}
@@ -141,6 +144,27 @@ public class VaultDAO implements IVaultDAO{
 		if(result != null) throw new Exception();
 				
 		query.close();
+	}
+	
+	public int vaultId(Vault oggetto) throws Exception{
+		
+		DBQuery query = DatabaseUtil.getInstance().createQuery(GET_VAULTID_BY_USER_ID, oggetto.getOwner().getId());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet result = query.getResultSet();
+		
+		if (result == null) {
+	        System.out.println("Errore: ResultSet è null!");
+	    }
+		
+		if (!result.next()) {
+		    System.out.println("Nessun record trovato per l'utente specificato.");
+		    throw new SQLException("Nessun record trovato per l'utente specificato.");
+		}
+		
+		int idVault = result.getInt("id");
+		
+		return idVault;		
 	}
 
 	@Override
