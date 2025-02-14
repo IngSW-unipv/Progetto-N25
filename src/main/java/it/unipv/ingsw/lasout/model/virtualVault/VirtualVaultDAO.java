@@ -222,7 +222,6 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
     @Override
     public void delete(VirtualVault virtualVault) throws Exception {
         //Parte di metodo per riaggiungere il balance al vault originario
-
         double b = getBalanceFromVault(virtualVault);
         if(virtualVault.getBalance() <  b) {
             DBQuery queryGet;
