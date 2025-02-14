@@ -12,6 +12,9 @@ import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.vault.IVaultDAO;
 import it.unipv.ingsw.lasout.model.vault.Vault;
 import it.unipv.ingsw.lasout.model.vault.VaultDAO;
+import it.unipv.ingsw.lasout.model.vault.paymentmethod.CreditCard;
+import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethod;
+import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethodFactory;
 import it.unipv.ingsw.lasout.model.virtualVault.IVirtualVaultDAO;
 import it.unipv.ingsw.lasout.model.virtualVault.VirtualVault;
 import it.unipv.ingsw.lasout.util.DaoFactory;
@@ -19,9 +22,11 @@ import it.unipv.ingsw.lasout.util.DaoFactory;
 public class ConcreteVaultFacade implements VaultFacade {
 
 	private VaultDAO vaultDAO;
+	private PaymentMethodFactory paymentMethodFactory;
 
 	public ConcreteVaultFacade() {
 		vaultDAO = (VaultDAO) DaoFactory.getVaultDAO();
+		paymentMethodFactory = new PaymentMethodFactory();
 	}
 
 	private static ConcreteVaultFacade instance;
@@ -67,6 +72,28 @@ public class ConcreteVaultFacade implements VaultFacade {
 		}
 		return true;
 	}
+	
+	@Override
+	public boolean addPaymentMethod(Vault v, PaymentMethod pm, String tipo) {
+		
+		paymentMethodFactory.get(tipo); 
+		
+		if (pm != null) {
+			
+            v.getMethods().add(pm);
+            
+            try {
+				pm.save(pm);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			}
+		}
+	
+		
+		return true;
+	}
 
 	private static final Logger LOGGER = Logger.getLogger(ConcreteVaultFacade.class.getName());
 
@@ -94,6 +121,14 @@ public class ConcreteVaultFacade implements VaultFacade {
 		ConcreteVaultFacade.getInstance().newVaultinVirtualVault(v, u);
 		
 		ConcreteVaultFacade.getInstance().newVaultinVault(v);
+		
+		// da recuperare l'id del vault, se no non funziona, RICORDAAAAAAAA
+		
+		PaymentMethod pm = new CreditCard("3647483", 2, 2021, 345, v.getId());
+		
+		System.out.println(""+ pm.getMethodName());
+		
+		ConcreteVaultFacade.getInstance().addPaymentMethod(v, pm, pm.getMethodName());
 		
 	}
 

@@ -3,6 +3,7 @@ package it.unipv.ingsw.lasout.model.vault;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethod;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Vault implements IVault{
@@ -19,19 +20,22 @@ public class Vault implements IVault{
 		this.id = id;
 		this.user = user;
 		this.saldo = saldo;
-		this.methods = methods;
+		this.methods = methods != null ? methods : new ArrayList<>();
 	}
 
 	public Vault() {
+		this.methods = new ArrayList<>();
 	}
 	
 	public Vault(int id) {
 		this.id = id;
+		 this.methods = new ArrayList<>();
 	}
 
 	public Vault(IVault vault) {
         this.vault = vault;
         vault.setIVaultData(new VaultData());
+        this.methods = new ArrayList<>();
     }
 	
 	public int getId() {

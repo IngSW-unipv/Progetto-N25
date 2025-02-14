@@ -28,6 +28,14 @@ public class CreditCard implements PaymentMethod {
 		this.cvv = cvv;
 		this.id_vault = id_vault;
 	}
+	
+	public CreditCard(String numeroCarta, int mese, int anno, int cvv, int id_vault) {
+		this.numeroCarta = numeroCarta;
+		this.mese = mese;
+		this.anno = anno;
+		this.cvv = cvv;
+		this.id_vault = id_vault;
+	}
 
 	public CreditCard() {
 
@@ -178,10 +186,11 @@ public class CreditCard implements PaymentMethod {
 	@Override
 	public void save(PaymentMethod paymentmethod) throws Exception {
 		
-		CreditCard ccParam = (CreditCard) paymentmethod;
+//		CreditCard ccParam = (CreditCard) paymentmethod;
 
 		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'creditcard\\' (numerocarta, mese, anno, cvv, vault_id) VALUES\r\n"
-				+ "	(?, ?, ?, ?, ?, ?);", ccParam.getNumeroCarta(), ccParam.getMese(), ccParam.getAnno(), ccParam.getCvv(), ccParam.getId_vault());
+				+ "	(?, ?, ?, ?, ?);", ((CreditCard) paymentmethod).getNumeroCarta(), ((CreditCard) paymentmethod).getMese(), ((CreditCard) paymentmethod).getAnno(), ((CreditCard) paymentmethod).getCvv(), ((CreditCard) paymentmethod).getId_vault());
+		System.out.println("" + ((CreditCard) paymentmethod).getNumeroCarta());
 		
 		DatabaseUtil.getInstance().executeQuery(query);
 
