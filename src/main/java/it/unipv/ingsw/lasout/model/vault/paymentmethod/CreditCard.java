@@ -1,6 +1,7 @@
 package it.unipv.ingsw.lasout.model.vault.paymentmethod;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,11 +146,9 @@ public class CreditCard implements PaymentMethod {
 
 	@Override
 	public PaymentMethod get(PaymentMethod paymentmethod) throws Exception {
-		
-		CreditCard ccParam = (CreditCard) paymentmethod;
 
 		DBQuery query = DatabaseUtil.getInstance().createQuery("SELECT * FROM \\'creditcard\\' WHERE id = ?;",
-				ccParam.getId());
+				((CreditCard)paymentmethod).getId());
 		DatabaseUtil.getInstance().executeQuery(query);
 
 		ResultSet rs = query.getResultSet();
@@ -171,9 +170,8 @@ public class CreditCard implements PaymentMethod {
 
 	@Override
 	public void delete(PaymentMethod paymentmethod) throws Exception {
-		CreditCard ccParam = (CreditCard) paymentmethod;
 		
-		DBQuery query = DatabaseUtil.getInstance().createQuery("DELETE FROM \\'creditcard\\' WHERE id = ?", ccParam.getId());
+		DBQuery query = DatabaseUtil.getInstance().createQuery("DELETE FROM \\'creditcard\\' WHERE id = ?", ((CreditCard) paymentmethod).getId());
 		DatabaseUtil.getInstance().executeQuery(query);
 		
 		ResultSet rs = query.getResultSet();
@@ -185,12 +183,9 @@ public class CreditCard implements PaymentMethod {
 
 	@Override
 	public void save(PaymentMethod paymentmethod) throws Exception {
-		
-//		CreditCard ccParam = (CreditCard) paymentmethod;
 
 		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'creditcard\\' (numerocarta, mese, anno, cvv, vault_id) VALUES\r\n"
 				+ "	(?, ?, ?, ?, ?);", ((CreditCard) paymentmethod).getNumeroCarta(), ((CreditCard) paymentmethod).getMese(), ((CreditCard) paymentmethod).getAnno(), ((CreditCard) paymentmethod).getCvv(), ((CreditCard) paymentmethod).getId_vault());
-		System.out.println("" + ((CreditCard) paymentmethod).getNumeroCarta());
 		
 		DatabaseUtil.getInstance().executeQuery(query);
 
@@ -205,6 +200,18 @@ public class CreditCard implements PaymentMethod {
 	public void setVault(Vault vault) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void saveInPaymentMethod(Vault v, PaymentMethod p) throws Exception {
+		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paymentmethod\\' (id_vault, type) "
+				+ "VALUES (?, ?)", v.getId(), p.getMethodName());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet rs = query.getResultSet();
+		
+		if(rs != null) throw new CantSaveException("Paymentmethod not saved");
+		query.close();
 	}
 
 }

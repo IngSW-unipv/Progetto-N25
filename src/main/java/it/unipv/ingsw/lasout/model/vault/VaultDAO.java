@@ -20,6 +20,7 @@ public class VaultDAO implements IVaultDAO{
     
     private static final String GET_RAW = "SELECT * FROM \\'virtualvault\\' WHERE id = ?;";
     private static final String GET_VAULTID_BY_USER_ID = "SELECT id FROM \\'virtualvault\\' WHERE user_id = ? AND nome = 'Vault'";
+    private static final String GET_VAULT_BY_VVID = "SELECT id FROM \\'vault\\' WHERE virtualvault_id = ?";
     private static final String GET_ALL_VAULT_BY_ID = "SELECT vault.id as vaultid FROM \\'virtualvault\\', \\'vault\\' WHERE virtualvault.id = vault.virtualvault_id" ;
     private static final String GET_ALL_VAULT_BY_NAME = "SELECT DISTINCT vault.id FROM \\'vault\\', \\'virtualvault\\' WHERE virtualvault.nome = 'Vault'";
     private static final String INSERT_A_NEW_VAULT_IN_VIRTUALVAULT = "INSERT INTO \\'virtualvault\\' (nome, user_id, balance) VALUES ('Vault', ?, 0)";
@@ -165,6 +166,26 @@ public class VaultDAO implements IVaultDAO{
 		int idVault = result.getInt("id");
 		
 		return idVault;		
+	}
+	
+	public int vaultIdinVault(Vault oggetto) throws Exception{
+		DBQuery query = DatabaseUtil.getInstance().createQuery(GET_VAULT_BY_VVID, oggetto.getVv_id());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet result = query.getResultSet();
+		
+		if (result == null) {
+	        System.out.println("Errore: ResultSet è null!");
+	    }
+		
+		if (!result.next()) {
+		    System.out.println("Nessun record trovato per il virtual vault specificato.");
+		    throw new SQLException("Nessun record trovato per il virtualvault specificato.");
+		}
+		
+		int idVVault = result.getInt("id");
+		
+		return idVVault;	
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.group.exception.CantSaveException;
 import it.unipv.ingsw.lasout.model.vault.Vault;
 
 public class PaymentMethodDAO implements IPaymentMethodDAO {
@@ -87,9 +88,7 @@ public class PaymentMethodDAO implements IPaymentMethodDAO {
 	}
 
 	@Override
-	public void save(PaymentMethod t) throws Exception {
-		// TODO Auto-generated method stub
-		
+	public void save(PaymentMethod t) throws Exception {	
 	}
 
 	@Override

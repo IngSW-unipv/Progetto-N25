@@ -24,11 +24,11 @@ CREATE TABLE `notify`                (id INTEGER AUTO_INCREMENT, user_id INT REF
 CREATE TABLE `friendnotify`          (id INTEGER , to_user_id INT, from_user_id INT REFERENCES `user`(id) ON DELETE CASCADE, PRIMARY KEY(id, to_user_id), FOREIGN KEY (id) REFERENCES `notify`(id) ON DELETE CASCADE);
 CREATE TABLE `virtualvault`          (id INTEGER AUTO_INCREMENT, nome VARCHAR(10), user_id INT, balance DOUBLE, PRIMARY KEY(id), FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE);
 CREATE TABLE `vault`                 (id INTEGER AUTO_INCREMENT, virtualvault_id INTEGER, PRIMARY KEY(id), FOREIGN KEY (virtualvault_id) REFERENCES virtualvault(id) ON DELETE CASCADE);
-CREATE TABLE `creditcard`            (id INTEGER AUTO_INCREMENT, numerocarta VARCHAR(16) NOT NULL, mese INT NOT NULL, anno INT NOT NULL, cvv INT NOT NULL, vault_id INT, PRIMARY KEY(id), FOREIGN KEY (vault_id) REFERENCES vault(id) ON DELETE CASCADE);
+CREATE TABLE `creditcard`            (id INTEGER AUTO_INCREMENT, numerocarta VARCHAR(16) NOT NULL, mese INT NOT NULL, anno INT NOT NULL, cvv INT NOT NULL, vault_id INT, PRIMARY KEY(id), FOREIGN KEY (vault_id) REFERENCES vault(id));
 CREATE TABLE `paypal`                (id INTEGER AUTO_INCREMENT,numerocarta VARCHAR(16) NOT NULL, vault_id INT, PRIMARY KEY(id), FOREIGN KEY (vault_id) REFERENCES vault(id));
 CREATE TABLE `currentaccount`        (id INTEGER AUTO_INCREMENT, iban VARCHAR(34) NOT NULL, vault_id INT, PRIMARY KEY(id), FOREIGN KEY (vault_id) REFERENCES vault(id));
 CREATE TABLE `spese`                 (id INTEGER AUTO_INCREMENT, user_id INT, group_id INT, amount DOUBLE, note VARCHAR(55), PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE, FOREIGN KEY (group_id) REFERENCES  `group`(id) ON DELETE CASCADE);
-CREATE TABLE `paymentmethod`         (id INTEGER AUTO_INCREMENT, id_vault INTEGER, type VARCHAR(10), PRIMARY KEY(id), FOREIGN KEY (id_vault) REFERENCES vault(id));
+CREATE TABLE `paymentmethod`         (id INTEGER AUTO_INCREMENT, id_vault INTEGER, type VARCHAR(20), PRIMARY KEY(id), FOREIGN KEY (id_vault) REFERENCES vault(id));
 CREATE TABLE `cashbook`              (id INTEGER AUTO_INCREMENT, user_id INTEGER , name VARCHAR(50) NOT NULL, PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE);
 CREATE TABLE `transactions`          (id INT NOT NULL, type TINYINT NULL, amount DOUBLE NULL, date VARCHAR(10), category VARCHAR(50) NULL, note VARCHAR(120) NULL, PRIMARY KEY (id));
 CREATE TABLE `cashbooktransactions`  (cashbook_id INT REFERENCES `cashbook`(id), transaction_id INT REFERENCES `transactions`(id), PRIMARY KEY(cashbook_id, transaction_id));

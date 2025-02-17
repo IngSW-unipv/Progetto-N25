@@ -13,5 +13,7 @@ public interface VaultFacade {
 	
 	boolean newVaultinVault(Vault vault);
 	
+	boolean getVaultId(Vault vault);
+	
 	boolean addPaymentMethod(Vault v, PaymentMethod pm, String tipo);
 }

@@ -23,8 +23,13 @@ public class CurrentAccount implements PaymentMethod {
 		this.vault_id = vault_id;
 	}
 
+	public CurrentAccount(String iban, int vault_id) {
+		 this.iban = iban;
+		 this.vault_id = vault_id;
+	}
+	
 	public CurrentAccount() {
-
+		
 	}
 
 	public String getIban() {
@@ -66,9 +71,8 @@ public class CurrentAccount implements PaymentMethod {
 
 	@Override
 	public void delete(PaymentMethod paymentmethod) throws Exception {
-		CurrentAccount ccParam = (CurrentAccount) paymentmethod;
 
-		DBQuery query = DatabaseUtil.getInstance().createQuery("DELETE FROM \\'currentaccount\\' WHERE id = ?", ccParam.getId());
+		DBQuery query = DatabaseUtil.getInstance().createQuery("DELETE FROM \\'currentaccount\\' WHERE id = ?", ((CurrentAccount)paymentmethod).getId());
 		DatabaseUtil.getInstance().executeQuery(query);
 
 		ResultSet rs = query.getResultSet();
@@ -81,10 +85,9 @@ public class CurrentAccount implements PaymentMethod {
 
 	@Override
 	public void save(PaymentMethod paymentmethod) throws Exception {
-		CurrentAccount caParam = (CurrentAccount) paymentmethod;
 
 		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'currentaccount\\' (iban, vault_id) VALUES (?, ?);",
-				caParam.getIban(), caParam.getVault_id());
+				((CurrentAccount)paymentmethod).getIban(), ((CurrentAccount)paymentmethod).getVault_id());
 
 		DatabaseUtil.getInstance().executeQuery(query);
 
@@ -138,10 +141,8 @@ public class CurrentAccount implements PaymentMethod {
 	@Override
 	public PaymentMethod get(PaymentMethod paymentmethod) throws Exception {
 
-		CurrentAccount caParam = (CurrentAccount) paymentmethod;
-
 		DBQuery query = DatabaseUtil.getInstance().createQuery("SELECT * FROM \\'currentaccount\\' WHERE id = ?;",
-				caParam.getId());
+				((CurrentAccount)paymentmethod).getId());
 		DatabaseUtil.getInstance().executeQuery(query);
 
 		ResultSet rs = query.getResultSet();
@@ -157,4 +158,18 @@ public class CurrentAccount implements PaymentMethod {
 
 		return ca;
 	}
+
+	@Override
+	public void saveInPaymentMethod(Vault v, PaymentMethod p) throws Exception {
+		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paymentmethod\\' (id_vault, type) "
+				+ "VALUES (?, ?)", v.getId(), p.getMethodName());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet rs = query.getResultSet();
+		
+		if(rs != null) throw new CantSaveException("Paymentmethod not saved");
+		query.close();
+		
+	}
+
 }

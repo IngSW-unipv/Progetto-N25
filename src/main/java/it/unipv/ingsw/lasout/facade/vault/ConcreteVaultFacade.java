@@ -13,6 +13,8 @@ import it.unipv.ingsw.lasout.model.vault.IVaultDAO;
 import it.unipv.ingsw.lasout.model.vault.Vault;
 import it.unipv.ingsw.lasout.model.vault.VaultDAO;
 import it.unipv.ingsw.lasout.model.vault.paymentmethod.CreditCard;
+import it.unipv.ingsw.lasout.model.vault.paymentmethod.CurrentAccount;
+import it.unipv.ingsw.lasout.model.vault.paymentmethod.PayPal;
 import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethod;
 import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethodFactory;
 import it.unipv.ingsw.lasout.model.virtualVault.IVirtualVaultDAO;
@@ -73,6 +75,21 @@ public class ConcreteVaultFacade implements VaultFacade {
 		return true;
 	}
 	
+
+	@Override
+	public boolean getVaultId(Vault vault) {
+		
+		try {
+			int id = VaultDAO.getInstance().vaultIdinVault(vault);
+			vault.setId(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
 	@Override
 	public boolean addPaymentMethod(Vault v, PaymentMethod pm, String tipo) {
 		
@@ -84,6 +101,7 @@ public class ConcreteVaultFacade implements VaultFacade {
             
             try {
 				pm.save(pm);
+				pm.saveInPaymentMethod(v, pm);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -114,22 +132,21 @@ public class ConcreteVaultFacade implements VaultFacade {
 		LaVaultFacade.getInstance().getSessionFacade().login(u);
 		System.out.println("It's logged in " + LaVaultFacade.getInstance().getSessionFacade().isLogged());
 
-		System.out.println("questo è il mio id " + LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().getId());
-
 		v.setOwner(new User(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().getId()));
 		
 		ConcreteVaultFacade.getInstance().newVaultinVirtualVault(v, u);
 		
 		ConcreteVaultFacade.getInstance().newVaultinVault(v);
 		
-		// da recuperare l'id del vault, se no non funziona, RICORDAAAAAAAA
+		ConcreteVaultFacade.getInstance().getVaultId(v);
 		
 		PaymentMethod pm = new CreditCard("3647483", 2, 2021, 345, v.getId());
-		
-		System.out.println(""+ pm.getMethodName());
+		PaymentMethod ca = new CurrentAccount("IT38298326238965289", v.getId());
+		PaymentMethod pp = new PayPal("369837431", v.getId());
 		
 		ConcreteVaultFacade.getInstance().addPaymentMethod(v, pm, pm.getMethodName());
+		ConcreteVaultFacade.getInstance().addPaymentMethod(v, ca, ca.getMethodName());
+		ConcreteVaultFacade.getInstance().addPaymentMethod(v, pp, pp.getMethodName());
 		
 	}
-
 }

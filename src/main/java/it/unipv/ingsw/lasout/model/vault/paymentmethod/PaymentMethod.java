@@ -17,7 +17,9 @@ public interface PaymentMethod {
 	void delete (PaymentMethod paymentmethod) throws Exception;
 	
 	void save (PaymentMethod paymentmethod) throws Exception;
-
+	
+	void saveInPaymentMethod (Vault v, PaymentMethod paymentmethod) throws Exception;
+	
 	void setVault(Vault vault);
 	
 }
