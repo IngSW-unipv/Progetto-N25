@@ -78,4 +78,9 @@ public class LoginView extends JFrame {
         usernameField.setText("");
         passwordField.setText("");
     }
+
+    public void preSetDada() {
+        usernameField.setText("dada");
+        passwordField.setText("ciao");
+    }
 }

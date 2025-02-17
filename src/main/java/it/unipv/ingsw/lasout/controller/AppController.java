@@ -64,6 +64,8 @@ public class AppController {
             userCarrier.setUsername(username);
             userCarrier.setPassword(password);
 
+            loginView.preSetDada();
+
             //chiamo la facade per il login
             LaVaultFacade.getInstance().getSessionFacade().login(userCarrier);
 
