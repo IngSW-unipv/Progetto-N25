@@ -49,7 +49,7 @@ public class RegisterView extends JFrame {
 
         // Pannello dei bottoni
         JPanel buttonPanel = new JPanel();
-        registerButton = new JButton("Registrati");
+        registerButton = new JButton("Sign in");
         loginButton = new JButton("Login");
         buttonPanel.add(registerButton);
         buttonPanel.add(loginButton);
@@ -60,6 +60,9 @@ public class RegisterView extends JFrame {
         mainPanel.add(buttonPanel, gbc);
 
         add(mainPanel);
+
+        //almeno premendo INVIO fa subito la registrazione senza cliccare il pulsante col mouse
+        getRootPane().setDefaultButton(registerButton);
     }
 
     public String getUsername() {
@@ -80,5 +83,11 @@ public class RegisterView extends JFrame {
 
     public void addLoginListener(ActionListener al) {
         loginButton.addActionListener(al);
+    }
+
+    public void clearFields() {
+        usernameField.setText("");
+        emailField.setText("");
+        passwordField.setText("");
     }
 }

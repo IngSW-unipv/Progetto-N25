@@ -25,7 +25,7 @@ public class LoginView extends JFrame {
         // Username
         gbc.gridx = 0;
         gbc.gridy = 0;
-        mainPanel.add(new JLabel("Username:"), gbc);
+        mainPanel.add(new JLabel("Username or email:"), gbc);
 
         usernameField = new JTextField(15);
         gbc.gridx = 1;
@@ -43,7 +43,7 @@ public class LoginView extends JFrame {
         // Pannello dei bottoni
         JPanel buttonPanel = new JPanel();
         loginButton = new JButton("Login");
-        registerButton = new JButton("Registrati");
+        registerButton = new JButton("Sign in");
         buttonPanel.add(loginButton);
         buttonPanel.add(registerButton);
 
@@ -53,6 +53,9 @@ public class LoginView extends JFrame {
         mainPanel.add(buttonPanel, gbc);
 
         add(mainPanel);
+
+        //almeno premendo INVIO fa subito il login senza cliccarlo col mouse
+        getRootPane().setDefaultButton(loginButton);
     }
 
     public String getUsername() {
@@ -69,5 +72,10 @@ public class LoginView extends JFrame {
 
     public void addRegisterListener(ActionListener al) {
         registerButton.addActionListener(al);
+    }
+
+    public void clearFields() {
+        usernameField.setText("");
+        passwordField.setText("");
     }
 }
