@@ -298,7 +298,9 @@ public class ConcreteGroupFacade implements GroupFacade {
           System.out.println(d.get(i).getDebitore().getId()+" deve  "+d.get(i).getDebito() +" a "+ d.get(i).getCreditore().getId());
         }
 
-
+        LaVaultFacade.getInstance().getSessionFacade().login(new User("cla", "miao", "bbb@gmail.com"));
+        System.out.println("It's logged in "+LaVaultFacade.getInstance().getSessionFacade().isLogged());
+        System.out.println(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
 
     }
 
