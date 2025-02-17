@@ -2,12 +2,17 @@ package it.unipv.ingsw.lasout.view.mainview;
 
 
 import it.unipv.ingsw.lasout.controller.group.GroupController;
+import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.view.group.GroupPanel;
+import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainUIView extends JFrame {
+
+    private GroupController groupController;
+
     private CardLayout cardLayout;
     private JPanel contentPanel;
     private JPanel leftPanel;
@@ -43,15 +48,14 @@ public class MainUIView extends JFrame {
         contentPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 8));
 
         // Aggiungiamo le "card" al pannello
-        contentPanel.add(createCard("Contenuto: Vault", new Color(139, 69, 19)), "vault");
+        VaultPanel vaultPanel = new VaultPanel();
+        new VaultController(vaultPanel);
+        contentPanel.add(vaultPanel, "vault");
         contentPanel.add(createCard("Contenuto: Virtualvau", new Color(160, 82, 45)), "virtualvau");
         // Aggiungiamo il pannello "Gruppi"
-        // In questo caso "Group" corrisponde al bottone "Group"
-        GroupPanel groupPanel = new GroupPanel();
-        // Qui il TeamMember responsabile dei gruppi istanzia il suo controller:
-        new GroupController(groupPanel);
+        GroupPanel groupPanel = new GroupPanel(this);
+        groupController= new GroupController(groupPanel);
         contentPanel.add(groupPanel, "Group");
-        // Aggiungiamo le altre card come prima
         contentPanel.add(createCard("Contenuto: Cashbook", new Color(210, 105, 30)), "cashbook");
         contentPanel.add(createCard("Contenuto: Notifies", new Color(150, 75, 0)), "notifies");
         contentPanel.add(createCard("Contenuto: Neame", new Color(184, 134, 11)), "neame");
@@ -80,5 +84,11 @@ public class MainUIView extends JFrame {
 
     public String[] getButtonLabels() {
         return buttonLabels;
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        groupController.load();
     }
 }
