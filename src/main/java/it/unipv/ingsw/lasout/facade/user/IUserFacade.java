@@ -1,6 +1,9 @@
 package it.unipv.ingsw.lasout.facade.user;
 
+import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.user.User;
+
+import java.util.List;
 
 //interfaccia del ConcreteUserFacade
 public interface IUserFacade {
@@ -35,4 +38,9 @@ public interface IUserFacade {
      */
     boolean updatePassword(User userCarrier);
 
+    /**
+     * Ritorna la lista di gruppi di un utente
+     * @return lista di gruppi a cui l'utente loggato partecipa
+     */
+    List<Group> getGroupOfLoggedUser();
 }

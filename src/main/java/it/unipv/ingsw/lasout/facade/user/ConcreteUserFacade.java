@@ -1,14 +1,14 @@
 package it.unipv.ingsw.lasout.facade.user;
 
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
+import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.user.IUserDAO;
 import it.unipv.ingsw.lasout.model.user.User;
-import it.unipv.ingsw.lasout.model.user.UserDAO;
-import it.unipv.ingsw.lasout.model.user.*;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 import it.unipv.ingsw.lasout.util.DaoFactory;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Scanner;
 
 public class ConcreteUserFacade implements IUserFacade {
@@ -100,6 +100,17 @@ public class ConcreteUserFacade implements IUserFacade {
             System.out.println(e.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public List<Group> getGroupOfLoggedUser(){
+        List<Group> groups;
+        try {
+            groups= userDAO.groupsOfUser(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return groups;
     }
 
 }
