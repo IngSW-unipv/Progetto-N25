@@ -102,6 +102,6 @@ public class MainUIView extends JFrame {
     @Override
     public void setVisible(boolean b) {
         super.setVisible(b);
-        //groupController.load();
+        groupController.load();
     }
 }

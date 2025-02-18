@@ -17,6 +17,8 @@ public class GroupPanel extends JPanel {
     private JButton finalizzaBtn;
 
     private GroupSettingsDialog settingsDialog;
+    private AddExpenseDialog addExpenseDialog;
+    public NewGroupDialog newGroupDialog;
 
 
     public GroupPanel(JFrame frame) {
@@ -34,6 +36,8 @@ public class GroupPanel extends JPanel {
         topBarPanel.add(nuovoGruppoBtn);
 
         add(topBarPanel, BorderLayout.NORTH);
+
+        newGroupDialog = new NewGroupDialog(frame);
 
         // ============ CENTRO (pannello blu) ============
         JPanel centerPanel = new JPanel(new BorderLayout());
@@ -103,6 +107,9 @@ public class GroupPanel extends JPanel {
         bottomPanel.add(aggiungiSpesaBtn);
         bottomPanel.add(finalizzaBtn);
 
+
+        addExpenseDialog = new AddExpenseDialog(frame);
+
         centerPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         // Aggiungiamo centerPanel al centro di GroupPanel
@@ -110,9 +117,7 @@ public class GroupPanel extends JPanel {
     }
 
     /* ================= Metodi per i listener (già presenti) ================= */
-    public void addNuovoGruppoListener(ActionListener l) { nuovoGruppoBtn.addActionListener(l); }
     public void addInvitaListener(ActionListener l) { invitaBtn.addActionListener(l); }
-    public void addAggiungiSpesaListener(ActionListener l) { aggiungiSpesaBtn.addActionListener(l); }
     public void addFinalizzaListener(ActionListener l) { finalizzaBtn.addActionListener(l); }
     public void addComboBoxListener(ActionListener listener) {
         comboBox.addActionListener(listener);
@@ -124,6 +129,9 @@ public class GroupPanel extends JPanel {
     }
     public void addGroupItem(GroupItem groupItem) {
         comboBox.addItem(groupItem);
+    }
+    public void resetComboBox(){
+        comboBox.removeAllItems();
     }
 
     /* ================= Metodi per manipolare la label ================= */
@@ -161,4 +169,16 @@ public class GroupPanel extends JPanel {
     public void addOption3Listener(ActionListener l) {
         settingsDialog.addDelateGroupListener(l);
     }
+
+    /* =========== Tasto aggiungi spesa=============*/
+    public AddExpenseDialog getAddExpenseDialog() {
+        return addExpenseDialog;
+    }
+    public void addAggiungiSpesaListener(ActionListener l) { aggiungiSpesaBtn.addActionListener(l); }
+
+    /* ========== Tasto nuovo gruppo ============= */
+    public NewGroupDialog getNewGroupDialog() {
+        return newGroupDialog;
+    }
+    public void addNuovoGruppoListener(ActionListener l) { nuovoGruppoBtn.addActionListener(l); }
 }
