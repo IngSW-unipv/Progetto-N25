@@ -5,10 +5,10 @@ import java.awt.*;
 
 public class AccountPanel extends JPanel {
 
-    // Campi di testo
-    private JTextField oldPasswordField;
-    private JTextField newPasswordField;
-    private JTextField repeatNewPasswordField;
+    // Campi di testo per le password
+    private JPasswordField oldPasswordField;
+    private JPasswordField newPasswordField;
+    private JPasswordField repeatNewPasswordField;
 
     // Bottoni
     private JButton changePasswordButton;
@@ -16,78 +16,83 @@ public class AccountPanel extends JPanel {
     private JButton logoutButton;
 
     public AccountPanel() {
-        setLayout(new GridBagLayout());
-        setBackground(Color.pink); // Sfondo blu
+        // Imposta il layout principale a BorderLayout
+        setLayout(new BorderLayout());
+        setBackground(Color.pink);
 
-        // Inizializziamo i textfield
-        oldPasswordField = new JTextField(35);
-        newPasswordField = new JTextField(35);
-        repeatNewPasswordField = new JTextField(35);
-
-        // Se vuoi sfondo rosso per i textfield
-        oldPasswordField.setBackground(Color.WHITE);
-        newPasswordField.setBackground(Color.WHITE);
-        repeatNewPasswordField.setBackground(Color.WHITE);
-
-        // Inizializziamo i bottoni
-        changePasswordButton = new JButton("cambia password");
-        deleteAccountButton = new JButton("elimina account");
-        logoutButton = new JButton("logout");
-
-        // Se vuoi sfondo scuro per i bottoni
-        changePasswordButton.setBackground(Color.DARK_GRAY);
-        deleteAccountButton.setBackground(Color.red);
-        logoutButton.setBackground(Color.red);
-
-        // E testo chiaro, altrimenti nero su grigio potrebbe non vedersi bene
-        changePasswordButton.setForeground(Color.WHITE);
-        deleteAccountButton.setForeground(Color.WHITE);
-        logoutButton.setForeground(Color.WHITE);
-
-        // Prepara i constraints
+        // ----- Centro: cambio password -----
+        // Creiamo un pannello centrale con GridBagLayout per centrare i componenti
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setBackground(Color.pink);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 10, 5, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0; // Una sola colonna
 
-        // Riga 0: Label “vecchia password”
+        // Inizializziamo i textfield
+        oldPasswordField = new JPasswordField(35);
+        newPasswordField = new JPasswordField(35);
+        repeatNewPasswordField = new JPasswordField(35);
+
+        // Imposta sfondo bianco per i textfield
+        oldPasswordField.setBackground(Color.WHITE);
+        newPasswordField.setBackground(Color.WHITE);
+        repeatNewPasswordField.setBackground(Color.WHITE);
+
+        // Inizializziamo il bottone per cambiare password
+        changePasswordButton = new JButton("cambia password");
+        changePasswordButton.setBackground(Color.DARK_GRAY);
+        changePasswordButton.setForeground(Color.WHITE);
+
+        // Aggiungiamo i componenti al centro
         gbc.gridy = 0;
-        add(new JLabel("vecchia password"), gbc);
+        centerPanel.add(new JLabel("vecchia password"), gbc);
 
-        // Riga 1: TextField per la vecchia password
         gbc.gridy = 1;
-        add(oldPasswordField, gbc);
+        centerPanel.add(oldPasswordField, gbc);
 
-        // Riga 2: Label “nuova password”
         gbc.gridy = 2;
-        add(new JLabel("nuova password"), gbc);
+        centerPanel.add(new JLabel("nuova password"), gbc);
 
-        // Riga 3: TextField per la nuova password
         gbc.gridy = 3;
-        add(newPasswordField, gbc);
+        centerPanel.add(newPasswordField, gbc);
 
-        // Riga 4: Label “ripeti password”
         gbc.gridy = 4;
-        add(new JLabel("ripeti password"), gbc);
+        centerPanel.add(new JLabel("ripeti password"), gbc);
 
-        // Riga 5: TextField per ripetere la nuova password
         gbc.gridy = 5;
-        add(repeatNewPasswordField, gbc);
+        centerPanel.add(repeatNewPasswordField, gbc);
 
-        // Riga 6: Bottone "cambia password"
         gbc.gridy = 6;
-        add(changePasswordButton, gbc);
+        centerPanel.add(changePasswordButton, gbc);
 
-        // Riga 7: pannello con i due bottoni "elimina account" e "logout"
-        gbc.gridy = 7;
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        // Aggiungiamo il pannello centrale al centro dell'AccountPanel
+        add(centerPanel, BorderLayout.CENTER);
+
+        // ----- Basso: bottoni "elimina account" e "logout" -----
+        // Creiamo un pannello per i bottoni in basso con FlowLayout
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         bottomPanel.setBackground(Color.pink);
+
+        deleteAccountButton = new JButton("elimina account");
+        logoutButton = new JButton("logout");
+
+        // Impostazioni grafiche dei bottoni in basso
+        deleteAccountButton.setBackground(Color.red);
+        deleteAccountButton.setForeground(Color.WHITE);
+        logoutButton.setBackground(Color.red);
+        logoutButton.setForeground(Color.WHITE);
+        deleteAccountButton.setPreferredSize(new Dimension(150, 50));
+        logoutButton.setPreferredSize(new Dimension(150, 50));
+
         bottomPanel.add(deleteAccountButton);
         bottomPanel.add(logoutButton);
-        add(bottomPanel, gbc);
+
+        // Aggiungiamo il pannello dei bottoni in basso
+        add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    // Getter per i campi di testo (se servono in un Controller)
+    // Getter per i campi di testo
     public String getOldPassword() {
         return oldPasswordField.getText();
     }

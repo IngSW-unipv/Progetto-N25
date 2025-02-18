@@ -5,8 +5,10 @@ import it.unipv.ingsw.lasout.controller.AppController;
 import it.unipv.ingsw.lasout.controller.account.AccountController;
 import it.unipv.ingsw.lasout.controller.group.GroupController;
 //import it.unipv.ingsw.lasout.controller.vault.VaultController;
+import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.view.account.AccountPanel;
 import it.unipv.ingsw.lasout.view.group.GroupPanel;
+import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 import javafx.application.Application;
 //import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 
@@ -52,9 +54,9 @@ public class MainUIView extends JFrame {
         contentPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 8));
 
         // Aggiungiamo le "card" al pannello
-        //VaultPanel vaultPanel = new VaultPanel();
-        //new VaultController(vaultPanel);
-        //contentPanel.add(vaultPanel, "vault");
+        VaultPanel vaultPanel = new VaultPanel();
+        new VaultController(vaultPanel);
+        contentPanel.add(vaultPanel, "vault");
         contentPanel.add(createCard("Contenuto: Virtualvau", new Color(160, 82, 45)), "virtualvau");
         // Aggiungiamo il pannello "Gruppi"
         GroupPanel groupPanel = new GroupPanel(this);

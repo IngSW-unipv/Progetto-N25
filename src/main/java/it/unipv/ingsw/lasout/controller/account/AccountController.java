@@ -3,9 +3,7 @@ package it.unipv.ingsw.lasout.controller.account;
 import it.unipv.ingsw.lasout.controller.AppController;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.user.User;
-import it.unipv.ingsw.lasout.view.LoginView;
 import it.unipv.ingsw.lasout.view.account.AccountPanel;
-import it.unipv.ingsw.lasout.view.mainview.MainUIView;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

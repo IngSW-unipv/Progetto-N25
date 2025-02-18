@@ -3,8 +3,8 @@ package it.unipv.ingsw.lasout.controller;
 
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.user.User;
-import it.unipv.ingsw.lasout.view.LoginView;
-import it.unipv.ingsw.lasout.view.RegisterView;
+import it.unipv.ingsw.lasout.view.account.LoginView;
+import it.unipv.ingsw.lasout.view.account.RegisterView;
 import it.unipv.ingsw.lasout.view.mainview.MainUIView;
 
 import javax.swing.*;
@@ -37,6 +37,8 @@ public class AppController {
 
     public void showLoginView() {
         loginView.setVisible(true);
+        //almeno quando riapro la schermata pk ho fatto un logout o eliminato l'account i textField sono vuoti
+        loginView.clearFields();
     }
 
     public void showMainUIView() {
