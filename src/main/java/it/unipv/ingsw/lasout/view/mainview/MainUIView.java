@@ -67,6 +67,7 @@ public class MainUIView extends JFrame {
 
         // Creazione e aggiunta AccountPanel
         AccountPanel accountPanel = new AccountPanel();
+
         new AccountController(accountPanel, appController);
         contentPanel.add(accountPanel, "account");
 
