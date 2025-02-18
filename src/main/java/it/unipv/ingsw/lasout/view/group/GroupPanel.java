@@ -109,6 +109,7 @@ public class GroupPanel extends JPanel {
 
 
         addExpenseDialog = new AddExpenseDialog(frame);
+        aggiungiSpesaBtn.setEnabled(false);
 
         centerPanel.add(bottomPanel, BorderLayout.SOUTH);
 
@@ -175,6 +176,8 @@ public class GroupPanel extends JPanel {
         return addExpenseDialog;
     }
     public void addAggiungiSpesaListener(ActionListener l) { aggiungiSpesaBtn.addActionListener(l); }
+
+    public JButton getAggiungiSpesaBtn() { return aggiungiSpesaBtn; }
 
     /* ========== Tasto nuovo gruppo ============= */
     public NewGroupDialog getNewGroupDialog() {

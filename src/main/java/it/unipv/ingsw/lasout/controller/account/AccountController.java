@@ -1,6 +1,7 @@
 package it.unipv.ingsw.lasout.controller.account;
 
 import it.unipv.ingsw.lasout.controller.AppController;
+import it.unipv.ingsw.lasout.controller.group.GroupController;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.view.account.AccountPanel;
@@ -67,6 +68,7 @@ public class AccountController {
             // Chiude la finestra principale
             SwingUtilities.getWindowAncestor(accountPanel).dispose();
             // Utilizza il metodo di AppController per mostrare la schermata di login
+            GroupController.out();
             appController.showLoginView();
         }
     }
@@ -87,6 +89,7 @@ public class AccountController {
             // Chiude la finestra principale
             SwingUtilities.getWindowAncestor(accountPanel).dispose();
             // Utilizza il metodo di AppController per mostrare la schermata di login
+            GroupController.out();
             appController.showLoginView();
         }
     }

@@ -12,10 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GroupController {
-    private GroupPanel groupPanel;
-
-
-    private Group activeGroup;
+    private static GroupPanel groupPanel;
+    private static Group activeGroup;
 
     public GroupController(GroupPanel groupPanel) {
         this.groupPanel = groupPanel;
@@ -35,6 +33,7 @@ public class GroupController {
 
                 groupPanel.setNameLabelText(activeGroup.getName());
                 groupPanel.getImpostazioniBtn().setEnabled(true);
+                groupPanel.getAggiungiSpesaBtn().setEnabled(true);
 
             }
         });
@@ -127,5 +126,13 @@ public class GroupController {
         for(Group group:grouplist){
             groupPanel.addGroupItem(new GroupItem((int) group.getId(), group.getName()));
         }
+    }
+
+    public static void out(){
+        groupPanel.resetComboBox();
+        activeGroup=null;
+        groupPanel.setNameLabelText("");
+        groupPanel.getImpostazioniBtn().setEnabled(false);
+        groupPanel.getAggiungiSpesaBtn().setEnabled(false);
     }
 }
