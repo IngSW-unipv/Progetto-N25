@@ -1,11 +1,13 @@
 package it.unipv.ingsw.lasout.view.mainview;
 
 
+import it.unipv.ingsw.lasout.controller.AppController;
 import it.unipv.ingsw.lasout.controller.account.AccountController;
 import it.unipv.ingsw.lasout.controller.group.GroupController;
 //import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.view.account.AccountPanel;
 import it.unipv.ingsw.lasout.view.group.GroupPanel;
+import javafx.application.Application;
 //import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 
 import javax.swing.*;
@@ -24,7 +26,7 @@ public class MainUIView extends JFrame {
             "notifies", "neame", "friends", "account"
     };
 
-    public MainUIView() {
+    public MainUIView(AppController appController) {
         setTitle("Finestra Principale");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(880, 660);
@@ -55,7 +57,7 @@ public class MainUIView extends JFrame {
         //contentPanel.add(vaultPanel, "vault");
         contentPanel.add(createCard("Contenuto: Virtualvau", new Color(160, 82, 45)), "virtualvau");
         // Aggiungiamo il pannello "Gruppi"
-        GroupPanel groupPanel = new GroupPanel();
+        GroupPanel groupPanel = new GroupPanel(this);
         groupController= new GroupController(groupPanel);
         contentPanel.add(groupPanel, "Group");
         contentPanel.add(createCard("Contenuto: Cashbook", new Color(210, 105, 30)), "cashbook");
@@ -65,7 +67,7 @@ public class MainUIView extends JFrame {
 
         // Creazione e aggiunta AccountPanel
         AccountPanel accountPanel = new AccountPanel();
-        new AccountController(accountPanel);
+        new AccountController(accountPanel, appController);
         contentPanel.add(accountPanel, "account");
 
         getContentPane().setLayout(new BorderLayout());

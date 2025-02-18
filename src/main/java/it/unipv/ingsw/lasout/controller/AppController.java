@@ -19,7 +19,7 @@ public class AppController {
     public AppController() {
         // Inizializziamo le view
         loginView = new LoginView();
-        mainUIView = new MainUIView();
+        mainUIView = new MainUIView(this); // Passa "this" per fornire il riferimento all'AppController
 
         // Aggiungiamo i listener alla view di login
         loginView.addLoginListener(new LoginListener());
