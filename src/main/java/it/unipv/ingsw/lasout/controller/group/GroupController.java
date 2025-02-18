@@ -4,20 +4,18 @@ import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.view.group.GroupItem;
 import it.unipv.ingsw.lasout.view.group.GroupPanel;
-import it.unipv.ingsw.lasout.view.group.GroupSettingsDialog;
 
 import javax.swing.JOptionPane;
 import java.util.List;
 
 public class GroupController {
     private GroupPanel groupPanel;
-    private GroupSettingsDialog groupSettingsDialog;
+
 
     private Group activeGroup;
 
     public GroupController(GroupPanel groupPanel) {
         this.groupPanel = groupPanel;
-        this.groupSettingsDialog=groupPanel.getSettingsDialog();
         initController();
     }
 
@@ -25,7 +23,7 @@ public class GroupController {
 
         groupPanel.addGroupItem(new GroupItem(-1, "Seleziona Gruppo..."));
 
-        // Ascoltatore sulla comboBox:
+        //=============== Quando scelgo nel menu a tendina ===================
         groupPanel.addComboBoxListener(e -> {
             // Recupera l'oggetto selezionato nel jcombobox
             GroupItem selected = (GroupItem) groupPanel.getSelectedGroup();
@@ -40,32 +38,32 @@ public class GroupController {
             }
         });
 
-        // Quando clicco "Nuovo Gruppo"
+        // ================ Quando clicco "Nuovo Gruppo" =======================
         groupPanel.addNuovoGruppoListener(e ->
                 JOptionPane.showMessageDialog(groupPanel, "Premuto: Nuovo Gruppo")
         );
 
-        // Quando clicco "impostaz"
+        //================= Quando clicco "impostaz"=====================
         groupPanel.addImpostazioniListener(e -> {
-            groupSettingsDialog.setLocationRelativeTo(groupPanel);
-            groupSettingsDialog.setVisible(true);
+            groupPanel.getSettingsDialog().setLocationRelativeTo(groupPanel);
+            groupPanel.getSettingsDialog().setVisible(true);
         });
 
-        groupSettingsDialog.addOption1Listener(e -> JOptionPane.showMessageDialog(groupPanel, "Hai premuto Opzione 1"));
-        groupSettingsDialog.addOption2Listener(e -> JOptionPane.showMessageDialog(groupPanel, "Hai premuto Opzione 2"));
-        groupSettingsDialog.addOption3Listener(e -> JOptionPane.showMessageDialog(groupPanel, "Hai premuto Opzione 3"));
+        groupPanel.getSettingsDialog().addEliminateUserListener(e -> JOptionPane.showMessageDialog(groupPanel, "Hai premuto Opzione 1"));
+        groupPanel.getSettingsDialog().addLeaveGroupListener(e -> JOptionPane.showMessageDialog(groupPanel, "Hai premuto Opzione 2"));
+        groupPanel.getSettingsDialog().addDelateGroupListener(e -> JOptionPane.showMessageDialog(groupPanel, "Hai premuto Opzione 3"));
 
-        // Quando clicco "Invita"
+        // ====================Quando clicco "Invita"==================
         groupPanel.addInvitaListener(e ->
                 JOptionPane.showMessageDialog(groupPanel, "Premuto: Invita")
         );
 
-        // Quando clicco "Aggiungi spesa"
+        //=======================Quando clicco "Aggiungi spesa"=================
         groupPanel.addAggiungiSpesaListener(e ->
                 JOptionPane.showMessageDialog(groupPanel, "Premuto: Aggiungi spesa")
         );
 
-        // Quando clicco "Finalizza"
+        // ======================= Quando clicco "Finalizza"=========================
         groupPanel.addFinalizzaListener(e ->
                 JOptionPane.showMessageDialog(groupPanel, "Premuto: Finalizza")
         );

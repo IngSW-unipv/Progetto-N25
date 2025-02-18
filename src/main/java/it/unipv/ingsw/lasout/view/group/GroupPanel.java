@@ -153,12 +153,12 @@ public class GroupPanel extends JPanel {
 
     // Esporre i 3 metodi per i listener del dialog
     public void addOption1Listener(ActionListener l) {
-        settingsDialog.addOption1Listener(l);
+        settingsDialog.addEliminateUserListener(l);
     }
     public void addOption2Listener(ActionListener l) {
-        settingsDialog.addOption2Listener(l);
+        settingsDialog.addLeaveGroupListener(l);
     }
     public void addOption3Listener(ActionListener l) {
-        settingsDialog.addOption3Listener(l);
+        settingsDialog.addDelateGroupListener(l);
     }
 }
