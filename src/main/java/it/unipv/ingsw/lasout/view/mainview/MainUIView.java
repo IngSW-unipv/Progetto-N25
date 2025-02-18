@@ -1,10 +1,12 @@
 package it.unipv.ingsw.lasout.view.mainview;
 
 
+import it.unipv.ingsw.lasout.controller.account.AccountController;
 import it.unipv.ingsw.lasout.controller.group.GroupController;
-import it.unipv.ingsw.lasout.controller.vault.VaultController;
+//import it.unipv.ingsw.lasout.controller.vault.VaultController;
+import it.unipv.ingsw.lasout.view.account.AccountPanel;
 import it.unipv.ingsw.lasout.view.group.GroupPanel;
-import it.unipv.ingsw.lasout.view.vault.VaultPanel;
+//import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,19 +50,23 @@ public class MainUIView extends JFrame {
         contentPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 8));
 
         // Aggiungiamo le "card" al pannello
-        VaultPanel vaultPanel = new VaultPanel();
-        new VaultController(vaultPanel);
-        contentPanel.add(vaultPanel, "vault");
+        //VaultPanel vaultPanel = new VaultPanel();
+        //new VaultController(vaultPanel);
+        //contentPanel.add(vaultPanel, "vault");
         contentPanel.add(createCard("Contenuto: Virtualvau", new Color(160, 82, 45)), "virtualvau");
         // Aggiungiamo il pannello "Gruppi"
-        GroupPanel groupPanel = new GroupPanel(this);
+        GroupPanel groupPanel = new GroupPanel();
         groupController= new GroupController(groupPanel);
         contentPanel.add(groupPanel, "Group");
         contentPanel.add(createCard("Contenuto: Cashbook", new Color(210, 105, 30)), "cashbook");
         contentPanel.add(createCard("Contenuto: Notifies", new Color(150, 75, 0)), "notifies");
         contentPanel.add(createCard("Contenuto: Neame", new Color(184, 134, 11)), "neame");
         contentPanel.add(createCard("Contenuto: Friends", new Color(205, 92, 92)), "friends");
-        contentPanel.add(createCard("Contenuto: Account", new Color(188, 143, 143)), "account");
+
+        // Creazione e aggiunta AccountPanel
+        AccountPanel accountPanel = new AccountPanel();
+        new AccountController(accountPanel);
+        contentPanel.add(accountPanel, "account");
 
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(leftPanel, BorderLayout.WEST);
@@ -89,6 +95,6 @@ public class MainUIView extends JFrame {
     @Override
     public void setVisible(boolean b) {
         super.setVisible(b);
-        groupController.load();
+        //groupController.load();
     }
 }

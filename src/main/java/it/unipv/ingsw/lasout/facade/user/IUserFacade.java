@@ -36,7 +36,7 @@ public interface IUserFacade {
      * @param userCarrier utente loggato preso dal DB
      * @return true se la password è stata cambiata correttamente (false per gli altri casi in cui non si è riusciti a modificarla)
      */
-    boolean updatePassword(User userCarrier);
+    boolean updatePassword(User userCarrier, String newPassword);
 
     /**
      * Ritorna la lista di gruppi di un utente

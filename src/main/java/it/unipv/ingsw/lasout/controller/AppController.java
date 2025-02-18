@@ -33,6 +33,8 @@ public class AppController {
         }
     }
 
+
+
     public void showLoginView() {
         loginView.setVisible(true);
     }
@@ -79,6 +81,7 @@ public class AppController {
             } else {
                 //se non è riuscito a loggarsi perché le credenziali non sono valide, mostro l’errore
                 JOptionPane.showMessageDialog(loginView,"Credenziali errate! Riprova","Errore di Login",JOptionPane.ERROR_MESSAGE);
+                //loginView.clearFields();
             }
         }
     }
@@ -121,7 +124,7 @@ public class AppController {
                 registerView.dispose();
                 loginView.setVisible(true);
             }else{
-                JOptionPane.showMessageDialog(registerView,"User already exist, impossible to CREATE your account. Please use another username","Errore di Registrazione",JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(registerView,"User already exist, impossible to CREATE your account. Please use another username","Errore di Registrazione",JOptionPane.ERROR_MESSAGE);
                 registerView.clearFields();
             }
         }

@@ -26,6 +26,11 @@ public class PayPal implements PaymentMethod{
 	public PayPal() {
 		
 	}
+	
+	public PayPal(String numerocarta, int vault_id) {
+		this.numeroCarta = numerocarta;
+		this.vault_id = vault_id;
+	}
 
 	public String getNumeroCarta() {
 		return numeroCarta;
@@ -95,10 +100,9 @@ public class PayPal implements PaymentMethod{
 	@Override
 	public PaymentMethod get(PaymentMethod paymentmethod) throws Exception {
 		
-		PayPal ppParam = (PayPal) paymentmethod;
 
 		DBQuery query = DatabaseUtil.getInstance().createQuery("SELECT * FROM \\'paypal\\' WHERE id = ?;",
-				ppParam.getId());
+				((PayPal)paymentmethod).getId());
 		DatabaseUtil.getInstance().executeQuery(query);
 
 		ResultSet rs = query.getResultSet();
@@ -118,9 +122,7 @@ public class PayPal implements PaymentMethod{
 
 	@Override
 	public void delete(PaymentMethod paymentmethod) throws Exception {
-		PayPal ppParam = (PayPal) paymentmethod;
-
-		DBQuery query = DatabaseUtil.getInstance().createQuery("DELETE FROM \\'currentaccount\\' WHERE id = ?", ppParam.getId());
+		DBQuery query = DatabaseUtil.getInstance().createQuery("DELETE FROM \\'currentaccount\\' WHERE id = ?", ((PayPal)paymentmethod).getId());
 		DatabaseUtil.getInstance().executeQuery(query);
 
 		ResultSet rs = query.getResultSet();
@@ -133,11 +135,9 @@ public class PayPal implements PaymentMethod{
 
 	@Override
 	public void save(PaymentMethod paymentmethod) throws Exception {
-		
-		PayPal ppParam = (PayPal) paymentmethod;
 
 		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paypal\\' (numerocarta, vault_id) VALUES (?, ?);",
-				ppParam.getNumeroCarta(), ppParam.getVault_id());
+				((PayPal)paymentmethod).getNumeroCarta(), ((PayPal)paymentmethod).getVault_id());
 
 		DatabaseUtil.getInstance().executeQuery(query);
 
@@ -155,5 +155,16 @@ public class PayPal implements PaymentMethod{
 		
 	}
 
+	@Override
+	public void saveInPaymentMethod(Vault v, PaymentMethod p) throws Exception {
+		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paymentmethod\\' (id_vault, type) "
+				+ "VALUES (?, ?)", v.getId(), p.getMethodName());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet rs = query.getResultSet();
+		
+		if(rs != null) throw new CantSaveException("Paymentmethod not saved");
+		query.close();
+	}
 	
 }
