@@ -18,6 +18,8 @@ import java.awt.*;
 public class MainUIView extends JFrame {
 
     private GroupController groupController;
+    private AccountController accountController;
+    private AppController appController;
 
     private CardLayout cardLayout;
     private JPanel contentPanel;
@@ -29,6 +31,7 @@ public class MainUIView extends JFrame {
     };
 
     public MainUIView(AppController appController) {
+        this.appController = appController;
         setTitle("Finestra Principale");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(880, 660);
@@ -68,9 +71,8 @@ public class MainUIView extends JFrame {
         contentPanel.add(createCard("Contenuto: Friends", new Color(205, 92, 92)), "friends");
 
         // Creazione e aggiunta AccountPanel
-        AccountPanel accountPanel = new AccountPanel();
-
-        new AccountController(accountPanel, appController);
+        AccountPanel accountPanel = new AccountPanel(this);
+        accountController=new AccountController(accountPanel, appController);
         contentPanel.add(accountPanel, "account");
 
         getContentPane().setLayout(new BorderLayout());

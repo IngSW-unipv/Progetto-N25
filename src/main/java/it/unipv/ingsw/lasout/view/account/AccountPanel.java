@@ -1,5 +1,7 @@
 package it.unipv.ingsw.lasout.view.account;
 
+import it.unipv.ingsw.lasout.view.mainview.MainUIView;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -15,7 +17,7 @@ public class AccountPanel extends JPanel {
     private JButton deleteAccountButton;
     private JButton logoutButton;
 
-    public AccountPanel() {
+    public AccountPanel(MainUIView mainUIView) {
         // Imposta il layout principale a BorderLayout
         setLayout(new BorderLayout());
         setBackground(Color.pink);
