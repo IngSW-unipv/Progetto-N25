@@ -117,4 +117,10 @@ public class AccountPanel extends JPanel {
     public void addLogoutListener(java.awt.event.ActionListener al) {
         logoutButton.addActionListener(al);
     }
+
+    public void clearFields() {
+        oldPasswordField.setText("");
+        newPasswordField.setText("");
+        repeatNewPasswordField.setText("");
+    }
 }

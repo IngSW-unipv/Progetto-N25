@@ -60,6 +60,9 @@ public class AccountController {
 
             JOptionPane.showMessageDialog(null,"Account eliminato con successo, a breve sarai riportato alla schermata di login","Rimozione account",JOptionPane.INFORMATION_MESSAGE);
 
+            //prima di eliminare l'account pulisco tutti i JTextField
+            accountPanel.clearFields();
+
             //dopo aver fatto il logout verrò riportato alla schermata del login
             // Chiude la finestra principale
             SwingUtilities.getWindowAncestor(accountPanel).dispose();
@@ -76,6 +79,9 @@ public class AccountController {
             LaVaultFacade.getInstance().getSessionFacade().logout();
 
             JOptionPane.showMessageDialog(null,"Logout effettuato con successo, a breve sarai riportato alla schermata di login","Logout",JOptionPane.INFORMATION_MESSAGE);
+
+            //prima di fare il logout effettivo pulisco tutti i JTextField
+            accountPanel.clearFields();
 
             //dopo aver fatto il logout verrò riportato alla schermata del login
             // Chiude la finestra principale
