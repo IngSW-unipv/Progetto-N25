@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ICashbookFacade {
 
-    boolean addCashbook(Cashbook cashbook);
+    boolean saveCashbook(Cashbook cashbook);
 
     Cashbook getCashbook(Cashbook cashbook);
 
@@ -22,6 +22,6 @@ public interface ICashbookFacade {
 
     boolean removeTransaction(Cashbook cashbook, Transaction transaction);
 
-    List<Cashbook> getAllCashbooks(User user);
+    List<Cashbook> getUserCashbooks(User user);
 
 }

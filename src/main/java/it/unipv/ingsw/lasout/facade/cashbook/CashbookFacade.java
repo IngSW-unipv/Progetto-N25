@@ -26,7 +26,7 @@ public class CashbookFacade implements ICashbookFacade {
     }
 
     @Override
-    public boolean addCashbook(Cashbook cashbook) {
+    public boolean saveCashbook(Cashbook cashbook) {
         try {
             cashBookDAO.save(cashbook);
         } catch (Exception e) {
@@ -65,7 +65,7 @@ public class CashbookFacade implements ICashbookFacade {
     }
 
     @Override
-    public List<Cashbook> getAllCashbooks(User carrierUser){
+    public List<Cashbook> getUserCashbooks(User carrierUser){
         try{
             return cashBookDAO.getAllUserCashbooks(carrierUser);
         } catch (Exception e) {
@@ -76,10 +76,8 @@ public class CashbookFacade implements ICashbookFacade {
     @Override
     public boolean addTransaction(Cashbook cashbook, Transaction transaction) {
         try{
-            Cashbook c= cashBookDAO.get(cashbook);
-            List<Transaction> t = c.getTransactionList();
-            t.add(transaction);
-            c.setTransactionList(t);
+            Cashbook c = cashBookDAO.get(cashbook);
+            c.addTransaction(transaction);
             cashBookDAO.update(c);
         } catch (Exception e) {
             return false;

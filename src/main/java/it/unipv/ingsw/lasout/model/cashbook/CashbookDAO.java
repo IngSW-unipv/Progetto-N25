@@ -6,6 +6,7 @@ import java.util.List;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.transaction.ITransactionDAO;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.model.transaction.TransactionDAO;
 import it.unipv.ingsw.lasout.model.user.User;
@@ -80,7 +81,7 @@ public class CashbookDAO implements ICashbookDAO {
     public Cashbook get(Cashbook carrierCashbook) throws Exception {
         Cashbook savedCashbook = getRaw(carrierCashbook);
 
-        List<Transaction> transactions = getTransactionsFromDB(carrierCashbook);
+        List<Transaction> transactions = getCashbookTransactions(carrierCashbook);
         savedCashbook.setTransactionList(transactions);
 
         return savedCashbook;
@@ -102,7 +103,7 @@ public class CashbookDAO implements ICashbookDAO {
             Cashbook cashbook = new Cashbook();
             cashbook.setId(rs.getInt("id"));
             cashbook.setName(rs.getString("name"));
-            cashbook.setTransactionList(getTransactionsFromDB(new Cashbook(rs.getInt("id"))));
+            cashbook.setTransactionList(getCashbookTransactions(new Cashbook(rs.getInt("id"))));
 
             cashbooksList.add(cashbook);
         }
@@ -118,7 +119,7 @@ public class CashbookDAO implements ICashbookDAO {
      * @return Lista di transazioni con SOLO il loro id (per evitare ricorsione e loop)
      * @throws Exception Errore nel esecuzione della query sql
      */
-    public List<Transaction> getTransactionsFromDB(Cashbook carrierCashbook) throws Exception{
+    public List<Transaction> getCashbookTransactions(Cashbook carrierCashbook) throws Exception{
         DBQuery query = DatabaseUtil.getInstance().createQuery(GET_TRANSACTIONS_FROM_CASHBOOKTRANSACTIONS, carrierCashbook.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
@@ -128,7 +129,6 @@ public class CashbookDAO implements ICashbookDAO {
         List<Transaction> transactionList = new ArrayList<Transaction>();
         while(rs.next()){
             //ogni volta trovo un nuovo pojo e lo inserisco nella lista
-            //settare parametri
             Transaction t;
             Transaction carrierTransaction = new Transaction();
             carrierTransaction.setId(rs.getInt("transaction_id"));
@@ -159,8 +159,9 @@ public class CashbookDAO implements ICashbookDAO {
         DatabaseUtil.getInstance().executeQuery(query);
 
         //INSERT nella tabella cashbooktransactions solo se ci sono transazioni da salvare
-        if(cashbook.getTransactionList()!=null)
+        if(cashbook.getTransactionList()!=null) {
             saveAssociation(cashbook);
+        }
 
         query.close();
     }
@@ -172,8 +173,17 @@ public class CashbookDAO implements ICashbookDAO {
     private void saveAssociation(Cashbook cashbook) throws Exception {
         DBQuery query = null;
         for(Transaction t : cashbook.getTransactionList()){
+            //salvo l'associazione nella tabella N a N
             query = DatabaseUtil.getInstance().createQuery(INSERT_IN_CASHBOOKTRANSACTIONS, cashbook.getId(), t.getId());
             DatabaseUtil.getInstance().executeQuery(query);
+            // salvo le transazioni nella tabella
+            // se get restituisce not found exception allora significa che posso crearla
+            // altrimenti non faccio nulla e mantengo l'associazione
+            try{
+                TransactionDAO.getInstance().get(t);
+            } catch (RuntimeException transactionNotFound) {
+                TransactionDAO.getInstance().save(t);
+            }
         }
         if(query!=null) query.close();
     }
