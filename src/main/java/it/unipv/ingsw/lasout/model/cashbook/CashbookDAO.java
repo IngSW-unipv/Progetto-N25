@@ -157,10 +157,6 @@ public class CashbookDAO implements ICashbookDAO {
         }
 
         DatabaseUtil.getInstance().executeQuery(query);
-        ResultSet rs = query.getResultSet();
-
-        if(rs!=null)throw new Exception();
-
 
         //INSERT nella tabella cashbooktransactions solo se ci sono transazioni da salvare
         if(cashbook.getTransactionList()!=null)
@@ -171,15 +167,13 @@ public class CashbookDAO implements ICashbookDAO {
 
     /**
      * Codice che implementa l'aggiunta della relazione N a N nel database
+     * Attenzione: non esegue il salvataggio delle singole transazioni
      */
     private void saveAssociation(Cashbook cashbook) throws Exception {
         DBQuery query = null;
         for(Transaction t : cashbook.getTransactionList()){
             query = DatabaseUtil.getInstance().createQuery(INSERT_IN_CASHBOOKTRANSACTIONS, cashbook.getId(), t.getId());
             DatabaseUtil.getInstance().executeQuery(query);
-            ResultSet rs = query.getResultSet();
-
-            if(rs!=null)throw new Exception();
         }
         if(query!=null) query.close();
     }
@@ -196,9 +190,6 @@ public class CashbookDAO implements ICashbookDAO {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_CASHBOOK_FROM_ID, cashbook.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
-        ResultSet rs = query.getResultSet();
-        if(rs!=null)throw new Exception();
-
         if(cashbook.getTransactionList()!=null)
             deleteAssociation(cashbook);
 
@@ -210,11 +201,8 @@ public class CashbookDAO implements ICashbookDAO {
      */
     private void deleteAssociation(Cashbook cashbook) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_FROM_CASHBOOKTRANSACTIONS, cashbook.getId());
-
         DatabaseUtil.getInstance().executeQuery(query);
-        ResultSet rs = query.getResultSet();
 
-        if(rs!=null)throw new Exception();
         query.close();
     }
 

@@ -125,9 +125,6 @@ public class TransactionDAO implements ITransactionDAO{
         }
 
         DatabaseUtil.getInstance().executeQuery(query);
-        ResultSet rs = query.getResultSet();
-
-        if(rs!=null)throw new Exception();
 
         query.close();
     }
@@ -144,9 +141,6 @@ public class TransactionDAO implements ITransactionDAO{
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_TRANSACTION_FROM_ID, transaction.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
-        ResultSet rs = query.getResultSet();
-        if(rs!=null)throw new Exception();
-
         deleteAssociation(transaction);
         query.close();
     }
@@ -156,11 +150,8 @@ public class TransactionDAO implements ITransactionDAO{
      */
     private void deleteAssociation(Transaction transaction) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_FROM_CASHBOOKTRANSACTIONS, transaction.getId());
-
         DatabaseUtil.getInstance().executeQuery(query);
-        ResultSet rs = query.getResultSet();
 
-        if(rs!=null)throw new Exception();
         query.close();
     }
 
