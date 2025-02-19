@@ -1,6 +1,7 @@
 package it.unipv.ingsw.lasout.model.vault.paymentmethod;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,14 +158,51 @@ public class PayPal implements PaymentMethod{
 
 	@Override
 	public void saveInPaymentMethod(Vault v, PaymentMethod p) throws Exception {
-		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paymentmethod\\' (id_vault, type) "
-				+ "VALUES (?, ?)", v.getId(), p.getMethodName());
+		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paymentmethod\\' (id_vault, type, id_paymentmethod) "
+				+ "VALUES (?, ?, ?)", v.getId(), p.getMethodName(), ((PayPal)p).getId());
 		DatabaseUtil.getInstance().executeQuery(query);
 		
 		ResultSet rs = query.getResultSet();
 		
 		if(rs != null) throw new CantSaveException("Paymentmethod not saved");
 		query.close();
+	}
+
+	@Override
+	public void getId(PaymentMethod p) throws Exception {
+		DBQuery query = DatabaseUtil.getInstance().createQuery("SELECT id FROM \\'paypal\\' where numerocarta = ?", ((PayPal) p).getNumeroCarta());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet result = query.getResultSet();
+		
+		if (result == null) {
+	        System.out.println("Errore: ResultSet è null!");
+	    }
+		
+		if (!result.next()) {
+		    System.out.println("Nessun record trovato ");
+		    throw new SQLException("Nessun record trovato");
+		}
+		
+		int id = result.getInt("id");
+		
+		((PayPal) p).setId(id);
+		
+		query.close();
+
+	}
+
+	@Override
+	public void deleteInPaymentMethod(PaymentMethod p) throws Exception{
+		DBQuery query = DatabaseUtil.getInstance().createQuery("DELETE FROM \\'paymentmethod\\' WHERE id_paymentmethod = ? AND type = ?", ((PayPal)p).getId(), p.getMethodName());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet result = query.getResultSet();
+		
+		if (result != null) throw new CantDeleteException("Can't delete card");
+		
+		query.close();
+		
 	}
 	
 }
