@@ -119,18 +119,18 @@ public class ConcreteVaultFacade implements VaultFacade {
 	public boolean deletePaymentMethod(Vault v, PaymentMethod pm, String tipo) {
 
 		paymentMethodFactory.get(tipo);
-		
+
 		if (pm != null) {
 
 			try {
 				pm.getId(pm);
-				
+
 				pm.delete(pm);
-				
+
 				pm.deleteInPaymentMethod(pm);
-				
+
 				v.getMethods().remove(pm);
-				
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -139,6 +139,66 @@ public class ConcreteVaultFacade implements VaultFacade {
 		}
 
 		return true;
+	}
+
+	@Override
+	public boolean depositMoneyFromPaymentMethod(Vault v, PaymentMethod p, double balance) {
+
+		if (p.autorizza() != true)
+			throw new RuntimeException("Errore: Autorizzazione negata");
+
+		try {
+			// Verifica se il metodo di pagamento è nella lista dei metodi supportati dal
+			// Vault
+			if (!v.getMethods().contains(p)) {
+				System.out.println("Il metodo di pagamento non è associato al Vault.");
+				return false;
+			}
+			vaultDAO.updateBalance(v, balance);
+
+			v.setSaldo(v.getSaldo() + balance);
+
+			System.out.println("Fondi aggiunti con successo! Nuovo saldo: " + v.getSaldo());
+
+			return true;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean withdrawMoneyFromPaymentMethod(Vault v, PaymentMethod p, double amount) {
+
+		if (p.autorizza() != true)
+			throw new RuntimeException("Errore: Autorizzazione negata");
+
+		if (!v.getMethods().contains(p)) {
+			System.out.println("Metodo di pagamento non associato");
+			return false;
+		}
+
+		if (v.getSaldo() < amount) {
+			System.out.println("Fondi insufficienti! Saldo disponibile: " + v.getSaldo());
+			return false;
+		}
+
+		try {
+			
+			vaultDAO.withdrawBalance(v, amount);
+			v.setSaldo(v.getSaldo() - amount);
+			
+			System.out.println("Prelievo completato! Nuovo saldo: " + v.getSaldo());
+			
+			return true;
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			
+			return false;
+		}
 	}
 
 	private static final Logger LOGGER = Logger.getLogger(ConcreteVaultFacade.class.getName());
@@ -156,7 +216,7 @@ public class ConcreteVaultFacade implements VaultFacade {
 
 		User u = new User("buso", "pluto", "ddd@gmail.com");
 		Vault v = new Vault();
-		
+
 		LaVaultFacade.getInstance().getSessionFacade().login(u);
 		System.out.println("It's logged in " + LaVaultFacade.getInstance().getSessionFacade().isLogged());
 
@@ -175,18 +235,39 @@ public class ConcreteVaultFacade implements VaultFacade {
 		ConcreteVaultFacade.getInstance().addPaymentMethod(v, pm, pm.getMethodName());
 		ConcreteVaultFacade.getInstance().addPaymentMethod(v, ca, ca.getMethodName());
 		ConcreteVaultFacade.getInstance().addPaymentMethod(v, pp, pp.getMethodName());
-		
+
 		for (PaymentMethod p : v.getMethods()) {
-		    System.out.println("Metodo di pagamento: " + p.getMethodName());
+			System.out.println("Metodo di pagamento: " + p.getMethodName());
+		}
+
+		System.out.println("Saldo iniziale: " + v.getSaldo());
+
+		boolean success = ConcreteVaultFacade.getInstance().depositMoneyFromPaymentMethod(v, pm, 100.50);
+
+		if (success) {
+			System.out.println("Saldo aggiornato: " + v.getSaldo());
+		} else {
+			System.out.println("Errore nell'aggiunta dei fondi.");
 		}
 		
-		//ConcreteVaultFacade.getInstance().deletePaymentMethod(v, pm, pm.getMethodName());
-		//ConcreteVaultFacade.getInstance().deletePaymentMethod(ca, ca.getMethodName());
-		//ConcreteVaultFacade.getInstance().deletePaymentMethod(pp, pp.getMethodName());
-		
+		boolean success1 = ConcreteVaultFacade.getInstance().withdrawMoneyFromPaymentMethod(v, pp, 50);
+
+		if (success1) {
+			System.out.println("Saldo aggiornato: " + v.getSaldo());
+		} else {
+			System.out.println("Errore nell'aggiunta dei fondi.");
+		}
+
+		// ConcreteVaultFacade.getInstance().deletePaymentMethod(v, pm,
+		// pm.getMethodName());
+		// ConcreteVaultFacade.getInstance().deletePaymentMethod(ca,
+		// ca.getMethodName());
+		// ConcreteVaultFacade.getInstance().deletePaymentMethod(pp,
+		// pp.getMethodName());
+
 //		for (PaymentMethod p : v.getMethods()) {
 //		    System.out.println("Metodo di pagamento: " + p.getMethodName());
 //		}
-		
+
 	}
 }

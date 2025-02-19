@@ -102,7 +102,7 @@ public class CreditCard implements PaymentMethod {
 	@Override
 	public boolean autorizza() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
