@@ -39,6 +39,7 @@ public class CashbookDAO implements ICashbookDAO {
     private static final String GET_ALL_CASHBOOKS = "SELECT * FROM £cashbook£";
     private static final String GET_CASHBOOK_FROM_ID = "SELECT * FROM £cashbook£ WHERE id=?;";
     private static final String GET_TRANSACTIONS_FROM_CASHBOOKTRANSACTIONS = "SELECT * FROM £cashbooktransactions£ WHERE cashbook_id = ?;";
+    private static final String GET_CASHBOOKS_FROM_TRANSACTION = "SELECT * FROM £cashbooktransactions£ WHERE transaction_id = ?;";
     private static final String GET_ALL_USER_CASHBOOKS = "SELECT * FROM £cashbook£ WHERE user_id = ?;";
     private static final String DELETE_FROM_CASHBOOKTRANSACTIONS = "DELETE FROM £cashbooktransactions£ WHERE cashbook_id = ?";
     private static final String DELETE_CASHBOOK_FROM_ID = "DELETE FROM £cashbook£ WHERE id = ?";
@@ -180,12 +181,16 @@ public class CashbookDAO implements ICashbookDAO {
             // se get restituisce not found exception allora significa che posso crearla
             // altrimenti non faccio nulla e mantengo l'associazione
             try{
-                TransactionDAO.getInstance().get(t);
+                Transaction n = TransactionDAO.getInstance().get(t);
+                if(!n.equals(t)){   //se la transazione è diversa da quella già presente fa un update
+                    TransactionDAO.getInstance().update(t);
+                }
             } catch (RuntimeException transactionNotFound) {
                 TransactionDAO.getInstance().save(t);
             }
         }
         if(query!=null) query.close();
+
     }
 
 
@@ -208,13 +213,38 @@ public class CashbookDAO implements ICashbookDAO {
 
     /**
      * Codice che implementa l'eliminazione della relazione N a N nel database
+     * e gestisce l'eliminazione delle transazioni
      */
     private void deleteAssociation(Cashbook cashbook) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_FROM_CASHBOOKTRANSACTIONS, cashbook.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
+        List<Transaction> transactions = cashbook.getTransactionList();
+        for (Transaction t : transactions) {
+            if (!isTransactionStillUsed(t)) {
+                TransactionDAO.getInstance().delete(t);
+            }
+        }
+
         query.close();
     }
+
+    private boolean isTransactionStillUsed(Transaction transaction) throws Exception {
+        DBQuery query = null;
+        try {
+            query = DatabaseUtil.getInstance().createQuery(GET_CASHBOOKS_FROM_TRANSACTION, transaction.getId());
+            DatabaseUtil.getInstance().executeQuery(query);
+
+            ResultSet rs = query.getResultSet();
+            if (rs.next()) {
+                return true; // la transazione è ancora usata in un altro cashbook
+            }
+            return false; // nessun altro cashbook la utilizza, posso eliminarla
+        } finally {
+            if (query != null) query.close();
+        }
+    }
+
 
     /**
      * Update dei dati riguardanti un cashbook con conseguente modifica delle relazioni ad esso collegate

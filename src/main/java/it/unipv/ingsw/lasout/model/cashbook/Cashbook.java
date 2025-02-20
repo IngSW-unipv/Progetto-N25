@@ -12,7 +12,6 @@ public class Cashbook {
     private String name;
     private List<Transaction> transactionList;
 
-
     public Cashbook(){
     }
 
