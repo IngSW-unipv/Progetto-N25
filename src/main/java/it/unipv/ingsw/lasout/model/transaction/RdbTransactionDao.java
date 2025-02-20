@@ -7,19 +7,19 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransactionDAO implements ITransactionDAO{
+public class RdbTransactionDao implements ITransactionDAO{
     /**
      * Istanza singola del GroupDao (implementazione singleton)
      */
-    private static TransactionDAO instance = null;
+    private static RdbTransactionDao instance = null;
 
     /**
      *
      * @return l'istanza singleton del GroupDao
      */
-    public static TransactionDAO getInstance(){
+    public static RdbTransactionDao getInstance(){
         if (instance == null){
-            instance= new TransactionDAO();
+            instance= new RdbTransactionDao();
         }
         return instance;
     }
@@ -27,7 +27,7 @@ public class TransactionDAO implements ITransactionDAO{
     /**
      * Rendo il costruttore privato
      */
-    private TransactionDAO(){
+    private RdbTransactionDao(){
         super();
     }
 
@@ -162,8 +162,7 @@ public class TransactionDAO implements ITransactionDAO{
     public void update(Transaction transaction) throws Exception {
         DBQuery query = null;
         try {
-            query = DatabaseUtil.getInstance().createQuery(
-                    UPDATE_TRANSACTION,
+            query = DatabaseUtil.getInstance().createQuery(UPDATE_TRANSACTION,
                     transaction.getType(),
                     transaction.getAmount(),
                     transaction.getDate(),

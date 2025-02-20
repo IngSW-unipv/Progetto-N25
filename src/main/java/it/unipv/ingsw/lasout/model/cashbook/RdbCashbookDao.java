@@ -6,24 +6,23 @@ import java.util.List;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
-import it.unipv.ingsw.lasout.model.transaction.ITransactionDAO;
+import it.unipv.ingsw.lasout.model.transaction.RdbTransactionDao;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
-import it.unipv.ingsw.lasout.model.transaction.TransactionDAO;
 import it.unipv.ingsw.lasout.model.user.User;
 
-public class CashbookDAO implements ICashbookDAO {
+public class RdbCashbookDao implements ICashbookDAO {
     /**
      * Istanza singola del GroupDao (implementazione singleton)
      */
-    private static CashbookDAO instance = null;
+    private static RdbCashbookDao instance = null;
 
     /**
      *
      * @return l'istanza singleton del GroupDao
      */
-    public static CashbookDAO getInstance(){
+    public static RdbCashbookDao getInstance(){
         if (instance == null){
-            instance= new CashbookDAO();
+            instance= new RdbCashbookDao();
         }
         return instance;
     }
@@ -31,7 +30,7 @@ public class CashbookDAO implements ICashbookDAO {
     /**
      * Rendo il costruttore privato
      */
-    public CashbookDAO(){
+    public RdbCashbookDao(){
         super();
     }
 
@@ -133,7 +132,7 @@ public class CashbookDAO implements ICashbookDAO {
             Transaction t;
             Transaction carrierTransaction = new Transaction();
             carrierTransaction.setId(rs.getInt("transaction_id"));
-            t=TransactionDAO.getInstance().get(carrierTransaction);
+            t= RdbTransactionDao.getInstance().get(carrierTransaction);
             transactionList.add(t);
         }
 
@@ -181,12 +180,12 @@ public class CashbookDAO implements ICashbookDAO {
             // se get restituisce not found exception allora significa che posso crearla
             // altrimenti non faccio nulla e mantengo l'associazione
             try{
-                Transaction n = TransactionDAO.getInstance().get(t);
+                Transaction n = RdbTransactionDao.getInstance().get(t);
                 if(!n.equals(t)){   //se la transazione è diversa da quella già presente fa un update
-                    TransactionDAO.getInstance().update(t);
+                    RdbTransactionDao.getInstance().update(t);
                 }
             } catch (RuntimeException transactionNotFound) {
-                TransactionDAO.getInstance().save(t);
+                RdbTransactionDao.getInstance().save(t);
             }
         }
         if(query!=null) query.close();
@@ -222,7 +221,7 @@ public class CashbookDAO implements ICashbookDAO {
         List<Transaction> transactions = cashbook.getTransactionList();
         for (Transaction t : transactions) {
             if (!isTransactionStillUsed(t)) {
-                TransactionDAO.getInstance().delete(t);
+                RdbTransactionDao.getInstance().delete(t);
             }
         }
 
