@@ -17,7 +17,6 @@ import java.awt.*;
 
 public class MainUIView extends JFrame {
 
-    private GroupController groupController;
     private AccountController accountController;
     private AppController appController;
 
@@ -63,7 +62,7 @@ public class MainUIView extends JFrame {
         contentPanel.add(createCard("Contenuto: Virtualvau", new Color(160, 82, 45)), "virtualvau");
         // Aggiungiamo il pannello "Gruppi"
         GroupPanel groupPanel = new GroupPanel(this);
-        groupController= new GroupController(groupPanel);
+        new GroupController(groupPanel);
         contentPanel.add(groupPanel, "Group");
         contentPanel.add(createCard("Contenuto: Cashbook", new Color(210, 105, 30)), "cashbook");
         contentPanel.add(createCard("Contenuto: Notifies", new Color(150, 75, 0)), "notifies");
@@ -102,6 +101,6 @@ public class MainUIView extends JFrame {
     @Override
     public void setVisible(boolean b) {
         super.setVisible(b);
-        groupController.load();
+        GroupController.load();
     }
 }

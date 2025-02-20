@@ -11,15 +11,16 @@ public class GroupPanel extends JPanel {
 
     private JButton impostazioniBtn;              // Pulsante "impostaz" (in alto a destra, sul pannello blu)
     private JLabel nameLabel;                     // nome gruppo
-    private JPanel infoPanel;                     // Pannello rosso al centro
+
     private JButton invitaBtn;
     private JButton aggiungiSpesaBtn;
     private JButton finalizzaBtn;
 
     private GroupSettingsDialog settingsDialog;
     private AddExpenseDialog addExpenseDialog;
-    public NewGroupDialog newGroupDialog;
-
+    private NewGroupDialog newGroupDialog;
+    private JInfoPanel infoPanel;
+    private InviteDialog inviteDialog;
 
     public GroupPanel(JFrame frame) {
         setLayout(new BorderLayout());
@@ -61,8 +62,8 @@ public class GroupPanel extends JPanel {
         // A DESTRA IL PULSANTE IMPOSTAZIONI
         JPanel topRightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         topRightPanel.setOpaque(false);
-        impostazioniBtn = new JButton("impostaz");
-        impostazioniBtn.setPreferredSize(new Dimension(100, 50));
+        impostazioniBtn = new JButton("Impostazioni");
+        impostazioniBtn.setPreferredSize(new Dimension(120, 50));
         impostazioniBtn.setEnabled(false);
         topRightPanel.add(impostazioniBtn);
 
@@ -76,10 +77,10 @@ public class GroupPanel extends JPanel {
         centerPanel.add(topContainer, BorderLayout.NORTH);
 
         // ============ PANNELLO ROSSO (infoPanel) al centro del centerPanel ============
-        infoPanel = new JPanel();
-        infoPanel.setBackground(Color.RED);
+        infoPanel = new JInfoPanel();
         infoPanel.setPreferredSize(new Dimension(500, 300));
-        infoPanel.setBorder(BorderFactory.createLineBorder(new Color(30, 144, 255), 20));
+        infoPanel.setBorder(BorderFactory.createLineBorder(new Color(30, 144, 255), 15));
+        centerPanel.add(infoPanel, BorderLayout.CENTER);
 
         centerPanel.add(infoPanel, BorderLayout.CENTER);
 
@@ -107,9 +108,11 @@ public class GroupPanel extends JPanel {
         bottomPanel.add(aggiungiSpesaBtn);
         bottomPanel.add(finalizzaBtn);
 
-
+        inviteDialog = new InviteDialog(frame);
         addExpenseDialog = new AddExpenseDialog(frame);
         aggiungiSpesaBtn.setEnabled(false);
+        finalizzaBtn.setEnabled(false);
+        invitaBtn.setEnabled(false);
 
         centerPanel.add(bottomPanel, BorderLayout.SOUTH);
 
@@ -117,22 +120,21 @@ public class GroupPanel extends JPanel {
         add(centerPanel, BorderLayout.CENTER);
     }
 
-    /* ================= Metodi per i listener (già presenti) ================= */
-    public void addInvitaListener(ActionListener l) { invitaBtn.addActionListener(l); }
-    public void addFinalizzaListener(ActionListener l) { finalizzaBtn.addActionListener(l); }
-    public void addComboBoxListener(ActionListener listener) {
-        comboBox.addActionListener(listener);
-    }
-
     /* ================= Metodi per la comboBox ================= */
     public GroupItem getSelectedGroup() {
         return (GroupItem) comboBox.getSelectedItem();
     }
+
     public void addGroupItem(GroupItem groupItem) {
         comboBox.addItem(groupItem);
     }
+
     public void resetComboBox(){
         comboBox.removeAllItems();
+    }
+
+    public void addComboBoxListener(ActionListener listener) {
+        comboBox.addActionListener(listener);
     }
 
     /* ================= Metodi per manipolare la label ================= */
@@ -141,8 +143,12 @@ public class GroupPanel extends JPanel {
     }
 
     /* ================= Pannello rosso ================= */
-    public JPanel getInfoPanel() {
+    public JInfoPanel getInfoPanel() {
         return infoPanel;
+    }
+
+    public void resetJInfoPanelLeft(){
+        infoPanel.getLeftPanel().removeAll();
     }
 
     /* ================= Tasto impostazioni ================= */
@@ -184,4 +190,23 @@ public class GroupPanel extends JPanel {
         return newGroupDialog;
     }
     public void addNuovoGruppoListener(ActionListener l) { nuovoGruppoBtn.addActionListener(l); }
+
+    /*=========== Tasto finalizza===============*/
+
+    public JButton getFinalizzaBtn() {
+        return finalizzaBtn;
+    }
+
+    public void addFinalizzaListener(ActionListener l) { finalizzaBtn.addActionListener(l); }
+
+    /* ============= Tasto invita ================= */
+    public void addInvitaListener(ActionListener l) { invitaBtn.addActionListener(l); }
+
+    public InviteDialog getInviteDialog() {
+        return inviteDialog;
+    }
+
+    public JButton getInvitaBtn() { return invitaBtn; }
+
+
 }

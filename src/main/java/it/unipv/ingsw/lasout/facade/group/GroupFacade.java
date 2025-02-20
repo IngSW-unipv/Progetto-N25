@@ -104,6 +104,8 @@ public interface GroupFacade {
      */
     boolean remuveSpesaFromGroup(Group group, Spesa spesa);
 
+    boolean remuveAllSpeseFromGroup(Group group);
+
     /**
      * Restituisce la lista di spese di un gruppo limite 100
      *

@@ -9,7 +9,6 @@ import it.unipv.ingsw.lasout.util.DaoFactory;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Scanner;
 
 public class ConcreteUserFacade implements IUserFacade {
 
@@ -102,6 +101,15 @@ public class ConcreteUserFacade implements IUserFacade {
             throw new RuntimeException(e);
         }
         return groups;
+    }
+
+    @Override
+    public User getUser(User userCarrier) {
+        try {
+            return userDAO.getRaw(userCarrier);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

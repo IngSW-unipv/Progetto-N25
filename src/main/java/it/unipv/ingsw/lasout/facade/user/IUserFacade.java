@@ -43,4 +43,6 @@ public interface IUserFacade {
      * @return lista di gruppi a cui l'utente loggato partecipa
      */
     List<Group> getGroupOfLoggedUser();
+
+    User getUser(User userCarrier);
 }

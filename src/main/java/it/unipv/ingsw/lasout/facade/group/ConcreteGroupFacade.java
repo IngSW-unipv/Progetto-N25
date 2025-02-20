@@ -68,6 +68,7 @@ public class ConcreteGroupFacade implements GroupFacade {
     @Override
     public boolean deleteGroup(Group group) {
         try {
+            if(!group.isAdmin(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser())) return false;
             groupDao.delete(group);
         } catch (Exception e) {
             return false;
@@ -121,6 +122,7 @@ public class ConcreteGroupFacade implements GroupFacade {
             } else return false;
             editGroup(g);
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
         return true;
@@ -151,16 +153,42 @@ public class ConcreteGroupFacade implements GroupFacade {
         Group g = getGroup(group);
         if (g == null) return false;
         if (g.isAdmin(user)) return false;
-        return removeUserFromGroup(g, user);
+        try {
+            g = getGroup(group);
+            if (!g.isAdmin(user)) {
+                g.deleteMember(user);
+            } else return false;
+            editGroup(g);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean leaveGroup(Group group) {
         Group g = getGroup(group);
-        if (g == null) return false;
+        if (g == null) {
+            System.out.println("g null");
+            return false;
+        }
         User user = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
-        if (g.isAdmin(user)) return false;
-        return removeUserFromGroup(g, user);
+        if (g.isAdmin(user)){
+            System.out.println("sei admin");
+            return false;
+        }
+        try {
+            g = getGroup(group);
+            if (!g.isAdmin(user)) {
+                g.deleteMember(user);
+            } else return false;
+            editGroup(g);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -180,6 +208,18 @@ public class ConcreteGroupFacade implements GroupFacade {
         try {
             Group g = getGroup(group);
             g.deleteSpesa(spesa);
+            editGroup(g);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean remuveAllSpeseFromGroup(Group group) {
+        try {
+            Group g = getGroup(group);
+            g.delateAllSpesa();
             editGroup(g);
         } catch (Exception e) {
             return false;
@@ -247,6 +287,7 @@ public class ConcreteGroupFacade implements GroupFacade {
         for (Debito d : listaDebiti) {
             LaVaultFacade.getInstance().getNotifyFacade().sendPayRequestByUser(d.getCreditore(),d.getDebitore(),d.getDebito());
         }
+        remuveAllSpeseFromGroup(group);
         return true;
     }
 
@@ -301,7 +342,7 @@ public class ConcreteGroupFacade implements GroupFacade {
         LaVaultFacade.getInstance().getSessionFacade().login(new User("cla", "miao", "bbb@gmail.com"));
         System.out.println("It's logged in "+LaVaultFacade.getInstance().getSessionFacade().isLogged());
         System.out.println(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
-
+        System.out.println(LaVaultFacade.getInstance().getGroupFacade().leaveGroup(new Group(1)));
     }
 
 }
