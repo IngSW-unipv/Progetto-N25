@@ -28,7 +28,7 @@ CREATE TABLE `creditcard`            (id INTEGER AUTO_INCREMENT, numerocarta VAR
 CREATE TABLE `paypal`                (id INTEGER AUTO_INCREMENT,numerocarta VARCHAR(16) NOT NULL, vault_id INT, PRIMARY KEY(id), FOREIGN KEY (vault_id) REFERENCES vault(id) ON DELETE CASCADE);
 CREATE TABLE `currentaccount`        (id INTEGER AUTO_INCREMENT, iban VARCHAR(34) NOT NULL, vault_id INT, PRIMARY KEY(id), FOREIGN KEY (vault_id) REFERENCES vault(id) ON DELETE CASCADE);
 CREATE TABLE `spese`                 (id INTEGER AUTO_INCREMENT, user_id INT, group_id INT, amount DOUBLE, note VARCHAR(55), PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE, FOREIGN KEY (group_id) REFERENCES  `group`(id) ON DELETE CASCADE);
-CREATE TABLE `paymentmethod`         (id INTEGER AUTO_INCREMENT, id_vault INTEGER, type VARCHAR(20), PRIMARY KEY(id), FOREIGN KEY (id_vault) REFERENCES vault(id) ON DELETE CASCADE);
+CREATE TABLE `paymentmethod`         (id INTEGER AUTO_INCREMENT, id_vault INTEGER, type VARCHAR(20), id_paymentmethod INTEGER, PRIMARY KEY(id), FOREIGN KEY (id_vault) REFERENCES vault(id) ON DELETE CASCADE);
 CREATE TABLE `cashbook`              (id INTEGER AUTO_INCREMENT, user_id INTEGER , name VARCHAR(50) NOT NULL, PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE);
 CREATE TABLE `transactions`          (id INT NOT NULL, type TINYINT NULL, amount DOUBLE NULL, date VARCHAR(10), category VARCHAR(50) NULL, note VARCHAR(120) NULL, PRIMARY KEY (id));
 CREATE TABLE `cashbooktransactions`  (cashbook_id INT REFERENCES `cashbook`(id) ON DELETE CASCADE, transaction_id INT REFERENCES `transactions`(id) ON DELETE CASCADE, PRIMARY KEY(cashbook_id, transaction_id));

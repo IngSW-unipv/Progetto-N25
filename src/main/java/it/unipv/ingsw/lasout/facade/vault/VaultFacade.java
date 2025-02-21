@@ -16,4 +16,10 @@ public interface VaultFacade {
 	boolean getVaultId(Vault vault);
 	
 	boolean addPaymentMethod(Vault v, PaymentMethod pm, String tipo);
+	
+	boolean deletePaymentMethod(Vault v, PaymentMethod pm, String tipo);
+	
+	boolean depositMoneyFromPaymentMethod(Vault v, PaymentMethod p, double amount);
+	
+	boolean withdrawMoneyFromPaymentMethod(Vault v, PaymentMethod p, double amount);
 }

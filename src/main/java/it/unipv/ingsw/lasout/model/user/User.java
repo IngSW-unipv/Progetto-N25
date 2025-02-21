@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.model.user;
 
+import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 
@@ -21,6 +22,7 @@ public class User {
     private List<Group> groups;
     private List<User> friends;
     private List<Notify> notifies;
+    private List<Cashbook> cashbooks;
 
 
     /**
@@ -98,6 +100,7 @@ public class User {
          this.groups = new ArrayList<>();
          this.friends = new ArrayList<>();
          this.notifies = new ArrayList<>();
+         this.cashbooks = new ArrayList<>();
     }
 
     /**
@@ -109,6 +112,7 @@ public class User {
         this.groups = new ArrayList<>();
         this.friends = new ArrayList<>();
         this.notifies = new ArrayList<>();
+        this.cashbooks = new ArrayList<>();
     }
 
 
@@ -150,6 +154,23 @@ public class User {
         this.notifies = notifies;
     }
 
+    public List<Cashbook> getCashbooks() {
+        return cashbooks;
+    }
+
+    public void setCashbooks(List<Cashbook> cashbooks) {
+        this.cashbooks = cashbooks;
+    }
+
+    public Cashbook getDefaultCashbook() {
+        for(Cashbook cashbook : cashbooks){
+            if(cashbook.getName().equals("default")){
+                return cashbook;
+            }
+        }
+        return null;
+    }
+
     public boolean equals(User user) {
         return this.id==user.getId();
     }
@@ -164,6 +185,7 @@ public class User {
                 ", groups=" + groups +
                 ", friends=" + friends +
                 ", notifies=" + notifies +
+                ", cashbooks=" + cashbooks +
                 '}';
     }
 }

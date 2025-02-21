@@ -3,6 +3,8 @@ package it.unipv.ingsw.lasout.model.user;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
+import it.unipv.ingsw.lasout.model.cashbook.RdbCashbookDao;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
 import it.unipv.ingsw.lasout.model.notify.MySQLNotifyDAO;
@@ -109,6 +111,10 @@ public class UserDAO implements IUserDAO {
 
         List<Group> groups = groupsOfUser(user);
         savedUser.setGroups(groups);
+
+        //associo i cashbook di un utente
+        List<Cashbook> cashbooks = getCashbooks(user);
+        savedUser.setCashbooks(cashbooks);
 
         //savedUser.setNotifies(getNotifications(user));
         return savedUser;
@@ -231,7 +237,18 @@ public class UserDAO implements IUserDAO {
         return friends;
     }
 
+    @Override
+    public List<Cashbook> getCashbooks(User user){
 
+        List<Cashbook> cashbooks = null;
+        try {
+            cashbooks = RdbCashbookDao.getInstance().getAllUserCashbooks(user);
+        } catch (Exception noCashbookFound) {
+            throw new RuntimeException(noCashbookFound);
+        }
+
+        return cashbooks;
+    }
 
     @Override
     public List<Notify> getNotifications(User user) throws Exception {

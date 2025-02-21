@@ -1,6 +1,7 @@
 package it.unipv.ingsw.lasout.model.transaction;
 
 import java.util.Locale;
+import java.util.Objects;
 
 public class Transaction {
 	
@@ -95,6 +96,19 @@ public class Transaction {
 	public String toString() {
 		return String.format(Locale.US, "Transaction{id=%d, type=%d, amount=%.2f, date='%s', category='%s', note='%s'}",
 								id, type, amount, date, category, notes);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if (getClass() != obj.getClass()) return false;
+		Transaction t = (Transaction) obj;
+		return 	this.id == t.id &&
+				this.type == t.type &&
+				this.amount == t.amount &&
+				this.date.equals(t.date) &&
+				this.category.equals(t.category) &&
+				this.notes.equals(t.notes);
 	}
 
 }

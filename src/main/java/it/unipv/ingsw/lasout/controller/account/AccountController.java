@@ -35,7 +35,7 @@ public class AccountController {
         public void actionPerformed(ActionEvent e) {
             String oldPassword = accountPanel.getOldPassword();
             String newPassword = accountPanel.getNewPassword();
-            String repeatPassword = accountPanel.getNewPassword();
+            String repeatPassword = accountPanel.getRepeatNewPassword();
             User user = new User();
             user = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
 
@@ -44,11 +44,14 @@ public class AccountController {
             // controllo che la vecchia password sia effettivamente quella che aveva prima
             }else if(!oldPassword.equals(user.getPassword())) {
                 JOptionPane.showMessageDialog(accountPanel,"La vecchia password non è uguale a quella inserita","Errore nel cambio della password",JOptionPane.ERROR_MESSAGE);
-            // controllo che le 2 password (nuova e ripetuta) siano identiche
-            }else if(newPassword.equals(repeatPassword)) {
+            // controllo che le 2 password (nuova e ripetuta) siano diverse
+            }else if(!repeatPassword.equals(newPassword)) {
+                JOptionPane.showMessageDialog(accountPanel,"Nuova password e password ripetuta NON coincidono","Errore nel cambio della password",JOptionPane.ERROR_MESSAGE);
+            }else{
                 LaVaultFacade.getInstance().getUserFacade().updatePassword(user, newPassword);
-                JOptionPane.showMessageDialog(accountPanel,"Password cambiata con successo","Conferma di cambio password",JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(accountPanel,"Password cambiata con successo","Cambio password",JOptionPane.INFORMATION_MESSAGE);
             }
+
         }
     }
 

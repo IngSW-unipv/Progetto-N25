@@ -20,6 +20,10 @@ public interface PaymentMethod {
 	
 	void saveInPaymentMethod (Vault v, PaymentMethod paymentmethod) throws Exception;
 	
+	void deleteInPaymentMethod(PaymentMethod p) throws Exception;
+	
 	void setVault(Vault vault);
+	
+	void getId(PaymentMethod p) throws Exception;
 	
 }

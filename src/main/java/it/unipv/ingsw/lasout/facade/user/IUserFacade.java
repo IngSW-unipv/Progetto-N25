@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.facade.user;
 
+import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.user.User;
 
@@ -45,4 +46,6 @@ public interface IUserFacade {
     List<Group> getGroupOfLoggedUser();
 
     User getUser(User userCarrier);
+
+    List<Cashbook> getCashbookOfLoggedUser();
 }

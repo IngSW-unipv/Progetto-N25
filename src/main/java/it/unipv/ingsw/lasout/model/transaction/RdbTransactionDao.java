@@ -7,19 +7,19 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransactionDAO implements ITransactionDAO{
+public class RdbTransactionDao implements ITransactionDAO{
     /**
      * Istanza singola del GroupDao (implementazione singleton)
      */
-    private static TransactionDAO instance = null;
+    private static RdbTransactionDao instance = null;
 
     /**
      *
      * @return l'istanza singleton del GroupDao
      */
-    public static TransactionDAO getInstance(){
+    public static RdbTransactionDao getInstance(){
         if (instance == null){
-            instance= new TransactionDAO();
+            instance= new RdbTransactionDao();
         }
         return instance;
     }
@@ -27,16 +27,15 @@ public class TransactionDAO implements ITransactionDAO{
     /**
      * Rendo il costruttore privato
      */
-    private TransactionDAO(){
+    private RdbTransactionDao(){
         super();
     }
 
     private static final String GET_ALL_TRANSACTIONS = "SELECT * FROM £transactions£";
     private static final String GET_TRANSACTION_FROM_ID = "SELECT * FROM £transactions£ WHERE id=?;";
-    private static final String GET_TRANSACTIONS_FROM_CASHBOOKTRANSACTIONS = "SELECT * FROM £cashbooktransactions£ WHERE transaction_id = ?;";
+    private static final String UPDATE_TRANSACTION = "UPDATE £transactions£ SET type=?, amount=?, date=?, category=?, note=? WHERE id=?";
     private static final String DELETE_FROM_CASHBOOKTRANSACTIONS = "DELETE FROM £cashbooktransactions£ WHERE transaction_id = ?";
     private static final String DELETE_TRANSACTION_FROM_ID = "DELETE FROM £transactions£ WHERE id = ?";
-    private static final String INSERT_IN_CASHBOOKTRANSACTIONS = "INSERT INTO £cashbooktransactions£ (cashbook_id, transaction_id) VALUES(?,?)";
     private static final String INSERT_TRANSACTION_ID = "INSERT INTO £transactions£ (id, type, amount, date, category, note) VALUES(?,?,?,?,?,?)";
     private static final String INSERT_TRANSACTION_NOID = "INSERT INTO £transactions£ (type, amount, date, category, note) VALUES (?, ?, ?, ?, ?);";
 
@@ -125,9 +124,6 @@ public class TransactionDAO implements ITransactionDAO{
         }
 
         DatabaseUtil.getInstance().executeQuery(query);
-        ResultSet rs = query.getResultSet();
-
-        if(rs!=null)throw new Exception();
 
         query.close();
     }
@@ -144,9 +140,6 @@ public class TransactionDAO implements ITransactionDAO{
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_TRANSACTION_FROM_ID, transaction.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
-        ResultSet rs = query.getResultSet();
-        if(rs!=null)throw new Exception();
-
         deleteAssociation(transaction);
         query.close();
     }
@@ -156,11 +149,8 @@ public class TransactionDAO implements ITransactionDAO{
      */
     private void deleteAssociation(Transaction transaction) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_FROM_CASHBOOKTRANSACTIONS, transaction.getId());
-
         DatabaseUtil.getInstance().executeQuery(query);
-        ResultSet rs = query.getResultSet();
 
-        if(rs!=null)throw new Exception();
         query.close();
     }
 
@@ -170,8 +160,20 @@ public class TransactionDAO implements ITransactionDAO{
      * @throws Exception errore nell'esecuzione della query sql
      */
     public void update(Transaction transaction) throws Exception {
-        delete(transaction);
-        save(transaction);
+        DBQuery query = null;
+        try {
+            query = DatabaseUtil.getInstance().createQuery(UPDATE_TRANSACTION,
+                    transaction.getType(),
+                    transaction.getAmount(),
+                    transaction.getDate(),
+                    transaction.getCategory(),
+                    transaction.getNotes(),
+                    transaction.getId()
+            );
+            DatabaseUtil.getInstance().executeQuery(query);
+        } finally {
+            if (query != null) query.close();
+        }
     }
 
 

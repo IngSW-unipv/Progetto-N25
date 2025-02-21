@@ -26,6 +26,8 @@ public class VaultDAO implements IVaultDAO{
     private static final String INSERT_A_NEW_VAULT_IN_VIRTUALVAULT = "INSERT INTO \\'virtualvault\\' (nome, user_id, balance) VALUES ('Vault', ?, 0)";
     private static final String INSERT_A_NEW_VAULT = "INSERT INTO \\'vault\\' (virtualvault_id) VALUES (?)";
     private static final String DELETE_AN_EXISTING_VAULT = "DELETE FROM £virtualvault£ WHERE id = ?";
+    private static final String UPDATE_BALANCE = "UPDATE virtualvault SET balance = balance + ? WHERE id = ?";
+    private static final String WITHDRAW_BALANCE = "UPDATE virtualvault SET balance = balance - ? WHERE id = ? AND balance >= ?";
     
     
 	public List<Vault> getAllbyName() throws Exception {
@@ -57,6 +59,28 @@ public class VaultDAO implements IVaultDAO{
 		
 			return vaults;
 		}
+	
+	public void updateBalance(Vault vault, double amount) throws Exception {
+	    DBQuery query = DatabaseUtil.getInstance().createQuery(UPDATE_BALANCE, amount, vault.getVv_id());
+	    DatabaseUtil.getInstance().executeQuery(query);
+
+	    if (query.getResultSet() != null) throw new Exception("Errore nell'aggiornamento del balance.");
+
+	    query.close();
+	}
+	
+	public void withdrawBalance(Vault vault, double amount) throws Exception {
+		
+		DBQuery query = DatabaseUtil.getInstance().createQuery(WITHDRAW_BALANCE, amount, vault.getVv_id(), amount);
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		if(query.getResultSet() != null) throw new Exception("Errore nell'aggiornamento del balance.");
+		
+		query.close();
+		
+	}
+	
+	
 
 	@Override
 	public Vault getRaw(Vault oggetto) throws Exception {

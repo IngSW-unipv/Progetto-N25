@@ -1,6 +1,7 @@
 package it.unipv.ingsw.lasout.facade.user;
 
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
+import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.user.IUserDAO;
 import it.unipv.ingsw.lasout.model.user.User;
@@ -110,6 +111,17 @@ public class ConcreteUserFacade implements IUserFacade {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    @Override
+    public List<Cashbook> getCashbookOfLoggedUser(){
+        List<Cashbook> cashbooks = null;
+        try {
+            cashbooks = userDAO.getCashbooks(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return cashbooks;
     }
 
 }

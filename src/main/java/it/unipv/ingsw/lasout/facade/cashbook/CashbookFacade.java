@@ -1,5 +1,8 @@
 package it.unipv.ingsw.lasout.facade.cashbook;
 
+import it.unipv.ingsw.lasout.facade.LaVaultFacade;
+import it.unipv.ingsw.lasout.facade.user.ConcreteUserFacade;
+import it.unipv.ingsw.lasout.facade.vault.VaultFacade;
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.cashbook.ICashbookDAO;
 import it.unipv.ingsw.lasout.model.transaction.ModifiableTransaction;
@@ -9,6 +12,8 @@ import it.unipv.ingsw.lasout.util.DaoFactory;
 import it.unipv.ingsw.lasout.model.user.User;
 
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
 
 public class CashbookFacade implements ICashbookFacade {
 
@@ -26,7 +31,7 @@ public class CashbookFacade implements ICashbookFacade {
     }
 
     @Override
-    public boolean addCashbook(Cashbook cashbook) {
+    public boolean saveCashbook(Cashbook cashbook) {
         try {
             cashBookDAO.save(cashbook);
         } catch (Exception e) {
@@ -65,7 +70,7 @@ public class CashbookFacade implements ICashbookFacade {
     }
 
     @Override
-    public List<Cashbook> getAllCashbooks(User carrierUser){
+    public List<Cashbook> getUserCashbooks(User carrierUser){
         try{
             return cashBookDAO.getAllUserCashbooks(carrierUser);
         } catch (Exception e) {
@@ -76,16 +81,25 @@ public class CashbookFacade implements ICashbookFacade {
     @Override
     public boolean addTransaction(Cashbook cashbook, Transaction transaction) {
         try{
-            Cashbook c= cashBookDAO.get(cashbook);
-            List<Transaction> t = c.getTransactionList();
-            t.add(transaction);
-            c.setTransactionList(t);
+            Cashbook c = cashBookDAO.get(cashbook);
+            c.addTransaction(transaction);
             cashBookDAO.update(c);
         } catch (Exception e) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Serve a salvare una transazione conoscendo lo user che la ha eseguita
+     * @param user
+     * @param transaction
+     * @return
+     */
+    public boolean addTransaction(User user, Transaction transaction) {
+        Cashbook defaultCashbook = cashBookDAO.getDefaultCashbook(user);
+        return addTransaction(defaultCashbook, transaction);
     }
 
     @Override

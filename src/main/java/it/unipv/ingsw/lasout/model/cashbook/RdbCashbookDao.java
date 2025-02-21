@@ -6,23 +6,23 @@ import java.util.List;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.transaction.RdbTransactionDao;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
-import it.unipv.ingsw.lasout.model.transaction.TransactionDAO;
 import it.unipv.ingsw.lasout.model.user.User;
 
-public class CashbookDAO implements ICashbookDAO {
+public class RdbCashbookDao implements ICashbookDAO {
     /**
      * Istanza singola del GroupDao (implementazione singleton)
      */
-    private static CashbookDAO instance = null;
+    private static RdbCashbookDao instance = null;
 
     /**
      *
      * @return l'istanza singleton del GroupDao
      */
-    public static CashbookDAO getInstance(){
+    public static RdbCashbookDao getInstance(){
         if (instance == null){
-            instance= new CashbookDAO();
+            instance= new RdbCashbookDao();
         }
         return instance;
     }
@@ -30,7 +30,7 @@ public class CashbookDAO implements ICashbookDAO {
     /**
      * Rendo il costruttore privato
      */
-    public CashbookDAO(){
+    public RdbCashbookDao(){
         super();
     }
 
@@ -38,6 +38,7 @@ public class CashbookDAO implements ICashbookDAO {
     private static final String GET_ALL_CASHBOOKS = "SELECT * FROM £cashbook£";
     private static final String GET_CASHBOOK_FROM_ID = "SELECT * FROM £cashbook£ WHERE id=?;";
     private static final String GET_TRANSACTIONS_FROM_CASHBOOKTRANSACTIONS = "SELECT * FROM £cashbooktransactions£ WHERE cashbook_id = ?;";
+    private static final String GET_CASHBOOKS_FROM_TRANSACTION = "SELECT * FROM £cashbooktransactions£ WHERE transaction_id = ?;";
     private static final String GET_ALL_USER_CASHBOOKS = "SELECT * FROM £cashbook£ WHERE user_id = ?;";
     private static final String DELETE_FROM_CASHBOOKTRANSACTIONS = "DELETE FROM £cashbooktransactions£ WHERE cashbook_id = ?";
     private static final String DELETE_CASHBOOK_FROM_ID = "DELETE FROM £cashbook£ WHERE id = ?";
@@ -80,7 +81,7 @@ public class CashbookDAO implements ICashbookDAO {
     public Cashbook get(Cashbook carrierCashbook) throws Exception {
         Cashbook savedCashbook = getRaw(carrierCashbook);
 
-        List<Transaction> transactions = getTransactionsFromDB(carrierCashbook);
+        List<Transaction> transactions = getCashbookTransactions(carrierCashbook);
         savedCashbook.setTransactionList(transactions);
 
         return savedCashbook;
@@ -102,7 +103,7 @@ public class CashbookDAO implements ICashbookDAO {
             Cashbook cashbook = new Cashbook();
             cashbook.setId(rs.getInt("id"));
             cashbook.setName(rs.getString("name"));
-            cashbook.setTransactionList(getTransactionsFromDB(new Cashbook(rs.getInt("id"))));
+            cashbook.setTransactionList(getCashbookTransactions(new Cashbook(rs.getInt("id"))));
 
             cashbooksList.add(cashbook);
         }
@@ -118,7 +119,7 @@ public class CashbookDAO implements ICashbookDAO {
      * @return Lista di transazioni con SOLO il loro id (per evitare ricorsione e loop)
      * @throws Exception Errore nel esecuzione della query sql
      */
-    public List<Transaction> getTransactionsFromDB(Cashbook carrierCashbook) throws Exception{
+    public List<Transaction> getCashbookTransactions(Cashbook carrierCashbook) throws Exception{
         DBQuery query = DatabaseUtil.getInstance().createQuery(GET_TRANSACTIONS_FROM_CASHBOOKTRANSACTIONS, carrierCashbook.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
@@ -128,16 +129,29 @@ public class CashbookDAO implements ICashbookDAO {
         List<Transaction> transactionList = new ArrayList<Transaction>();
         while(rs.next()){
             //ogni volta trovo un nuovo pojo e lo inserisco nella lista
-            //settare parametri
             Transaction t;
             Transaction carrierTransaction = new Transaction();
             carrierTransaction.setId(rs.getInt("transaction_id"));
-            t=TransactionDAO.getInstance().get(carrierTransaction);
+            t= RdbTransactionDao.getInstance().get(carrierTransaction);
             transactionList.add(t);
         }
 
         query.close();
         return transactionList;
+    }
+
+    public Cashbook getDefaultCashbook(User user) {
+        List<Cashbook> cashbookList = null;
+        try {
+            cashbookList = getAllUserCashbooks(user);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        for(Cashbook c: cashbookList){
+            if(c.getName().equals("default"))
+                return c;
+        }
+        return null;
     }
 
     /**
@@ -157,31 +171,39 @@ public class CashbookDAO implements ICashbookDAO {
         }
 
         DatabaseUtil.getInstance().executeQuery(query);
-        ResultSet rs = query.getResultSet();
-
-        if(rs!=null)throw new Exception();
-
 
         //INSERT nella tabella cashbooktransactions solo se ci sono transazioni da salvare
-        if(cashbook.getTransactionList()!=null)
+        if(cashbook.getTransactionList()!=null) {
             saveAssociation(cashbook);
+        }
 
         query.close();
     }
 
     /**
      * Codice che implementa l'aggiunta della relazione N a N nel database
+     * Attenzione: non esegue il salvataggio delle singole transazioni
      */
     private void saveAssociation(Cashbook cashbook) throws Exception {
         DBQuery query = null;
         for(Transaction t : cashbook.getTransactionList()){
+            //salvo l'associazione nella tabella N a N
             query = DatabaseUtil.getInstance().createQuery(INSERT_IN_CASHBOOKTRANSACTIONS, cashbook.getId(), t.getId());
             DatabaseUtil.getInstance().executeQuery(query);
-            ResultSet rs = query.getResultSet();
-
-            if(rs!=null)throw new Exception();
+            // salvo le transazioni nella tabella
+            // se get restituisce not found exception allora significa che posso crearla
+            // altrimenti non faccio nulla e mantengo l'associazione
+            try{
+                Transaction n = RdbTransactionDao.getInstance().get(t);
+                if(!n.equals(t)){   //se la transazione è diversa da quella già presente fa un update
+                    RdbTransactionDao.getInstance().update(t);
+                }
+            } catch (RuntimeException transactionNotFound) {
+                RdbTransactionDao.getInstance().save(t);
+            }
         }
         if(query!=null) query.close();
+
     }
 
 
@@ -196,9 +218,6 @@ public class CashbookDAO implements ICashbookDAO {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_CASHBOOK_FROM_ID, cashbook.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
-        ResultSet rs = query.getResultSet();
-        if(rs!=null)throw new Exception();
-
         if(cashbook.getTransactionList()!=null)
             deleteAssociation(cashbook);
 
@@ -207,16 +226,38 @@ public class CashbookDAO implements ICashbookDAO {
 
     /**
      * Codice che implementa l'eliminazione della relazione N a N nel database
+     * e gestisce l'eliminazione delle transazioni
      */
     private void deleteAssociation(Cashbook cashbook) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_FROM_CASHBOOKTRANSACTIONS, cashbook.getId());
-
         DatabaseUtil.getInstance().executeQuery(query);
-        ResultSet rs = query.getResultSet();
 
-        if(rs!=null)throw new Exception();
+        List<Transaction> transactions = cashbook.getTransactionList();
+        for (Transaction t : transactions) {
+            if (!isTransactionStillUsed(t)) {
+                RdbTransactionDao.getInstance().delete(t);
+            }
+        }
+
         query.close();
     }
+
+    private boolean isTransactionStillUsed(Transaction transaction) throws Exception {
+        DBQuery query = null;
+        try {
+            query = DatabaseUtil.getInstance().createQuery(GET_CASHBOOKS_FROM_TRANSACTION, transaction.getId());
+            DatabaseUtil.getInstance().executeQuery(query);
+
+            ResultSet rs = query.getResultSet();
+            if (rs.next()) {
+                return true; // la transazione è ancora usata in un altro cashbook
+            }
+            return false; // nessun altro cashbook la utilizza, posso eliminarla
+        } finally {
+            if (query != null) query.close();
+        }
+    }
+
 
     /**
      * Update dei dati riguardanti un cashbook con conseguente modifica delle relazioni ad esso collegate
