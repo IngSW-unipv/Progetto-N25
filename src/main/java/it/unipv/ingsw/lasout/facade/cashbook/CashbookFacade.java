@@ -2,6 +2,7 @@ package it.unipv.ingsw.lasout.facade.cashbook;
 
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.facade.user.ConcreteUserFacade;
+import it.unipv.ingsw.lasout.facade.vault.VaultFacade;
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.cashbook.ICashbookDAO;
 import it.unipv.ingsw.lasout.model.transaction.ModifiableTransaction;
@@ -11,6 +12,7 @@ import it.unipv.ingsw.lasout.util.DaoFactory;
 import it.unipv.ingsw.lasout.model.user.User;
 
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class CashbookFacade implements ICashbookFacade {
