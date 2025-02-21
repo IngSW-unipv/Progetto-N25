@@ -49,8 +49,7 @@ public class JInfoPanel extends JPanel {
         rightScrollPane.setPreferredSize(new Dimension(60, rightScrollPane.getPreferredSize().height));
         rightScrollPane.setMinimumSize(new Dimension(60, rightScrollPane.getMinimumSize().height));
         rightScrollPane.setMaximumSize(new Dimension(60, Integer.MAX_VALUE));
-
-        addInfoLine(new InfoRowPanel("claduio", "deve", "22€", "a", "giovani"));
+        
 
     }
 

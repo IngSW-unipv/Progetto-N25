@@ -25,7 +25,6 @@ public class RemoveParticipantDialog extends JDialog {
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(scrollPane, BorderLayout.CENTER);
 
-        addParticipantRow(new ParticipantRowPanel("claudio"));
     }
 
     // Metodo per aggiungere una "riga" (un JPanel) al pannello interno
