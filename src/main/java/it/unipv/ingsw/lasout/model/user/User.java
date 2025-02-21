@@ -100,6 +100,7 @@ public class User {
          this.groups = new ArrayList<>();
          this.friends = new ArrayList<>();
          this.notifies = new ArrayList<>();
+         this.cashbooks = new ArrayList<>();
     }
 
     /**
@@ -111,6 +112,7 @@ public class User {
         this.groups = new ArrayList<>();
         this.friends = new ArrayList<>();
         this.notifies = new ArrayList<>();
+        this.cashbooks = new ArrayList<>();
     }
 
 
@@ -152,6 +154,14 @@ public class User {
         this.notifies = notifies;
     }
 
+    public List<Cashbook> getCashbooks() {
+        return cashbooks;
+    }
+
+    public void setCashbooks(List<Cashbook> cashbooks) {
+        this.cashbooks = cashbooks;
+    }
+
     public Cashbook getDefaultCashbook() {
         for(Cashbook cashbook : cashbooks){
             if(cashbook.getName().equals("default")){
@@ -175,6 +185,7 @@ public class User {
                 ", groups=" + groups +
                 ", friends=" + friends +
                 ", notifies=" + notifies +
+                ", cashbooks=" + cashbooks +
                 '}';
     }
 }

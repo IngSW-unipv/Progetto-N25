@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.facade;
 
+import it.unipv.ingsw.lasout.facade.cashbook.CashbookFacade;
 import it.unipv.ingsw.lasout.facade.friend.FriendFacade;
 import it.unipv.ingsw.lasout.facade.group.GroupFacade;
 import it.unipv.ingsw.lasout.facade.notify.NotifyFacade;
@@ -23,6 +24,7 @@ public class LaVaultFacade {
     private NotifyFacade notifyFacade;
     private GroupFacade groupFacade;
     private VirtualVaultFacade virtualVaultFacade;
+    private CashbookFacade cashbookFacade;
 
     private LaVaultFacade() {
 
@@ -33,6 +35,7 @@ public class LaVaultFacade {
             this.sessionFacade = (ISessionFacade) loadClass("session").getDeclaredConstructor().newInstance();
             this.groupFacade = (GroupFacade) loadClass("group").getDeclaredConstructor().newInstance();
             this.virtualVaultFacade = (VirtualVaultFacade) loadClass("virtualvault").getDeclaredConstructor().newInstance();
+            this.cashbookFacade = (CashbookFacade) loadClass("cashbook").getDeclaredConstructor().newInstance();
         }catch (Exception e){
             //throw new RuntimeException(e);
             System.out.println(e.getMessage());
@@ -64,4 +67,8 @@ public class LaVaultFacade {
     }
 
     public GroupFacade getGroupFacade() { return groupFacade; }
+
+    public CashbookFacade getCashbookFacade() {
+        return cashbookFacade;
+    }
 }

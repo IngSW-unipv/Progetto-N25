@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.facade.cashbook;
 
+import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.facade.user.ConcreteUserFacade;
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.cashbook.ICashbookDAO;

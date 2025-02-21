@@ -112,6 +112,10 @@ public class UserDAO implements IUserDAO {
         List<Group> groups = groupsOfUser(user);
         savedUser.setGroups(groups);
 
+        //associo i cashbook di un utente
+        List<Cashbook> cashbooks = getCashbooks(user);
+        savedUser.setCashbooks(cashbooks);
+
         //savedUser.setNotifies(getNotifications(user));
         return savedUser;
     }
