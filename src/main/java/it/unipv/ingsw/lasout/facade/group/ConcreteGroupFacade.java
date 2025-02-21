@@ -122,7 +122,7 @@ public class ConcreteGroupFacade implements GroupFacade {
             } else return false;
             editGroup(g);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return false;
         }
         return true;
@@ -189,6 +189,16 @@ public class ConcreteGroupFacade implements GroupFacade {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public List<User> getUserFromGroup(Group group) {
+        List<User> listauser = new ArrayList<>();
+        Group g =getGroup(group);
+        for (User u : g.getMembers()) {
+            listauser.add(u);
+        }
+        return listauser;
     }
 
     @Override

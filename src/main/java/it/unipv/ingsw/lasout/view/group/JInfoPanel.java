@@ -38,13 +38,20 @@ public class JInfoPanel extends JPanel {
 
         // Imposta il pannello sinistro al 40% (peso 0.4)
         gbc.gridx = 0;
-        gbc.weightx = 0.65;
+        gbc.weightx = 0.60;
         add(leftScrollPane, gbc);
 
         // Imposta il pannello destro al 60% (peso 0.6)
         gbc.gridx = 1;
-        gbc.weightx = 0.35;
+        gbc.weightx = 0.40;
         add(rightScrollPane, gbc);
+
+        rightScrollPane.setPreferredSize(new Dimension(60, rightScrollPane.getPreferredSize().height));
+        rightScrollPane.setMinimumSize(new Dimension(60, rightScrollPane.getMinimumSize().height));
+        rightScrollPane.setMaximumSize(new Dimension(60, Integer.MAX_VALUE));
+
+        addInfoLine(new InfoRowPanel("claduio", "deve", "22€", "a", "giovani"));
+
     }
 
     // Getter per il pannello sinistro: il controller può aggiungere "righe" qui
@@ -59,6 +66,10 @@ public class JInfoPanel extends JPanel {
 
     public void addExpenseLine(ExpenseRowPanel ex){
         leftPanel.add(ex);
+    }
+
+    public void addInfoLine(InfoRowPanel info){
+        rightPanel.add(info);
     }
 
 }

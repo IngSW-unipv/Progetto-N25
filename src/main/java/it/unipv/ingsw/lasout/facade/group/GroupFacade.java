@@ -86,6 +86,8 @@ public interface GroupFacade {
      */
     boolean leaveGroup(Group group);
 
+    List<User> getUserFromGroup(Group group);
+
     /**
      * Permette di aggiungere una spesa di gruppo alla lista delle sepse di un gruppo
      *

@@ -55,6 +55,7 @@ public class ExpenseRowPanel extends JPanel {
         // Imposta un'altezza fissa (opzionale) per la riga
         setPreferredSize(new Dimension(0, 25));
         setMinimumSize(new Dimension(Integer.MAX_VALUE, 25));
+        setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
 
     }
 

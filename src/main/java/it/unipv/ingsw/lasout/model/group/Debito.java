@@ -2,6 +2,9 @@ package it.unipv.ingsw.lasout.model.group;
 
 import it.unipv.ingsw.lasout.model.user.User;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class Debito {
     private User creditore;
     private User debitore;
@@ -34,7 +37,7 @@ public class Debito {
     }
 
     public double getDebito() {
-        return debito;
+        return new BigDecimal(debito).setScale(2, RoundingMode.DOWN).doubleValue();
     }
 
     public void setDebito(double debito) {

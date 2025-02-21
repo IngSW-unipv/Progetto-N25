@@ -248,13 +248,5 @@ public class GroupDao implements IGroupDao {
         }
         if (query != null) query.close();
     }
-
-    public ISpesaDao getSpesaDao() {
-        return spesaDao;
-    }
-
-    public void setSpesaDao(ISpesaDao spesaDao) {
-        this.spesaDao = spesaDao;
-    }
 }
 

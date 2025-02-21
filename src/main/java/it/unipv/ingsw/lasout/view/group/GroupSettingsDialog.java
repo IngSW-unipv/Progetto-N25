@@ -9,6 +9,7 @@ public class GroupSettingsDialog extends JDialog {
     private JButton eliminaUtenti;
     private JButton lasciaGruppo;
     private JButton eliminaGruppo;
+    private RemoveParticipantDialog remuveDialog;
 
     public GroupSettingsDialog(Frame parent) {
         super(parent, "Impostazioni Gruppo", true);
@@ -37,6 +38,8 @@ public class GroupSettingsDialog extends JDialog {
         lasciaGruppo.setMaximumSize(buttonSize);
         eliminaGruppo.setMaximumSize(buttonSize);
 
+        remuveDialog = new RemoveParticipantDialog(parent);
+
         // Aggiungiamo "colla" (glue) verticali sopra e sotto i pulsanti
         // e spazi verticali più ampi (30 px) tra i pulsanti
         panel.add(Box.createVerticalGlue());
@@ -63,5 +66,9 @@ public class GroupSettingsDialog extends JDialog {
 
     public void addDelateGroupListener(ActionListener l) {
         eliminaGruppo.addActionListener(l);
+    }
+
+    public RemoveParticipantDialog getRemuveDialog() {
+        return remuveDialog;
     }
 }

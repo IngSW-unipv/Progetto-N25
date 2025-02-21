@@ -66,7 +66,6 @@ public class GroupPanel extends JPanel {
         impostazioniBtn.setPreferredSize(new Dimension(120, 50));
         impostazioniBtn.setEnabled(false);
         topRightPanel.add(impostazioniBtn);
-
         settingsDialog = new GroupSettingsDialog(frame);
 
         // Aggiungiamo i due pannelli al topContainer
@@ -125,6 +124,7 @@ public class GroupPanel extends JPanel {
         return (GroupItem) comboBox.getSelectedItem();
     }
 
+
     public void addGroupItem(GroupItem groupItem) {
         comboBox.addItem(groupItem);
     }
@@ -137,7 +137,7 @@ public class GroupPanel extends JPanel {
         comboBox.addActionListener(listener);
     }
 
-    /* ================= Metodi per manipolare la label ================= */
+    /* ================= Metodi per manipolare la label titolo ================= */
     public void setNameLabelText(String text) {
         nameLabel.setText(text);
     }
@@ -149,6 +149,10 @@ public class GroupPanel extends JPanel {
 
     public void resetJInfoPanelLeft(){
         infoPanel.getLeftPanel().removeAll();
+    }
+
+    public void resetJInfoPanelRight(){
+        infoPanel.getRightPanel().removeAll();
     }
 
     /* ================= Tasto impostazioni ================= */
@@ -207,6 +211,5 @@ public class GroupPanel extends JPanel {
     }
 
     public JButton getInvitaBtn() { return invitaBtn; }
-
 
 }

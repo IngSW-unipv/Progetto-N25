@@ -1,13 +1,11 @@
 package it.unipv.ingsw.lasout.controller.group;
 
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
+import it.unipv.ingsw.lasout.model.group.Debito;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.spesa.Spesa;
 import it.unipv.ingsw.lasout.model.user.User;
-import it.unipv.ingsw.lasout.view.group.ExpenseRowPanel;
-import it.unipv.ingsw.lasout.view.group.GroupItem;
-import it.unipv.ingsw.lasout.view.group.GroupPanel;
-import it.unipv.ingsw.lasout.view.group.InviteRowPanel;
+import it.unipv.ingsw.lasout.view.group.*;
 
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
@@ -32,7 +30,8 @@ public class GroupController {
             if (selected != null && selected.getId() != -1) {
                 activeGroup= LaVaultFacade.getInstance().getGroupFacade().getGroup(new Group(selected.getId()));
                 System.out.println("Controllo id gruppo selezionato: "+selected.getId());
-                setUpJInfoPanel();
+                setUpJInfoPanelLeft();
+                setUpJInfoPanelRight();
 
                 groupPanel.setNameLabelText(activeGroup.getName());
                 groupPanel.getImpostazioniBtn().setEnabled(true);
@@ -75,7 +74,13 @@ public class GroupController {
             groupPanel.getSettingsDialog().setVisible(true);
         });
 
-        groupPanel.getSettingsDialog().addEliminateUserListener(e -> JOptionPane.showMessageDialog(groupPanel, "Hai premuto Opzione 1"));
+        // elimina partecipanti
+        groupPanel.getSettingsDialog().addEliminateUserListener(e -> {
+            setUpRemuveParticipant();
+            groupPanel.getSettingsDialog().getRemuveDialog().setLocationRelativeTo(groupPanel);
+            groupPanel.getSettingsDialog().getRemuveDialog().setVisible(true);
+        });
+
         // leave groups
         groupPanel.getSettingsDialog().addLeaveGroupListener(e -> {
             if(LaVaultFacade.getInstance().getGroupFacade().leaveGroup(activeGroup)){
@@ -87,6 +92,8 @@ public class GroupController {
                 JOptionPane.showMessageDialog(groupPanel, "Errore nel lasciare il gruppo");
             }
         });
+
+        //elimina gruppo
         groupPanel.getSettingsDialog().addDelateGroupListener(e -> {
             if(LaVaultFacade.getInstance().getGroupFacade().deleteGroup(activeGroup)) {
                 out();
@@ -100,7 +107,7 @@ public class GroupController {
 
         // ====================Quando clicco "Invita"==================
         groupPanel.addInvitaListener(e -> {
-            inviteFriendList();
+            setUpInviteFriendList();
             groupPanel.getInviteDialog().setLocationRelativeTo(groupPanel);
             groupPanel.getInviteDialog().setVisible(true);
         });
@@ -131,7 +138,8 @@ public class GroupController {
                 System.out.println("Il valore inserito non è numerico");
                 JOptionPane.showMessageDialog(groupPanel, "Inserisci un importo numerico valido", "Errore", JOptionPane.ERROR_MESSAGE);
             }
-            setUpJInfoPanel();
+            setUpJInfoPanelLeft();
+            setUpJInfoPanelRight();
         });
 
 
@@ -139,7 +147,8 @@ public class GroupController {
         // ======================= Quando clicco "Finalizza"=========================
         groupPanel.addFinalizzaListener(e ->{
                 if(LaVaultFacade.getInstance().getGroupFacade().finalizzaDebiti(activeGroup)){
-                    setUpJInfoPanel();
+                    setUpJInfoPanelLeft();
+                    setUpJInfoPanelRight();
                     JOptionPane.showMessageDialog(groupPanel, "Spese finalizate");
                 }else{
                     JOptionPane.showMessageDialog(groupPanel, "Per finalizare le spese devi essere admin");
@@ -160,7 +169,24 @@ public class GroupController {
         }
     }
 
-    public void setUpJInfoPanel(){
+    public void setUpJInfoPanelRight(){
+        groupPanel.resetJInfoPanelRight();
+        groupPanel.getInfoPanel().repaint();
+        groupPanel.getInfoPanel().revalidate();
+        List<Debito> debiti = LaVaultFacade.getInstance().getGroupFacade().getDebitiFromGroup(activeGroup);
+        for(Debito debito:debiti){
+            try{
+                if(debito.getDebito()==0) throw new NumberFormatException();
+                User userDebit = LaVaultFacade.getInstance().getUserFacade().getUser(debito.getDebitore());
+                User userCredit = LaVaultFacade.getInstance().getUserFacade().getUser(debito.getCreditore());
+                InfoRowPanel in= new InfoRowPanel(userDebit.getUsername(), "deve",  debito.getDebito()+"€", "a", userCredit.getUsername());
+                groupPanel.getInfoPanel().addInfoLine(in);
+            }catch (NumberFormatException ignored){}
+        }
+    }
+
+
+    public void setUpJInfoPanelLeft(){
         groupPanel.resetJInfoPanelLeft();
         groupPanel.getInfoPanel().repaint();
         groupPanel.getInfoPanel().revalidate();
@@ -175,11 +201,40 @@ public class GroupController {
     public void expnseRowListener(ExpenseRowPanel ex, Spesa spesa){
         ex.addCancListener(e->{
             LaVaultFacade.getInstance().getGroupFacade().remuveSpesaFromGroup(activeGroup,spesa);
-            setUpJInfoPanel();
+            setUpJInfoPanelLeft();
+            setUpJInfoPanelRight();
         });
     }
 
-    public void inviteFriendList(){
+    public void setUpRemuveParticipant(){
+        groupPanel.getSettingsDialog().getRemuveDialog().clearRows();
+        groupPanel.getSettingsDialog().getRemuveDialog().repaint();
+        groupPanel.getSettingsDialog().getRemuveDialog().revalidate();
+        List<User> part = LaVaultFacade.getInstance().getGroupFacade().getUserFromGroup(activeGroup);
+        for(User user:part){
+            User u = LaVaultFacade.getInstance().getUserFacade().getUser(user);
+            if(!activeGroup.isAdmin(u)){
+                ParticipantRowPanel pr = new ParticipantRowPanel(u.getUsername());
+                participantRowListener(pr,user);
+                groupPanel.getSettingsDialog().getRemuveDialog().addParticipantRow(pr);
+            }
+        }
+    }
+
+    public void participantRowListener(ParticipantRowPanel pr, User user){
+        pr.addEspelliListener(e-> {
+            if(LaVaultFacade.getInstance().getGroupFacade().removeUserFromGroup(activeGroup,user)){
+                setUpJInfoPanelLeft();
+                setUpJInfoPanelRight();
+                setUpRemuveParticipant();
+                JOptionPane.showMessageDialog(groupPanel, "Utente eliminato dal gruppo");
+            }else{
+                JOptionPane.showMessageDialog(groupPanel, "Per espellere devi essere admin");
+            }
+        });
+    }
+
+    public void setUpInviteFriendList(){
         //List<User> friends = LaVaultFacade.getInstance().getFriendFacade().getFriends(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
         List<User> friends = new ArrayList<>();
         friends.add(new User(2));
@@ -193,7 +248,6 @@ public class GroupController {
             inviteRowListener(in,user);
             groupPanel.getInviteDialog().addInviteRow(in);
         }
-
     }
 
     public void inviteRowListener(InviteRowPanel in, User user){
