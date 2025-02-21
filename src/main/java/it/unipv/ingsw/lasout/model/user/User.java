@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.model.user;
 
+import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 
@@ -21,6 +22,7 @@ public class User {
     private List<Group> groups;
     private List<User> friends;
     private List<Notify> notifies;
+    private List<Cashbook> cashbooks;
 
 
     /**
@@ -148,6 +150,15 @@ public class User {
     }
     public void setNotifies(List<Notify> notifies) {
         this.notifies = notifies;
+    }
+
+    public Cashbook getDefaultCashbook() {
+        for(Cashbook cashbook : cashbooks){
+            if(cashbook.getName().equals("default")){
+                return cashbook;
+            }
+        }
+        return null;
     }
 
     public boolean equals(User user) {

@@ -140,6 +140,20 @@ public class RdbCashbookDao implements ICashbookDAO {
         return transactionList;
     }
 
+    public Cashbook getDefaultCashbook(User user) {
+        List<Cashbook> cashbookList = null;
+        try {
+            cashbookList = getAllUserCashbooks(user);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        for(Cashbook c: cashbookList){
+            if(c.getName().equals("default"))
+                return c;
+        }
+        return null;
+    }
+
     /**
      * Salvataggio di un cashbook nel database tenendo conto delle relazioni con gli oggetti collegati
      * @param cashbook carrier contentente solo l'id del cashbook da aggiungere dal database

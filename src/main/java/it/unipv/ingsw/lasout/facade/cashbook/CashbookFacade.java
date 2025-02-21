@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.facade.cashbook;
 
+import it.unipv.ingsw.lasout.facade.user.ConcreteUserFacade;
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.cashbook.ICashbookDAO;
 import it.unipv.ingsw.lasout.model.transaction.ModifiableTransaction;
@@ -9,6 +10,7 @@ import it.unipv.ingsw.lasout.util.DaoFactory;
 import it.unipv.ingsw.lasout.model.user.User;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class CashbookFacade implements ICashbookFacade {
 
@@ -84,6 +86,17 @@ public class CashbookFacade implements ICashbookFacade {
         }
 
         return true;
+    }
+
+    /**
+     * Serve a salvare una transazione conoscendo lo user che la ha eseguita
+     * @param user
+     * @param transaction
+     * @return
+     */
+    public boolean addTransaction(User user, Transaction transaction) {
+        Cashbook defaultCashbook = cashBookDAO.getDefaultCashbook(user);
+        return addTransaction(defaultCashbook, transaction);
     }
 
     @Override
