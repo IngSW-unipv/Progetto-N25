@@ -3,12 +3,13 @@ package it.unipv.ingsw.lasout.model.cashbook;
 import it.unipv.ingsw.lasout.model.transaction.ModifiableTransaction;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.model.transaction.exception.CannotEditTransactionException;
+import it.unipv.ingsw.lasout.model.user.User;
 
 import java.util.List;
 
 public class Cashbook {
     private int id;
-    private int userId;
+    private User user;
     private String name;
     private List<Transaction> transactionList;
 
@@ -19,15 +20,15 @@ public class Cashbook {
         this.id = id;
     }
 
-    public Cashbook(int id, int userId, String name) {
+    public Cashbook(int id, User user, String name) {
         this.id = id;
-        this.userId = userId;
+        this.user = user;
         this.name = name;
     }
 
-    public Cashbook(int id, int userId, String name, List<Transaction> transactionList) {
+    public Cashbook(int id, User user, String name, List<Transaction> transactionList) {
         this.id = id;
-        this.userId = userId;
+        this.user = user;
         this.name = name;
         this.transactionList = transactionList;
     }
@@ -40,12 +41,12 @@ public class Cashbook {
         this.id = id;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getName(){

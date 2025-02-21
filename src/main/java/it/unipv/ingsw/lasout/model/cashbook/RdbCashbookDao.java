@@ -65,7 +65,7 @@ public class RdbCashbookDao implements ICashbookDAO {
         Cashbook savedCashbook = new Cashbook();
         savedCashbook.setId(resultSet.getInt("id"));
         savedCashbook.setName(resultSet.getString("name"));
-        savedCashbook.setUserId(resultSet.getInt("user_id"));
+        savedCashbook.setUser(new User(resultSet.getInt("user_id")));
 
         query.close();
         return savedCashbook;
@@ -164,10 +164,10 @@ public class RdbCashbookDao implements ICashbookDAO {
         DBQuery query;
 
         if(cashbook.getId()!=0){
-            query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_ID, cashbook.getId(), cashbook.getUserId(), cashbook.getName());
+            query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_ID, cashbook.getId(), cashbook.getUser().getId(), cashbook.getName());
         }
         else{
-            query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_NOID, cashbook.getUserId(), cashbook.getName());
+            query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_NOID, cashbook.getUser().getId(), cashbook.getName());
         }
 
         DatabaseUtil.getInstance().executeQuery(query);
