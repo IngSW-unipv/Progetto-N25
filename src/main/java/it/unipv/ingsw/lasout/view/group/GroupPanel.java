@@ -1,5 +1,11 @@
 package it.unipv.ingsw.lasout.view.group;
 
+import it.unipv.ingsw.lasout.view.group.aggiunta.NewGroupDialog;
+import it.unipv.ingsw.lasout.view.group.info.JInfoPanel;
+import it.unipv.ingsw.lasout.view.group.invite.InviteDialog;
+import it.unipv.ingsw.lasout.view.group.settings.GroupSettingsDialog;
+import it.unipv.ingsw.lasout.view.group.spesa.AddExpenseDialog;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;

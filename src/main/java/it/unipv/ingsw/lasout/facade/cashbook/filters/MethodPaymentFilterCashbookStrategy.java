@@ -8,6 +8,7 @@ public class MethodPaymentFilterCashbookStrategy implements ICashbookFilterStrat
 
     @Override
     public boolean filter(Transaction transaction) {
-        return transaction.getMethodPaymentType().equals(methodPaymentFilter);
+        //return transaction.getMethodPaymentType().equals(methodPaymentFilter);
+        return false;
     }
 }

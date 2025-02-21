@@ -6,6 +6,10 @@ import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.spesa.Spesa;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.view.group.*;
+import it.unipv.ingsw.lasout.view.group.info.ExpenseRowPanel;
+import it.unipv.ingsw.lasout.view.group.info.InfoRowPanel;
+import it.unipv.ingsw.lasout.view.group.invite.InviteRowPanel;
+import it.unipv.ingsw.lasout.view.group.settings.ParticipantRowPanel;
 
 import javax.swing.JOptionPane;
 import java.util.ArrayList;

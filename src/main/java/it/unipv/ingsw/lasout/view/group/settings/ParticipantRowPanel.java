@@ -1,4 +1,4 @@
-package it.unipv.ingsw.lasout.view.group;
+package it.unipv.ingsw.lasout.view.group.settings;
 
 import javax.swing.*;
 import java.awt.*;

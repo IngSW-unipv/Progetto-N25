@@ -1,4 +1,4 @@
-package it.unipv.ingsw.lasout.view.group;
+package it.unipv.ingsw.lasout.view.group.info;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

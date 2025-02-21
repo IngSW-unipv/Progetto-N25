@@ -1,6 +1,4 @@
-package it.unipv.ingsw.lasout.view.group;
-
-import it.unipv.ingsw.lasout.model.group.spesa.Spesa;
+package it.unipv.ingsw.lasout.view.group.info;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,7 +47,7 @@ public class JInfoPanel extends JPanel {
         rightScrollPane.setPreferredSize(new Dimension(60, rightScrollPane.getPreferredSize().height));
         rightScrollPane.setMinimumSize(new Dimension(60, rightScrollPane.getMinimumSize().height));
         rightScrollPane.setMaximumSize(new Dimension(60, Integer.MAX_VALUE));
-        
+
 
     }
 
