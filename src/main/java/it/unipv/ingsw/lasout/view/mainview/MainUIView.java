@@ -4,21 +4,19 @@ package it.unipv.ingsw.lasout.view.mainview;
 import it.unipv.ingsw.lasout.controller.AppController;
 import it.unipv.ingsw.lasout.controller.account.AccountController;
 import it.unipv.ingsw.lasout.controller.group.GroupController;
-//import it.unipv.ingsw.lasout.controller.vault.VaultController;
+import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.view.account.AccountPanel;
 import it.unipv.ingsw.lasout.view.group.GroupPanel;
 import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 import javafx.application.Application;
-//import it.unipv.ingsw.lasout.view.vault.VaultPanel;
+import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainUIView extends JFrame {
 
-    private AccountController accountController;
-    private AppController appController;
 
     private CardLayout cardLayout;
     private JPanel contentPanel;
@@ -30,7 +28,6 @@ public class MainUIView extends JFrame {
     };
 
     public MainUIView(AppController appController) {
-        this.appController = appController;
         setTitle("Finestra Principale");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(880, 660);
@@ -71,7 +68,7 @@ public class MainUIView extends JFrame {
 
         // Creazione e aggiunta AccountPanel
         AccountPanel accountPanel = new AccountPanel(this);
-        accountController=new AccountController(accountPanel, appController);
+        new AccountController(accountPanel, appController);
         contentPanel.add(accountPanel, "account");
 
         getContentPane().setLayout(new BorderLayout());

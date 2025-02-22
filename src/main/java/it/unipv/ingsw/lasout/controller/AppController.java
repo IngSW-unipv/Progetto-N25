@@ -50,6 +50,7 @@ public class AppController {
             registerView = new RegisterView();
             // Aggiungiamo i listener alla view di registrazione
             registerView.addRegisterListener(new RegisterListener());
+            registerView.addRegisterListener(new RegisterListener());
             registerView.addLoginListener(new BackToLoginListener());
         }
         registerView.setVisible(true);

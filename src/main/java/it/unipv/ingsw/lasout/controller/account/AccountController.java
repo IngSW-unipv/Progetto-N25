@@ -21,44 +21,35 @@ public class AccountController {
         this.appController = appController;
 
 
-        // Aggiungiamo i listener
-        accountPanel.addChangePasswordListener(new ChangePasswordButtonListener());
-        accountPanel.addDeleteAccountListener(new DeleteAccountBottonListener());
-        accountPanel.addLogoutListener(new LogOutButtonListener());
-    }
+        // classe interna anonima
+        accountPanel.addChangePasswordListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                {
+                    String oldPassword = accountPanel.getOldPassword();
+                    String newPassword = accountPanel.getNewPassword();
+                    String repeatPassword = accountPanel.getRepeatNewPassword();
+                    User user = new User();
+                    user = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
 
-
-
-    // Listener per il primo bottone
-    class ChangePasswordButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String oldPassword = accountPanel.getOldPassword();
-            String newPassword = accountPanel.getNewPassword();
-            String repeatPassword = accountPanel.getRepeatNewPassword();
-            User user = new User();
-            user = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
-
-            if (oldPassword.isEmpty() || newPassword.isEmpty() || repeatPassword.isEmpty()) {
-                JOptionPane.showMessageDialog(accountPanel,"Tutti i campi sono obbligatori!","Errore nel cambio della password",JOptionPane.ERROR_MESSAGE);
-            // controllo che la vecchia password sia effettivamente quella che aveva prima
-            }else if(!oldPassword.equals(user.getPassword())) {
-                JOptionPane.showMessageDialog(accountPanel,"La vecchia password non è uguale a quella inserita","Errore nel cambio della password",JOptionPane.ERROR_MESSAGE);
-            // controllo che le 2 password (nuova e ripetuta) siano diverse
-            }else if(!repeatPassword.equals(newPassword)) {
-                JOptionPane.showMessageDialog(accountPanel,"Nuova password e password ripetuta NON coincidono","Errore nel cambio della password",JOptionPane.ERROR_MESSAGE);
-            }else{
-                LaVaultFacade.getInstance().getUserFacade().updatePassword(user, newPassword);
-                JOptionPane.showMessageDialog(accountPanel,"Password cambiata con successo","Cambio password",JOptionPane.INFORMATION_MESSAGE);
+                    if (oldPassword.isEmpty() || newPassword.isEmpty() || repeatPassword.isEmpty()) {
+                        JOptionPane.showMessageDialog(accountPanel, "Tutti i campi sono obbligatori!", "Errore nel cambio della password", JOptionPane.ERROR_MESSAGE);
+                        // controllo che la vecchia password sia effettivamente quella che aveva prima
+                    } else if (!oldPassword.equals(user.getPassword())) {
+                        JOptionPane.showMessageDialog(accountPanel, "La vecchia password non è uguale a quella inserita", "Errore nel cambio della password", JOptionPane.ERROR_MESSAGE);
+                        // controllo che le 2 password (nuova e ripetuta) siano diverse
+                    } else if (!repeatPassword.equals(newPassword)) {
+                        JOptionPane.showMessageDialog(accountPanel, "Nuova password e password ripetuta NON coincidono", "Errore nel cambio della password", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        LaVaultFacade.getInstance().getUserFacade().updatePassword(user, newPassword);
+                        JOptionPane.showMessageDialog(accountPanel, "Password cambiata con successo", "Cambio password", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
             }
+        });
 
-        }
-    }
-
-    // Listener per il secondo bottone
-    class DeleteAccountBottonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
+        // lambda expression
+        accountPanel.addDeleteAccountListener(e->{
             User user = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
             LaVaultFacade.getInstance().getUserFacade().deleteAccount(user);
 
@@ -73,8 +64,10 @@ public class AccountController {
             // Utilizza il metodo di AppController per mostrare la schermata di login
             GroupController.out();
             appController.showLoginView();
-        }
+        });
+        accountPanel.addLogoutListener(new LogOutButtonListener());
     }
+
 
     // Listener per il secondo bottone
     class LogOutButtonListener implements ActionListener {
