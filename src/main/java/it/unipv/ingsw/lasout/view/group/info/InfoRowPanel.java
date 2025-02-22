@@ -1,5 +1,7 @@
 package it.unipv.ingsw.lasout.view.group.info;
 
+import it.unipv.ingsw.lasout.view.LaColor;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,7 +15,7 @@ public class InfoRowPanel extends JPanel {
     public InfoRowPanel(String name, String direction, String amount, String a, String nameTow) {
         // Usa un layout a griglia per distribuire equamente i tre elementi
         setLayout(new GridLayout(1, 3, 5, 0));
-        setBackground(new Color(245, 250, 255));
+        setBackground(LaColor.SFONDO_CHIARO);
 
         nameLabel = new JLabel(name);
         directionLabel = new JLabel(direction);
@@ -35,30 +37,5 @@ public class InfoRowPanel extends JPanel {
         add(amountLabel);
         add(this.a);
         add(nameLabelTow);
-    }
-
-    // Getter e setter per aggiornare il contenuto
-    public String getNameText() {
-        return nameLabel.getText();
-    }
-
-    public void setNameText(String name) {
-        nameLabel.setText(name);
-    }
-
-    public String getDirectionText() {
-        return directionLabel.getText();
-    }
-
-    public void setDirectionText(String direction) {
-        directionLabel.setText(direction);
-    }
-
-    public String getAmountText() {
-        return amountLabel.getText();
-    }
-
-    public void setAmountText(String amount) {
-        amountLabel.setText(amount);
     }
 }

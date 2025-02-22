@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.view.group;
 
+import it.unipv.ingsw.lasout.view.LaColor;
 import it.unipv.ingsw.lasout.view.group.aggiunta.NewGroupDialog;
 import it.unipv.ingsw.lasout.view.group.info.JInfoPanel;
 import it.unipv.ingsw.lasout.view.group.invite.InviteDialog;
@@ -30,7 +31,7 @@ public class GroupPanel extends JPanel {
 
     public GroupPanel(JFrame frame) {
         setLayout(new BorderLayout());
-        setBackground(new Color(230, 240, 250)); // Sfondo marroncino per il pannello principale
+        setBackground(LaColor.SFONDO); // Sfondo marroncino per il pannello principale
 
         // ============ TOP BAR (comboBox + bottone "Nuovo Gruppo") ============
         JPanel topBarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
@@ -43,19 +44,19 @@ public class GroupPanel extends JPanel {
         topBarPanel.add(nuovoGruppoBtn);
 
         add(topBarPanel, BorderLayout.NORTH);
-        nuovoGruppoBtn.setBackground(new Color(176, 196, 222));
-        nuovoGruppoBtn.setForeground(Color.DARK_GRAY);
+        nuovoGruppoBtn.setBackground(LaColor.BTN_SFONDO);
+        nuovoGruppoBtn.setForeground(LaColor.FONT);
 
-        comboBox.setBackground(new Color(176, 196, 222));
-        comboBox.setForeground(Color.DARK_GRAY);
+        comboBox.setBackground(LaColor.BTN_SFONDO);
+        comboBox.setForeground(LaColor.FONT);
 
         newGroupDialog = new NewGroupDialog(frame);
 
 
         // ============ CENTRO (pannello blu) ============
         JPanel centerPanel = new JPanel(new BorderLayout());
-        centerPanel.setBackground(new Color(230, 240, 250));
-        centerPanel.setBorder(BorderFactory.createLineBorder(new Color(230, 240, 250), 15));
+        centerPanel.setBackground(LaColor.SFONDO);
+        centerPanel.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO, 15));
 
         // PANNELLO SUPERIORE nel centerPanel, con BORDERLAYOUT
         JPanel topContainer = new JPanel(new BorderLayout());
@@ -75,25 +76,25 @@ public class GroupPanel extends JPanel {
         topRightPanel.setOpaque(false);
         impostazioniBtn = new JButton("Impostazioni");
         impostazioniBtn.setPreferredSize(new Dimension(120, 50));
-        impostazioniBtn.setBackground(new Color(176, 196, 222));
-        impostazioniBtn.setForeground(Color.DARK_GRAY);
+        impostazioniBtn.setBackground(LaColor.BTN_SFONDO);
+        impostazioniBtn.setForeground(LaColor.FONT);
         impostazioniBtn.setFont(new Font("Arial", Font.BOLD, 13));
         impostazioniBtn.setEnabled(false);
         topRightPanel.add(impostazioniBtn);
         settingsDialog = new GroupSettingsDialog(frame);
 
-        // Aggiungiamo i due pannelli al topContainer
+        // aggiungo i due pannelli al topContainer
         topContainer.add(topLeftPanel, BorderLayout.WEST);
         topContainer.add(topRightPanel, BorderLayout.EAST);
 
-        // Inseriamo topContainer nella parte alta del centerPanel
+        // inserisco topContainer nella parte alta del centerPanel
         centerPanel.add(topContainer, BorderLayout.NORTH);
 
         // ============ PANNELLO ROSSO (infoPanel) al centro del centerPanel ============
 
         infoPanel = new JInfoPanel();
         infoPanel.setPreferredSize(new Dimension(500, 300));
-        infoPanel.setBorder(BorderFactory.createLineBorder(new Color(230, 240, 250), 15));
+        infoPanel.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO, 15));
         centerPanel.add(infoPanel, BorderLayout.CENTER);
 
         centerPanel.add(infoPanel, BorderLayout.CENTER);
@@ -118,13 +119,13 @@ public class GroupPanel extends JPanel {
         aggiungiSpesaBtn.setFont(biggerFont);
         finalizzaBtn.setFont(biggerFont);
 
-        invitaBtn.setBackground(new Color(176, 196, 222));
-        aggiungiSpesaBtn.setBackground(new Color(176, 196, 222));
-        finalizzaBtn.setBackground(new Color(176, 196, 222));
+        invitaBtn.setBackground(LaColor.BTN_SFONDO);
+        aggiungiSpesaBtn.setBackground(LaColor.BTN_SFONDO);
+        finalizzaBtn.setBackground(LaColor.BTN_SFONDO);
 
-        invitaBtn.setForeground(Color.DARK_GRAY);
-        aggiungiSpesaBtn.setForeground(Color.DARK_GRAY);
-        finalizzaBtn.setForeground(Color.DARK_GRAY);
+        invitaBtn.setForeground(LaColor.FONT);
+        aggiungiSpesaBtn.setForeground(LaColor.FONT);
+        finalizzaBtn.setForeground(LaColor.FONT);
 
         bottomPanel.add(invitaBtn);
         bottomPanel.add(aggiungiSpesaBtn);
@@ -138,7 +139,7 @@ public class GroupPanel extends JPanel {
 
         centerPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        // Aggiungiamo centerPanel al centro di GroupPanel
+        // aggiungo centerPanel al centro di GroupPanel
         add(centerPanel, BorderLayout.CENTER);
     }
 

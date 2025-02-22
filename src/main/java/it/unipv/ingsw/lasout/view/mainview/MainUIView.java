@@ -26,7 +26,7 @@ public class MainUIView extends JFrame {
     private JButton[] navButtons;
     private String[] buttonLabels = {
             "vault", "virtualvau", "Group", "cashbook",
-            "notifies", "neame", "friends", "account"
+            "notifies", "friends", "account"
     };
 
     public MainUIView(AppController appController) {
@@ -38,7 +38,7 @@ public class MainUIView extends JFrame {
 
         // Pannello sinistro con i bottoni di navigazione
         leftPanel = new JPanel();
-        leftPanel.setLayout(new GridLayout(8, 1, 10, 10));
+        leftPanel.setLayout(new GridLayout(7, 1, 10, 10));
         leftPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         navButtons = new JButton[buttonLabels.length];
@@ -66,7 +66,6 @@ public class MainUIView extends JFrame {
         contentPanel.add(groupPanel, "Group");
         contentPanel.add(createCard("Contenuto: Cashbook", new Color(210, 105, 30)), "cashbook");
         contentPanel.add(createCard("Contenuto: Notifies", new Color(150, 75, 0)), "notifies");
-        contentPanel.add(createCard("Contenuto: Neame", new Color(184, 134, 11)), "neame");
         contentPanel.add(createCard("Contenuto: Friends", new Color(205, 92, 92)), "friends");
 
         // Creazione e aggiunta AccountPanel

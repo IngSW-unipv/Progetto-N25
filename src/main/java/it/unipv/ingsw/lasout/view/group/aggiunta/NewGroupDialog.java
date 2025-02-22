@@ -1,5 +1,7 @@
 package it.unipv.ingsw.lasout.view.group.aggiunta;
 
+import it.unipv.ingsw.lasout.view.LaColor;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -18,13 +20,13 @@ public class NewGroupDialog extends JDialog {
         // Pannello principale con BoxLayout verticale e sfondo blu
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(new Color(230, 240, 250));
+        panel.setBackground(LaColor.SFONDO);
 
         panel.add(Box.createVerticalGlue());
 
         // Label sopra il campo di testo
         JLabel label = new JLabel("Nome gruppo:");
-        label.setForeground(Color.DARK_GRAY);
+        label.setForeground(LaColor.FONT);
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(label);
         panel.add(Box.createVerticalStrut(5));
@@ -32,19 +34,19 @@ public class NewGroupDialog extends JDialog {
         // Campo di testo con bordo
         nomeGruppoField = new JTextField();
         nomeGruppoField.setMaximumSize(new Dimension(250, 30));
-        nomeGruppoField.setBorder(BorderFactory.createLineBorder(new Color(200, 210, 230), 2));
+        nomeGruppoField.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO_SCURO, 2));
         nomeGruppoField.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(nomeGruppoField);
         panel.add(Box.createVerticalStrut(20));
 
 
-        // Bottone "Crea" centrato, di dimensioni maggiori, con sfondo nero
+        // Bottone "Crea" centrato
         creaButton = new JButton("Crea");
         creaButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         creaButton.setPreferredSize(new Dimension(150, 40));
         creaButton.setMaximumSize(new Dimension(150, 40));
-        creaButton.setBackground(new Color(176, 196, 222));
-        creaButton.setForeground(Color.DARK_GRAY);
+        creaButton.setBackground(LaColor.BTN_SFONDO);
+        creaButton.setForeground(LaColor.FONT);
         creaButton.setFont(new Font("Arial", Font.BOLD, 16));
         panel.add(creaButton);
 

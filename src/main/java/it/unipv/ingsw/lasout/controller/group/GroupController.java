@@ -26,9 +26,9 @@ public class GroupController {
 
     private void initController() {
 
-        //=============== Quando scelgo nel menu a tendina ===================
+        //=============== Selezione menu a tendina ===================
         groupPanel.addComboBoxListener(e-> {
-            // Recupera l'oggetto selezionato nel jcombobox
+            // Recupera l'oggetto selezionato
             GroupItem selected = (GroupItem) groupPanel.getSelectedGroup();
 
             if (selected != null && selected.getId() != -1) {
@@ -47,6 +47,7 @@ public class GroupController {
 
 
         // ================ Quando clicco "Nuovo Gruppo" =======================
+        //mostro jdialog
         groupPanel.addNuovoGruppoListener(e -> {
             groupPanel.getNewGroupDialog().setLocationRelativeTo(groupPanel);
             groupPanel.getNewGroupDialog().setVisible(true);
@@ -72,7 +73,7 @@ public class GroupController {
             }
         });
 
-        //================= Quando clicco "impostaz"=====================
+        //================= Quando clicco "impostazioni"=====================
         groupPanel.addImpostazioniListener(e -> {
             groupPanel.getSettingsDialog().setLocationRelativeTo(groupPanel);
             groupPanel.getSettingsDialog().setVisible(true);
@@ -80,7 +81,7 @@ public class GroupController {
 
         // elimina partecipanti
         groupPanel.getSettingsDialog().addEliminateUserListener(e -> {
-            setUpRemuveParticipant();
+            setUpRemoveParticipant();
             groupPanel.getSettingsDialog().getRemuveDialog().setLocationRelativeTo(groupPanel);
             groupPanel.getSettingsDialog().getRemuveDialog().setVisible(true);
         });
@@ -146,8 +147,6 @@ public class GroupController {
             setUpJInfoPanelRight();
         });
 
-
-
         // ======================= Quando clicco "Finalizza"=========================
         groupPanel.addFinalizzaListener(e ->{
                 if(LaVaultFacade.getInstance().getGroupFacade().finalizzaDebiti(activeGroup)){
@@ -160,10 +159,16 @@ public class GroupController {
         });
     }
 
+    /**
+     * caricamento
+     */
     public static void load(){
         setUpJComboBox();
     }
 
+    /**
+     * reset e riempòimento jcombobox
+     */
     public static void setUpJComboBox(){
         groupPanel.resetComboBox();
         groupPanel.addGroupItem(new GroupItem(-1, "Seleziona Gruppo..."));
@@ -173,7 +178,10 @@ public class GroupController {
         }
     }
 
-    public void setUpJInfoPanelRight(){
+    /**
+     * reset e riempimento jinfopanel di destra
+     */
+    private void setUpJInfoPanelRight(){
         groupPanel.resetJInfoPanelRight();
         groupPanel.getInfoPanel().repaint();
         groupPanel.getInfoPanel().revalidate();
@@ -190,19 +198,27 @@ public class GroupController {
     }
 
 
-    public void setUpJInfoPanelLeft(){
+    /**
+     * reset e riempimento jinfopanel di sinistra
+     */
+    private void setUpJInfoPanelLeft(){
         groupPanel.resetJInfoPanelLeft();
         groupPanel.getInfoPanel().repaint();
         groupPanel.getInfoPanel().revalidate();
         List<Spesa> spese = LaVaultFacade.getInstance().getGroupFacade().getSpeseFromGroup(activeGroup);
         for(Spesa spesa:spese){
             ExpenseRowPanel ex = new ExpenseRowPanel(LaVaultFacade.getInstance().getUserFacade().getUser(new User(spesa.getEsecutore().getId())).getUsername(),Double.toString(spesa.getAmount()),spesa.getNote());
-            expnseRowListener(ex,spesa);
+            expanseRowListener(ex,spesa);
             groupPanel.getInfoPanel().addExpenseLine(ex);
         }
     }
 
-    public void expnseRowListener(ExpenseRowPanel ex, Spesa spesa){
+    /**
+     * set up e aggiunta azzione al bottone delle rige della spesa
+     * @param ex riga a cui aggiunigre l'azione
+     * @param spesa pojo della spesa con l'id di essa
+     */
+    private void expanseRowListener(ExpenseRowPanel ex, Spesa spesa){
         ex.addCancListener(e->{
             LaVaultFacade.getInstance().getGroupFacade().remuveSpesaFromGroup(activeGroup,spesa);
             setUpJInfoPanelLeft();
@@ -210,7 +226,10 @@ public class GroupController {
         });
     }
 
-    public void setUpRemuveParticipant(){
+    /**
+     * reset e setup remuvepartecipant
+     */
+    private void setUpRemoveParticipant(){
         groupPanel.getSettingsDialog().getRemuveDialog().clearRows();
         groupPanel.getSettingsDialog().getRemuveDialog().repaint();
         groupPanel.getSettingsDialog().getRemuveDialog().revalidate();
@@ -225,12 +244,17 @@ public class GroupController {
         }
     }
 
-    public void participantRowListener(ParticipantRowPanel pr, User user){
+    /**
+     * set up e aggiunta azzione al bottone delle rige della eliminazione
+     * @param pr riga a cui aggiunigre l'azione
+     * @param user pojo con l'id del utente corispondende a quella righa
+     */
+    private void participantRowListener(ParticipantRowPanel pr, User user){
         pr.addEspelliListener(e-> {
             if(LaVaultFacade.getInstance().getGroupFacade().removeUserFromGroup(activeGroup,user)){
                 setUpJInfoPanelLeft();
                 setUpJInfoPanelRight();
-                setUpRemuveParticipant();
+                setUpRemoveParticipant();
                 JOptionPane.showMessageDialog(groupPanel, "Utente eliminato dal gruppo");
             }else{
                 JOptionPane.showMessageDialog(groupPanel, "Per espellere devi essere admin");
@@ -238,7 +262,11 @@ public class GroupController {
         });
     }
 
-    public void setUpInviteFriendList(){
+
+    /**
+     * reset e setup lista di amici per l'invito al gruppo (utilizzo del caso d'uso amicizzie)
+     */
+    private void setUpInviteFriendList(){
         //List<User> friends = LaVaultFacade.getInstance().getFriendFacade().getFriends(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
         List<User> friends = new ArrayList<>();
         friends.add(new User(2));
@@ -254,12 +282,20 @@ public class GroupController {
         }
     }
 
-    public void inviteRowListener(InviteRowPanel in, User user){
+    /**
+     * set up e aggiunta azzione al bottone delle rige della amicizzie
+     * @param in riga a cui aggiunigre l'azione
+     * @param user pojo con l'id del utnete di quella riga che in caso verra invitato
+     */
+    private void inviteRowListener(InviteRowPanel in, User user){
         in.addActionListener(e->{
             LaVaultFacade.getInstance().getGroupFacade().invite(activeGroup,user);
         });
     }
 
+    /**
+     * reset della schermata dei gruppi
+     */
     public static void out(){
         groupPanel.resetComboBox();
         activeGroup=null;
