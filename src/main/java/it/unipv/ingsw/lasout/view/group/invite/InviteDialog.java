@@ -1,5 +1,7 @@
 package it.unipv.ingsw.lasout.view.group.invite;
 
+import it.unipv.ingsw.lasout.view.LaColor;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -15,12 +17,11 @@ public class InviteDialog extends JDialog {
         // Crea il pannello interno con BoxLayout verticale
         inviteContentPanel = new JPanel();
         inviteContentPanel.setLayout(new BoxLayout(inviteContentPanel, BoxLayout.Y_AXIS));
-        inviteContentPanel.setBackground(Color.WHITE);
-        inviteContentPanel.setBackground(new Color(230, 240, 250));
+        inviteContentPanel.setBackground(LaColor.SFONDO);
 
         // Crea lo scroll pane che contiene il pannello
         scrollPane = new JScrollPane(inviteContentPanel);
-        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 210, 230), 1));
+        scrollPane.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO_SCURO, 1));
 
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(scrollPane, BorderLayout.CENTER);
@@ -31,17 +32,5 @@ public class InviteDialog extends JDialog {
         inviteContentPanel.add(row);
         inviteContentPanel.revalidate();
         inviteContentPanel.repaint();
-    }
-
-    // Metodo per svuotare il pannello
-    public void clearInviteRows() {
-        inviteContentPanel.removeAll();
-        inviteContentPanel.revalidate();
-        inviteContentPanel.repaint();
-    }
-
-    // Getter per il pannello
-    public JPanel getInviteContentPanel() {
-        return inviteContentPanel;
     }
 }

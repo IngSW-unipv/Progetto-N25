@@ -4,21 +4,19 @@ package it.unipv.ingsw.lasout.view.mainview;
 import it.unipv.ingsw.lasout.controller.AppController;
 import it.unipv.ingsw.lasout.controller.account.AccountController;
 import it.unipv.ingsw.lasout.controller.group.GroupController;
-//import it.unipv.ingsw.lasout.controller.vault.VaultController;
+import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.view.account.AccountPanel;
 import it.unipv.ingsw.lasout.view.group.GroupPanel;
 import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 import javafx.application.Application;
-//import it.unipv.ingsw.lasout.view.vault.VaultPanel;
+import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainUIView extends JFrame {
 
-    private AccountController accountController;
-    private AppController appController;
 
     private CardLayout cardLayout;
     private JPanel contentPanel;
@@ -26,11 +24,10 @@ public class MainUIView extends JFrame {
     private JButton[] navButtons;
     private String[] buttonLabels = {
             "vault", "virtualvau", "Group", "cashbook",
-            "notifies", "neame", "friends", "account"
+            "notifies", "friends", "account"
     };
 
     public MainUIView(AppController appController) {
-        this.appController = appController;
         setTitle("Finestra Principale");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(880, 660);
@@ -38,7 +35,7 @@ public class MainUIView extends JFrame {
 
         // Pannello sinistro con i bottoni di navigazione
         leftPanel = new JPanel();
-        leftPanel.setLayout(new GridLayout(8, 1, 10, 10));
+        leftPanel.setLayout(new GridLayout(7, 1, 10, 10));
         leftPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         navButtons = new JButton[buttonLabels.length];
@@ -66,12 +63,11 @@ public class MainUIView extends JFrame {
         contentPanel.add(groupPanel, "Group");
         contentPanel.add(createCard("Contenuto: Cashbook", new Color(210, 105, 30)), "cashbook");
         contentPanel.add(createCard("Contenuto: Notifies", new Color(150, 75, 0)), "notifies");
-        contentPanel.add(createCard("Contenuto: Neame", new Color(184, 134, 11)), "neame");
         contentPanel.add(createCard("Contenuto: Friends", new Color(205, 92, 92)), "friends");
 
         // Creazione e aggiunta AccountPanel
         AccountPanel accountPanel = new AccountPanel(this);
-        accountController=new AccountController(accountPanel, appController);
+        new AccountController(accountPanel, appController);
         contentPanel.add(accountPanel, "account");
 
         getContentPane().setLayout(new BorderLayout());

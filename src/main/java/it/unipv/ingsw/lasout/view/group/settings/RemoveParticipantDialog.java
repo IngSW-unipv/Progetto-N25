@@ -1,5 +1,7 @@
 package it.unipv.ingsw.lasout.view.group.settings;
 
+import it.unipv.ingsw.lasout.view.LaColor;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -15,11 +17,11 @@ public class RemoveParticipantDialog extends JDialog {
         // Crea il pannello interno con un layout verticale
         contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setBackground(new Color(230, 240, 250));
+        contentPanel.setBackground(LaColor.SFONDO);
 
         // Crea lo scroll pane che contiene il pannello
         scrollPane = new JScrollPane(contentPanel);
-        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 210, 230), 1));
+        scrollPane.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO_SCURO, 1));
 
         // Imposta il layout del JDialog
         getContentPane().setLayout(new BorderLayout());
@@ -27,7 +29,7 @@ public class RemoveParticipantDialog extends JDialog {
 
     }
 
-    // Metodo per aggiungere una "riga" (un JPanel) al pannello interno
+    // Metodo per aggiungere una "riga"
     public void addParticipantRow(ParticipantRowPanel row) {
         contentPanel.add(row);
         contentPanel.revalidate();
@@ -38,10 +40,5 @@ public class RemoveParticipantDialog extends JDialog {
         contentPanel.removeAll();
         contentPanel.revalidate();
         contentPanel.repaint();
-    }
-
-    // Getter per il pannello interno, se necessario
-    public JPanel getContentPanel() {
-        return contentPanel;
     }
 }

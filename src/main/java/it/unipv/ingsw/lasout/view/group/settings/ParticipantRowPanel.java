@@ -1,5 +1,7 @@
 package it.unipv.ingsw.lasout.view.group.settings;
 
+import it.unipv.ingsw.lasout.view.LaColor;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -11,7 +13,7 @@ public class ParticipantRowPanel extends JPanel {
     public ParticipantRowPanel(String participantName) {
         // Usa BorderLayout per disporre la label e il bottone
         setLayout(new BorderLayout(5, 0));
-        setBackground(new Color(230, 240, 250));
+        setBackground(LaColor.SFONDO);
 
         // Crea la label con il nome del partecipante
         nameLabel = new JLabel(participantName);
@@ -26,8 +28,8 @@ public class ParticipantRowPanel extends JPanel {
         espelliButton.setPreferredSize(btnDim);
         espelliButton.setMaximumSize(btnDim);
         espelliButton.setMinimumSize(btnDim);
-        espelliButton.setForeground(Color.DARK_GRAY);
-        espelliButton.setBackground(new Color(176, 196, 222));
+        espelliButton.setForeground(LaColor.FONT);
+        espelliButton.setBackground(LaColor.BTN_SFONDO);
         add(espelliButton, BorderLayout.EAST);
 
         // Imposta l'altezza della riga a 25 e lascia la larghezza adattabile
@@ -40,8 +42,4 @@ public class ParticipantRowPanel extends JPanel {
         espelliButton.addActionListener(l);
     }
 
-    // Getter per il nome (se necessario)
-    public String getParticipantName() {
-        return nameLabel.getText();
-    }
 }

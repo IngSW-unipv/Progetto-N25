@@ -1,5 +1,7 @@
 package it.unipv.ingsw.lasout.view.group.invite;
 
+import it.unipv.ingsw.lasout.view.LaColor;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -11,15 +13,15 @@ public class InviteRowPanel extends JPanel {
     public InviteRowPanel(String username) {
         // Layout orizzontale
         setLayout(new BorderLayout());
-        setBackground(new Color(230, 240, 250));
+        setBackground(LaColor.SFONDO);
 
         infoLabel = new JLabel(username);
         infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
         actionButton = new JButton("Invita");
         actionButton.setPreferredSize(new Dimension(80, 30));
         // Eventuali impostazioni di stile per il bottone
-        actionButton.setBackground(Color.DARK_GRAY);
-        actionButton.setBackground(new Color(176, 196, 222));
+        actionButton.setBackground(LaColor.FONT);
+        actionButton.setBackground(LaColor.BTN_SFONDO);
 
 
         add(infoLabel, BorderLayout.CENTER);
@@ -30,7 +32,4 @@ public class InviteRowPanel extends JPanel {
         actionButton.addActionListener(l);
     }
 
-    public JLabel getInfoLabel() {
-        return infoLabel;
-    }
 }
