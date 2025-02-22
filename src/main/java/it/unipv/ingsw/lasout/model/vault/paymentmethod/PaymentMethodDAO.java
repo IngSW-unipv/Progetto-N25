@@ -25,14 +25,14 @@ public class PaymentMethodDAO implements IPaymentMethodDAO {
 	}
 	
 	private static final String GET_RAW = "SELECT * FROM \\'paymentmethod\\' WHERE id = ?;";
+	private static final String GET_PAYMENTMETHOD_BY_VAULT_ID = "SELECT * FROM \\'paymentmethod\\' WHERE id_vault = ?;";
+	
 
 	private final Map<String, Class<?>> classes = new HashMap<>();
 
 	private PaymentMethodDAO() {
 		populateMap();
 	}
-
-//	private static final String 
 
 	private void populateMap() {
 		Properties prop = new Properties();
@@ -51,6 +51,42 @@ public class PaymentMethodDAO implements IPaymentMethodDAO {
 			}
 		});
 	}
+	
+public List<PaymentMethod> getAllPaymentMethod(Vault v) throws Exception {
+		
+		DBQuery query = DatabaseUtil.getInstance().createQuery(GET_PAYMENTMETHOD_BY_VAULT_ID, v.getId());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		if (query == null) {
+	        throw new RuntimeException("Errore: la query è NULL!");
+	    }
+
+		ResultSet result = query.getResultSet();
+		
+		PaymentMethodFactory factory = new PaymentMethodFactory();
+		
+		List<PaymentMethod> methods = new ArrayList<PaymentMethod>();
+		
+		if (result == null) {
+	        System.out.println("Errore: ResultSet è null!");
+	        return methods; // Restituisco lista vuota
+	    }
+		
+		while (result.next()) {
+			
+			PaymentMethod method = factory.get(result.getString("type"));
+			
+		    method.setId(result.getInt("id"));
+			
+			method.setVault(new Vault(result.getInt("id_vault")));
+			
+			methods.add(method);
+	    }	
+		
+		return methods;
+	}
+	
+	
 
 	@Override
 	public PaymentMethod getRaw(PaymentMethod oggetto) throws Exception {
@@ -64,7 +100,7 @@ public class PaymentMethodDAO implements IPaymentMethodDAO {
 		
 		PaymentMethod method = factory.get(result.getString("tipo"));
 		
-		method.setVault(new Vault(result.getInt("id_vault")));
+		method.setVault(new Vault(result.getInt("vault_id")));
 		
 		return method;
 	}

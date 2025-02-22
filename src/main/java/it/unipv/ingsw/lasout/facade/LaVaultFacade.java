@@ -7,6 +7,7 @@ import it.unipv.ingsw.lasout.facade.notify.NotifyFacade;
 import it.unipv.ingsw.lasout.facade.transaction.TransactionFacade;
 import it.unipv.ingsw.lasout.facade.user.ISessionFacade;
 import it.unipv.ingsw.lasout.facade.user.IUserFacade;
+import it.unipv.ingsw.lasout.facade.vault.VaultFacade;
 import it.unipv.ingsw.lasout.facade.virtualVault.VirtualVaultFacade;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class LaVaultFacade {
     private FriendFacade friendFacade;
     private NotifyFacade notifyFacade;
     private GroupFacade groupFacade;
+    private VaultFacade vaultFacade;
     private VirtualVaultFacade virtualVaultFacade;
     private CashbookFacade cashbookFacade;
     private TransactionFacade transactionFacade;
@@ -36,6 +38,7 @@ public class LaVaultFacade {
             this.friendFacade = (FriendFacade) loadClass("friend").getDeclaredConstructor().newInstance();
             this.sessionFacade = (ISessionFacade) loadClass("session").getDeclaredConstructor().newInstance();
             this.groupFacade = (GroupFacade) loadClass("group").getDeclaredConstructor().newInstance();
+            this.vaultFacade = (VaultFacade) loadClass("vault").getDeclaredConstructor().newInstance();
             this.virtualVaultFacade = (VirtualVaultFacade) loadClass("virtualvault").getDeclaredConstructor().newInstance();
             this.cashbookFacade = (CashbookFacade) loadClass("cashbook").getDeclaredConstructor().newInstance();
             this.transactionFacade = (TransactionFacade) loadClass("transaction").getDeclaredConstructor().newInstance();
@@ -70,7 +73,11 @@ public class LaVaultFacade {
     }
 
     public GroupFacade getGroupFacade() { return groupFacade; }
-
+    
+    public VaultFacade getVaultFacade() {
+    	return vaultFacade;
+    }
+    
     public CashbookFacade getCashbookFacade() {
         return cashbookFacade;
     }
@@ -78,5 +85,4 @@ public class LaVaultFacade {
     public TransactionFacade getTransactionFacade() {
         return transactionFacade;
     }
-
 }

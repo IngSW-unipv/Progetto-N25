@@ -56,7 +56,7 @@ public class MainUIView extends JFrame {
         contentPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 8));
 
         // Aggiungiamo le "card" al pannello
-        VaultPanel vaultPanel = new VaultPanel();
+        VaultPanel vaultPanel = new VaultPanel(this);
         new VaultController(vaultPanel);
         contentPanel.add(vaultPanel, "vault");
         contentPanel.add(createCard("Contenuto: Virtualvau", new Color(160, 82, 45)), "virtualvau");

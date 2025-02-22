@@ -114,7 +114,7 @@ public class PayPal implements PaymentMethod{
 		PayPal pp = new PayPal();
 
 		pp.setNumeroCarta(rs.getString("numerocarta"));
-		pp.setVault_id(rs.getInt("vault_id"));	
+		pp.setVault_id(rs.getInt("id_vault"));	
 		
 		query.close();
 
@@ -137,7 +137,7 @@ public class PayPal implements PaymentMethod{
 	@Override
 	public void save(PaymentMethod paymentmethod) throws Exception {
 
-		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paypal\\' (numerocarta, vault_id) VALUES (?, ?);",
+		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paypal\\' (numerocarta, id_vault) VALUES (?, ?);",
 				((PayPal)paymentmethod).getNumeroCarta(), ((PayPal)paymentmethod).getVault_id());
 
 		DatabaseUtil.getInstance().executeQuery(query);

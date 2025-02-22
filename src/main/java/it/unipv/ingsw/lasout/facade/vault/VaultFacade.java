@@ -7,6 +7,8 @@ import it.unipv.ingsw.lasout.model.virtualVault.VirtualVault;
 
 public interface VaultFacade {
 	
+	Vault getVault(Vault v);
+	
 	boolean sendMoney(User Sender, User Receiver);
 	
 	boolean newVaultinVirtualVault(Vault vault, User user);
@@ -22,4 +24,14 @@ public interface VaultFacade {
 	boolean depositMoneyFromPaymentMethod(Vault v, PaymentMethod p, double amount);
 	
 	boolean withdrawMoneyFromPaymentMethod(Vault v, PaymentMethod p, double amount);
+	
+	boolean paymenExecution(Vault v, double amount, String recipient); 
+
+//	Vault getVaultByUserID(Vault v);
+	
+//	Vault getVaultByUserID(Vault v);
+
+	double getBalanceByID(Vault v);
+
+	Vault getVaultByUser(User user);
 }

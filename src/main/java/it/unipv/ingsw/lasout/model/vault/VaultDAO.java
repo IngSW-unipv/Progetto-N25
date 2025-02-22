@@ -2,6 +2,10 @@ package it.unipv.ingsw.lasout.model.vault;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.facade.LaVaultFacade;
+import it.unipv.ingsw.lasout.model.group.Group;
+import it.unipv.ingsw.lasout.model.user.User;
+import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethodDAO;
 import it.unipv.ingsw.lasout.model.virtualVault.VirtualVault;
 
 import java.io.IOException;
@@ -19,7 +23,7 @@ public class VaultDAO implements IVaultDAO{
     }
     
     private static final String GET_RAW = "SELECT * FROM \\'virtualvault\\' WHERE id = ?;";
-    private static final String GET_VAULTID_BY_USER_ID = "SELECT id FROM \\'virtualvault\\' WHERE user_id = ? AND nome = 'Vault'";
+    private static final String GET_VAULTID_BY_USER_ID = "SELECT * FROM \\'virtualvault\\' WHERE user_id = ? AND nome = 'Vault'";
     private static final String GET_VAULT_BY_VVID = "SELECT id FROM \\'vault\\' WHERE virtualvault_id = ?";
     private static final String GET_ALL_VAULT_BY_ID = "SELECT vault.id as vaultid FROM \\'virtualvault\\', \\'vault\\' WHERE virtualvault.id = vault.virtualvault_id" ;
     private static final String GET_ALL_VAULT_BY_NAME = "SELECT DISTINCT vault.id FROM \\'vault\\', \\'virtualvault\\' WHERE virtualvault.nome = 'Vault'";
@@ -28,6 +32,7 @@ public class VaultDAO implements IVaultDAO{
     private static final String DELETE_AN_EXISTING_VAULT = "DELETE FROM £virtualvault£ WHERE id = ?";
     private static final String UPDATE_BALANCE = "UPDATE virtualvault SET balance = balance + ? WHERE id = ?";
     private static final String WITHDRAW_BALANCE = "UPDATE virtualvault SET balance = balance - ? WHERE id = ? AND balance >= ?";
+    private static final String GET_BALANCE = "SELECT balance FROM \\'virtualvault\\' WHERE id = ?";
     
     
 	public List<Vault> getAllbyName() throws Exception {
@@ -60,6 +65,7 @@ public class VaultDAO implements IVaultDAO{
 			return vaults;
 		}
 	
+	@Override
 	public void updateBalance(Vault vault, double amount) throws Exception {
 	    DBQuery query = DatabaseUtil.getInstance().createQuery(UPDATE_BALANCE, amount, vault.getVv_id());
 	    DatabaseUtil.getInstance().executeQuery(query);
@@ -69,6 +75,7 @@ public class VaultDAO implements IVaultDAO{
 	    query.close();
 	}
 	
+	@Override
 	public void withdrawBalance(Vault vault, double amount) throws Exception {
 		
 		DBQuery query = DatabaseUtil.getInstance().createQuery(WITHDRAW_BALANCE, amount, vault.getVv_id(), amount);
@@ -85,7 +92,7 @@ public class VaultDAO implements IVaultDAO{
 	@Override
 	public Vault getRaw(Vault oggetto) throws Exception {
 		
-		DBQuery query = DatabaseUtil.getInstance().createQuery(GET_RAW, oggetto.getID());
+		DBQuery query = DatabaseUtil.getInstance().createQuery(GET_RAW, oggetto.getVv_id());
 		DatabaseUtil.getInstance().executeQuery(query);
 		
 		ResultSet result = query.getResultSet();
@@ -96,10 +103,13 @@ public class VaultDAO implements IVaultDAO{
 		// se supera l'eccezione, vuol dire che nel result ho un vault, quindi posso restituirlo
 		Vault vault = new Vault();
 		
-		vault.setID(result.getInt("id"));
-		
+		vault.setSaldo(result.getDouble("balance"));
+		vault.setOwner(new User(result.getInt("user_id")));
+		vault.setMethods(PaymentMethodDAO.getInstance().getAllPaymentMethod(vault));
 		
 		query.close();
+		
+		System.out.println("" + vault.getSaldo() + " " + vault.getOwner() + " " + vault.getMethods());
 		
 		return vault;
 		
@@ -160,6 +170,7 @@ public class VaultDAO implements IVaultDAO{
 		
 	}
 	
+	@Override
 	public void saveInVault(Vault oggetto) throws Exception {
 		DBQuery query = DatabaseUtil.getInstance().createQuery(INSERT_A_NEW_VAULT, oggetto.getVv_id());
 		DatabaseUtil.getInstance().executeQuery(query);
@@ -171,7 +182,8 @@ public class VaultDAO implements IVaultDAO{
 		query.close();
 	}
 	
-	public int vaultId(Vault oggetto) throws Exception{
+	@Override
+	public int getVaultID(Vault oggetto) throws Exception{
 		
 		DBQuery query = DatabaseUtil.getInstance().createQuery(GET_VAULTID_BY_USER_ID, oggetto.getOwner().getId());
 		DatabaseUtil.getInstance().executeQuery(query);
@@ -192,6 +204,37 @@ public class VaultDAO implements IVaultDAO{
 		return idVault;		
 	}
 	
+	@Override
+	public Vault getVaultIDbyUser(User user) throws Exception{
+
+		DBQuery query = DatabaseUtil.getInstance().createQuery(GET_VAULTID_BY_USER_ID, user.getId());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet result = query.getResultSet();
+		
+		if (result == null) {
+	        System.out.println("Errore: ResultSet è null!");
+	    }
+		
+		if (!result.next()) {
+		    System.out.println("Nessun record trovato per l'utente specificato.");
+		    throw new SQLException("Nessun record trovato per l'utente specificato.");
+		}
+		
+		 Vault v = new Vault();
+		 v.setSaldo(result.getDouble("balance"));         // Imposta il saldo
+		 v.setVv_id(result.getInt("id"));                // O usa il nome della colonna corretta per vv_id
+		 v.setOwner(new User(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().getId()));   
+		 
+		 query.close();
+		 
+		 System.out.println(""+ v.getSaldo() + v.getVv_id() + v.getOwner());
+
+		return v;		
+	}
+	
+
+	
 	public int vaultIdinVault(Vault oggetto) throws Exception{
 		DBQuery query = DatabaseUtil.getInstance().createQuery(GET_VAULT_BY_VVID, oggetto.getVv_id());
 		DatabaseUtil.getInstance().executeQuery(query);
@@ -208,6 +251,8 @@ public class VaultDAO implements IVaultDAO{
 		}
 		
 		int idVVault = result.getInt("id");
+		
+		query.close();
 		
 		return idVVault;	
 	}
@@ -231,5 +276,30 @@ public class VaultDAO implements IVaultDAO{
 		query.close();
 		
 	} 
+	
+	@Override
+	public double getBalance(Vault v) throws Exception{
+		
+		DBQuery query = DatabaseUtil.getInstance().createQuery(GET_BALANCE, v.getVv_id());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet result = query.getResultSet();
+		
+		if (result == null) {
+	        System.out.println("Errore: ResultSet è null!");
+	    }
+		
+		if (!result.next()) {
+		    System.out.println("Nessun record trovato per il virtual vault specificato.");
+		    throw new SQLException("Nessun record trovato per il virtualvault specificato.");
+		}
+		
+		double balance = result.getDouble("balance");
+		
+		query.close();
+		
+		return balance;	
+		
+	}
 
 }

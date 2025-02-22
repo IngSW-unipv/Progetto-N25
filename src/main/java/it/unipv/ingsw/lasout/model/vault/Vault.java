@@ -22,6 +22,10 @@ public class Vault implements IVault{
 		this.saldo = saldo;
 		this.methods = methods != null ? methods : new ArrayList<>();
 	}
+	
+	public Vault(User user) {
+		this.user = user;
+	}
 
 	public Vault() {
 		this.methods = new ArrayList<>();

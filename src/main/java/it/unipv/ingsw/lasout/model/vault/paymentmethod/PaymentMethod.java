@@ -25,5 +25,7 @@ public interface PaymentMethod {
 	void setVault(Vault vault);
 	
 	void getId(PaymentMethod p) throws Exception;
+
+	void setId(int int1);
 	
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.facade.group.ConcreteGroupFacade;
@@ -24,7 +25,7 @@ import it.unipv.ingsw.lasout.util.DaoFactory;
 
 public class ConcreteVaultFacade implements VaultFacade {
 
-	private VaultDAO vaultDAO;
+	private IVaultDAO vaultDAO;
 	private PaymentMethodFactory paymentMethodFactory;
 
 	public ConcreteVaultFacade() {
@@ -39,6 +40,16 @@ public class ConcreteVaultFacade implements VaultFacade {
 			instance = new ConcreteVaultFacade();
 		}
 		return instance;
+	}
+	
+
+	@Override
+	public Vault getVault(Vault v) {
+		try {
+            return vaultDAO.get(v);
+        } catch (Exception e) {
+            return null;
+        }
 	}
 
 	@Override
@@ -65,7 +76,7 @@ public class ConcreteVaultFacade implements VaultFacade {
 	public boolean newVaultinVault(Vault vault) {
 
 		try {
-			int id = VaultDAO.getInstance().vaultId(vault);
+			int id = VaultDAO.getInstance().getVaultID(vault);
 			vault.setVv_id(id);
 			vaultDAO.saveInVault(vault);
 
@@ -200,6 +211,56 @@ public class ConcreteVaultFacade implements VaultFacade {
 			return false;
 		}
 	}
+	
+
+//	@Override
+//	public Vault getVaultByUserID(Vault vault) {
+//		
+//		Vault v = null;
+//		
+//		try {
+//			int id = vaultDAO.getVaultIDbyUser(vault);
+//			vaultDAO.getRaw(new Vault(id));
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return null;
+//		}
+//		return v;
+//	}
+	
+	@Override
+	public Vault getVaultByUser(User user) {
+	    try {
+	        return VaultDAO.getInstance().getVaultIDbyUser(user);
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
+	
+	@Override
+	public double getBalanceByID(Vault v) {
+		
+		double balance = 0;
+		
+		try {
+			balance = vaultDAO.getBalance(v);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return balance;
+		
+	}
+	
+
+	@Override
+	public boolean paymenExecution(Vault v, double amount, String recipient) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	private static final Logger LOGGER = Logger.getLogger(ConcreteVaultFacade.class.getName());
 
@@ -214,7 +275,7 @@ public class ConcreteVaultFacade implements VaultFacade {
 			return;
 		}
 
-		User u = new User("buso", "pluto", "ddd@gmail.com");
+		User u = new User("dada", "ciao", "aaa@gmail.com");
 		Vault v = new Vault();
 
 		LaVaultFacade.getInstance().getSessionFacade().login(u);
@@ -227,6 +288,15 @@ public class ConcreteVaultFacade implements VaultFacade {
 		ConcreteVaultFacade.getInstance().newVaultinVault(v);
 
 		ConcreteVaultFacade.getInstance().getVaultId(v);
+		
+		double c = ConcreteVaultFacade.getInstance().getBalanceByID(v);
+		
+		System.out.println("" + c);
+		
+		
+	//	int id = ConcreteVaultFacade.getInstance().getVaultByUserID(v);
+		
+		//System.out.println("" + id);
 
 		PaymentMethod pm = new CreditCard("3647483", 2, 2021, 345, v.getId());
 		PaymentMethod ca = new CurrentAccount("IT38298326238965289", v.getId());
@@ -235,29 +305,38 @@ public class ConcreteVaultFacade implements VaultFacade {
 		ConcreteVaultFacade.getInstance().addPaymentMethod(v, pm, pm.getMethodName());
 		ConcreteVaultFacade.getInstance().addPaymentMethod(v, ca, ca.getMethodName());
 		ConcreteVaultFacade.getInstance().addPaymentMethod(v, pp, pp.getMethodName());
-
-		for (PaymentMethod p : v.getMethods()) {
-			System.out.println("Metodo di pagamento: " + p.getMethodName());
-		}
-
-		System.out.println("Saldo iniziale: " + v.getSaldo());
-
-		boolean success = ConcreteVaultFacade.getInstance().depositMoneyFromPaymentMethod(v, pm, 100.50);
-
-		if (success) {
-			System.out.println("Saldo aggiornato: " + v.getSaldo());
-		} else {
-			System.out.println("Errore nell'aggiunta dei fondi.");
-		}
 		
-		boolean success1 = ConcreteVaultFacade.getInstance().withdrawMoneyFromPaymentMethod(v, pp, 50);
-
-		if (success1) {
-			System.out.println("Saldo aggiornato: " + v.getSaldo());
-		} else {
-			System.out.println("Errore nell'aggiunta dei fondi.");
+//		System.out.println("" + v.getVv_id());
+//		System.out.println("" + v.getId());
+		
+		try {
+			VaultDAO.getInstance().getRaw(v);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
+//
+//		for (PaymentMethod p : v.getMethods()) {
+//			System.out.println("Metodo di pagamento: " + p.getMethodName());
+//		}
+//
+//		System.out.println("Saldo iniziale: " + v.getSaldo());
+//
+//		boolean success = ConcreteVaultFacade.getInstance().depositMoneyFromPaymentMethod(v, pm, 100.50);
+//
+//		if (success) {
+//			System.out.println("Saldo aggiornato: " + v.getSaldo());
+//		} else {
+//			System.out.println("Errore nell'aggiunta dei fondi.");
+//		}
+//		
+//		boolean success1 = ConcreteVaultFacade.getInstance().withdrawMoneyFromPaymentMethod(v, pp, 50);
+//
+//		if (success1) {
+//			System.out.println("Saldo aggiornato: " + v.getSaldo());
+//		} else {
+//			System.out.println("Errore nell'aggiunta dei fondi.");
+//		}
 		// ConcreteVaultFacade.getInstance().deletePaymentMethod(v, pm,
 		// pm.getMethodName());
 		// ConcreteVaultFacade.getInstance().deletePaymentMethod(ca,

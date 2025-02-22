@@ -87,7 +87,7 @@ public class CurrentAccount implements PaymentMethod {
 	@Override
 	public void save(PaymentMethod paymentmethod) throws Exception {
 
-		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'currentaccount\\' (iban, vault_id) VALUES (?, ?);",
+		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'currentaccount\\' (iban, id_vault) VALUES (?, ?);",
 				((CurrentAccount)paymentmethod).getIban(), ((CurrentAccount)paymentmethod).getVault_id());
 
 		DatabaseUtil.getInstance().executeQuery(query);
@@ -126,7 +126,7 @@ public class CurrentAccount implements PaymentMethod {
 
 			int id = rs.getInt("id");
 			String iban = rs.getString("iban");
-			int vault_id = rs.getInt("vault_id");
+			int vault_id = rs.getInt("id_vault");
 
 			currentaccount.setId(id);
 			currentaccount.setIban(iban);
