@@ -1,16 +1,14 @@
 package it.unipv.ingsw.lasout.model.transaction;
 
 import java.util.Locale;
-import java.util.Objects;
 
-public class Transaction {
+public abstract class Transaction {
 	
-	private int id;
-	private int type;
-	private double amount;
-	private String date;
-	private String category;
-	private String notes;
+	protected int id;
+	protected double amount;
+	protected String date;
+	protected String category;
+	protected String notes;
 
 	public Transaction() {
 
@@ -23,21 +21,25 @@ public class Transaction {
 		this.id = id;
 	}
 
+	public Transaction(int id, double amount) {
+		this.id = id;
+		this.amount = amount;
+	}
+
 	/**
 	 * Costruttore per test veloci
 	 */
-	public Transaction(int id, int type, double amount) {
+	public Transaction(int id, double amount, String date) {
 		this.id = id;
-		this.type = type;
 		this.amount = amount;
+		this.date = date;
 	}
 
 	/**
 	 * Costruttore completo
 	 */
-	public Transaction(int id, int type, double amount, String date, String category, String notes) {
+	public Transaction(int id, double amount, String date, String category, String notes) {
 		this.id = id;
-		this.type = type;
 		this.amount = amount;
 		this.date = date;
 		this.category = category;
@@ -50,14 +52,6 @@ public class Transaction {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public int getType() {
-		return type;
-	}
-
-	public void setType(int type) {
-		this.type = type;
 	}
 
 	public double getAmount() {
@@ -93,18 +87,11 @@ public class Transaction {
 	}
 
 	@Override
-	public String toString() {
-		return String.format(Locale.US, "Transaction{id=%d, type=%d, amount=%.2f, date='%s', category='%s', note='%s'}",
-								id, type, amount, date, category, notes);
-	}
-
-	@Override
 	public boolean equals(Object obj) {
 		if(this == obj) return true;
 		if (getClass() != obj.getClass()) return false;
 		Transaction t = (Transaction) obj;
 		return 	this.id == t.id &&
-				this.type == t.type &&
 				this.amount == t.amount &&
 				this.date.equals(t.date) &&
 				this.category.equals(t.category) &&

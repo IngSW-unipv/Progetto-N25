@@ -2,6 +2,8 @@ package it.unipv.ingsw.lasout.facade.cashbook;
 
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.cashbook.ICashbookDAO;
+import it.unipv.ingsw.lasout.model.cashbook.exception.CannotDeleteDefaultCashbookException;
+import it.unipv.ingsw.lasout.model.cashbook.exception.CashbookAlreadyExistingException;
 import it.unipv.ingsw.lasout.model.transaction.ModifiableTransaction;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.model.transaction.exception.CannotEditTransactionException;
@@ -29,8 +31,10 @@ public class CashbookFacade implements ICashbookFacade {
     public boolean saveCashbook(Cashbook cashbook) {
         try {
             cashBookDAO.save(cashbook);
+        } catch (CashbookAlreadyExistingException e) {
+            throw new CashbookAlreadyExistingException(e.getMessage());
         } catch (Exception e) {
-            return false;
+            throw new RuntimeException(e);
         }
         return true;
     }
@@ -58,8 +62,10 @@ public class CashbookFacade implements ICashbookFacade {
     public boolean deleteCashbook(Cashbook cashbook){
         try{
             cashBookDAO.delete(cashbook);
+        } catch (CannotDeleteDefaultCashbookException e) {
+            throw new CannotDeleteDefaultCashbookException(e.getMessage());
         } catch (Exception e) {
-            return false;
+            throw new RuntimeException(e);
         }
         return true;
     }
