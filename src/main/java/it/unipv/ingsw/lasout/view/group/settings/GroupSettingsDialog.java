@@ -15,12 +15,13 @@ public class GroupSettingsDialog extends JDialog {
         super(parent, "Impostazioni Gruppo", true);
 
         // Imposta dimensioni del dialog
-        setSize(300, 350);
+        setSize(250, 300);
         setLocationRelativeTo(parent);
 
         // Creiamo un pannello principale con BoxLayout in asse Y
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(new Color(230, 240, 250));
 
         // Creiamo i pulsanti
         eliminaUtenti = new JButton("Elimina utenti");
@@ -38,10 +39,17 @@ public class GroupSettingsDialog extends JDialog {
         lasciaGruppo.setMaximumSize(buttonSize);
         eliminaGruppo.setMaximumSize(buttonSize);
 
+        eliminaUtenti.setForeground(Color.DARK_GRAY);
+        lasciaGruppo.setForeground(Color.DARK_GRAY);
+        eliminaGruppo.setForeground(Color.DARK_GRAY);
+
+        eliminaUtenti.setBackground(new Color(176, 196, 222));
+        lasciaGruppo.setBackground(new Color(176, 196, 222));
+        eliminaGruppo.setBackground(new Color(176, 196, 222));
+
         remuveDialog = new RemoveParticipantDialog(parent);
 
-        // Aggiungiamo "colla" (glue) verticali sopra e sotto i pulsanti
-        // e spazi verticali più ampi (30 px) tra i pulsanti
+        // e spazi verticali tra i pulsanti
         panel.add(Box.createVerticalGlue());
         panel.add(eliminaUtenti);
         panel.add(Box.createVerticalStrut(40)); // spazio tra i pulsanti

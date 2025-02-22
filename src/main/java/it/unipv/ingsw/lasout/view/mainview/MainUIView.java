@@ -102,5 +102,6 @@ public class MainUIView extends JFrame {
     public void setVisible(boolean b) {
         super.setVisible(b);
         GroupController.load();
+        VaultController.load();
     }
 }

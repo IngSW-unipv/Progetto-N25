@@ -6,13 +6,14 @@ import it.unipv.ingsw.lasout.model.vault.Vault;
 import it.unipv.ingsw.lasout.model.vault.VaultDAO;
 import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class VaultController {
 
-	private Vault vault;
-	private VaultPanel vaultPanel;
+	private static Vault vault;
+	private static VaultPanel vaultPanel;
 
 	public VaultController(VaultPanel vaultPanel) {
 		this.vaultPanel = vaultPanel;
@@ -30,30 +31,12 @@ public class VaultController {
 	private void initController() {
 		
 		vaultPanel.addAggiornaListener(e->{
-			
-			User currentUser = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
-			
-			if (currentUser != null) {
-			    System.out.println("Utente loggato: " + currentUser.getId() + " - " + currentUser.getEmail());
-			} else {
-			    System.out.println("Nessun utente loggato.");
-			}
-			
-			try {
-				
-				vault = LaVaultFacade.getInstance().getVaultFacade().getVaultByUser(currentUser);
-				if (vault == null) {
-                    System.out.println("Vault non trovato per l'utente " + currentUser.getId());
-                    return;
-                }
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-//			vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getVaultByUserID(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser()).getSaldo());
-			vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getBalanceByID(vault));
+			JOptionPane.showMessageDialog(vaultPanel, "Inserisci un nome valido", "Errore", JOptionPane.ERROR_MESSAGE);
+
 		});
+
+
+
 		//    	
 //    	vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getVault(new Vault(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser()).getBalance()));
 //    	
@@ -62,6 +45,31 @@ public class VaultController {
 //		vault.setOwner(new User(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().getId()));
 //		
 //    	LaVaultFacade.getInstance().getVaultFacade().getVault(vault);
+	}
+
+	public static void load(){
+		User currentUser = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
+
+		if (currentUser != null) {
+			System.out.println("Utente loggato: " + currentUser.getId() + " - " + currentUser.getEmail());
+		} else {
+			System.out.println("Nessun utente loggato.");
+		}
+
+		try {
+
+			vault = LaVaultFacade.getInstance().getVaultFacade().getVaultByUser(currentUser);
+			if (vault == null) {
+				System.out.println("Vault non trovato per l'utente " + currentUser.getId());
+				return;
+			}
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+//			vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getVaultByUserID(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser()).getSaldo());
+		vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getBalanceByID(vault));
 	}
 
 }

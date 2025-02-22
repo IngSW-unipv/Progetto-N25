@@ -30,7 +30,7 @@ public class GroupPanel extends JPanel {
 
     public GroupPanel(JFrame frame) {
         setLayout(new BorderLayout());
-        setBackground(new Color(205, 133, 63)); // Sfondo marroncino per il pannello principale
+        setBackground(new Color(230, 240, 250)); // Sfondo marroncino per il pannello principale
 
         // ============ TOP BAR (comboBox + bottone "Nuovo Gruppo") ============
         JPanel topBarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
@@ -43,18 +43,23 @@ public class GroupPanel extends JPanel {
         topBarPanel.add(nuovoGruppoBtn);
 
         add(topBarPanel, BorderLayout.NORTH);
+        nuovoGruppoBtn.setBackground(new Color(176, 196, 222));
+        nuovoGruppoBtn.setForeground(Color.DARK_GRAY);
+
+        comboBox.setBackground(new Color(176, 196, 222));
+        comboBox.setForeground(Color.DARK_GRAY);
 
         newGroupDialog = new NewGroupDialog(frame);
 
+
         // ============ CENTRO (pannello blu) ============
         JPanel centerPanel = new JPanel(new BorderLayout());
-        centerPanel.setBackground(new Color(30, 144, 255));
-        centerPanel.setBorder(BorderFactory.createLineBorder(new Color(205, 133, 63), 15));
+        centerPanel.setBackground(new Color(230, 240, 250));
+        centerPanel.setBorder(BorderFactory.createLineBorder(new Color(230, 240, 250), 15));
 
         // PANNELLO SUPERIORE nel centerPanel, con BORDERLAYOUT
-        // per separare la label a sinistra e il pulsante "impostaz" a destra
         JPanel topContainer = new JPanel(new BorderLayout());
-        topContainer.setOpaque(false); // così resta blu
+        topContainer.setOpaque(false); //resta colr sfondo
 
         // A SINISTRA LA LABEL
         JPanel topLeftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
@@ -70,6 +75,9 @@ public class GroupPanel extends JPanel {
         topRightPanel.setOpaque(false);
         impostazioniBtn = new JButton("Impostazioni");
         impostazioniBtn.setPreferredSize(new Dimension(120, 50));
+        impostazioniBtn.setBackground(new Color(176, 196, 222));
+        impostazioniBtn.setForeground(Color.DARK_GRAY);
+        impostazioniBtn.setFont(new Font("Arial", Font.BOLD, 13));
         impostazioniBtn.setEnabled(false);
         topRightPanel.add(impostazioniBtn);
         settingsDialog = new GroupSettingsDialog(frame);
@@ -82,9 +90,10 @@ public class GroupPanel extends JPanel {
         centerPanel.add(topContainer, BorderLayout.NORTH);
 
         // ============ PANNELLO ROSSO (infoPanel) al centro del centerPanel ============
+
         infoPanel = new JInfoPanel();
         infoPanel.setPreferredSize(new Dimension(500, 300));
-        infoPanel.setBorder(BorderFactory.createLineBorder(new Color(30, 144, 255), 15));
+        infoPanel.setBorder(BorderFactory.createLineBorder(new Color(230, 240, 250), 15));
         centerPanel.add(infoPanel, BorderLayout.CENTER);
 
         centerPanel.add(infoPanel, BorderLayout.CENTER);
@@ -108,6 +117,14 @@ public class GroupPanel extends JPanel {
         invitaBtn.setFont(biggerFont);
         aggiungiSpesaBtn.setFont(biggerFont);
         finalizzaBtn.setFont(biggerFont);
+
+        invitaBtn.setBackground(new Color(176, 196, 222));
+        aggiungiSpesaBtn.setBackground(new Color(176, 196, 222));
+        finalizzaBtn.setBackground(new Color(176, 196, 222));
+
+        invitaBtn.setForeground(Color.DARK_GRAY);
+        aggiungiSpesaBtn.setForeground(Color.DARK_GRAY);
+        finalizzaBtn.setForeground(Color.DARK_GRAY);
 
         bottomPanel.add(invitaBtn);
         bottomPanel.add(aggiungiSpesaBtn);
@@ -162,9 +179,6 @@ public class GroupPanel extends JPanel {
     }
 
     /* ================= Tasto impostazioni ================= */
-    public void showSettingsDialog() {
-        settingsDialog.setVisible(true);
-    }
 
     public JButton getImpostazioniBtn() {
         return impostazioniBtn;
@@ -176,16 +190,6 @@ public class GroupPanel extends JPanel {
 
     public void addImpostazioniListener(ActionListener l) { impostazioniBtn.addActionListener(l); }
 
-    // Esporre i 3 metodi per i listener del dialog
-    public void addOption1Listener(ActionListener l) {
-        settingsDialog.addEliminateUserListener(l);
-    }
-    public void addOption2Listener(ActionListener l) {
-        settingsDialog.addLeaveGroupListener(l);
-    }
-    public void addOption3Listener(ActionListener l) {
-        settingsDialog.addDelateGroupListener(l);
-    }
 
     /* =========== Tasto aggiungi spesa=============*/
     public AddExpenseDialog getAddExpenseDialog() {

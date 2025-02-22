@@ -13,7 +13,7 @@ public class InfoRowPanel extends JPanel {
     public InfoRowPanel(String name, String direction, String amount, String a, String nameTow) {
         // Usa un layout a griglia per distribuire equamente i tre elementi
         setLayout(new GridLayout(1, 3, 5, 0));
-        setBackground(Color.WHITE);
+        setBackground(new Color(245, 250, 255));
 
         nameLabel = new JLabel(name);
         directionLabel = new JLabel(direction);

@@ -27,7 +27,7 @@ public class GroupController {
     private void initController() {
 
         //=============== Quando scelgo nel menu a tendina ===================
-        groupPanel.addComboBoxListener(e -> {
+        groupPanel.addComboBoxListener(e-> {
             // Recupera l'oggetto selezionato nel jcombobox
             GroupItem selected = (GroupItem) groupPanel.getSelectedGroup();
 

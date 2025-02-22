@@ -19,18 +19,20 @@ public class AddExpenseDialog extends JDialog {
         // Pannello principale con BoxLayout verticale
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(new Color(230, 240, 250));
         // Aggiungiamo glue per centrare verticalmente
         panel.add(Box.createVerticalGlue());
 
         // Campo 1
         JLabel label1 = new JLabel("Importo:");
         label1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label1.setForeground(Color.DARK_GRAY);
         panel.add(label1);
         panel.add(Box.createVerticalStrut(5));
 
         field1 = new JTextField();
         field1.setMaximumSize(new Dimension(250, 30));
-        field1.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+        field1.setBorder(BorderFactory.createLineBorder(new Color(200, 210, 230), 2));
         field1.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(field1);
         panel.add(Box.createVerticalStrut(20));
@@ -38,12 +40,13 @@ public class AddExpenseDialog extends JDialog {
         // Campo 2
         JLabel label2 = new JLabel("Note:");
         label2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label2.setForeground(Color.DARK_GRAY);
         panel.add(label2);
         panel.add(Box.createVerticalStrut(5));
 
         field2 = new JTextField();
         field2.setMaximumSize(new Dimension(250, 30));
-        field2.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+        field2.setBorder(BorderFactory.createLineBorder(new Color(200, 210, 230), 2));
         field2.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(field2);
         panel.add(Box.createVerticalStrut(30));
@@ -54,9 +57,9 @@ public class AddExpenseDialog extends JDialog {
         aggiungiButton.setPreferredSize(new Dimension(150, 40));
         aggiungiButton.setMaximumSize(new Dimension(150, 40));
         // Imposta un colore di sfondo verdino e rendilo opaco per vederlo
-        aggiungiButton.setBackground(new Color(0, 200, 0));
+        aggiungiButton.setBackground(new Color(176, 196, 222));
         aggiungiButton.setOpaque(true);
-        aggiungiButton.setForeground(Color.WHITE);
+        aggiungiButton.setForeground(Color.DARK_GRAY);
         aggiungiButton.setFont(new Font("Arial", Font.BOLD, 16));
         panel.add(aggiungiButton);
 

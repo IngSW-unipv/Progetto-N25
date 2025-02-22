@@ -16,10 +16,11 @@ public class InviteDialog extends JDialog {
         inviteContentPanel = new JPanel();
         inviteContentPanel.setLayout(new BoxLayout(inviteContentPanel, BoxLayout.Y_AXIS));
         inviteContentPanel.setBackground(Color.WHITE);
+        inviteContentPanel.setBackground(new Color(230, 240, 250));
 
         // Crea lo scroll pane che contiene il pannello
         scrollPane = new JScrollPane(inviteContentPanel);
-        scrollPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 210, 230), 1));
 
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(scrollPane, BorderLayout.CENTER);

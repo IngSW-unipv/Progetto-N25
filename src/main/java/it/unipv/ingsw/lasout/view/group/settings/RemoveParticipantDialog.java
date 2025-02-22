@@ -15,11 +15,11 @@ public class RemoveParticipantDialog extends JDialog {
         // Crea il pannello interno con un layout verticale
         contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setBackground(Color.WHITE);
+        contentPanel.setBackground(new Color(230, 240, 250));
 
         // Crea lo scroll pane che contiene il pannello
         scrollPane = new JScrollPane(contentPanel);
-        scrollPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 210, 230), 1));
 
         // Imposta il layout del JDialog
         getContentPane().setLayout(new BorderLayout());

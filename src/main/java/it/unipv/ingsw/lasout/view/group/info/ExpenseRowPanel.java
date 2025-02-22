@@ -15,7 +15,7 @@ public class ExpenseRowPanel extends JPanel {
     public ExpenseRowPanel(String nome, String importo, String descrizione) {
         // Imposta un layout basato su GridBagLayout per gestire la divisione della larghezza
         setLayout(new GridBagLayout());
-        setBackground(Color.WHITE); // Puoi impostare un colore di sfondo diverso se vuoi
+        setBackground(new Color(245, 250, 255));
 
         // Creazione dei componenti
         nameLabel = new JLabel(nome);
@@ -25,11 +25,10 @@ public class ExpenseRowPanel extends JPanel {
         cancButton = new JButton("Canc");
 
 
-        // Opzionale: imposta un font e un colore per il bottone
         cancButton.setFont(new Font("Arial", Font.BOLD, 14));
-        cancButton.setBackground(Color.WHITE);
+        cancButton.setBackground(new Color(245, 250, 255));
 
-        // Per gestire le tre label, creiamo un pannello interno
+        // Per gestire le tre label un pannello interno
         JPanel labelPanel = new JPanel(new GridLayout(1, 3, 5, 0));
         labelPanel.setOpaque(false);
         labelPanel.add(nameLabel);

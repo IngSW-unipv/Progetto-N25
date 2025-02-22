@@ -12,12 +12,14 @@ public class JInfoPanel extends JPanel {
     public JInfoPanel() {
         // Imposta il layout con GridBagLayout
         setLayout(new GridBagLayout());
-        setBackground(Color.RED); // Sfondo generale, o cambia se preferisci
+        setBackground(new Color(200, 210, 230)); // Sfondo generale, o cambia se preferisci
 
         // Crea i pannelli interni con layout verticale
         leftPanel = new JPanel();
+        leftPanel.setBackground(new Color(245, 250, 255));
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         rightPanel = new JPanel();
+        rightPanel.setBackground(new Color(245, 250, 255));
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
         // Crea gli scroll pane per ciascun pannello
@@ -25,8 +27,8 @@ public class JInfoPanel extends JPanel {
         rightScrollPane = new JScrollPane(rightPanel);
 
         // Imposta eventuali bordi per gli scroll pane
-        leftScrollPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-        rightScrollPane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+        leftScrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 210, 230), 1));
+        rightScrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 210, 230), 1));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;

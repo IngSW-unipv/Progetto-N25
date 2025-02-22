@@ -11,7 +11,7 @@ public class ParticipantRowPanel extends JPanel {
     public ParticipantRowPanel(String participantName) {
         // Usa BorderLayout per disporre la label e il bottone
         setLayout(new BorderLayout(5, 0));
-        setBackground(Color.WHITE);
+        setBackground(new Color(230, 240, 250));
 
         // Crea la label con il nome del partecipante
         nameLabel = new JLabel(participantName);
@@ -26,6 +26,8 @@ public class ParticipantRowPanel extends JPanel {
         espelliButton.setPreferredSize(btnDim);
         espelliButton.setMaximumSize(btnDim);
         espelliButton.setMinimumSize(btnDim);
+        espelliButton.setForeground(Color.DARK_GRAY);
+        espelliButton.setBackground(new Color(176, 196, 222));
         add(espelliButton, BorderLayout.EAST);
 
         // Imposta l'altezza della riga a 25 e lascia la larghezza adattabile
