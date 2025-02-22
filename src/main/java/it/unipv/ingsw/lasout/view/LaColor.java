@@ -13,4 +13,6 @@ public class LaColor {
     public static final Color SFONDO_CHIARO = new Color(245, 250, 255);
 
     public static final Color BTN_SFONDO = new Color(176, 196, 222);
+
+    public static final Color BTN_PERICOLO = new Color(227, 110, 110);
 }
