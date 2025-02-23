@@ -23,10 +23,9 @@ public class PaymentMethodDAO implements IPaymentMethodDAO {
 	public static PaymentMethodDAO getInstance() {
 		return INSTANCE;
 	}
-	
+
 	private static final String GET_RAW = "SELECT * FROM \\'paymentmethod\\' WHERE id = ?;";
 	private static final String GET_PAYMENTMETHOD_BY_VAULT_ID = "SELECT * FROM \\'paymentmethod\\' WHERE id_vault = ?;";
-	
 
 	private final Map<String, Class<?>> classes = new HashMap<>();
 
@@ -52,56 +51,56 @@ public class PaymentMethodDAO implements IPaymentMethodDAO {
 		});
 	}
 	
-public List<PaymentMethod> getAllPaymentMethod(Vault v) throws Exception {
-		
+	
+	@Override
+	public List<PaymentMethod> getAllPaymentMethod(Vault v) throws Exception {
+
 		DBQuery query = DatabaseUtil.getInstance().createQuery(GET_PAYMENTMETHOD_BY_VAULT_ID, v.getId());
 		DatabaseUtil.getInstance().executeQuery(query);
-		
+
 		if (query == null) {
-	        throw new RuntimeException("Errore: la query è NULL!");
-	    }
+			throw new RuntimeException("Errore: la query è NULL!");
+		}
 
 		ResultSet result = query.getResultSet();
-		
+
 		PaymentMethodFactory factory = new PaymentMethodFactory();
-		
+
 		List<PaymentMethod> methods = new ArrayList<PaymentMethod>();
-		
+
 		if (result == null) {
-	        System.out.println("Errore: ResultSet è null!");
-	        return methods; // Restituisco lista vuota
-	    }
-		
+			System.out.println("Errore: ResultSet è null!");
+			return methods; // Restituisco lista vuota
+		}
+
 		while (result.next()) {
-			
+
 			PaymentMethod method = factory.get(result.getString("type"));
-			
-		    method.setId(result.getInt("id"));
-			
+
+			method.setId(result.getInt("id"));
+
 			method.setVault(new Vault(result.getInt("id_vault")));
-			
+
 			methods.add(method);
-	    }	
-		
+		}
+
 		return methods;
 	}
-	
-	
 
 	@Override
 	public PaymentMethod getRaw(PaymentMethod oggetto) throws Exception {
-		
+
 		DBQuery query = DatabaseUtil.getInstance().createQuery(GET_RAW);
 		DatabaseUtil.getInstance().executeQuery(query);
 
 		ResultSet result = query.getResultSet();
-		
+
 		PaymentMethodFactory factory = new PaymentMethodFactory();
-		
+
 		PaymentMethod method = factory.get(result.getString("tipo"));
-		
+
 		method.setVault(new Vault(result.getInt("vault_id")));
-		
+
 		return method;
 	}
 
@@ -120,17 +119,17 @@ public List<PaymentMethod> getAllPaymentMethod(Vault v) throws Exception {
 	@Override
 	public void update(PaymentMethod t) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void save(PaymentMethod t) throws Exception {	
+	public void save(PaymentMethod t) throws Exception {
 	}
 
 	@Override
 	public void delete(PaymentMethod t) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
