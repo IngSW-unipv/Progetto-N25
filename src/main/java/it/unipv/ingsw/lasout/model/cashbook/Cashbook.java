@@ -54,7 +54,8 @@ public class Cashbook {
     }
 
     public void setName(String name){
-        this.name = name;
+        if(!isDefault())
+            this.name = name;
     }
 
     public List<Transaction> getTransactionList() {
@@ -83,5 +84,9 @@ public class Cashbook {
 
     public void addTransaction(Transaction transaction) {
         transactionList.add(transaction);
+    }
+
+    public boolean isDefault() {
+        return this.name.equals("default");
     }
 }

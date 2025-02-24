@@ -63,7 +63,7 @@ public class CashbookFacade implements ICashbookFacade {
         try{
             cashBookDAO.delete(cashbook);
         } catch (CannotDeleteDefaultCashbookException e) {
-            throw new CannotDeleteDefaultCashbookException(e.getMessage());
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -74,6 +74,15 @@ public class CashbookFacade implements ICashbookFacade {
     public List<Cashbook> getUserCashbooks(User carrierUser){
         try{
             return cashBookDAO.getAllUserCashbooks(carrierUser);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Cashbook getUserDefaultCashbook(User carrierUser){
+        try{
+            return cashBookDAO.getDefaultCashbook(carrierUser);
         } catch (Exception e) {
             return null;
         }
@@ -94,9 +103,9 @@ public class CashbookFacade implements ICashbookFacade {
 
     /**
      * Serve a salvare una transazione conoscendo lo user che la ha eseguita
-     * @param user
-     * @param transaction
-     * @return
+     * @param user of which you want to add the transaction
+     * @param transaction transaction to add
+     * @return true if transaction was added correctly, false otherwise
      */
     public boolean addTransaction(User user, Transaction transaction) {
         Cashbook defaultCashbook = cashBookDAO.getDefaultCashbook(user);
@@ -112,7 +121,7 @@ public class CashbookFacade implements ICashbookFacade {
             cashBookDAO.update(c);
             editCashbook(c);
         } catch (CannotEditTransactionException e) {
-            return false;
+            throw e;
         } catch (Exception e) {
             return false;
         }

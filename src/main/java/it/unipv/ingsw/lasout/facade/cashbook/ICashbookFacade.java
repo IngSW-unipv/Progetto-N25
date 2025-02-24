@@ -16,6 +16,8 @@ public interface ICashbookFacade {
 
     boolean deleteCashbook(Cashbook cashbook);
 
+    Cashbook getUserDefaultCashbook(User carrierUser);
+
     boolean addTransaction(Cashbook cashbook, Transaction transaction);
 
     boolean editTransaction(Cashbook cashbook, Transaction transaction);

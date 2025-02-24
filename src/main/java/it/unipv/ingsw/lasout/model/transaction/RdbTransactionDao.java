@@ -12,13 +12,13 @@ import java.util.List;
 
 public class RdbTransactionDao implements ITransactionDAO{
     /**
-     * Istanza singola del GroupDao (implementazione singleton)
+     * Istanza singola del RdbTransactionDao (implementazione singleton)
      */
     private static RdbTransactionDao instance = null;
 
     /**
      *
-     * @return l'istanza singleton del GroupDao
+     * @return l'istanza singleton del RdbTransactionDao
      */
     public static RdbTransactionDao getInstance(){
         if (instance == null){
