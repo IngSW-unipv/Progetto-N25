@@ -1,16 +1,9 @@
-package it.unipv.ingsw.lasout.model.notify.action;
+package it.unipv.ingsw.lasout.model.notify.action.friend;
 
-import io.github.palexdev.materialfx.controls.MFXButton;
-import it.unipv.ingsw.lasout.database.DBQuery;
-import it.unipv.ingsw.lasout.database.DatabaseUtil;
-import it.unipv.ingsw.lasout.model.group.Group;
+
 import it.unipv.ingsw.lasout.model.notify.Notify;
+import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
 import it.unipv.ingsw.lasout.model.user.User;
-import it.unipv.ingsw.lasout.model.user.UserDAO;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-
-import java.sql.ResultSet;
 
 public class FriendRequestNotifyAction implements INotifyAction {
 
@@ -44,33 +37,16 @@ public class FriendRequestNotifyAction implements INotifyAction {
 
 
 
-    @Override
-    public void build(HBox information, HBox footer) {
-
-
-        if(information == null) return;
-
-        Label label =  new Label("Richiesta di amicizia da: "  +from.getUsername());
-        label.getStyleClass().add("additiona-info");
-        label.applyCss();
-        information.getChildren().add(label);
-
-
-        if(footer == null) return;
-
-
-        MFXButton accetta  = new MFXButton("Accetta");
-
-        accetta.setOnAction(listener->{
-
-
-        });
-
-        MFXButton rifiuta  = new MFXButton("Rifiuta");
-        footer.getChildren().addAll(accetta,  rifiuta);
-
+    public User getFrom() {
+        return from;
     }
 
+    public User getTo() {
+        return to;
+    }
+
+
+    /*
     @Override
     public void load(Notify notify) throws Exception{
         DBQuery query = DBQuery.Builder.create()
@@ -115,9 +91,16 @@ public class FriendRequestNotifyAction implements INotifyAction {
         dbQuery.close();
     }
 
+     */
+
+    @Override
+    public void build() {
+
+    }
+
     @Override
     public Notify getNotify() {
-        return null;
+        return notify;
     }
 
     @Override

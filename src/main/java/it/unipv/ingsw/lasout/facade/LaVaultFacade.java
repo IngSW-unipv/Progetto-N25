@@ -9,8 +9,11 @@ import it.unipv.ingsw.lasout.facade.user.ISessionFacade;
 import it.unipv.ingsw.lasout.facade.user.IUserFacade;
 import it.unipv.ingsw.lasout.facade.vault.VaultFacade;
 import it.unipv.ingsw.lasout.facade.virtualVault.VirtualVaultFacade;
+import it.unipv.ingsw.lasout.model.user.User;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Properties;
 
 public class LaVaultFacade {
@@ -53,6 +56,7 @@ public class LaVaultFacade {
         properties.load(LaVaultFacade.class.getResourceAsStream("/app.properties"));
         return Class.forName(properties.getProperty("facade."+propertyName));
     }
+
 
     public VirtualVaultFacade getVirtualVaultFacade() {return virtualVaultFacade;}
 

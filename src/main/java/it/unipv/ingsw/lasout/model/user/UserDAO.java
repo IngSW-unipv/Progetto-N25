@@ -1,16 +1,20 @@
 package it.unipv.ingsw.lasout.model.user;
 
 
+import it.unipv.ingsw.lasout.dao.IDao;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.cashbook.RdbCashbookDao;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
+import it.unipv.ingsw.lasout.model.notify.INotifyDAO;
 import it.unipv.ingsw.lasout.model.notify.MySQLNotifyDAO;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.user.exception.UserAlreadyExistException;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
+import it.unipv.ingsw.lasout.util.DaoFactory;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -36,7 +40,13 @@ public class UserDAO implements IUserDAO {
     /**
      * Rendo il costruttore privato
      */
+
+    private INotifyDAO iNotifyDAO;
+
     public UserDAO(){
+
+        iNotifyDAO = DaoFactory.getNotifyDAO();
+
     }
 
     /**
@@ -253,7 +263,7 @@ public class UserDAO implements IUserDAO {
     @Override
     public List<Notify> getNotifications(User user) throws Exception {
 
-        return MySQLNotifyDAO.getInstance().notifiesOf(user);
+        return iNotifyDAO.notifiesOf(user);
     }
 
 

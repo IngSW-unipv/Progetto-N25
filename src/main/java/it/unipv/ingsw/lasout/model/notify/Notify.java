@@ -2,7 +2,7 @@ package it.unipv.ingsw.lasout.model.notify;
 
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
-import it.unipv.ingsw.lasout.model.notify.action.InviteGroupRequestNotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.group.InviteGroupRequestNotifyAction;
 import it.unipv.ingsw.lasout.model.user.User;
 
 public class Notify {
@@ -88,6 +88,7 @@ public class Notify {
         public static Builder empty(){
             return new GroupBuilder();
         }
+
         public static GroupBuilder groupRequestNotify(){
             return new GroupBuilder();
         }
@@ -112,6 +113,10 @@ public class Notify {
             notify.setUser(sendTo);
             notify.setDescription(description);
             notify.setId(id);
+            if(this.action != null){
+                notify.setNotifyAction(action);
+                action.setNotify(notify);
+            }
             return notify;
         }
 
@@ -135,10 +140,12 @@ public class Notify {
             }
 
             public Notify build(){
-
                 Notify notify = super.build();
+                InviteGroupRequestNotifyAction action = (InviteGroupRequestNotifyAction) this.action;
+                action.setGroup(group);
+                action.setUser(user);
                 notify.setUser(user);
-                notify.setNotifyAction(action);
+
                 return notify;
             }
 
