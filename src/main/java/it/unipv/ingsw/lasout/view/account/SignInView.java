@@ -4,14 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class RegisterView extends JFrame {
+public class SignInView extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JTextField emailField;
     private JButton registerButton;
     private JButton loginButton;
 
-    public RegisterView() {
+    public SignInView() {
         setTitle("Registrazione");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(400, 260);
@@ -50,9 +50,13 @@ public class RegisterView extends JFrame {
         // Pannello dei bottoni
         JPanel buttonPanel = new JPanel();
         registerButton = new JButton("Sign in");
+        // Imposta dimensioni più grandi
+        registerButton.setPreferredSize(new Dimension(140, 40));
+        // Se desideri anche un testo più grande
+        registerButton.setFont(new Font("Arial", Font.BOLD, 16));
         loginButton = new JButton("Login");
-        buttonPanel.add(registerButton);
         buttonPanel.add(loginButton);
+        buttonPanel.add(registerButton);
 
         gbc.gridx = 0;
         gbc.gridy = 3;

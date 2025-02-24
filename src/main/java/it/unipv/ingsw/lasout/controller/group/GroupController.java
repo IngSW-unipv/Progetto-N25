@@ -307,5 +307,7 @@ public class GroupController {
         groupPanel.getImpostazioniBtn().setEnabled(false);
         groupPanel.getAggiungiSpesaBtn().setEnabled(false);
         groupPanel.getFinalizzaBtn().setEnabled(false);
+        groupPanel.getInvitaBtn().setEnabled(false);
+        
     }
 }

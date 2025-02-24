@@ -69,5 +69,5 @@ public interface IUserDAO extends IDao<User> {
      * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
      * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente con le credenziali che ha dato
      */
-    User userNotSearchedForCreateAccount(User user) throws SQLException, UserNotFoundException;
+    User userNotFoundForCreateAccount(User user) throws SQLException, UserNotFoundException;
 }

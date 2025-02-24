@@ -1,5 +1,7 @@
 package it.unipv.ingsw.lasout.facade.vault;
 
+import java.util.List;
+
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.vault.Vault;
 import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethod;
@@ -27,11 +29,9 @@ public interface VaultFacade {
 	
 	boolean paymenExecution(Vault v, double amount, String recipient); 
 
-//	Vault getVaultByUserID(Vault v);
-	
-//	Vault getVaultByUserID(Vault v);
-
 	double getBalanceByID(Vault v);
 
 	Vault getVaultByUser(User user);
+	
+	List<PaymentMethod> getAllPaymentMethods (Vault vault);
 }
