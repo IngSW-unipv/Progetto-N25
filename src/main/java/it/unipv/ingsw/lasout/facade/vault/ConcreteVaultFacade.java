@@ -167,12 +167,6 @@ public class ConcreteVaultFacade implements VaultFacade {
 			throw new RuntimeException("Errore: Autorizzazione negata");
 
 		try {
-			// Verifica se il metodo di pagamento è nella lista dei metodi supportati dal
-			// Vault
-			if (!v.getMethods().contains(p)) {
-				System.out.println("Il metodo di pagamento non è associato al Vault.");
-				return false;
-			}
 			vaultDAO.updateBalance(v, balance);
 
 			v.setSaldo(v.getSaldo() + balance);
@@ -192,11 +186,6 @@ public class ConcreteVaultFacade implements VaultFacade {
 
 		if (p.autorizza() != true)
 			throw new RuntimeException("Errore: Autorizzazione negata");
-
-		if (!v.getMethods().contains(p)) {
-			System.out.println("Metodo di pagamento non associato");
-			return false;
-		}
 
 		if (v.getSaldo() < amount) {
 			System.out.println("Fondi insufficienti! Saldo disponibile: " + v.getSaldo());
