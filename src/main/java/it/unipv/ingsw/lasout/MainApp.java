@@ -1,4 +1,3 @@
-
 package it.unipv.ingsw.lasout;
 
 import it.unipv.ingsw.lasout.controller.AppController;

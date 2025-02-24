@@ -2,8 +2,10 @@ package it.unipv.ingsw.lasout.model.transaction;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.transaction.exception.CannotEditTransactionException;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,11 +35,35 @@ public class RdbTransactionDao implements ITransactionDAO{
 
     private static final String GET_ALL_TRANSACTIONS = "SELECT * FROM £transactions£";
     private static final String GET_TRANSACTION_FROM_ID = "SELECT * FROM £transactions£ WHERE id=?;";
-    private static final String UPDATE_TRANSACTION = "UPDATE £transactions£ SET type=?, amount=?, date=?, category=?, note=? WHERE id=?";
+    private static final String UPDATE_TRANSACTION = "UPDATE £transactions£ SET amount=?, date=?, category=?, note=? WHERE id=?";
     private static final String DELETE_FROM_CASHBOOKTRANSACTIONS = "DELETE FROM £cashbooktransactions£ WHERE transaction_id = ?";
     private static final String DELETE_TRANSACTION_FROM_ID = "DELETE FROM £transactions£ WHERE id = ?";
     private static final String INSERT_TRANSACTION_ID = "INSERT INTO £transactions£ (id, type, amount, date, category, note) VALUES(?,?,?,?,?,?)";
     private static final String INSERT_TRANSACTION_NOID = "INSERT INTO £transactions£ (type, amount, date, category, note) VALUES (?, ?, ?, ?, ?);";
+
+    /***
+     *
+     * @param resultSet ovvero il result set passato dai vari metodi nel dao
+     * @return transazione del tipo corretto
+     * @throws SQLException nel caso in cui il resultSet non disponga delle colonne corrette
+     */
+    private Transaction extractTransactionFromResultSet(ResultSet resultSet) throws SQLException {
+        Transaction savedTransaction = null;
+        TransactionType type = TransactionType.fromCode(resultSet.getInt("type"));
+
+        if(type==TransactionType.AUTOMATIC){
+            savedTransaction = new AutomaticTransaction();
+        } else {
+            savedTransaction = new ManualTransaction();
+        }
+        savedTransaction.setId(resultSet.getInt("id"));
+        savedTransaction.setAmount(resultSet.getDouble("amount"));
+        savedTransaction.setDate(resultSet.getString("date"));
+        savedTransaction.setCategory(resultSet.getString("category"));
+        savedTransaction.setNotes(resultSet.getString("note"));
+
+        return savedTransaction;
+    }
 
     /**
      * Voglio ottenere un CashBook dal DB solo tramite il suo ID
@@ -55,13 +81,7 @@ public class RdbTransactionDao implements ITransactionDAO{
             throw new RuntimeException("Transaction not found");
         }
 
-        Transaction savedTransaction = new Transaction();
-        savedTransaction.setId(resultSet.getInt("id"));
-        savedTransaction.setType(resultSet.getInt("type"));
-        savedTransaction.setAmount(resultSet.getDouble("amount"));
-        savedTransaction.setDate(resultSet.getString("date"));
-        savedTransaction.setCategory(resultSet.getString("category"));
-        savedTransaction.setNotes(resultSet.getString("note"));
+        Transaction savedTransaction = extractTransactionFromResultSet(resultSet);
 
         query.close();
         return savedTransaction;
@@ -92,13 +112,7 @@ public class RdbTransactionDao implements ITransactionDAO{
         List<Transaction> transactionsList = new ArrayList<Transaction>();
 
         while(rs.next()){
-            Transaction transaction = new Transaction();
-            transaction.setId(rs.getInt("id"));
-            transaction.setType(rs.getInt("type"));
-            transaction.setAmount(rs.getDouble("amount"));
-            transaction.setDate(rs.getString("date"));
-            transaction.setCategory(rs.getString("category"));
-            transaction.setNotes(rs.getString("note"));
+            Transaction transaction = extractTransactionFromResultSet(rs);
 
             transactionsList.add(transaction);
         }
@@ -116,11 +130,20 @@ public class RdbTransactionDao implements ITransactionDAO{
     public void save(Transaction transaction) throws Exception {
         DBQuery query;
 
+        // selezione del tipo di transazione prima di inserimento
+        TransactionType type;
+        try {
+            ModifiableTransaction t = (ModifiableTransaction) transaction;
+            type = TransactionType.MANUAL;
+        } catch (Exception e) {
+            type = TransactionType.AUTOMATIC;
+        }
+
         if(transaction.getId()!=0){
-            query = DatabaseUtil.getInstance().createQuery(INSERT_TRANSACTION_ID, transaction.getId(), transaction.getType(), transaction.getAmount(), transaction.getDate(), transaction.getCategory(), transaction.getNotes());
+            query = DatabaseUtil.getInstance().createQuery(INSERT_TRANSACTION_ID, transaction.getId(), type.getCode(), transaction.getAmount(), transaction.getDate(), transaction.getCategory(), transaction.getNotes());
         }
         else{
-            query = DatabaseUtil.getInstance().createQuery(INSERT_TRANSACTION_NOID, transaction.getType(), transaction.getAmount(), transaction.getDate(), transaction.getCategory(), transaction.getNotes());
+            query = DatabaseUtil.getInstance().createQuery(INSERT_TRANSACTION_NOID, type.getCode(), transaction.getAmount(), transaction.getDate(), transaction.getCategory(), transaction.getNotes());
         }
 
         DatabaseUtil.getInstance().executeQuery(query);
@@ -161,9 +184,16 @@ public class RdbTransactionDao implements ITransactionDAO{
      */
     public void update(Transaction transaction) throws Exception {
         DBQuery query = null;
+
+        // lancerà un errore di casting, perciò non posso modificare la transazione
+        try{
+            ModifiableTransaction t = (ModifiableTransaction) transaction;
+        } catch (Exception e) {
+            throw new CannotEditTransactionException();
+        }
+
         try {
             query = DatabaseUtil.getInstance().createQuery(UPDATE_TRANSACTION,
-                    transaction.getType(),
                     transaction.getAmount(),
                     transaction.getDate(),
                     transaction.getCategory(),

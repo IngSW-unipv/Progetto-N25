@@ -2,6 +2,8 @@ package it.unipv.ingsw.lasout.facade.vault;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import it.unipv.ingsw.lasout.controller.vault.VaultController;
@@ -253,6 +255,22 @@ public class ConcreteVaultFacade implements VaultFacade {
 		
 		return balance;
 		
+	}
+	
+
+	@Override
+	public List<PaymentMethod> getAllPaymentMethods(Vault vault) {
+		
+		List<PaymentMethod> methods = new ArrayList<PaymentMethod>();
+		
+		try {
+			methods = PaymentMethodDAO.getInstance().getAllPaymentMethod(vault);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return methods;
 	}
 	
 
