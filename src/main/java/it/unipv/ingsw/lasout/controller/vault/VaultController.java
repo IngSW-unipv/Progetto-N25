@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -41,7 +42,7 @@ public class VaultController {
 	                String type = addDialog.getSelectedType();
 	                // In base al tipo, leggi i campi corretti
 	                boolean success = false;
-	                if(type.equals("Credit Card")) {
+	                if(type.equals("CreditCard")) {
 	                    String cardNumber = addDialog.getCcNumber();
 	                    String month = addDialog.getCcMonth();
 	                    String year = addDialog.getCcYear();
@@ -50,6 +51,13 @@ public class VaultController {
 	                    success = ConcreteVaultFacade.getInstance().addPaymentMethod(vault,
 	                                new CreditCard(cardNumber, Integer.parseInt(month), Integer.parseInt(year), Integer.parseInt(cvv), vault.getId()),
 	                                type);
+	                    CreditCard cc = new CreditCard();
+	                    cc.setNumeroCarta(cardNumber);
+	                    cc.setMese(Integer.parseInt(month));
+	                    cc.setAnno(Integer.parseInt(year));
+	                    cc.setCvv(Integer.parseInt(cvv));
+	                   
+	                    
 	                } else if(type.equals("PayPal")) {
 	                    String cardNumber = addDialog.getPpNumber();
 	                    success = ConcreteVaultFacade.getInstance().addPaymentMethod(vault,
@@ -61,7 +69,14 @@ public class VaultController {
 	                                new CurrentAccount(iban, vault.getId()),
 	                                type);
 	                }
-	                if(success) {
+	                if(success == true) {
+	                	// AGGIUNTA: Aggiorna la lista dei metodi di pagamento nel VaultPanel
+	                    List<PaymentMethod> methods = LaVaultFacade.getInstance().getVaultFacade().getAllPaymentMethods(vault);
+	                    DefaultListModel<String> model = new DefaultListModel<>();
+	                    for (PaymentMethod pm : methods) {
+	                         model.addElement(pm.toString()); // Assicurati che PaymentMethod.toString() restituisca una rappresentazione utile
+	                    }
+	                    vaultPanel.updatePaymentMethodsList(model);
 	                    JOptionPane.showMessageDialog(frame, "Metodo aggiunto correttamente.");
 	                } else {
 	                    JOptionPane.showMessageDialog(frame, "Errore nell'aggiunta del metodo di pagamento.");
@@ -164,6 +179,12 @@ public class VaultController {
 		}
 		
 		vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getBalanceByID(vault));
+		
+		//ConcreteVaultFacade.getInstance().newVaultinVirtualVault(vault, currentUser);
+
+		ConcreteVaultFacade.getInstance().newVaultinVault(vault);
+
+		ConcreteVaultFacade.getInstance().getVaultId(vault);
 	}
 	
 	

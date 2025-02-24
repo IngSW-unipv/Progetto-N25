@@ -3,6 +3,9 @@ package it.unipv.ingsw.lasout.view.vault;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.List;
+
+import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethod;
 import it.unipv.ingsw.lasout.view.mainview.MainUIView;
 
 public class VaultPanel extends JPanel {
@@ -84,7 +87,7 @@ public class VaultPanel extends JPanel {
         return paymentMethodsList;
     }
     
-    public void updatePaymentMethodsList(DefaultListModel<String> model) {
+    public void updatePaymentMethodsList(ListModel<String> model) {
         paymentMethodsList.setModel(model);
     }
     

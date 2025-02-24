@@ -192,9 +192,9 @@ public class CreditCard implements PaymentMethod {
 		
 		DatabaseUtil.getInstance().executeQuery(query);
 
-		ResultSet rs = query.getResultSet();
+//		ResultSet rs = query.getResultSet();
 
-		if (rs != null) throw new CantSaveException("Card not saved");
+//		if (rs != null) throw new CantSaveException("Card not saved");
 		
 		query.close();
 	}
@@ -252,5 +252,13 @@ public class CreditCard implements PaymentMethod {
 		
 		query.close();
 	}
+	
+	@Override
+    public String toString() {
+        return "Carta di Credito" +
+                ", mese=" + mese +
+                ", anno=" + anno +
+                ", cvv = " + cvv ;
+    }
 
 }

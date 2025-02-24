@@ -86,6 +86,8 @@ public class ConcreteVaultFacade implements VaultFacade {
 			e.printStackTrace();
 			return false;
 		}
+		
+		System.out.println("" + vault.getVv_id());
 		return true;
 	}
 
@@ -99,12 +101,16 @@ public class ConcreteVaultFacade implements VaultFacade {
 			e.printStackTrace();
 			return false;
 		}
+		
+		System.out.println("" + vault.getId());
 
 		return true;
 	}
 
 	@Override
 	public boolean addPaymentMethod(Vault v, PaymentMethod pm, String tipo) {
+		
+		System.out.println("entrato");
 
 		paymentMethodFactory.get(tipo);
 

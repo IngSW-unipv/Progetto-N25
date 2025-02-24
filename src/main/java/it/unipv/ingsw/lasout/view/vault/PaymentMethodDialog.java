@@ -39,9 +39,9 @@ public class PaymentMethodDialog extends JDialog{
         // TOP: ComboBox per la selezione del tipo
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         methodCombo = new JComboBox<>();
-        methodCombo.addItem("Credit Card");
+        methodCombo.addItem("CreditCard");
         methodCombo.addItem("PayPal");
-        methodCombo.addItem("Conto Corrente");
+        methodCombo.addItem("CurrentAccount");
         topPanel.add(new JLabel("Seleziona il metodo:"));
         topPanel.add(methodCombo);
         add(topPanel, BorderLayout.NORTH);

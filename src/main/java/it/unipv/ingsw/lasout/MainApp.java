@@ -1,6 +1,7 @@
 package it.unipv.ingsw.lasout;
 
 import it.unipv.ingsw.lasout.controller.AppController;
+
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.facade.group.ConcreteGroupFacade;
 
@@ -14,6 +15,8 @@ public class MainApp {
     public static void main(String[] args) {
 
         try {
+        	
+        	
             DatabaseUtil.getInstance().prepare();
             DatabaseUtil.getInstance().initialize();
         } catch (IOException | SQLException e) {
