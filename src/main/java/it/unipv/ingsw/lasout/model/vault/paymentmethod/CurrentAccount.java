@@ -162,8 +162,8 @@ public class CurrentAccount implements PaymentMethod {
 
 	@Override
 	public void saveInPaymentMethod(Vault v, PaymentMethod p) throws Exception {
-		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paymentmethod\\' (id_vault, type, id_paymentmethod) "
-				+ "VALUES (?, ?, ?)", v.getId(), p.getMethodName(), ((CurrentAccount)p).getId());
+		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paymentmethod\\' (id_vault, type, id_paymentmethod, number) "
+				+ "VALUES (?, ?, ?, ?)", v.getId(), p.getMethodName(), ((CurrentAccount)p).getId(), ((CurrentAccount)p).getIban());
 		DatabaseUtil.getInstance().executeQuery(query);
 		
 		ResultSet rs = query.getResultSet();
@@ -207,6 +207,19 @@ public class CurrentAccount implements PaymentMethod {
 		
 		query.close();
 		
+	}
+
+	@Override
+	public void setNumeroCarta(String string) {
+		this.iban = string;
+	}
+	
+	@Override
+	public String toString() {
+		if (iban == null || iban.isEmpty()) {
+	        return "Conto corrente (numero non disponibile)";
+	    }
+	    return "Conto corrente -> Iban: " + iban;
 	}
 
 }

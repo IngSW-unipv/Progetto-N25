@@ -80,6 +80,12 @@ public class PaymentMethodDAO implements IPaymentMethodDAO {
 			method.setId(result.getInt("id"));
 
 			method.setVault(new Vault(result.getInt("id_vault")));
+			
+			method.setNumeroCarta(result.getString("number"));
+			
+//			if(result.getString("type") == "CurrentAccount") {
+//				((CurrentAccount) method).setIban(result.getString("number"));
+//			}
 
 			methods.add(method);
 		}
