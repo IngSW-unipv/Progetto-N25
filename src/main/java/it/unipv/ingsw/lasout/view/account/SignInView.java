@@ -50,9 +50,13 @@ public class SignInView extends JFrame {
         // Pannello dei bottoni
         JPanel buttonPanel = new JPanel();
         registerButton = new JButton("Sign in");
+        // Imposta dimensioni più grandi
+        registerButton.setPreferredSize(new Dimension(140, 40));
+        // Se desideri anche un testo più grande
+        registerButton.setFont(new Font("Arial", Font.BOLD, 16));
         loginButton = new JButton("Login");
-        buttonPanel.add(registerButton);
         buttonPanel.add(loginButton);
+        buttonPanel.add(registerButton);
 
         gbc.gridx = 0;
         gbc.gridy = 3;

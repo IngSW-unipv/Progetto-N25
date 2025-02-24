@@ -1,4 +1,6 @@
 package it.unipv.ingsw.lasout.view.account;
+import it.unipv.ingsw.lasout.view.LaColor;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -14,6 +16,7 @@ public class LoginView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 220);
         setLocationRelativeTo(null);
+        setBackground(LaColor.SFONDO);
 
         // Pannello principale con GridBagLayout
         JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -43,6 +46,10 @@ public class LoginView extends JFrame {
         // Pannello dei bottoni
         JPanel buttonPanel = new JPanel();
         loginButton = new JButton("Login");
+        // Imposta dimensioni più grandi
+        loginButton.setPreferredSize(new Dimension(140, 40));
+        // Se desideri anche un testo più grande
+        loginButton.setFont(new Font("Arial", Font.BOLD, 16));
         registerButton = new JButton("Sign in");
         buttonPanel.add(loginButton);
         buttonPanel.add(registerButton);

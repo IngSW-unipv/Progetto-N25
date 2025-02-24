@@ -50,8 +50,8 @@ public class AppController {
             signInView = new SignInView();
             // Aggiungiamo i listener alla view di registrazione
             signInView.addRegisterListener(new RegisterListener());
-            signInView.addRegisterListener(new RegisterListener());
             signInView.addLoginListener(new BackToLoginListener());
+            loginView.clearFields();
         }
         signInView.setVisible(true);
     }
@@ -84,7 +84,7 @@ public class AppController {
             } else {
                 //se non è riuscito a loggarsi perché le credenziali non sono valide, mostro l’errore
                 JOptionPane.showMessageDialog(loginView,"Credenziali errate! Riprova","Errore di Login",JOptionPane.ERROR_MESSAGE);
-                //loginView.clearFields();
+                signInView.clearFields();
             }
         }
     }
@@ -117,10 +117,7 @@ public class AppController {
             LaVaultFacade.getInstance().getSessionFacade().login(userCarrier);
 
             if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
-                JOptionPane.showMessageDialog(signInView,
-                        "Tutti i campi sono obbligatori!",
-                        "Errore di Registrazione",
-                        JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(signInView,"Tutti i campi sono obbligatori!","Errore di Registrazione",JOptionPane.ERROR_MESSAGE);
             } else if(!LaVaultFacade.getInstance().getSessionFacade().isLogged()) {
                 LaVaultFacade.getInstance().getUserFacade().createAccount(userCarrier);
                 JOptionPane.showMessageDialog(signInView,"Registrazione completata! Ora puoi effettuare il login","Registrazione Completata",JOptionPane.INFORMATION_MESSAGE);
