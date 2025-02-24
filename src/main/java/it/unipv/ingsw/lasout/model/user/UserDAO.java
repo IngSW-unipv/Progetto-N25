@@ -253,7 +253,6 @@ public class UserDAO implements IUserDAO {
     @Override
     public List<Notify> getNotifications(User user) throws Exception {
 
-
         return MySQLNotifyDAO.getInstance().notifiesOf(user);
     }
 
@@ -277,8 +276,6 @@ public class UserDAO implements IUserDAO {
         }
 
         query.close();
-
-
         return groups;
 
     }
@@ -309,7 +306,6 @@ public class UserDAO implements IUserDAO {
         user.setPassword(userCarrier.getPassword());
         */
 
-
         querySelect.close();
         return user;
     }
@@ -339,14 +335,13 @@ public class UserDAO implements IUserDAO {
         userIdEmailPassword.setPassword(user.getPassword());
          */
 
-
         querySelect.close();
         return user;
     }
 
 
     @Override
-    public User userNotSearchedForCreateAccount(User user) throws SQLException, UserNotFoundException {
+    public User userNotFoundForCreateAccount(User user) throws SQLException, UserNotFoundException {
 
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_CREDENTIALS_FOR_CREATING_ACCOUNT, user.getUsername(), user.getEmail(), user.getPassword());
@@ -361,7 +356,6 @@ public class UserDAO implements IUserDAO {
 
         //se invece è stato trovato salvo l'id dell'utente appena trovato in un utente fittizio
         User idUser = new User(rS.getInt("id"));
-
 
         querySelect.close();
         return idUser;

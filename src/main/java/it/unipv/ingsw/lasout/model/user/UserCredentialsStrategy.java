@@ -15,5 +15,5 @@ public interface UserCredentialsStrategy {
      * @throws SQLException eccezione nel caso in cui la query dia errori in esecuzione
      * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente richiesto
      */
-    public User searchUser(User user) throws SQLException , UserNotFoundException;
+    User searchUser(User user) throws SQLException , UserNotFoundException;
 }

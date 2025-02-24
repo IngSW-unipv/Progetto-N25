@@ -4,14 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class RegisterView extends JFrame {
+public class SignInView extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JTextField emailField;
     private JButton registerButton;
     private JButton loginButton;
 
-    public RegisterView() {
+    public SignInView() {
         setTitle("Registrazione");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(400, 260);

@@ -4,7 +4,7 @@ package it.unipv.ingsw.lasout.controller;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.view.account.LoginView;
-import it.unipv.ingsw.lasout.view.account.RegisterView;
+import it.unipv.ingsw.lasout.view.account.SignInView;
 import it.unipv.ingsw.lasout.view.mainview.MainUIView;
 
 import javax.swing.*;
@@ -13,7 +13,7 @@ import java.awt.event.ActionListener;
 
 public class AppController {
     private LoginView loginView;
-    private RegisterView registerView;
+    private SignInView signInView;
     private MainUIView mainUIView;
 
     public AppController() {
@@ -46,14 +46,14 @@ public class AppController {
     }
 
     public void showRegisterView() {
-        if (registerView == null) {
-            registerView = new RegisterView();
+        if (signInView == null) {
+            signInView = new SignInView();
             // Aggiungiamo i listener alla view di registrazione
-            registerView.addRegisterListener(new RegisterListener());
-            registerView.addRegisterListener(new RegisterListener());
-            registerView.addLoginListener(new BackToLoginListener());
+            signInView.addRegisterListener(new RegisterListener());
+            signInView.addRegisterListener(new RegisterListener());
+            signInView.addLoginListener(new BackToLoginListener());
         }
-        registerView.setVisible(true);
+        signInView.setVisible(true);
     }
 
     // Listener per il login
@@ -76,7 +76,7 @@ public class AppController {
 
             //controllo che i campi non siano vuoti alla pressione del bottone
             if (username.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(registerView,"Tutti i campi sono obbligatori!","Errore di Login",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(signInView,"Tutti i campi sono obbligatori!","Errore di Login",JOptionPane.ERROR_MESSAGE);
             }else if (LaVaultFacade.getInstance().getSessionFacade().isLogged()) {
                 // Se l'utente è loggato, nascondo la finestra di login e mostro la schermata principale (MainView)
                 loginView.setVisible(false);
@@ -103,9 +103,9 @@ public class AppController {
         @Override
         public void actionPerformed(ActionEvent e) {
             //prendo dalle JtextField le credenziali per la registrazione
-            String username = registerView.getUsername();
-            String password = registerView.getPassword();
-            String email = registerView.getEmail();
+            String username = signInView.getUsername();
+            String password = signInView.getPassword();
+            String email = signInView.getEmail();
 
             //utilizzo un utente fittizio da passare poi alla facade per la ricerca nel DB
             User userCarrier = new User();
@@ -117,18 +117,18 @@ public class AppController {
             LaVaultFacade.getInstance().getSessionFacade().login(userCarrier);
 
             if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
-                JOptionPane.showMessageDialog(registerView,
+                JOptionPane.showMessageDialog(signInView,
                         "Tutti i campi sono obbligatori!",
                         "Errore di Registrazione",
                         JOptionPane.ERROR_MESSAGE);
             } else if(!LaVaultFacade.getInstance().getSessionFacade().isLogged()) {
                 LaVaultFacade.getInstance().getUserFacade().createAccount(userCarrier);
-                JOptionPane.showMessageDialog(registerView,"Registrazione completata! Ora puoi effettuare il login","Registrazione Completata",JOptionPane.INFORMATION_MESSAGE);
-                registerView.dispose();
+                JOptionPane.showMessageDialog(signInView,"Registrazione completata! Ora puoi effettuare il login","Registrazione Completata",JOptionPane.INFORMATION_MESSAGE);
+                signInView.dispose();
                 loginView.setVisible(true);
             }else{
-                JOptionPane.showMessageDialog(registerView,"User already exist, impossible to CREATE your account. Please use another username","Errore di Registrazione",JOptionPane.ERROR_MESSAGE);
-                registerView.clearFields();
+                JOptionPane.showMessageDialog(signInView,"User already exist, impossible to CREATE your account. Please use another username","Errore di Registrazione",JOptionPane.ERROR_MESSAGE);
+                signInView.clearFields();
             }
         }
     }
@@ -137,7 +137,7 @@ public class AppController {
     class BackToLoginListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            registerView.dispose();
+            signInView.dispose();
             loginView.setVisible(true);
         }
     }

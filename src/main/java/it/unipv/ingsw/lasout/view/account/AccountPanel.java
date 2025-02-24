@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.view.account;
 
+import it.unipv.ingsw.lasout.view.LaColor;
 import it.unipv.ingsw.lasout.view.mainview.MainUIView;
 
 import javax.swing.*;
@@ -20,12 +21,12 @@ public class AccountPanel extends JPanel {
     public AccountPanel(MainUIView mainUIView) {
         // Imposta il layout principale a BorderLayout
         setLayout(new BorderLayout());
-        setBackground(Color.pink);
+        setBackground(LaColor.SFONDO);
 
         // ----- Centro: cambio password -----
         // Creiamo un pannello centrale con GridBagLayout per centrare i componenti
         JPanel centerPanel = new JPanel(new GridBagLayout());
-        centerPanel.setBackground(Color.pink);
+        centerPanel.setBackground(LaColor.SFONDO);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 10, 5, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -43,8 +44,8 @@ public class AccountPanel extends JPanel {
 
         // Inizializziamo il bottone per cambiare password
         changePasswordButton = new JButton("cambia password");
-        changePasswordButton.setBackground(Color.DARK_GRAY);
-        changePasswordButton.setForeground(Color.WHITE);
+        changePasswordButton.setBackground(LaColor.BTN_SFONDO);
+        changePasswordButton.setForeground(LaColor.FONT);
 
         // Aggiungiamo i componenti al centro
         gbc.gridy = 0;
@@ -74,16 +75,16 @@ public class AccountPanel extends JPanel {
         // ----- Basso: bottoni "elimina account" e "logout" -----
         // Creiamo un pannello per i bottoni in basso con FlowLayout
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        bottomPanel.setBackground(Color.pink);
+        bottomPanel.setBackground(LaColor.SFONDO);
 
         deleteAccountButton = new JButton("elimina account");
         logoutButton = new JButton("logout");
 
         // Impostazioni grafiche dei bottoni in basso
-        deleteAccountButton.setBackground(Color.red);
-        deleteAccountButton.setForeground(Color.WHITE);
-        logoutButton.setBackground(Color.red);
-        logoutButton.setForeground(Color.WHITE);
+        deleteAccountButton.setBackground(LaColor.BTN_PERICOLO);
+        deleteAccountButton.setForeground(LaColor.FONT);
+        logoutButton.setBackground(LaColor.BTN_SFONDO);
+        logoutButton.setForeground(LaColor.FONT);
         deleteAccountButton.setPreferredSize(new Dimension(150, 50));
         logoutButton.setPreferredSize(new Dimension(150, 50));
 

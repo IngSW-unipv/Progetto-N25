@@ -22,7 +22,7 @@ public class ConcreteUserFacade implements IUserFacade {
     @Override
     public boolean createAccount(User userCarrier) {
         try{
-            userDAO.userNotSearchedForCreateAccount(userCarrier);
+            userDAO.userNotFoundForCreateAccount(userCarrier);
             System.out.print("User already exist, impossible to CREATE your account. Please use another username.");
             return false;
         } catch (SQLException sqlException) {
