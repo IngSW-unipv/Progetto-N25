@@ -29,8 +29,8 @@ CREATE TABLE `paypal`                (id INTEGER AUTO_INCREMENT,numerocarta VARC
 CREATE TABLE `currentaccount`        (id INTEGER AUTO_INCREMENT, iban VARCHAR(34) NOT NULL, id_vault INT, PRIMARY KEY(id), FOREIGN KEY (id_vault) REFERENCES vault(id) ON DELETE CASCADE);
 CREATE TABLE `spese`                 (id INTEGER AUTO_INCREMENT, user_id INT, group_id INT, amount DOUBLE, note VARCHAR(55), PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE, FOREIGN KEY (group_id) REFERENCES  `group`(id) ON DELETE CASCADE);
 CREATE TABLE `paymentmethod`         (id INTEGER AUTO_INCREMENT, id_vault INTEGER, type VARCHAR(20), id_paymentmethod INTEGER, number VARCHAR(34), PRIMARY KEY(id), FOREIGN KEY (id_vault) REFERENCES vault(id) ON DELETE CASCADE);
-CREATE TABLE `cashbook`              (id INTEGER AUTO_INCREMENT, user_id INTEGER , name VARCHAR(50) NOT NULL, PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE);
-CREATE TABLE `transactions`          (id INT NOT NULL, type TINYINT NULL, amount DOUBLE NULL, date VARCHAR(10), category VARCHAR(50) NULL, note VARCHAR(120) NULL, PRIMARY KEY (id));
+CREATE TABLE `cashbook`              (id INTEGER AUTO_INCREMENT, user_id INTEGER, name VARCHAR(50) NOT NULL, type TINYINT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE);
+CREATE TABLE `transactions`          (id INT NOT NULL, type TINYINT NOT NULL, amount DOUBLE NULL, date VARCHAR(10), category VARCHAR(50) NULL, note VARCHAR(120) NULL, PRIMARY KEY (id));
 CREATE TABLE `cashbooktransactions`  (cashbook_id INT REFERENCES `cashbook`(id) ON DELETE CASCADE, transaction_id INT REFERENCES `transactions`(id) ON DELETE CASCADE, PRIMARY KEY(cashbook_id, transaction_id));
 
 
@@ -69,13 +69,13 @@ INSERT INTO usergroup (user_id, group_id) VALUES
     (6, 2);
 
 
-INSERT INTO cashbook (user_id, name) VALUES
-    (1, 'default'),
-    (2, 'risparmio'),
-    (2, 'guadagno'),
-    (3, 'risparmio'),
-    (4, 'ciao'),
-    (6, 'dafult');
+INSERT INTO cashbook (user_id, name, type) VALUES
+    (1, 'default', 0),
+    (2, 'risparmio', 0),
+    (2, 'guadagno', 1),
+    (3, 'risparmio', 1),
+    (4, 'ciao', 1),
+    (6, 'dafault', 0);
 
 INSERT INTO transactions (id, type, amount, date, category, note) VALUES
     (1, 0, -100.00, '2021',  'Bob', 'Payment for services'),

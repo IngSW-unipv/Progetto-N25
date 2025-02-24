@@ -26,4 +26,5 @@ public interface ICashbookFacade {
 
     List<Cashbook> getUserCashbooks(User user);
 
+    double calculateSummary(Cashbook cashbook);
 }

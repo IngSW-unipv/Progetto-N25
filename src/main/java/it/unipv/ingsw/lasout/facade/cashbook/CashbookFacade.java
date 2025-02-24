@@ -61,13 +61,16 @@ public class CashbookFacade implements ICashbookFacade {
     @Override
     public boolean deleteCashbook(Cashbook cashbook){
         try{
-            cashBookDAO.delete(cashbook);
-        } catch (CannotDeleteDefaultCashbookException e) {
-            throw e;
+            //verifico non sia un cashbook default
+            if(!cashBookDAO.getRaw(cashbook).isDefault()){
+                cashBookDAO.delete(cashbook);
+                return true;
+            } else {
+                throw new CannotDeleteDefaultCashbookException();
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return true;
     }
 
     @Override
@@ -140,6 +143,22 @@ public class CashbookFacade implements ICashbookFacade {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public double calculateSummary(Cashbook cashbook){
+        double sum = 0;
+        try {
+            List<Transaction> transactionList = cashBookDAO.get(cashbook).getTransactionList();
+            if (transactionList != null) {
+                for (Transaction transaction : transactionList) {
+                    sum += transaction.getAmount();
+                }
+            }
+            return sum;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
