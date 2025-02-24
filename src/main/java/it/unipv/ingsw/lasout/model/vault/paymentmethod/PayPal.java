@@ -158,8 +158,8 @@ public class PayPal implements PaymentMethod{
 
 	@Override
 	public void saveInPaymentMethod(Vault v, PaymentMethod p) throws Exception {
-		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paymentmethod\\' (id_vault, type, id_paymentmethod) "
-				+ "VALUES (?, ?, ?)", v.getId(), p.getMethodName(), ((PayPal)p).getId());
+		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paymentmethod\\' (id_vault, type, id_paymentmethod, number) "
+				+ "VALUES (?, ?, ?, ?)", v.getId(), p.getMethodName(), ((PayPal)p).getId(), ((PayPal)p).getNumeroCarta());
 		DatabaseUtil.getInstance().executeQuery(query);
 		
 		ResultSet rs = query.getResultSet();
@@ -203,6 +203,15 @@ public class PayPal implements PaymentMethod{
 		
 		query.close();
 		
+	}
+	
+	@Override
+	public String toString() {
+		if (numeroCarta == null || numeroCarta.isEmpty()) {
+	        return "PayPal (numero non disponibile)";
+	    }
+	    return "PayPal: Ultime 4 cifre --> " + numeroCarta.substring(numeroCarta.length() - 4);
+
 	}
 	
 }

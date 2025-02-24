@@ -81,9 +81,9 @@ public class PaymentMethodDialog extends JDialog{
         caPanel.add(ibanField);
         
         // Aggiungo i pannelli al cardsPanel
-        cardsPanel.add(ccPanel, "Credit Card");
+        cardsPanel.add(ccPanel, "CreditCard");
         cardsPanel.add(ppPanel, "PayPal");
-        cardsPanel.add(caPanel, "Conto Corrente");
+        cardsPanel.add(caPanel, "CurrentAccount");
         
         add(cardsPanel, BorderLayout.CENTER);
         

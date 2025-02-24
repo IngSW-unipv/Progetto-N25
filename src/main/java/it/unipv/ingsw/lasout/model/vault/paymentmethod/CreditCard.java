@@ -207,8 +207,8 @@ public class CreditCard implements PaymentMethod {
 
 	@Override
 	public void saveInPaymentMethod(Vault v, PaymentMethod p) throws Exception {
-		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paymentmethod\\' (id_vault, type, id_paymentmethod) "
-				+ "VALUES (?, ?, ?)", v.getId(), p.getMethodName(), ((CreditCard)p).getId());
+		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paymentmethod\\' (id_vault, type, id_paymentmethod, number) "
+				+ "VALUES (?, ?, ?, ?)", v.getId(), p.getMethodName(), ((CreditCard)p).getId(), ((CreditCard) p).getNumeroCarta());
 		DatabaseUtil.getInstance().executeQuery(query);
 		
 		ResultSet rs = query.getResultSet();
@@ -253,12 +253,20 @@ public class CreditCard implements PaymentMethod {
 		query.close();
 	}
 	
+//	@Override
+//    public String toString() {
+//        return "Carta di Credito" +
+//                ", mese=" + mese +
+//                ", anno=" + anno +
+//                ", cvv = " + cvv ;
+//    }
+	
 	@Override
-    public String toString() {
-        return "Carta di Credito" +
-                ", mese=" + mese +
-                ", anno=" + anno +
-                ", cvv = " + cvv ;
-    }
+	public String toString() {
+		if (numeroCarta == null || numeroCarta.isEmpty()) {
+	        return "Credit Card (numero non disponibile)";
+	    }
+	    return "Carta di credito: Ultime 4 cifre --> " + numeroCarta.substring(numeroCarta.length() - 4);
+	}
 
 }
