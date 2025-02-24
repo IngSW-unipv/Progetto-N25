@@ -1,32 +1,17 @@
-package it.unipv.ingsw.lasout.model.notify.action;
+package it.unipv.ingsw.lasout.model.notify.action.group;
 
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.Notify;
+import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
 import it.unipv.ingsw.lasout.model.user.User;
-import javafx.scene.layout.HBox;
 
-public class InviteGroupRequestNotifyAction implements INotifyAction{
+public class InviteGroupRequestNotifyAction implements INotifyAction {
 
     private Group group;
     private User user;
 
     @Override
-    public void build(HBox information, HBox footer) {
-
-    }
-
-    @Override
-    public void load(Notify notify) throws Exception {
-
-    }
-
-    @Override
-    public void delete(Notify notify) throws Exception {
-
-    }
-
-    @Override
-    public void save(Notify notify) throws Exception {
+    public void build() {
 
     }
 
@@ -59,5 +44,13 @@ public class InviteGroupRequestNotifyAction implements INotifyAction{
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "InviteGroupRequestNotifyAction{" +
+                "group=" + group +
+                ", user=" + user +
+                '}';
     }
 }

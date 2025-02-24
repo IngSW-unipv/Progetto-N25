@@ -9,7 +9,6 @@ import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.view.account.AccountPanel;
 import it.unipv.ingsw.lasout.view.group.GroupPanel;
 import it.unipv.ingsw.lasout.view.vault.VaultPanel;
-import javafx.application.Application;
 import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 
 import javax.swing.*;

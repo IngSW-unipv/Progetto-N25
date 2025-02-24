@@ -1,9 +1,9 @@
-package it.unipv.ingsw.lasout.model.notify.action;
+package it.unipv.ingsw.lasout.model.notify.action.friend;
 
 import it.unipv.ingsw.lasout.model.notify.Notify;
+import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
 
-
-public class EmptyNotifyAction implements INotifyAction{
+public class SendMoneyNotifyAction implements INotifyAction {
 
     private Notify notify;
 
@@ -25,11 +25,6 @@ public class EmptyNotifyAction implements INotifyAction{
 
     @Override
     public String type() {
-        return "notifyempty";
-    }
-
-    @Override
-    public String toString() {
-        return super.toString();
+        return "notifysendmoney";
     }
 }

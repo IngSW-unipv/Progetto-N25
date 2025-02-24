@@ -1,10 +1,10 @@
 package it.unipv.ingsw.lasout.model.notify;
 
-import io.github.palexdev.mfxresources.fonts.MFXFontIcon;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.dao.IDao;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.persistance.INotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.notify.action.persistance.MySQLEmptyNotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.notify.factory.AbstractNotifyActionFactory;
 import it.unipv.ingsw.lasout.model.notify.factory.EmptyNotifyActionFactory;
@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 public class MySQLNotifyDAO implements INotifyDAO {
 
+    private static final Logger LOGGER = Logger.getLogger(MySQLNotifyDAO.class.getName());
 
     private static final String QUERY_GET_RAW_NOTIFY_1 =
             "SELECT *" +
@@ -35,7 +36,10 @@ public class MySQLNotifyDAO implements INotifyDAO {
                     "FROM \\'notify\\' WHERE id = ?;";
     private static final String QUERY_SAVE_NOTIFY_1 =
             "INSERT INTO \\'notify\\' " +
-                    "(user_id, id, description, type) VALUES (?, ?, ?, ?);";
+                    "(user_id, description, type) VALUES (?, ?, ?, ?);";
+    private static final String QUERY_SAVE_UNKNOWN_NOTIFY_1 =
+            "INSERT INTO \\'notify\\' " +
+                    "(user_id, description, type) VALUES (?, ?, ?);";
     private static final String QUERY_UPDATE_NOTIFY_1 =
             "UPDATE \\'notify\\' " +
                     "SET user_id = ?, id = ?, \\'description\\' = ?, \\'type\\' = ? WHERE id = ?;";
@@ -46,14 +50,8 @@ public class MySQLNotifyDAO implements INotifyDAO {
 
 
 
-    private static final Logger LOGGER = Logger.getLogger(MySQLNotifyDAO.class.getName());
-    private static final MySQLNotifyDAO INSTANCE = new MySQLNotifyDAO();
-    public static MySQLNotifyDAO getInstance() {
-        return INSTANCE;
-    }
-
-    private final Map<String, Class<?>> classes = new HashMap<>();
-    private final Map<String, Class<?>> persistence = new HashMap<>();
+    private static final Map<String, Class<?>> classes = new HashMap<>();
+    private static final Map<String, Class<?>> persistenceLoader = new HashMap<>();
 
     public MySQLNotifyDAO() {
 
@@ -63,6 +61,9 @@ public class MySQLNotifyDAO implements INotifyDAO {
 
 
     private void populateMap(){
+        classes.clear();
+        persistenceLoader.clear();
+
         Properties properties = new Properties();
         try {
             properties.load(MySQLNotifyDAO.class.getResourceAsStream("/factories.properties"));
@@ -84,7 +85,7 @@ public class MySQLNotifyDAO implements INotifyDAO {
         }
         properties.forEach((key, value) -> {
             try {
-                classes.put((String) key, Class.forName(value.toString()));
+                persistenceLoader.put((String) key, Class.forName(value.toString()));
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -92,15 +93,12 @@ public class MySQLNotifyDAO implements INotifyDAO {
     }
 
 
-    private Class<?> getClass(String key){
+    private Class<?> getFactory(String key){
         return classes.getOrDefault(key, EmptyNotifyActionFactory.class);
     }
     private Class<?> getPersistenceClass(String key){
-        return persistence.getOrDefault(key, MySQLEmptyNotifyActionPersistence.class);
+        return persistenceLoader.getOrDefault(key, MySQLEmptyNotifyActionPersistence.class);
     }
-
-
-
 
 
     @Override
@@ -116,15 +114,21 @@ public class MySQLNotifyDAO implements INotifyDAO {
         String description = rs.getString("description");
 
         String type = rs.getString("type");
-        Class<?> clazz = getClass(type);
+        Class<?> clazz = getFactory(type);
         AbstractNotifyActionFactory factory = (AbstractNotifyActionFactory) clazz.getDeclaredConstructor().newInstance();
         INotifyAction iiNotifyAction =  factory.create();
 
         Notify returnNotify  = new Notify(id);
         returnNotify.setUser(user);
         returnNotify.setDescription(description);
+        iiNotifyAction.setNotify(returnNotify);
 
-        //iiNotifyAction.load(returnNotify);
+        Class<?> clazzPersistence = getPersistenceClass(type);
+        INotifyActionPersistence actionPersistence  = (INotifyActionPersistence) clazzPersistence.getDeclaredConstructor().newInstance();
+
+        System.out.println("loading: " + type);
+        System.out.println("with: " + actionPersistence);
+        //actionPersistence.load(iiNotifyAction);
 
         returnNotify.setNotifyAction(iiNotifyAction);
 
@@ -199,26 +203,56 @@ public class MySQLNotifyDAO implements INotifyDAO {
     @Override
     public void save(Notify notify) throws Exception {
 
+        if(notify.getId() != null){
+            DBQuery query =  DBQuery.Builder.create()
+                    .query(SELECT_TYPE)
+                    .params( notify.getId())
+                    .build();
 
-        //TODO: if null
-        DBQuery query =  DBQuery.Builder.create()
-                .query(SELECT_TYPE)
-                .params( notify.getId())
-                .build();
-        try{
-            update(notify, query);
-            System.out.println("UPDATED");
-            query.close();
+            try{
+                update(notify, query);
+                System.out.println("UPDATED");
+                query.close();
+                return;
+            }catch (Exception e){
+                query.setQuery(QUERY_SAVE_NOTIFY_1);
+                query.setParams(notify.getUserID(), notify.getId(),  notify.getDescription(), notify.getNotifyType());
+                DatabaseUtil.getInstance().executeQuery(query);
+
+                Class<?> clazzPersistence = getPersistenceClass(notify.getNotifyType());
+                INotifyActionPersistence actionPersistence  = (INotifyActionPersistence) clazzPersistence.getDeclaredConstructor().newInstance();
+
+                actionPersistence.save(notify);
+                System.out.println("SAVED");
+                query.close();
+            }
             return;
-        }catch (Exception e){
-            query.setQuery(QUERY_SAVE_NOTIFY_1);
-            query.setParams(notify.getUserID(), notify.getId(),  notify.getDescription(), notify.getNotifyType());
-            DatabaseUtil.getInstance().executeQuery(query);
-
-            notify.getNotifyAction().save(notify);
-            System.out.println("SAVED");
-            query.close();
         }
+
+        DBQuery query = DBQuery.Builder.create()
+                .query(QUERY_SAVE_UNKNOWN_NOTIFY_1)
+                .getGeneratedKeys()
+                .params(notify.getUserID(), notify.getDescription(), notify.getNotifyType())
+                .build();
+        DatabaseUtil.getInstance().executeQuery(query);
+
+        System.out.println(query.getKey());
+
+        Long newID = query.getKey();
+        notify.setId(newID);
+
+        Class<?> clazzPersistence = getPersistenceClass(notify.getNotifyType());
+        INotifyActionPersistence actionPersistence  = (INotifyActionPersistence) clazzPersistence.getDeclaredConstructor().newInstance();
+
+        actionPersistence.save(notify);
+        System.out.println("SAVED NEW");
+
+
+        query.close();
+
+
+
+
 
 
     }
@@ -235,12 +269,11 @@ public class MySQLNotifyDAO implements INotifyDAO {
         query.setParams(notify.getUserID(), notify.getId(), notify.getDescription(), notify.getNotifyType(),  notify.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
-        Class<?> clazz =  getClass(type);
-        AbstractNotifyActionFactory factory = (AbstractNotifyActionFactory) clazz.getDeclaredConstructor().newInstance();
-        INotifyAction action = factory.create();
-        action.delete(notify); //elimino il  vecchio dato
-        notify.getNotifyAction().save(notify);
+        Class<?> clazzPersistence = getPersistenceClass(type);
+        INotifyActionPersistence actionPersistence  = (INotifyActionPersistence) clazzPersistence.getDeclaredConstructor().newInstance();
 
+        actionPersistence.delete(notify);
+        actionPersistence.save(notify);
 
 
 
