@@ -41,5 +41,17 @@ Ovvero:
 - `<Username>`: Username del utente che utilizera il db (si consiglia di crearne uno apposito)
 - `<Password>`: Password del utente 
 
-  
-
+### Avvio del Software 
+- Il software e avviabile tramite l'editor eseguendo la classe main al interno di [MainApp.java](https://github.com/IngSW-unipv/Progetto-N25/blob/main/src/main/java/it/unipv/ingsw/lasout/MainApp.java)
+- Elencati ora alcuni acount demo(Username, Password, Email) pronti al utilizzo:
+```markdown
+('dada'  ,'ciao'    ,'aaa@gmail.com')
+('cla'   ,'miao'    ,'bbb@gmail.com')
+('dema'  ,'bau'     ,'ccc@gmail.com')
+('buso'  ,'pluto'   ,'ddd@gmail.com')
+('tia'   ,'paperino','eee@gmail.com')
+('davide','gatto'   ,'fff@gmail.com')
+```
+### Uso autonomo
+- Il software e tranquillamnte trasformabile in un eseguibile seguendo le linee guida del editro utilizato
+- Il Database puo essere anche creato vuoto e gli utenti creati singolarmente tramite le registrazioni ( in tal caso eseguire solo la parte DDL del file ```initsql.sql```)
