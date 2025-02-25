@@ -2,6 +2,7 @@ package it.unipv.ingsw.lasout.controller.vault;
 
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.facade.vault.ConcreteVaultFacade;
+import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.vault.Vault;
 import it.unipv.ingsw.lasout.model.vault.VaultDAO;
@@ -114,6 +115,7 @@ public class VaultController {
 	                    if(success) {
 	                        JOptionPane.showMessageDialog(frame, "Denaro depositato correttamente.");
 	                        vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getBalanceByID(vault));
+	                        updateTransactionsView();
 	                    } else {
 	                        JOptionPane.showMessageDialog(frame, "Errore nel deposito.");
 	                    }
@@ -147,6 +149,7 @@ public class VaultController {
 	                    if(success) {
 	                        JOptionPane.showMessageDialog(frame, "Denaro prelevato correttamente.");
 	                        vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getBalanceByID(vault));
+	                        updateTransactionsView();
 	                    } else {
 	                        JOptionPane.showMessageDialog(frame, "Errore nel prelievo.");
 	                    }
@@ -253,8 +256,16 @@ public class VaultController {
 		ConcreteVaultFacade.getInstance().newVaultinVault(vault);
 
 		ConcreteVaultFacade.getInstance().getVaultId(vault);
+		
+		updateTransactionsView();
 	}
 	
-	
-
+	public static void updateTransactionsView() {
+		List<Transaction> transactions = LaVaultFacade.getInstance().getCashbookFacade().getVaultTransactionsOfUser(vault.getOwner());
+		DefaultListModel<Transaction> model = new DefaultListModel<>();
+		for(Transaction t : transactions) {
+			model.addElement(t);
+		}
+		vaultPanel.updateTransactionList(model);
+	}
 }
