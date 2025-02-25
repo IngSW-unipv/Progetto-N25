@@ -35,4 +35,8 @@ public interface ICashbookFacade {
 	 * @return true if transaction was added correctly, false otherwise
 	 */
 	boolean addTransaction(User user, Transaction transaction);
+
+    List<Transaction> getAutomaticTransactions(Cashbook c);
+
+    List<Transaction> getVaultTransactionsOfUser(User user);
 }

@@ -4,12 +4,14 @@ import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.cashbook.ICashbookDAO;
 import it.unipv.ingsw.lasout.model.cashbook.exception.CannotDeleteDefaultCashbookException;
 import it.unipv.ingsw.lasout.model.cashbook.exception.CashbookAlreadyExistingException;
+import it.unipv.ingsw.lasout.model.transaction.AutomaticTransaction;
 import it.unipv.ingsw.lasout.model.transaction.ModifiableTransaction;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.model.transaction.exception.CannotEditTransactionException;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.util.DaoFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CashbookFacade implements ICashbookFacade {
@@ -160,6 +162,29 @@ public class CashbookFacade implements ICashbookFacade {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<Transaction> getAutomaticTransactions(Cashbook c){
+        List<Transaction> transactionList = c.getTransactionList();
+        List<Transaction> automaticTransactions = new ArrayList<Transaction>();
+
+        for(Transaction transaction : transactionList){
+            try{
+                AutomaticTransaction automaticTransaction = (AutomaticTransaction) transaction;
+                automaticTransactions.add(automaticTransaction);
+            } catch (Exception e) {
+                continue;
+            }
+        }
+
+        return automaticTransactions;
+    }
+
+    @Override
+    public List<Transaction> getVaultTransactionsOfUser(User user){
+        Cashbook c = getUserDefaultCashbook(user);
+        return getAutomaticTransactions(c);
     }
 
 }
