@@ -110,6 +110,7 @@ public class CashbookFacade implements ICashbookFacade {
      * @param transaction transaction to add
      * @return true if transaction was added correctly, false otherwise
      */
+    @Override
     public boolean addTransaction(User user, Transaction transaction) {
         Cashbook defaultCashbook = cashBookDAO.getDefaultCashbook(user);
         return addTransaction(defaultCashbook, transaction);

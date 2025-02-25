@@ -34,4 +34,6 @@ public interface VaultFacade {
 	Vault getVaultByUser(User user);
 	
 	List<PaymentMethod> getAllPaymentMethods (Vault vault);
+	
+	boolean executePayment(Vault v, double amount);
 }

@@ -2,6 +2,8 @@ package it.unipv.ingsw.lasout.facade.vault;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -24,6 +26,8 @@ import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethodFactory;
 import it.unipv.ingsw.lasout.model.virtualVault.IVirtualVaultDAO;
 import it.unipv.ingsw.lasout.model.virtualVault.VirtualVault;
 import it.unipv.ingsw.lasout.util.DaoFactory;
+import it.unipv.ingsw.lasout.model.transaction.*;
+
 
 public class ConcreteVaultFacade implements VaultFacade {
 
@@ -109,8 +113,6 @@ public class ConcreteVaultFacade implements VaultFacade {
 
 	@Override
 	public boolean addPaymentMethod(Vault v, PaymentMethod pm, String tipo) {
-		
-		System.out.println("entrato");
 
 		paymentMethodFactory.get(tipo);
 
@@ -162,6 +164,11 @@ public class ConcreteVaultFacade implements VaultFacade {
 
 	@Override
 	public boolean depositMoneyFromPaymentMethod(Vault v, PaymentMethod p, double balance) {
+		
+		LocalDate today = LocalDate.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		String formattedDate = today.format(formatter);
+		
 
 		if (p.autorizza() != true)
 			throw new RuntimeException("Errore: Autorizzazione negata");
@@ -170,6 +177,9 @@ public class ConcreteVaultFacade implements VaultFacade {
 			vaultDAO.updateBalance(v, balance);
 
 			v.setSaldo(v.getSaldo() + balance);
+			
+			AutomaticTransaction t = new AutomaticTransaction(balance, formattedDate, "Deposito denaro da: " + p);
+			LaVaultFacade.getInstance().getCashbookFacade().addTransaction(v.getOwner(), t);
 
 			System.out.println("Fondi aggiunti con successo! Nuovo saldo: " + v.getSaldo());
 
@@ -269,6 +279,14 @@ public class ConcreteVaultFacade implements VaultFacade {
 	}
 	
 
+
+	@Override
+	public boolean executePayment(Vault v, double amount) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+
 	@Override
 	public boolean paymenExecution(Vault v, double amount, String recipient) {
 		// TODO Auto-generated method stub
@@ -333,15 +351,15 @@ public class ConcreteVaultFacade implements VaultFacade {
 //			System.out.println("Metodo di pagamento: " + p.getMethodName());
 //		}
 //
-//		System.out.println("Saldo iniziale: " + v.getSaldo());
+		System.out.println("Saldo iniziale: " + v.getSaldo());
 //
-//		boolean success = ConcreteVaultFacade.getInstance().depositMoneyFromPaymentMethod(v, pm, 100.50);
-//
-//		if (success) {
-//			System.out.println("Saldo aggiornato: " + v.getSaldo());
-//		} else {
-//			System.out.println("Errore nell'aggiunta dei fondi.");
-//		}
+		boolean success = ConcreteVaultFacade.getInstance().depositMoneyFromPaymentMethod(v, pm, 100.50);
+
+		if (success) {
+			System.out.println("Saldo aggiornato: " + v.getSaldo());
+		} else {
+			System.out.println("Errore nell'aggiunta dei fondi.");
+		}
 //		
 //		boolean success1 = ConcreteVaultFacade.getInstance().withdrawMoneyFromPaymentMethod(v, pp, 50);
 //

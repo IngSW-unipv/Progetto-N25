@@ -27,4 +27,12 @@ public interface ICashbookFacade {
     List<Cashbook> getUserCashbooks(User user);
 
     double calculateSummary(Cashbook cashbook);
+
+	/**
+	 * Serve a salvare una transazione conoscendo lo user che la ha eseguita
+	 * @param user of which you want to add the transaction
+	 * @param transaction transaction to add
+	 * @return true if transaction was added correctly, false otherwise
+	 */
+	boolean addTransaction(User user, Transaction transaction);
 }
