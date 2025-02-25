@@ -178,7 +178,7 @@ public class ConcreteVaultFacade implements VaultFacade {
 
 			v.setSaldo(v.getSaldo() + balance);
 			
-			AutomaticTransaction t = new AutomaticTransaction(balance, formattedDate, "Deposito denaro da: " + p);
+			AutomaticTransaction t = new AutomaticTransaction(balance, formattedDate, "Deposit");
 			LaVaultFacade.getInstance().getCashbookFacade().addTransaction(v.getOwner(), t);
 
 			System.out.println("Fondi aggiunti con successo! Nuovo saldo: " + v.getSaldo());
@@ -378,6 +378,5 @@ public class ConcreteVaultFacade implements VaultFacade {
 //		for (PaymentMethod p : v.getMethods()) {
 //		    System.out.println("Metodo di pagamento: " + p.getMethodName());
 //		}
-
 	}
 }
