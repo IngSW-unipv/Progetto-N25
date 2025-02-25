@@ -45,11 +45,11 @@ public class LaVaultFacade {
             this.groupFacade = (GroupFacade) loadClass("group").getDeclaredConstructor().newInstance();
             this.vaultFacade = (VaultFacade) loadClass("vault").getDeclaredConstructor().newInstance();
             this.virtualVaultFacade = (VirtualVaultFacade) loadClass("virtualvault").getDeclaredConstructor().newInstance();
+            System.out.println(virtualVaultFacade+"\n\n\n\n palle");
             this.cashbookFacade = (ICashbookFacade) loadClass("cashbook").getDeclaredConstructor().newInstance();
             this.transactionFacade = (ITransactionFacade) loadClass("transaction").getDeclaredConstructor().newInstance();
         }catch (Exception e){
-            //throw new RuntimeException(e);
-            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 

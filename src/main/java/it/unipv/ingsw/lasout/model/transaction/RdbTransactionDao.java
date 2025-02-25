@@ -30,7 +30,7 @@ public class RdbTransactionDao implements ITransactionDAO{
     /**
      * Rendo il costruttore privato
      */
-    private RdbTransactionDao(){
+    public RdbTransactionDao(){
         super();
     }
 
