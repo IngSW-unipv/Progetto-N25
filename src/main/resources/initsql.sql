@@ -45,8 +45,11 @@ INSERT INTO `user` (username, password, email)
 
 INSERT INTO `group` (name, user_id)
 VALUES
-    ('GR1', 1),
-    ('GR2', 2);
+    ('Vacanza a New York', 1),
+    ('Regalo Marco', 2),
+    ('Grigliata', 4),
+    ('viaggio Malesia', 1),
+    ('all togheder to Nigeria', 3);
 
 INSERT INTO `notify` (user_id, id, description, type)
 VALUES
@@ -65,7 +68,20 @@ INSERT INTO usergroup (user_id, group_id) VALUES
     (3, 1),
     (3, 2),
     (4, 2),
-    (6, 2);
+    (6, 2),
+    (4,3),
+    (5,3),
+    (6,3),
+    (1,3),
+    (1,4),
+    (2,4),
+    (3,4),
+    (4,4),
+    (5,4),
+    (3,5),
+    (2,5),
+    (1,5),
+    (6,5);
 
 
 INSERT INTO cashbook (user_id, name, type) VALUES
@@ -90,15 +106,26 @@ INSERT INTO cashbooktransactions (transaction_id, cashbook_id) VALUES
 
 
 INSERT INTO spese (user_id, group_id,amount,note) VALUES
-    (1,1 , 100, 'prova1'),
-    (2,1 , 36.5, 'prova1'),
-    (3,1 , 15, 'prova1'),
-    (3,1 , 19.8, 'prova1'),
-    (3,1 , 122, 'prova1'),
-    (2,1 , 13.9, 'prova1'),
-    (1,1 , 83, 'prova1'),
-    (1,1 , 56, 'prova1'),
-    (2,1,700,'prva2');
+
+    (1,1 , 100, 'volo'),
+    (2,1 , 36.5, 'pizza'),
+    (3,1 , 15, 'birre'),
+    (3,1 , 19.8, 'birre'),
+    (3,1 , 122, 'volo'),
+    (2,1 , 13.9, 'sneck'),
+    (1,1 , 83, 'regali'),
+    (1,1 , 56, 'regali'),
+    (2,1,700,'Hotel'),
+    (2,2,18,'Tabellone'),
+    (6,2,210,'Regalo brick'),
+    (4,3, 80, 'cibo per tutti'),
+    (4,4,50,'cibo'),
+    (2,4,1200, 'Casa'),
+    (5,4,118.55, 'cena'),
+    (6,5,470,'La primula'),
+    (3,5,250, 'Betoniera'),
+    (2,5, 200, 'L insime');
+
 
     
 
