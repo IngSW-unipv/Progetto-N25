@@ -75,6 +75,11 @@ public class GroupController {
 
         //================= Quando clicco "impostazioni"=====================
         groupPanel.addImpostazioniListener(e -> {
+            if(activeGroup.isAdmin(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser())){
+                groupPanel.getSettingsDialog().setAmin("l'admin è: (Tu)");
+            }else{
+                groupPanel.getSettingsDialog().setAmin("l'admin è: "+LaVaultFacade.getInstance().getUserFacade().getUser(activeGroup.getAdmin()).getUsername());
+            }
             groupPanel.getSettingsDialog().setLocationRelativeTo(groupPanel);
             groupPanel.getSettingsDialog().setVisible(true);
         });
