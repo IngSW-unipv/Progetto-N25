@@ -20,4 +20,11 @@ public abstract class ImmutableTransaction extends Transaction{
         super(id, amount, date, category, notes);
     }
 
+    public ImmutableTransaction(double amount, String date, String notes) {
+        super(amount, date, notes);
+    }
+
+    public ImmutableTransaction(double amount, String date, String category, String notes) {
+        super(amount, date, category, notes);
+    }
 }

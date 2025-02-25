@@ -19,4 +19,12 @@ public abstract class ModifiableTransaction extends Transaction {
     public ModifiableTransaction(int id, double amount) {
         super(id, amount);
     }
+
+    public ModifiableTransaction(double amount, String date, String notes) {
+        super(amount, date, notes);
+    }
+
+    public ModifiableTransaction(double amount, String date, String category, String notes) {
+        super(amount, date, category, notes);
+    }
 }

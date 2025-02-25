@@ -35,6 +35,18 @@ public abstract class Transaction {
 		this.date = date;
 	}
 
+	public Transaction(double amount, String date, String notes) {
+		this.amount = amount;
+		this.date = date;
+		this.notes = notes;
+	}
+
+	public Transaction(double amount, String date, String category, String notes) {
+		this.amount = amount;
+		this.date = date;
+		this.notes = notes;
+	}
+
 	/**
 	 * Costruttore completo
 	 */

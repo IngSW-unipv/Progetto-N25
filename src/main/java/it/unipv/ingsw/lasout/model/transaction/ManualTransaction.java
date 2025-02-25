@@ -6,6 +6,14 @@ public class ManualTransaction extends ModifiableTransaction {
     public ManualTransaction() {
     }
 
+    public ManualTransaction(double amount, String date, String notes) {
+        super(amount, date, notes);
+    }
+
+    public ManualTransaction(double amount, String date, String category, String notes) {
+        super(amount, date, category, notes);
+    }
+
     public ManualTransaction(int id) {
         super(id);
     }

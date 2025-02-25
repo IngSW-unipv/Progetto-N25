@@ -6,6 +6,14 @@ public class AutomaticTransaction extends ImmutableTransaction {
     public AutomaticTransaction() {
     }
 
+    public AutomaticTransaction(double amount, String date, String notes) {
+        super(amount, date, notes);
+    }
+
+    public AutomaticTransaction(double amount, String date, String category, String notes) {
+        super(amount, date, category, notes);
+    }
+
     public AutomaticTransaction(int id) {
         super(id);
     }
