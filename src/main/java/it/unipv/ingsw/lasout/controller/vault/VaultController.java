@@ -9,7 +9,8 @@ import it.unipv.ingsw.lasout.model.vault.paymentmethod.CreditCard;
 import it.unipv.ingsw.lasout.model.vault.paymentmethod.CurrentAccount;
 import it.unipv.ingsw.lasout.model.vault.paymentmethod.PayPal;
 import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethod;
-import it.unipv.ingsw.lasout.view.vault.PaymentMethodDialog;
+import it.unipv.ingsw.lasout.view.vault.AddPaymentMethodDialog;
+import it.unipv.ingsw.lasout.view.vault.DeletePaymentMethodDialog;
 import it.unipv.ingsw.lasout.view.vault.PaymentMethodTransactionDialog;
 import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 
@@ -36,7 +37,7 @@ public class VaultController {
 
 		 vaultPanel.addAggiungiMetodoListener(e -> {
 	            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(vaultPanel);
-	            PaymentMethodDialog addDialog = new PaymentMethodDialog(frame);
+	            AddPaymentMethodDialog addDialog = new AddPaymentMethodDialog(frame);
 	            addDialog.addConfirmListener(ev -> {
 	                // Leggi il tipo selezionato dal dialogo
 	                String type = addDialog.getSelectedType();
@@ -154,6 +155,47 @@ public class VaultController {
 	                dialog.addCancelListener(ev -> dialog.dispose());
 	                dialog.setVisible(true);
 	            }
+	        });
+	        
+	        vaultPanel.addRemoveMethodListener( e -> {
+	            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(vaultPanel);
+	        	//recuper la lista aggiornata dei metodi di pagamento
+	        	List<PaymentMethod> methods = ConcreteVaultFacade.getInstance().getAllPaymentMethods(vault);
+	        	//dialog cancellazione
+	        	DeletePaymentMethodDialog deletedialog = new DeletePaymentMethodDialog(frame, vault, methods);
+	        	//listener per pulsante
+	        	deletedialog.addDeleteListener(ev ->{
+	        		PaymentMethod selectedMethod = deletedialog.getSelectedPaymentMethod();
+	        		if(selectedMethod == null) {
+	        			JOptionPane.showMessageDialog(deletedialog, "Seleziona un metodo di pagamento da rimuovere");
+	        			return;
+	        		}
+	        		
+	        		int confirm = JOptionPane.showConfirmDialog(deletedialog, "Sei sicuro di voler rimuovere il "
+	        				+ "metodo di pagamento selezionato?", "Conferma cancellazione", JOptionPane.YES_NO_OPTION);
+	        		if(confirm == JOptionPane.YES_OPTION) {
+	        			boolean success = ConcreteVaultFacade.getInstance()
+	        					.deletePaymentMethod(vault, selectedMethod, selectedMethod.getMethodName());
+	        			if(success) {
+	        				JOptionPane.showMessageDialog(deletedialog, "Metodo di pagamento rimosso con successo");
+	        				//aggiorno la lista
+	        				deletedialog.removeSelectedPaymentMethod();
+	        				//aggiorno la lista della view
+	        				List<PaymentMethod> newMethods = ConcreteVaultFacade.getInstance().getAllPaymentMethods(vault);
+	        				DefaultListModel<String> newModel = new DefaultListModel<>();
+	        				for(PaymentMethod pm : newMethods){
+	        					newModel.addElement(pm.toString());
+	        				}
+	        				vaultPanel.updatePaymentMethodsList(newModel);
+	        			} else {
+	        				JOptionPane.showMessageDialog(deletedialog, "Errore nella cancellazione del metodo");
+	        			}
+	        		}
+	        		
+	        	});
+	        	
+	        	deletedialog.addCancelListener(ev -> deletedialog.dispose());
+	        	deletedialog.setVisible(true);
 	        });
 	}
 	

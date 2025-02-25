@@ -13,6 +13,7 @@ public class VaultPanel extends JPanel {
 	private JLabel saldoLabel;
     // Aggiungi un pulsante per aprire il dialogo di aggiunta metodo
     private JButton aggiungiMetodoBtn;
+    private JButton removeMethodBtn;
     private JList<String> paymentMethodsList;
     private JList<String> transactionsList;
     private JButton depositBtn;
@@ -24,7 +25,7 @@ public class VaultPanel extends JPanel {
     }
     
     private void initComponents() {
-        // Pannello superiore: qui inseriamo il pulsante "Aggiungi Metodo di Pagamento"
+    	// Pannello superiore: qui inseriamo il pulsante "Aggiungi Metodo di Pagamento"
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setOpaque(false);
         
@@ -49,6 +50,12 @@ public class VaultPanel extends JPanel {
         eastPanel.add(new JLabel("Metodi di Pagamento", SwingConstants.CENTER), BorderLayout.NORTH);
         paymentMethodsList = new JList<>(new DefaultListModel<>());
         eastPanel.add(new JScrollPane(paymentMethodsList), BorderLayout.CENTER);
+        add(eastPanel, BorderLayout.EAST);
+        
+        removeMethodBtn = new JButton("Rimuovi Metodo");
+        JPanel btnPanel = new JPanel (new FlowLayout());
+        btnPanel.add(removeMethodBtn);
+        eastPanel.add(btnPanel, BorderLayout.SOUTH);
         add(eastPanel, BorderLayout.EAST);
         
         // WEST: Lista delle transazioni
@@ -97,6 +104,10 @@ public class VaultPanel extends JPanel {
     
     public void addWithdrawListener(ActionListener l) {
         withdrawBtn.addActionListener(l);
+    }
+    
+    public void addRemoveMethodListener(ActionListener l) {
+    	removeMethodBtn.addActionListener(l);
     }
     @Override
     protected void paintComponent(Graphics g) {
