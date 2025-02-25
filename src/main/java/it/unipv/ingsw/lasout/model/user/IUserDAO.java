@@ -1,6 +1,7 @@
 package it.unipv.ingsw.lasout.model.user;
 
 import it.unipv.ingsw.lasout.dao.IDao;
+import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
@@ -23,6 +24,8 @@ public interface IUserDAO extends IDao<User> {
      * @return la lista di amici dell'utente
      */
     List<User> getFriends(User user);
+
+    List<Cashbook> getCashbooks(User user);
 
     /**
      * Metodo che serve ad associare la lista di tutte le notifiche a un determinato utente
@@ -66,5 +69,5 @@ public interface IUserDAO extends IDao<User> {
      * @throws SQLException eccezione nel caso in cui la query non vada a buon fine
      * @throws UserNotFoundException eccezione nel caso in cui la query non trovi l'account dell'utente con le credenziali che ha dato
      */
-    User userNotSearchedForCreateAccount(User user) throws SQLException, UserNotFoundException;
+    User userNotFoundForCreateAccount(User user) throws SQLException, UserNotFoundException;
 }

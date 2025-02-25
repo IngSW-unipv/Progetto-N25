@@ -1,15 +1,15 @@
 package it.unipv.ingsw.lasout.facade.user;
 
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
+import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
+import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.user.IUserDAO;
 import it.unipv.ingsw.lasout.model.user.User;
-import it.unipv.ingsw.lasout.model.user.UserDAO;
-import it.unipv.ingsw.lasout.model.user.*;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 import it.unipv.ingsw.lasout.util.DaoFactory;
 
 import java.sql.SQLException;
-import java.util.Scanner;
+import java.util.List;
 
 public class ConcreteUserFacade implements IUserFacade {
 
@@ -22,7 +22,7 @@ public class ConcreteUserFacade implements IUserFacade {
     @Override
     public boolean createAccount(User userCarrier) {
         try{
-            userDAO.userNotSearchedForCreateAccount(userCarrier);
+            userDAO.userNotFoundForCreateAccount(userCarrier);
             System.out.print("User already exist, impossible to CREATE your account. Please use another username.");
             return false;
         } catch (SQLException sqlException) {
@@ -43,23 +43,12 @@ public class ConcreteUserFacade implements IUserFacade {
 
     @Override
     public boolean deleteAccount(User userCarrier) {
-        Scanner scanner = new Scanner(System.in);
-        String conferma;
-
         try{
             if(LaVaultFacade.getInstance().getSessionFacade().isLogged()){
-                System.out.println("Write: 'Sono sicuro' if you want to delete this account: ");
-                conferma = scanner.nextLine();
-                if(conferma.equals("Sono sicuro")){
-                    userDAO.delete(userCarrier);
-                    System.out.println("Account successfully deleted");
-                    LaVaultFacade.getInstance().getSessionFacade().logout();
-                    return true;
-                }else{
-                    System.out.println("ERRORE, impossible to delete your account");
-                    return false;
-                }
-
+                userDAO.delete(userCarrier);
+                System.out.println("Account successfully deleted");
+                LaVaultFacade.getInstance().getSessionFacade().logout();
+                return true;
             }else System.out.println("User has never done the login");
 
         }catch (UserNotFoundException e){
@@ -75,16 +64,18 @@ public class ConcreteUserFacade implements IUserFacade {
 
 
     @Override
-    public boolean updatePassword(User userCarrier){
-        Scanner scanner = new Scanner(System.in);
-        String newPassword;
+    public boolean updatePassword(User userCarrier, String newPassword){
+
 
         try{
             //solo dopo esser stato trovato nel DB e aver effettuato il login, l'utente può aggiornare la sua password
             if(LaVaultFacade.getInstance().getSessionFacade().isLogged()){
+                /*
                 //chiedo quale password vuole inserire per sovrascrivere la vecchia
+                Scanner scanner = new Scanner(System.in);
                 System.out.println("New password is?: ");
-                newPassword = scanner.nextLine();
+                String newPassword = scanner.nextLine();
+                 */
                 userDAO.updatePassword(userCarrier, newPassword);
                 //modifico la password di loggedUser almeno la vedrò aggiornata se facessi getLoggedUser dopo questo update
                 LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().setPassword(newPassword);
@@ -100,6 +91,37 @@ public class ConcreteUserFacade implements IUserFacade {
             System.out.println(e.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public List<Group> getGroupOfLoggedUser(){
+        List<Group> groups;
+        try {
+            groups= userDAO.groupsOfUser(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return groups;
+    }
+
+    @Override
+    public User getUser(User userCarrier) {
+        try {
+            return userDAO.getRaw(userCarrier);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<Cashbook> getCashbookOfLoggedUser(){
+        List<Cashbook> cashbooks = null;
+        try {
+            cashbooks = userDAO.getCashbooks(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return cashbooks;
     }
 
 }

@@ -90,6 +90,10 @@ public class Group {
         spese.removeIf(spese -> spese.equals(spesa));
     }
 
+    public void delateAllSpesa(){
+        spese.clear();
+    }
+
     public boolean isAdmin(User user) {
         return admin.equals(user);
     }

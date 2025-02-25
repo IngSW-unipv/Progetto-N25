@@ -1,6 +1,10 @@
+ 
+
+
 package it.unipv.ingsw.lasout.model.vault.paymentmethod;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +26,14 @@ public class CreditCard implements PaymentMethod {
 
 	public CreditCard(int id, String numeroCarta, int mese, int anno, int cvv, int id_vault) {
 		this.id = id;
+		this.numeroCarta = numeroCarta;
+		this.mese = mese;
+		this.anno = anno;
+		this.cvv = cvv;
+		this.id_vault = id_vault;
+	}
+	
+	public CreditCard(String numeroCarta, int mese, int anno, int cvv, int id_vault) {
 		this.numeroCarta = numeroCarta;
 		this.mese = mese;
 		this.anno = anno;
@@ -90,7 +102,7 @@ public class CreditCard implements PaymentMethod {
 	@Override
 	public boolean autorizza() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -117,7 +129,7 @@ public class CreditCard implements PaymentMethod {
 			int mese = rs.getInt("mese");
 			int anno = rs.getInt("anno");
 			int cvv = rs.getInt("cvv");
-			int id_vault= rs.getInt("vault_id");
+			int id_vault= rs.getInt("id_vault");
 			
 			creditcard.setId(id);
 			creditcard.setNumeroCarta(numcard);
@@ -137,11 +149,9 @@ public class CreditCard implements PaymentMethod {
 
 	@Override
 	public PaymentMethod get(PaymentMethod paymentmethod) throws Exception {
-		
-		CreditCard ccParam = (CreditCard) paymentmethod;
 
 		DBQuery query = DatabaseUtil.getInstance().createQuery("SELECT * FROM \\'creditcard\\' WHERE id = ?;",
-				ccParam.getId());
+				((CreditCard)paymentmethod).getId());
 		DatabaseUtil.getInstance().executeQuery(query);
 
 		ResultSet rs = query.getResultSet();
@@ -163,9 +173,8 @@ public class CreditCard implements PaymentMethod {
 
 	@Override
 	public void delete(PaymentMethod paymentmethod) throws Exception {
-		CreditCard ccParam = (CreditCard) paymentmethod;
 		
-		DBQuery query = DatabaseUtil.getInstance().createQuery("DELETE FROM \\'creditcard\\' WHERE id = ?", ccParam.getId());
+		DBQuery query = DatabaseUtil.getInstance().createQuery("DELETE FROM \\'creditcard\\' WHERE id = ?", ((CreditCard) paymentmethod).getId());
 		DatabaseUtil.getInstance().executeQuery(query);
 		
 		ResultSet rs = query.getResultSet();
@@ -177,17 +186,15 @@ public class CreditCard implements PaymentMethod {
 
 	@Override
 	public void save(PaymentMethod paymentmethod) throws Exception {
-		
-		CreditCard ccParam = (CreditCard) paymentmethod;
 
-		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'creditcard\\' (numerocarta, mese, anno, cvv, vault_id) VALUES\r\n"
-				+ "	(?, ?, ?, ?, ?, ?);", ccParam.getNumeroCarta(), ccParam.getMese(), ccParam.getAnno(), ccParam.getCvv(), ccParam.getId_vault());
+		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'creditcard\\' (numerocarta, mese, anno, cvv, id_vault) VALUES\r\n"
+				+ "	(?, ?, ?, ?, ?);", ((CreditCard) paymentmethod).getNumeroCarta(), ((CreditCard) paymentmethod).getMese(), ((CreditCard) paymentmethod).getAnno(), ((CreditCard) paymentmethod).getCvv(), ((CreditCard) paymentmethod).getId_vault());
 		
 		DatabaseUtil.getInstance().executeQuery(query);
 
-		ResultSet rs = query.getResultSet();
+//		ResultSet rs = query.getResultSet();
 
-		if (rs != null) throw new CantSaveException("Card not saved");
+//		if (rs != null) throw new CantSaveException("Card not saved");
 		
 		query.close();
 	}
@@ -196,6 +203,70 @@ public class CreditCard implements PaymentMethod {
 	public void setVault(Vault vault) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void saveInPaymentMethod(Vault v, PaymentMethod p) throws Exception {
+		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paymentmethod\\' (id_vault, type, id_paymentmethod, number) "
+				+ "VALUES (?, ?, ?, ?)", v.getId(), p.getMethodName(), ((CreditCard)p).getId(), ((CreditCard) p).getNumeroCarta());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet rs = query.getResultSet();
+		
+		if(rs != null) throw new CantSaveException("Paymentmethod not saved");
+		query.close();
+	}
+
+	@Override
+	public void getId(PaymentMethod p) throws Exception {
+		DBQuery query = DatabaseUtil.getInstance().createQuery("SELECT id FROM \\'creditcard\\' where numerocarta = ?", ((CreditCard) p).getNumeroCarta());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet result = query.getResultSet();
+		
+		if (result == null) {
+	        System.out.println("Errore: ResultSet è null!");
+	    }
+		
+		if (!result.next()) {
+		    System.out.println("Nessun record trovato ");
+		    throw new SQLException("Nessun record trovato");
+		}
+		
+		int id = result.getInt("id");
+		
+		((CreditCard) p).setId(id);
+		
+		query.close();
+
+	}
+
+	@Override
+	public void deleteInPaymentMethod(PaymentMethod p) throws Exception{
+		DBQuery query = DatabaseUtil.getInstance().createQuery("DELETE FROM \\'paymentmethod\\' WHERE id_paymentmethod = ? AND type = ? ", ((CreditCard)p).getId(), p.getMethodName());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet result = query.getResultSet();
+		
+		if (result != null) throw new CantDeleteException("Can't delete card");
+		
+		query.close();
+	}
+	
+//	@Override
+//    public String toString() {
+//        return "Carta di Credito" +
+//                ", mese=" + mese +
+//                ", anno=" + anno +
+//                ", cvv = " + cvv ;
+//    }
+	
+	@Override
+	public String toString() {
+		if (numeroCarta == null || numeroCarta.isEmpty()) {
+	        return "Credit Card (numero non disponibile)";
+	    }
+	    return "Carta di credito: Ultime 4 cifre --> " + numeroCarta.substring(numeroCarta.length() - 4);
 	}
 
 }

@@ -1,6 +1,7 @@
 package it.unipv.ingsw.lasout.model.vault.paymentmethod;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +24,13 @@ public class CurrentAccount implements PaymentMethod {
 		this.vault_id = vault_id;
 	}
 
+	public CurrentAccount(String iban, int vault_id) {
+		 this.iban = iban;
+		 this.vault_id = vault_id;
+	}
+	
 	public CurrentAccount() {
-
+		
 	}
 
 	public String getIban() {
@@ -66,9 +72,8 @@ public class CurrentAccount implements PaymentMethod {
 
 	@Override
 	public void delete(PaymentMethod paymentmethod) throws Exception {
-		CurrentAccount ccParam = (CurrentAccount) paymentmethod;
 
-		DBQuery query = DatabaseUtil.getInstance().createQuery("DELETE FROM \\'currentaccount\\' WHERE id = ?", ccParam.getId());
+		DBQuery query = DatabaseUtil.getInstance().createQuery("DELETE FROM \\'currentaccount\\' WHERE id = ?", ((CurrentAccount)paymentmethod).getId());
 		DatabaseUtil.getInstance().executeQuery(query);
 
 		ResultSet rs = query.getResultSet();
@@ -81,10 +86,9 @@ public class CurrentAccount implements PaymentMethod {
 
 	@Override
 	public void save(PaymentMethod paymentmethod) throws Exception {
-		CurrentAccount caParam = (CurrentAccount) paymentmethod;
 
-		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'currentaccount\\' (iban, vault_id) VALUES (?, ?);",
-				caParam.getIban(), caParam.getVault_id());
+		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'currentaccount\\' (iban, id_vault) VALUES (?, ?);",
+				((CurrentAccount)paymentmethod).getIban(), ((CurrentAccount)paymentmethod).getVault_id());
 
 		DatabaseUtil.getInstance().executeQuery(query);
 
@@ -122,7 +126,7 @@ public class CurrentAccount implements PaymentMethod {
 
 			int id = rs.getInt("id");
 			String iban = rs.getString("iban");
-			int vault_id = rs.getInt("vault_id");
+			int vault_id = rs.getInt("id_vault");
 
 			currentaccount.setId(id);
 			currentaccount.setIban(iban);
@@ -138,10 +142,8 @@ public class CurrentAccount implements PaymentMethod {
 	@Override
 	public PaymentMethod get(PaymentMethod paymentmethod) throws Exception {
 
-		CurrentAccount caParam = (CurrentAccount) paymentmethod;
-
 		DBQuery query = DatabaseUtil.getInstance().createQuery("SELECT * FROM \\'currentaccount\\' WHERE id = ?;",
-				caParam.getId());
+				((CurrentAccount)paymentmethod).getId());
 		DatabaseUtil.getInstance().executeQuery(query);
 
 		ResultSet rs = query.getResultSet();
@@ -157,4 +159,67 @@ public class CurrentAccount implements PaymentMethod {
 
 		return ca;
 	}
+
+	@Override
+	public void saveInPaymentMethod(Vault v, PaymentMethod p) throws Exception {
+		DBQuery query = DatabaseUtil.getInstance().createQuery("INSERT INTO \\'paymentmethod\\' (id_vault, type, id_paymentmethod, number) "
+				+ "VALUES (?, ?, ?, ?)", v.getId(), p.getMethodName(), ((CurrentAccount)p).getId(), ((CurrentAccount)p).getIban());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet rs = query.getResultSet();
+		
+		if(rs != null) throw new CantSaveException("Paymentmethod not saved");
+		query.close();
+		
+	}
+
+	@Override
+	public void getId(PaymentMethod p) throws Exception {
+		DBQuery query = DatabaseUtil.getInstance().createQuery("SELECT id FROM \\'currentaccount\\' where iban = ?", ((CurrentAccount) p).getIban());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet result = query.getResultSet();
+		
+		if (result == null) {
+	        System.out.println("Errore: ResultSet è null!");
+	    }
+		
+		if (!result.next()) {
+		    System.out.println("Nessun record trovato ");
+		    throw new SQLException("Nessun record trovato");
+		}
+		
+		int id = result.getInt("id");
+		
+		((CurrentAccount) p).setId(id);
+		
+		query.close();
+	}
+
+	@Override
+	public void deleteInPaymentMethod(PaymentMethod p) throws Exception{
+		DBQuery query = DatabaseUtil.getInstance().createQuery("DELETE FROM \\'paymentmethod\\' WHERE id_paymentmethod = ? AND type = ?", ((CurrentAccount)p).getId(), p.getMethodName());
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		ResultSet result = query.getResultSet();
+		
+		if (result != null) throw new CantDeleteException("Can't delete card");
+		
+		query.close();
+		
+	}
+
+	@Override
+	public void setNumeroCarta(String string) {
+		this.iban = string;
+	}
+	
+	@Override
+	public String toString() {
+		if (iban == null || iban.isEmpty()) {
+	        return "Conto corrente (numero non disponibile)";
+	    }
+	    return "Conto corrente -> Iban: " + iban;
+	}
+
 }

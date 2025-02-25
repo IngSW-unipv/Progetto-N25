@@ -8,7 +8,7 @@ public class TransactionFacade implements ITransactionFacade {
 
     ITransactionDAO transactionDAO;
     public TransactionFacade() {
-        transactionDAO= DaoFactory.getTransactionDAO();
+        transactionDAO = DaoFactory.getTransactionDAO();
     }
 
     private static TransactionFacade instance;
@@ -20,7 +20,7 @@ public class TransactionFacade implements ITransactionFacade {
     }
 
     @Override
-    public boolean addTransaction(Transaction transaction) {
+    public boolean saveTransaction(Transaction transaction) {
         try {
             transactionDAO.save(transaction);
         } catch (Exception e) {

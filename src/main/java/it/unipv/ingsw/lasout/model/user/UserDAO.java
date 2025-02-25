@@ -1,14 +1,20 @@
 package it.unipv.ingsw.lasout.model.user;
 
 
+import it.unipv.ingsw.lasout.dao.IDao;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
+import it.unipv.ingsw.lasout.model.cashbook.RdbCashbookDao;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
+import it.unipv.ingsw.lasout.model.notify.INotifyDAO;
 import it.unipv.ingsw.lasout.model.notify.MySQLNotifyDAO;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.user.exception.UserAlreadyExistException;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
+import it.unipv.ingsw.lasout.util.DaoFactory;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -34,7 +40,13 @@ public class UserDAO implements IUserDAO {
     /**
      * Rendo il costruttore privato
      */
+
+    private INotifyDAO iNotifyDAO;
+
     public UserDAO(){
+
+        iNotifyDAO = DaoFactory.getNotifyDAO();
+
     }
 
     /**
@@ -110,6 +122,10 @@ public class UserDAO implements IUserDAO {
         List<Group> groups = groupsOfUser(user);
         savedUser.setGroups(groups);
 
+        //associo i cashbook di un utente
+        List<Cashbook> cashbooks = getCashbooks(user);
+        savedUser.setCashbooks(cashbooks);
+
         //savedUser.setNotifies(getNotifications(user));
         return savedUser;
     }
@@ -159,7 +175,7 @@ public class UserDAO implements IUserDAO {
      * @throws UserAlreadyExistException eccezione nel caso in cui la query abbia già trovato l'utente con uguali credenziali
      */
     @Override
-    public void save(User user) throws SQLException, UserAlreadyExistException {
+    public void save(User user) throws SQLException {
         DBQuery queryInsert;
 
         if(user.getId()!=0){
@@ -169,9 +185,6 @@ public class UserDAO implements IUserDAO {
         }
 
         DatabaseUtil.getInstance().executeQuery(queryInsert);
-        ResultSet rS = queryInsert.getResultSet();
-
-        if(rS!=null)throw new UserAlreadyExistException(user.getUsername());
 
         queryInsert.close();
     }
@@ -234,13 +247,23 @@ public class UserDAO implements IUserDAO {
         return friends;
     }
 
+    @Override
+    public List<Cashbook> getCashbooks(User user){
 
+        List<Cashbook> cashbooks = null;
+        try {
+            cashbooks = RdbCashbookDao.getInstance().getAllUserCashbooks(user);
+        } catch (Exception noCashbookFound) {
+            throw new RuntimeException(noCashbookFound);
+        }
+
+        return cashbooks;
+    }
 
     @Override
     public List<Notify> getNotifications(User user) throws Exception {
 
-
-        return MySQLNotifyDAO.getInstance().notifiesOf(user);
+        return iNotifyDAO.notifiesOf(user);
     }
 
 
@@ -263,8 +286,6 @@ public class UserDAO implements IUserDAO {
         }
 
         query.close();
-
-
         return groups;
 
     }
@@ -295,7 +316,6 @@ public class UserDAO implements IUserDAO {
         user.setPassword(userCarrier.getPassword());
         */
 
-
         querySelect.close();
         return user;
     }
@@ -325,14 +345,13 @@ public class UserDAO implements IUserDAO {
         userIdEmailPassword.setPassword(user.getPassword());
          */
 
-
         querySelect.close();
         return user;
     }
 
 
     @Override
-    public User userNotSearchedForCreateAccount(User user) throws SQLException, UserNotFoundException {
+    public User userNotFoundForCreateAccount(User user) throws SQLException, UserNotFoundException {
 
         //creazione della query di ricerca nel DB di tipo "DBQuery" in base al suo username e password
         DBQuery querySelect = DatabaseUtil.getInstance().createQuery(QUERY_SELECT_ID_FROM_HIS_CREDENTIALS_FOR_CREATING_ACCOUNT, user.getUsername(), user.getEmail(), user.getPassword());
@@ -347,7 +366,6 @@ public class UserDAO implements IUserDAO {
 
         //se invece è stato trovato salvo l'id dell'utente appena trovato in un utente fittizio
         User idUser = new User(rS.getInt("id"));
-
 
         querySelect.close();
         return idUser;

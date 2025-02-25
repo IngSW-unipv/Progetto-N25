@@ -2,6 +2,8 @@ package it.unipv.ingsw.lasout.facade.friend;
 
 import it.unipv.ingsw.lasout.model.user.User;
 
+import java.util.List;
+
 public interface FriendFacade {
 
 
@@ -21,4 +23,6 @@ public interface FriendFacade {
      */
     boolean removeFriend(User userone, User usertwo);
 
+
+    List<User> getFriends(User userone);
 }

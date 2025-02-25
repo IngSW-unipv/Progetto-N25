@@ -2,11 +2,13 @@ package it.unipv.ingsw.lasout.facade.cashbook;
 
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.cashbook.ICashbookDAO;
+import it.unipv.ingsw.lasout.model.cashbook.exception.CannotDeleteDefaultCashbookException;
+import it.unipv.ingsw.lasout.model.cashbook.exception.CashbookAlreadyExistingException;
 import it.unipv.ingsw.lasout.model.transaction.ModifiableTransaction;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.model.transaction.exception.CannotEditTransactionException;
-import it.unipv.ingsw.lasout.util.DaoFactory;
 import it.unipv.ingsw.lasout.model.user.User;
+import it.unipv.ingsw.lasout.util.DaoFactory;
 
 import java.util.List;
 
@@ -26,11 +28,13 @@ public class CashbookFacade implements ICashbookFacade {
     }
 
     @Override
-    public boolean addCashbook(Cashbook cashbook) {
+    public boolean saveCashbook(Cashbook cashbook) {
         try {
             cashBookDAO.save(cashbook);
+        } catch (CashbookAlreadyExistingException e) {
+            throw new CashbookAlreadyExistingException(e.getMessage());
         } catch (Exception e) {
-            return false;
+            throw new RuntimeException(e);
         }
         return true;
     }
@@ -57,15 +61,20 @@ public class CashbookFacade implements ICashbookFacade {
     @Override
     public boolean deleteCashbook(Cashbook cashbook){
         try{
-            cashBookDAO.delete(cashbook);
+            //verifico non sia un cashbook default
+            if(!cashBookDAO.getRaw(cashbook).isDefault()){
+                cashBookDAO.delete(cashbook);
+                return true;
+            } else {
+                throw new CannotDeleteDefaultCashbookException();
+            }
         } catch (Exception e) {
-            return false;
+            throw new RuntimeException(e);
         }
-        return true;
     }
 
     @Override
-    public List<Cashbook> getAllCashbooks(User carrierUser){
+    public List<Cashbook> getUserCashbooks(User carrierUser){
         try{
             return cashBookDAO.getAllUserCashbooks(carrierUser);
         } catch (Exception e) {
@@ -74,18 +83,36 @@ public class CashbookFacade implements ICashbookFacade {
     }
 
     @Override
+    public Cashbook getUserDefaultCashbook(User carrierUser){
+        try{
+            return cashBookDAO.getDefaultCashbook(carrierUser);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
     public boolean addTransaction(Cashbook cashbook, Transaction transaction) {
         try{
-            Cashbook c= cashBookDAO.get(cashbook);
-            List<Transaction> t = c.getTransactionList();
-            t.add(transaction);
-            c.setTransactionList(t);
+            Cashbook c = cashBookDAO.get(cashbook);
+            c.addTransaction(transaction);
             cashBookDAO.update(c);
         } catch (Exception e) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Serve a salvare una transazione conoscendo lo user che la ha eseguita
+     * @param user of which you want to add the transaction
+     * @param transaction transaction to add
+     * @return true if transaction was added correctly, false otherwise
+     */
+    public boolean addTransaction(User user, Transaction transaction) {
+        Cashbook defaultCashbook = cashBookDAO.getDefaultCashbook(user);
+        return addTransaction(defaultCashbook, transaction);
     }
 
     @Override
@@ -97,7 +124,7 @@ public class CashbookFacade implements ICashbookFacade {
             cashBookDAO.update(c);
             editCashbook(c);
         } catch (CannotEditTransactionException e) {
-            return false;
+            throw e;
         } catch (Exception e) {
             return false;
         }
@@ -116,6 +143,22 @@ public class CashbookFacade implements ICashbookFacade {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public double calculateSummary(Cashbook cashbook){
+        double sum = 0;
+        try {
+            List<Transaction> transactionList = cashBookDAO.get(cashbook).getTransactionList();
+            if (transactionList != null) {
+                for (Transaction transaction : transactionList) {
+                    sum += transaction.getAmount();
+                }
+            }
+            return sum;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

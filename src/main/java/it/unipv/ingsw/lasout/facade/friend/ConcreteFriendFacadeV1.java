@@ -2,6 +2,8 @@ package it.unipv.ingsw.lasout.facade.friend;
 
 import it.unipv.ingsw.lasout.model.user.User;
 
+import java.util.List;
+
 public class ConcreteFriendFacadeV1 implements FriendFacade {
 
 
@@ -14,5 +16,10 @@ public class ConcreteFriendFacadeV1 implements FriendFacade {
     @Override
     public boolean removeFriend(User userone, User usertwo) {
         return false;
+    }
+
+    @Override
+    public List<User> getFriends(User userone) {
+        return List.of();
     }
 }

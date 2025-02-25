@@ -6,7 +6,7 @@ import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
 public interface INotifyActionPersistence {
 
 
-    void load(INotifyAction notify) throws Exception;
-    void delete(INotifyAction notify) throws Exception;
-    void save(INotifyAction notify) throws Exception;
+    void load(Notify notifyAction) throws Exception;
+    void delete(Notify notifyAction) throws Exception;
+    void save(Notify notifyAction) throws Exception;
 }

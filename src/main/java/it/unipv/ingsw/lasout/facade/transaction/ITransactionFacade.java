@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ITransactionFacade {
 
-    boolean addTransaction(Transaction transaction);
+    boolean saveTransaction(Transaction transaction);
 
     Transaction getTransaction(Transaction carrierTransaction);
 

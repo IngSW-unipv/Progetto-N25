@@ -86,6 +86,8 @@ public interface GroupFacade {
      */
     boolean leaveGroup(Group group);
 
+    List<User> getUserFromGroup(Group group);
+
     /**
      * Permette di aggiungere una spesa di gruppo alla lista delle sepse di un gruppo
      *
@@ -103,6 +105,8 @@ public interface GroupFacade {
      * @return conferma di successo
      */
     boolean remuveSpesaFromGroup(Group group, Spesa spesa);
+
+    boolean remuveAllSpeseFromGroup(Group group);
 
     /**
      * Restituisce la lista di spese di un gruppo limite 100

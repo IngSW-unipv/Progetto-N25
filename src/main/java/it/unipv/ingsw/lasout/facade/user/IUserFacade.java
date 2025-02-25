@@ -1,6 +1,10 @@
 package it.unipv.ingsw.lasout.facade.user;
 
+import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
+import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.user.User;
+
+import java.util.List;
 
 //interfaccia del ConcreteUserFacade
 public interface IUserFacade {
@@ -33,6 +37,15 @@ public interface IUserFacade {
      * @param userCarrier utente loggato preso dal DB
      * @return true se la password è stata cambiata correttamente (false per gli altri casi in cui non si è riusciti a modificarla)
      */
-    boolean updatePassword(User userCarrier);
+    boolean updatePassword(User userCarrier, String newPassword);
 
+    /**
+     * Ritorna la lista di gruppi di un utente
+     * @return lista di gruppi a cui l'utente loggato partecipa
+     */
+    List<Group> getGroupOfLoggedUser();
+
+    User getUser(User userCarrier);
+
+    List<Cashbook> getCashbookOfLoggedUser();
 }
