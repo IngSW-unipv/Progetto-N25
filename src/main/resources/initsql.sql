@@ -60,7 +60,6 @@ VALUES
 
 INSERT INTO usergroup (user_id, group_id) VALUES
     (1, 1),
-    (1,2),
     (2, 2),
     (2, 1),
     (3, 1),
@@ -74,8 +73,8 @@ INSERT INTO cashbook (user_id, name, type) VALUES
     (2, 'risparmio', 0),
     (2, 'guadagno', 1),
     (3, 'risparmio', 1),
-    (4, 'ciao', 1),
-    (6, 'dafault', 0);
+    (4, 'ciao', 0),
+    (6, 'dafult', 0);
 
 INSERT INTO transactions (id, type, amount, date, category, note) VALUES
     (1, 0, -100.00, '2021',  'Bob', 'Payment for services'),
@@ -100,6 +99,23 @@ INSERT INTO spese (user_id, group_id,amount,note) VALUES
     (1,1 , 83, 'prova1'),
     (1,1 , 56, 'prova1'),
     (2,1,700,'prva2');
+
     
+
 INSERT INTO virtualvault (nome, user_id, balance) VALUES
-	('Vault', 1, 200)
+    ('Vault', 1, 200),
+    ('Vacanza', 1, 300),
+    ('Vault', 2, 500);
+    
+INSERT INTO vault (virtualvault_id) VALUES
+	(1),
+    (3);
+    
+INSERT INTO creditcard (numerocarta, mese, anno, cvv, id_vault) VALUES
+	(123456789, 1, 2020, 465, 1);
+	
+INSERT INTO paypal (numerocarta, id_vault) VALUES
+	(1234567, 1);
+	
+INSERT INTO currentaccount (iban, id_vault) VALUES
+	(1234, 1);
