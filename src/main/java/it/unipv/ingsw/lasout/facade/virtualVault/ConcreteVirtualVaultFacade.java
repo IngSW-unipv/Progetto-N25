@@ -17,7 +17,6 @@ public class ConcreteVirtualVaultFacade implements VirtualVaultFacade {
     private IVirtualVaultDAO virtualVaultDAO;
 
 
-
     public ConcreteVirtualVaultFacade(){
         virtualVaultDAO = DaoFactory.getVirtualVaultDAO();
 

@@ -32,4 +32,5 @@ public class MainApp {
             controller.showLoginView();
         });
     }
+
 }
