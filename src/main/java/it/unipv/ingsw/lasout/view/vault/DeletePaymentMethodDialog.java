@@ -52,7 +52,7 @@ public class DeletePaymentMethodDialog extends JDialog{
 		//Pannello pulsanti
 		JPanel buttonPanel = new JPanel(new FlowLayout());
 		deleteButton = new JButton("Rimuovi");
-		cancelButton = new JButton("Rimuovi");
+		cancelButton = new JButton("Annulla");
 		buttonPanel.add(deleteButton);
 		buttonPanel.add(cancelButton);
 		add(buttonPanel, BorderLayout.SOUTH);

@@ -11,7 +11,7 @@ import it.unipv.ingsw.lasout.view.mainview.MainUIView;
 public class VaultPanel extends JPanel {
 
 	private JLabel saldoLabel;
-    // Aggiungi un pulsante per aprire il dialogo di aggiunta metodo
+	private JButton executePaymentBtn;
     private JButton aggiungiMetodoBtn;
     private JButton removeMethodBtn;
     private JList<String> paymentMethodsList;
@@ -28,6 +28,10 @@ public class VaultPanel extends JPanel {
     	// Pannello superiore: qui inseriamo il pulsante "Aggiungi Metodo di Pagamento"
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setOpaque(false);
+        
+        executePaymentBtn = new JButton("Esegui pagamento");
+        executePaymentBtn.setPreferredSize(new Dimension(160, 50));
+        topPanel.add(executePaymentBtn, BorderLayout.WEST);
         
         // Puoi mettere qui eventuali altri componenti (come il menu già esistente)
         // e posizionare il pulsante a destra.
@@ -77,7 +81,10 @@ public class VaultPanel extends JPanel {
         add(southPanel, BorderLayout.SOUTH);
     }
     
-    // Metodi getter e setter esistenti...
+    public void addExecutePaymentListner(ActionListener l) {
+    	executePaymentBtn.addActionListener(l);
+    }
+    
     public void updateSaldo(double saldo) {
         saldoLabel.setText("Saldo: €" + String.format("%.2f", saldo));
     }

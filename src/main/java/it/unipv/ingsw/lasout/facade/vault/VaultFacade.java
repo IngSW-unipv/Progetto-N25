@@ -26,8 +26,6 @@ public interface VaultFacade {
 	boolean depositMoneyFromPaymentMethod(Vault v, PaymentMethod p, double amount);
 	
 	boolean withdrawMoneyFromPaymentMethod(Vault v, PaymentMethod p, double amount);
-	
-	boolean paymenExecution(Vault v, double amount, String recipient); 
 
 	double getBalanceByID(Vault v);
 
@@ -35,5 +33,5 @@ public interface VaultFacade {
 	
 	List<PaymentMethod> getAllPaymentMethods (Vault vault);
 	
-	boolean executePayment(Vault v, double amount);
+	boolean executePayment(Vault v, double amount, String recipient);
 }

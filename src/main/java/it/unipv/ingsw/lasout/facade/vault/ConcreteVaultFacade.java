@@ -163,12 +163,11 @@ public class ConcreteVaultFacade implements VaultFacade {
 	}
 
 	@Override
-	public boolean depositMoneyFromPaymentMethod(Vault v, PaymentMethod p, double balance) {
+	public boolean depositMoneyFromPaymentMethod(Vault v, PaymentMethod p, double balance) {	
 		
 		LocalDate today = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		String formattedDate = today.format(formatter);
-		
 
 		if (p.autorizza() != true)
 			throw new RuntimeException("Errore: Autorizzazione negata");
@@ -178,7 +177,7 @@ public class ConcreteVaultFacade implements VaultFacade {
 
 			v.setSaldo(v.getSaldo() + balance);
 			
-			AutomaticTransaction t = new AutomaticTransaction(balance, formattedDate, "Deposit");
+			AutomaticTransaction t = new AutomaticTransaction(balance, formattedDate, "Deposito");
 			LaVaultFacade.getInstance().getCashbookFacade().addTransaction(v.getOwner(), t);
 
 			System.out.println("Fondi aggiunti con successo! Nuovo saldo: " + v.getSaldo());
@@ -193,6 +192,10 @@ public class ConcreteVaultFacade implements VaultFacade {
 
 	@Override
 	public boolean withdrawMoneyFromPaymentMethod(Vault v, PaymentMethod p, double amount) {
+		
+		LocalDate today = LocalDate.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		String formattedDate = today.format(formatter);
 
 		if (p.autorizza() != true)
 			throw new RuntimeException("Errore: Autorizzazione negata");
@@ -207,6 +210,9 @@ public class ConcreteVaultFacade implements VaultFacade {
 			vaultDAO.withdrawBalance(v, amount);
 			v.setSaldo(v.getSaldo() - amount);
 			
+			AutomaticTransaction t = new AutomaticTransaction(amount, formattedDate, "Ritiro");
+			LaVaultFacade.getInstance().getCashbookFacade().addTransaction(v.getOwner(), t);
+			
 			System.out.println("Prelievo completato! Nuovo saldo: " + v.getSaldo());
 			
 			return true;
@@ -218,23 +224,6 @@ public class ConcreteVaultFacade implements VaultFacade {
 			return false;
 		}
 	}
-	
-
-//	@Override
-//	public Vault getVaultByUserID(Vault vault) {
-//		
-//		Vault v = null;
-//		
-//		try {
-//			int id = vaultDAO.getVaultIDbyUser(vault);
-//			vaultDAO.getRaw(new Vault(id));
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			return null;
-//		}
-//		return v;
-//	}
 	
 	@Override
 	public Vault getVaultByUser(User user) {
@@ -261,7 +250,6 @@ public class ConcreteVaultFacade implements VaultFacade {
 		return balance;
 		
 	}
-	
 
 	@Override
 	public List<PaymentMethod> getAllPaymentMethods(Vault vault) {
@@ -277,106 +265,123 @@ public class ConcreteVaultFacade implements VaultFacade {
 		
 		return methods;
 	}
-	
-
 
 	@Override
-	public boolean executePayment(Vault v, double amount) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-
-	@Override
-	public boolean paymenExecution(Vault v, double amount, String recipient) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean executePayment(Vault v, double amount, String recipient) {
+		
+		LocalDate today = LocalDate.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		String formattedDate = today.format(formatter);
+		
+		if (v.getSaldo() < amount) {
+			System.out.println("Fondi insufficienti! Saldo disponibile: " + v.getSaldo());
+			return false;
+		}
+		
+		try {
+			vaultDAO.withdrawBalance(v, amount);
+			v.setSaldo(v.getSaldo() - amount);
+			
+			AutomaticTransaction t = new AutomaticTransaction(amount, formattedDate, recipient);
+			LaVaultFacade.getInstance().getCashbookFacade().addTransaction(v.getOwner(), t);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
 	}
 
 	private static final Logger LOGGER = Logger.getLogger(ConcreteVaultFacade.class.getName());
 
 	public static void main(String[] args) {
-
-		try {
-			DatabaseUtil.getInstance().prepare();
-			DatabaseUtil.getInstance().initialize();
-		} catch (IOException | SQLException e) {
-			LOGGER.severe("Couldn't initialize database: \n" + e);
-			System.exit(1);
-			return;
-		}
-
-		User u = new User("dada", "ciao", "aaa@gmail.com");
-		Vault v = new Vault();
-
-		LaVaultFacade.getInstance().getSessionFacade().login(u);
-		System.out.println("It's logged in " + LaVaultFacade.getInstance().getSessionFacade().isLogged());
-
-		v.setOwner(new User(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().getId()));
-
-		ConcreteVaultFacade.getInstance().newVaultinVirtualVault(v, u);
-
-		ConcreteVaultFacade.getInstance().newVaultinVault(v);
-
-		ConcreteVaultFacade.getInstance().getVaultId(v);
 		
-		double c = ConcreteVaultFacade.getInstance().getBalanceByID(v);
-		
-		System.out.println("" + c);
-		
-		
-	//	int id = ConcreteVaultFacade.getInstance().getVaultByUserID(v);
-		
-		//System.out.println("" + id);
-
-		PaymentMethod pm = new CreditCard("3647483", 2, 2021, 345, v.getId());
-		PaymentMethod ca = new CurrentAccount("IT38298326238965289", v.getId());
-		PaymentMethod pp = new PayPal("369837431", v.getId());
-
-		ConcreteVaultFacade.getInstance().addPaymentMethod(v, pm, pm.getMethodName());
-		ConcreteVaultFacade.getInstance().addPaymentMethod(v, ca, ca.getMethodName());
-		ConcreteVaultFacade.getInstance().addPaymentMethod(v, pp, pp.getMethodName());
-		
-//		System.out.println("" + v.getVv_id());
-//		System.out.println("" + v.getId());
-		
-		try {
-			VaultDAO.getInstance().getRaw(v);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		LocalDate today = LocalDate.now();
+//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//		String formattedDate = today.format(formatter);
 //
-//		for (PaymentMethod p : v.getMethods()) {
-//			System.out.println("Metodo di pagamento: " + p.getMethodName());
+//		try {
+//			DatabaseUtil.getInstance().prepare();
+//			DatabaseUtil.getInstance().initialize();
+//		} catch (IOException | SQLException e) {
+//			LOGGER.severe("Couldn't initialize database: \n" + e);
+//			System.exit(1);
+//			return;
 //		}
 //
-		System.out.println("Saldo iniziale: " + v.getSaldo());
+//		User u = new User("dada", "ciao", "aaa@gmail.com");
+//		Vault v = new Vault();
 //
-		boolean success = ConcreteVaultFacade.getInstance().depositMoneyFromPaymentMethod(v, pm, 100.50);
-
-		if (success) {
-			System.out.println("Saldo aggiornato: " + v.getSaldo());
-		} else {
-			System.out.println("Errore nell'aggiunta dei fondi.");
-		}
+//		LaVaultFacade.getInstance().getSessionFacade().login(u);
+//		System.out.println("It's logged in " + LaVaultFacade.getInstance().getSessionFacade().isLogged());
+//
+//		v.setOwner(new User(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().getId()));
+//
+//		ConcreteVaultFacade.getInstance().newVaultinVirtualVault(v, u);
+//
+//		ConcreteVaultFacade.getInstance().newVaultinVault(v);
+//
+//		ConcreteVaultFacade.getInstance().getVaultId(v);
 //		
-//		boolean success1 = ConcreteVaultFacade.getInstance().withdrawMoneyFromPaymentMethod(v, pp, 50);
+//		double c = ConcreteVaultFacade.getInstance().getBalanceByID(v);
+//		
+//		System.out.println("" + c);
+//		
+//		
+//	//	int id = ConcreteVaultFacade.getInstance().getVaultByUserID(v);
+//		
+//		//System.out.println("" + id);
 //
-//		if (success1) {
+//		PaymentMethod pm = new CreditCard("3647483", 2, 2021, 345, v.getId());
+//		PaymentMethod ca = new CurrentAccount("IT38298326238965289", v.getId());
+//		PaymentMethod pp = new PayPal("369837431", v.getId());
+//
+//		ConcreteVaultFacade.getInstance().addPaymentMethod(v, pm, pm.getMethodName());
+//		ConcreteVaultFacade.getInstance().addPaymentMethod(v, ca, ca.getMethodName());
+//		ConcreteVaultFacade.getInstance().addPaymentMethod(v, pp, pp.getMethodName());
+//		
+//		try {
+//			VaultDAO.getInstance().getRaw(v);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+////
+////		for (PaymentMethod p : v.getMethods()) {
+////			System.out.println("Metodo di pagamento: " + p.getMethodName());
+////		}
+////
+//		System.out.println("Saldo iniziale: " + v.getSaldo());
+//
+//		boolean success = ConcreteVaultFacade.getInstance().depositMoneyFromPaymentMethod(v, pm, 100.50);
+//
+//		if (success) {
 //			System.out.println("Saldo aggiornato: " + v.getSaldo());
 //		} else {
 //			System.out.println("Errore nell'aggiunta dei fondi.");
 //		}
-		// ConcreteVaultFacade.getInstance().deletePaymentMethod(v, pm,
-		// pm.getMethodName());
-		// ConcreteVaultFacade.getInstance().deletePaymentMethod(ca,
-		// ca.getMethodName());
-		// ConcreteVaultFacade.getInstance().deletePaymentMethod(pp,
-		// pp.getMethodName());
-
-//		for (PaymentMethod p : v.getMethods()) {
-//		    System.out.println("Metodo di pagamento: " + p.getMethodName());
-//		}
+//		
+//		AutomaticTransaction t = new AutomaticTransaction(100, formattedDate, "Deposit");
+//		LaVaultFacade.getInstance().getCashbookFacade().addTransaction(v.getOwner(), t);
+////		
+////		boolean success1 = ConcreteVaultFacade.getInstance().withdrawMoneyFromPaymentMethod(v, pp, 50);
+////
+////		if (success1) {
+////			System.out.println("Saldo aggiornato: " + v.getSaldo());
+////		} else {
+////			System.out.println("Errore nell'aggiunta dei fondi.");
+////		}
+//		// ConcreteVaultFacade.getInstance().deletePaymentMethod(v, pm,
+//		// pm.getMethodName());
+//		// ConcreteVaultFacade.getInstance().deletePaymentMethod(ca,
+//		// ca.getMethodName());
+//		// ConcreteVaultFacade.getInstance().deletePaymentMethod(pp,
+//		// pp.getMethodName());
+//
+////		for (PaymentMethod p : v.getMethods()) {
+////		    System.out.println("Metodo di pagamento: " + p.getMethodName());
+////		}
 	}
 }

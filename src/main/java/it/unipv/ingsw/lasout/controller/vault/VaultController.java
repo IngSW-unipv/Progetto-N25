@@ -11,6 +11,7 @@ import it.unipv.ingsw.lasout.model.vault.paymentmethod.PayPal;
 import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethod;
 import it.unipv.ingsw.lasout.view.vault.AddPaymentMethodDialog;
 import it.unipv.ingsw.lasout.view.vault.DeletePaymentMethodDialog;
+import it.unipv.ingsw.lasout.view.vault.PaymentExecutionDialog;
 import it.unipv.ingsw.lasout.view.vault.PaymentMethodTransactionDialog;
 import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 
@@ -70,7 +71,6 @@ public class VaultController {
 	                                type);
 	                }
 	                if(success == true) {
-//	                	System.out.println("" + vault.getMethods());
 	                	// AGGIUNTA: Aggiorna la lista dei metodi di pagamento nel VaultPanel
 	                    List<PaymentMethod> methods = LaVaultFacade.getInstance().getVaultFacade().getAllPaymentMethods(vault);
 	                    DefaultListModel<String> model = new DefaultListModel<>();
@@ -196,6 +196,32 @@ public class VaultController {
 	        	
 	        	deletedialog.addCancelListener(ev -> deletedialog.dispose());
 	        	deletedialog.setVisible(true);
+	        });
+	        
+	        vaultPanel.addExecutePaymentListner(e -> {
+	        	
+	        	JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(vaultPanel);
+	        	PaymentExecutionDialog paymentDialog = new PaymentExecutionDialog(frame);
+	        	
+	        	paymentDialog.addConfirmListener(ev -> {
+	        		double amount = paymentDialog.getAmount();
+	        		if(amount <= 0) {
+	        			JOptionPane.showMessageDialog(paymentDialog, "Inserisce un importo valido");
+	        			return;
+	        		}
+	        		String causale = paymentDialog.getCausale();
+	        		
+	        		boolean success = ConcreteVaultFacade.getInstance().executePayment(vault, amount, causale);
+	        		if(success) {
+	        			JOptionPane.showMessageDialog(paymentDialog, "Pagamento eseguito con successo");
+	        			vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getBalanceByID(vault));
+	        		}else {
+	        			JOptionPane.showMessageDialog(paymentDialog, "Errore nell'esecuzione del pagamento");
+	        		}
+	        		paymentDialog.dispose();
+	        	});
+	        	paymentDialog.addCancelListener(ev -> paymentDialog.dispose());
+	        	paymentDialog.setVisible(true);
 	        });
 	}
 	
