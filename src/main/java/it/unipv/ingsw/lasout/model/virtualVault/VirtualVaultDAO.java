@@ -216,9 +216,11 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
     }
 
 
-    /*
-    * Metodo per eliminare il virtualVault selezionato ma prima viene riaggiunto il balance al Vault principale
-    */
+    /**
+     * Metodo per eliminare il virtualVault selezionato ma prima viene riaggiunto il balance al Vault principale
+     * @param virtualVault
+     * @throws Exception
+     */
     @Override
     public void delete(VirtualVault virtualVault) throws Exception {
         //Parte di metodo per riaggiungere il balance al vault originario

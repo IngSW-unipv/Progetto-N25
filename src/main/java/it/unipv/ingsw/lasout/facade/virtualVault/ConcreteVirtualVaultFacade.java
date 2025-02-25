@@ -115,9 +115,9 @@ public class ConcreteVirtualVaultFacade implements VirtualVaultFacade {
 
 
 
-        ConcreteVirtualVaultFacade.getInstance().newVirtualVault(v, user);
+        //ConcreteVirtualVaultFacade.getInstance().newVirtualVault(v, user);
         ConcreteVirtualVaultFacade.getInstance().newVirtualVault(v2, user1);
-        ConcreteVirtualVaultFacade.getInstance().deleteVirtualVault(v2);
+        //ConcreteVirtualVaultFacade.getInstance().deleteVirtualVault(v2);
 
 
     }
