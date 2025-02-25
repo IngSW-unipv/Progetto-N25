@@ -4,12 +4,12 @@ import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.virtualVault.VirtualVault;
-import it.unipv.ingsw.lasout.model.virtualVault.VirtualVaultDAO;
 import it.unipv.ingsw.lasout.model.virtualVault.IVirtualVaultDAO;
 import it.unipv.ingsw.lasout.util.DaoFactory;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class ConcreteVirtualVaultFacade implements VirtualVaultFacade {
@@ -47,13 +47,23 @@ public class ConcreteVirtualVaultFacade implements VirtualVaultFacade {
 
     @Override
     //Serve per restituire un pojo di VirtualVault
-    public boolean getVirtualVault(VirtualVault virtualVault){
-        try{
-            virtualVaultDAO.get(virtualVault);
+    public VirtualVault getVirtualVault(VirtualVault virtualVault){
+        VirtualVault result = null;
+         try{
+            result=virtualVaultDAO.get(virtualVault);
         } catch (Exception e){
-            return false;
+            return null;
         }
-        return true;
+        return result;
+    }
+    @Override
+    public List<VirtualVault> getAllVirtualVault(User user){
+        try{
+          return virtualVaultDAO.getAll(user);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
     }
     @Override
     //Serve per modificare i virtualVault
@@ -118,6 +128,8 @@ public class ConcreteVirtualVaultFacade implements VirtualVaultFacade {
         ConcreteVirtualVaultFacade.getInstance().newVirtualVault(v2, user1);
         //ConcreteVirtualVaultFacade.getInstance().deleteVirtualVault(v2);
 
+
+        System.out.println(DaoFactory.getVirtualVaultDAO().getAll(new User(1)));
 
     }
 
