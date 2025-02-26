@@ -39,5 +39,5 @@ public interface VaultFacade {
 
 	boolean depositoVault(User user, Double amount);
 
-
+	double getBalanceByUserId(User user);
 }

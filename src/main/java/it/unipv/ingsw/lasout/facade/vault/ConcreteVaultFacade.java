@@ -28,7 +28,6 @@ import it.unipv.ingsw.lasout.model.virtualVault.VirtualVault;
 import it.unipv.ingsw.lasout.util.DaoFactory;
 import it.unipv.ingsw.lasout.model.transaction.*;
 
-
 public class ConcreteVaultFacade implements VaultFacade {
 
 	private IVaultDAO vaultDAO;
@@ -47,15 +46,14 @@ public class ConcreteVaultFacade implements VaultFacade {
 		}
 		return instance;
 	}
-	
 
 	@Override
 	public Vault getVault(Vault v) {
 		try {
-            return vaultDAO.get(v);
-        } catch (Exception e) {
-            return null;
-        }
+			return vaultDAO.get(v);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -63,41 +61,39 @@ public class ConcreteVaultFacade implements VaultFacade {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	@Override
 	public boolean ritiroVault(User user, Double amount) {
-		
 
-		
 		try {
 
 			double balance = vaultDAO.balanceVault(user);
-			//System.out.println("BALANCE"+ balance);
-			if((balance - amount) < 0) {
+
+			if ((balance - amount) < 0) {
 				return false;
-				
-			}else {
+
+			} else {
 				vaultDAO.withdrawBalanceWithUser(user, amount);
 			}
-			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	
+		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean depositoVault(User user, Double amount) {
-		
+
 		try {
-			
+
 			vaultDAO.depositBalanceWithUser(user, amount);
-			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	
+		}
 		return true;
 	}
 
@@ -127,7 +123,7 @@ public class ConcreteVaultFacade implements VaultFacade {
 			e.printStackTrace();
 			return false;
 		}
-		
+
 		System.out.println("" + vault.getVv_id());
 		return true;
 	}
@@ -142,7 +138,7 @@ public class ConcreteVaultFacade implements VaultFacade {
 			e.printStackTrace();
 			return false;
 		}
-		
+
 		System.out.println("" + vault.getId());
 
 		return true;
@@ -200,8 +196,8 @@ public class ConcreteVaultFacade implements VaultFacade {
 	}
 
 	@Override
-	public boolean depositMoneyFromPaymentMethod(Vault v, PaymentMethod p, double balance) {	
-		
+	public boolean depositMoneyFromPaymentMethod(Vault v, PaymentMethod p, double balance) {
+
 		LocalDate today = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		String formattedDate = today.format(formatter);
@@ -213,7 +209,7 @@ public class ConcreteVaultFacade implements VaultFacade {
 			vaultDAO.updateBalance(v, balance);
 
 			v.setSaldo(v.getSaldo() + balance);
-			
+
 			AutomaticTransaction t = new AutomaticTransaction(balance, formattedDate, "Deposito");
 			LaVaultFacade.getInstance().getCashbookFacade().addTransaction(v.getOwner(), t);
 
@@ -229,7 +225,7 @@ public class ConcreteVaultFacade implements VaultFacade {
 
 	@Override
 	public boolean withdrawMoneyFromPaymentMethod(Vault v, PaymentMethod p, double amount) {
-		
+
 		LocalDate today = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		String formattedDate = today.format(formatter);
@@ -243,98 +239,113 @@ public class ConcreteVaultFacade implements VaultFacade {
 		}
 
 		try {
-			
+
 			vaultDAO.withdrawBalance(v, amount);
 			v.setSaldo(v.getSaldo() - amount);
-			
+
 			AutomaticTransaction t = new AutomaticTransaction(amount, formattedDate, "Ritiro");
 			LaVaultFacade.getInstance().getCashbookFacade().addTransaction(v.getOwner(), t);
-			
+
 			System.out.println("Prelievo completato! Nuovo saldo: " + v.getSaldo());
-			
+
 			return true;
-			
+
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
-			
+
 			return false;
 		}
 	}
-	
+
 	@Override
 	public Vault getVaultByUser(User user) {
-	    try {
-	        return VaultDAO.getInstance().getVaultIDbyUser(user);
-	    } catch(Exception e) {
-	        e.printStackTrace();
-	        return null;
-	    }
+		try {
+			return VaultDAO.getInstance().getVaultIDbyUser(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
-	
+
 	@Override
 	public double getBalanceByID(Vault v) {
-		
+
 		double balance = 0;
-		
+
 		try {
 			balance = vaultDAO.getBalance(v);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return balance;
+
+	}
+
+	@Override
+	public double getBalanceByUserId(User user) {
 		
+		double balance = 0;
+
+		try {
+			balance = vaultDAO.balanceVault(user);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return balance;
 	}
 
 	@Override
 	public List<PaymentMethod> getAllPaymentMethods(Vault vault) {
-		
+
 		List<PaymentMethod> methods = new ArrayList<PaymentMethod>();
-		
+
 		try {
 			methods = PaymentMethodDAO.getInstance().getAllPaymentMethod(vault);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return methods;
 	}
 
 	@Override
 	public boolean executePayment(Vault v, double amount, String recipient) {
-		
+
 		LocalDate today = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		String formattedDate = today.format(formatter);
-		
+
 		if (v.getSaldo() < amount) {
 			System.out.println("Fondi insufficienti! Saldo disponibile: " + v.getSaldo());
 			return false;
 		}
-		
+
 		try {
 			vaultDAO.withdrawBalance(v, amount);
 			v.setSaldo(v.getSaldo() - amount);
-			
+
 			AutomaticTransaction t = new AutomaticTransaction(amount, formattedDate, recipient);
 			LaVaultFacade.getInstance().getCashbookFacade().addTransaction(v.getOwner(), t);
-			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
-		
+
 		return true;
 	}
 
 	private static final Logger LOGGER = Logger.getLogger(ConcreteVaultFacade.class.getName());
 
 	public static void main(String[] args) {
-		
+
 //		LocalDate today = LocalDate.now();
 //		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 //		String formattedDate = today.format(formatter);

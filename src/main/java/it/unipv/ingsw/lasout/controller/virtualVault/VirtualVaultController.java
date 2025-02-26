@@ -132,6 +132,8 @@ public class VirtualVaultController {
          */
         public static void load () {
             setUpComboBox();
+    		
+            //vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getBalanceByUserId(currentUser));
 
         }
 
