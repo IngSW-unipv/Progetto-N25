@@ -189,7 +189,7 @@ public class RdbCashbookDao implements ICashbookDAO {
     @Override
     public void save(Cashbook cashbook) throws Exception {
         DBQuery query;
-
+        
         try {
             int type;
             if(cashbook.isDefault()){
@@ -210,6 +210,10 @@ public class RdbCashbookDao implements ICashbookDAO {
 
         //salvo id
         if (cashbook.getId() == 0) cashbook.setId((int)query.getKey());
+
+        if(cashbook.getTransactionList()!=null){
+            saveAssociation(cashbook);
+        }
 
         query.close();
     }

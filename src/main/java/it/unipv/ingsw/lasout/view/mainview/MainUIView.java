@@ -27,7 +27,7 @@ public class MainUIView extends JFrame {
     private JPanel leftPanel;
     private JButton[] navButtons;
     private String[] buttonLabels = {
-            "vault", "virtualvault", "Group", "cashbook",
+            "vault", "virtualvault", "Group", "Cashbook",
             "notifies", "friends", "account"
     };
 
@@ -91,7 +91,7 @@ public class MainUIView extends JFrame {
         // Aggiunta CashbookPanel
         CashbookPanel cashbookPanel = new CashbookPanel();
         new CashbookController(cashbookPanel); // Passiamo l'utente
-        contentPanel.add(cashbookPanel, "cashbook");
+        contentPanel.add(cashbookPanel, "Cashbook");
     }
 
     private JPanel createCard(String text, Color bgColor) {

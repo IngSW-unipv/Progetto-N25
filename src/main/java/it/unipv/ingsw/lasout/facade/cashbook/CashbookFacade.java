@@ -31,11 +31,15 @@ public class CashbookFacade implements ICashbookFacade {
     }
 
     @Override
-    public boolean saveCashbook(Cashbook cashbook) {
+    public boolean saveCashbook(Cashbook cashbook) throws CashbookAlreadyExistingException{
+        if(checkAlreadyExist(cashbook)){
+            throw new CashbookAlreadyExistingException(cashbook.getName());
+        }
+
         try {
             cashBookDAO.save(cashbook);
         } catch (CashbookAlreadyExistingException e) {
-            throw new CashbookAlreadyExistingException(e.getMessage());
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -181,6 +185,16 @@ public class CashbookFacade implements ICashbookFacade {
     public List<Transaction> getVaultTransactionsOfUser(User user){
         Cashbook c = getUserDefaultCashbook(user);
         return getAutomaticTransactions(c);
+    }
+
+    private boolean checkAlreadyExist(Cashbook cashbook){
+        List<Cashbook> l=getUserCashbooks(cashbook.getUser());
+        for(Cashbook c : l){
+            if(c.getName().equals(cashbook.getName())){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

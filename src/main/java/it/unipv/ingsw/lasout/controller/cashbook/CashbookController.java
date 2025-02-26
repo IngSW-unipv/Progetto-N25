@@ -5,6 +5,7 @@ import it.unipv.ingsw.lasout.controller.cashbook.buttonModifiers.ButtonRenderer;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.cashbook.exception.CannotDeleteDefaultCashbookException;
+import it.unipv.ingsw.lasout.model.cashbook.exception.CashbookAlreadyExistingException;
 import it.unipv.ingsw.lasout.model.transaction.ManualTransaction;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.model.user.User;
@@ -30,22 +31,33 @@ public class CashbookController {
 
     // operazioni eseguite al caricamento del panel
     public static void load() {
-        setUpJComboBox();
+        setUpCashbookComboBox();
     }
 
     public static void initController() {
         // listener del combo box
-        cashbookPanel.addComboBoxListener(e -> {
+        cashbookPanel.addCashbookComboBoxListener(e -> {
             CashbookItem selected = (CashbookItem) cashbookPanel.getSelectedCashbook();
 
             // azioni da eseguire quando viene selezionato un cashbook dal combo box
             if (selected != null && selected.getId() != -1) {
                 activeCashbook = LaVaultFacade.getInstance().getCashbookFacade().getCashbook(new Cashbook(selected.getId()));
-                // test
-                System.out.println("Id cashbook selezionato: "+selected.getId());
 
+                //test
+                System.out.println("Id cashbook selezionato: " + selected.getId());
+
+                //azioni al resto del panel
                 CashbookController.setUpTransactionTable();
                 CashbookController.updateSummaryLabel();
+            } else {
+                // se seleziono "Seleziona Cashbook..."
+                activeCashbook = null;
+                // resetto righe tabella
+                DefaultTableModel model = cashbookPanel.getTableModel();
+                model.setRowCount(0);
+
+                cashbookPanel.setSummaryText("Sommario: -");
+                System.out.println("Default selected: activeCashbook reset e tabella svuotata");
             }
         });
 
@@ -101,8 +113,12 @@ public class CashbookController {
                     addTransactionDialog.dispose();
                 }
             });
+            // non mostrare se nessun cashbook è selezionato
+            CashbookItem selected = (CashbookItem) cashbookPanel.getSelectedCashbook();
+            if (selected != null && selected.getId() != -1) {
+                addTransactionDialog.setVisible(true);
+            }
 
-            addTransactionDialog.setVisible(true);
         });
 
         cashbookPanel.addEditCashbookButtonListener(editEvent -> {
@@ -120,6 +136,7 @@ public class CashbookController {
                             "Success",
                             JOptionPane.INFORMATION_MESSAGE
                     );
+
                 } catch (CannotDeleteDefaultCashbookException exception) {
                     JOptionPane.showMessageDialog(
                             editCashbookDialog,
@@ -128,13 +145,15 @@ public class CashbookController {
                             JOptionPane.ERROR_MESSAGE
                     );
                 } finally{
-                    setUpJComboBox();
+                    setUpCashbookComboBox();
                     setUpTransactionTable();
                     editCashbookDialog.dispose();
                 }
             });
 
             editCashbookDialog.addSaveButtonListener(saveEvent ->{
+                String newName = editCashbookDialog.getNameField().getText();
+                activeCashbook.setName(newName);
                 try {
                     LaVaultFacade.getInstance().getCashbookFacade().editCashbook(activeCashbook);
                     JOptionPane.showMessageDialog(
@@ -151,7 +170,7 @@ public class CashbookController {
                             JOptionPane.ERROR_MESSAGE
                     );
                 } finally{
-                    setUpJComboBox();
+                    setUpCashbookComboBox();
                     editCashbookDialog.dispose();
                 }
             });
@@ -172,7 +191,7 @@ public class CashbookController {
                 String name = addCashbookDialog.getNameField().getText();
                 Cashbook newCashbook = new Cashbook(loggedUser, name, false);
 
-                try{
+                try {
                     LaVaultFacade.getInstance().getCashbookFacade().saveCashbook(newCashbook);
                     JOptionPane.showMessageDialog(
                             addCashbookDialog,
@@ -187,8 +206,15 @@ public class CashbookController {
                             "Error",
                             JOptionPane.ERROR_MESSAGE
                     );
+                } catch (CashbookAlreadyExistingException exception) {
+                    JOptionPane.showMessageDialog(
+                            addCashbookDialog,
+                            exception.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
                 } finally {
-                    setUpJComboBox();
+                    setUpCashbookComboBox();
                     addCashbookDialog.dispose();
                 }
             });
@@ -200,9 +226,9 @@ public class CashbookController {
 
     }
 
-    public static void setUpJComboBox() {
+    public static void setUpCashbookComboBox() {
         // svuoto la combo box
-        cashbookPanel.resetComboBox();
+        cashbookPanel.resetCashbookComboBox();
 
         // voce di default "Seleziona Cashbook..."
         cashbookPanel.addCashbookItem(new CashbookItem(-1, "Seleziona Cashbook..."));
@@ -213,6 +239,8 @@ public class CashbookController {
                 new CashbookItem(c.getId(), c.getName())
             );
         }
+
+        cashbookPanel.getCashbookComboBox().setSelectedIndex(0);
     }
 
     public static Cashbook getActiveCashbook() {
@@ -225,30 +253,51 @@ public class CashbookController {
     }
 
     public static void setUpTransactionTable() {
-        DefaultTableModel model = cashbookPanel.getTableModel();
-        Cashbook selectedCashbook = LaVaultFacade.getInstance().getCashbookFacade().getCashbook(new Cashbook(cashbookPanel.getSelectedCashbook().getId()));
-        List<Transaction> transactionList=selectedCashbook.getTransactionList();
+        JTable table = cashbookPanel.getTransactionsTable();
+        // Se la tabella è in modalità editing, annulla l'editing
+        if (table.isEditing()) {
+            table.getCellEditor().cancelCellEditing();
+        }
 
-        // cancella righe delle precedenti selezioni
+        DefaultTableModel model = cashbookPanel.getTableModel();
+        // Reimposta esplicitamente le intestazioni per garantire la struttura corretta
+        model.setColumnIdentifiers(new Object[]{"Date", "Amount", "Category", "Notes", "Edit"});
+
+        CashbookItem selectedItem = cashbookPanel.getSelectedCashbook();
+        if (selectedItem == null || selectedItem.getId() == -1) {
+            model.setRowCount(0);
+            return;
+        }
+
+        Cashbook selectedCashbook = LaVaultFacade.getInstance()
+                .getCashbookFacade().getCashbook(new Cashbook(selectedItem.getId()));
+        if (selectedCashbook == null) {
+            model.setRowCount(0);
+            return;
+        }
+        activeCashbook = selectedCashbook;
+
+        // Svuota il modello prima di popolare la tabella
         model.setRowCount(0);
 
-        // creazione di ogni riga della tabella
-        for (Transaction t : transactionList) {
-            Object[] rowData = new Object[] {
-                    t.getDate(),
-                    t.getAmount(),
-                    t.getCategory(),
-                    t.getNotes(),
-                    "Edit"          // placeholder che poi viene coperto dal bottone
-            };
-            model.addRow(rowData);
+        // Imposta una volta sola renderer e editor per la colonna "Edit"
+        table.getColumn("Edit").setCellRenderer(new ButtonRenderer());
+        table.getColumn("Edit").setCellEditor(new ButtonEditor(new JCheckBox()));
 
-            // aggiungo bottone all'ultima cella
-            JTable table = cashbookPanel.getTransactionsTable();
-            table.getColumn("Edit").setCellRenderer(new ButtonRenderer());
-            table.getColumn("Edit").setCellEditor(new ButtonEditor(new JCheckBox()));
-
+        List<Transaction> transactionList = selectedCashbook.getTransactionList();
+        if (transactionList != null) {
+            for (Transaction t : transactionList) {
+                Object[] rowData = {
+                        t.getDate(),
+                        t.getAmount(),
+                        t.getCategory(),
+                        t.getNotes(),
+                        "Edit" // Placeholder che verrà sostituito dal bottone
+                };
+                model.addRow(rowData);
+            }
         }
     }
+
 }
 

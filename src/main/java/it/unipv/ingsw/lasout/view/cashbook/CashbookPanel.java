@@ -13,7 +13,7 @@ public class CashbookPanel extends JPanel {
     private JLabel summaryLabel;                      // Sommario:
     private JButton editCashbookButton;                   // Pulsante Impostazioni
     private JTable transactionsTable;                 // Tabella per le transazioni
-    private DefaultTableModel tableModel;
+    private DefaultTableModel tableModel;             // Sono gli header della tabella
     private JButton addTransactionsButton;            // Pulsante Aggiungi Transazioni
     private JButton addCashbookButton;
 
@@ -96,9 +96,9 @@ public class CashbookPanel extends JPanel {
     }
 
     /*
-    * Comandi per la gestione della combo box
+    * Comandi per combo box
     * */
-    public void resetComboBox() {
+    public void resetCashbookComboBox() {
         cashbookComboBox.removeAllItems();
     }
 
@@ -108,6 +108,10 @@ public class CashbookPanel extends JPanel {
 
     public CashbookItem getSelectedCashbook() {
         return (CashbookItem) cashbookComboBox.getSelectedItem();
+    }
+
+    public JComboBox<CashbookItem> getCashbookComboBox() {
+        return cashbookComboBox;
     }
 
     /*
@@ -139,7 +143,7 @@ public class CashbookPanel extends JPanel {
     /*
      * Listeners
      **/
-    public void addComboBoxListener(ActionListener listener) {
+    public void addCashbookComboBoxListener(ActionListener listener) {
         cashbookComboBox.addActionListener(listener);
     }
 
