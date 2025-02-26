@@ -94,10 +94,12 @@ public class VirtualVaultPanel extends JPanel {
     }
     public void resetInfoPanel() {infoPanel.removeAll();}
 
-    //-----------------
+    //-----------------Tasto nuovo gruppo-----------------
     public JButton getAddVirtualVaultButton() {
         return addVirtualVaultButton;
     }
+    public void addVirtualVaultButtonListener(ActionListener actionListener) {addVirtualVaultButton.addActionListener(actionListener);}
+
     //----------------
     public JButton getDeleteVirtualVaultButton() {
         return deleteVirtualVaultButton;

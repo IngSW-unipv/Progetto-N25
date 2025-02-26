@@ -46,6 +46,16 @@ public class ConcreteVirtualVaultFacade implements VirtualVaultFacade {
     }
 
     @Override
+    public double getBalanceFromVault(VirtualVault virtualVault){
+        double result = 0;
+        try{
+            result = virtualVaultDAO.getBalanceFromVault(virtualVault);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+    @Override
     //Serve per restituire un pojo di VirtualVault
     public VirtualVault getVirtualVault(VirtualVault virtualVault){
         VirtualVault result = null;

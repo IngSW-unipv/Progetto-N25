@@ -67,12 +67,12 @@ public class ConcreteVaultFacade implements VaultFacade {
 	@Override
 	public boolean ritiroVault(User user, Double amount) {
 		
-		double balance = 0;
+
 		
 		try {
-			
-			balance = vaultDAO.balanceVault(user);
-			
+
+			double balance = vaultDAO.balanceVault(user);
+			//System.out.println("BALANCE"+ balance);
 			if((balance - amount) < 0) {
 				return false;
 				

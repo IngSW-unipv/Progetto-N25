@@ -34,7 +34,7 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
     private static final String QUERY_DELETE_AN_EXISTING_VIRTUALVAULT = "DELETE FROM $virtualvault$ WHERE id = ?";
     private static final String QUERY_DELETE_AN_EXISTING_VIRTUALVAULT_BALANCE = "DELETE FROM $virtualvault$ WHERE id = ? AND nome = 'Vault'";
     private static final String GET_ALL_VIRTUALVAULT =  "SELECT * FROM £virtualvault£ WHERE user_id = ? && nome != 'Vault'" ;
-    private static final String GET_BALANCE_FROM_VAULT =  "SELECT balance FROM £virtualvault£ WHERE  user_id = ? AND nome = 'Vault'" ;
+    private static final String GET_BALANCE_FROM_VAULT =  "SELECT balance FROM £virtualvault£ WHERE  user_id = ? AND nome = ?" ;
     private static final String UPDATE_BALANCE = "UPDATE $virtualvault$ SET balance = ? WHERE id = ? AND user_id = ?";
     private static final String GET_ID_USERID_FROM_VVP =  "SELECT id, user_id, nome FROM £virtualvault£  WHERE user_id = ? AND nome = 'Vault'";
 
@@ -116,7 +116,7 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
     public double getBalanceFromVault(VirtualVault virtualVault) throws Exception{
         double b = 0.0;
         DBQuery queryGetBalanceFromVault;
-        queryGetBalanceFromVault = DatabaseUtil.getInstance().createQuery(GET_BALANCE_FROM_VAULT,   virtualVault.getOwner().getId());
+        queryGetBalanceFromVault = DatabaseUtil.getInstance().createQuery(GET_BALANCE_FROM_VAULT,   virtualVault.getOwner().getId(), virtualVault.getName());
         DatabaseUtil.getInstance().executeQuery(queryGetBalanceFromVault);
         if(queryGetBalanceFromVault.getResultSet().next()){
             b = queryGetBalanceFromVault.getResultSet().getDouble("balance");
@@ -174,6 +174,7 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
     */
     @Override
     public void save(VirtualVault virtualVault) throws Exception {
+        /*
         //Query per l'aggiunta di un virtualvault
         DBQuery queryInsert;
         DBQuery queryGet;
@@ -215,7 +216,7 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
         }else {
             System.out.println("Importo che vuoi inserire troppo alto  "+virtualVault.getBalance()+"\nNel vault hai a disposizione: "+ VirtualVaultDAO.getInstance().getBalanceFromVault(virtualVault));
         }
-
+*/
     }
     /*
     * Metodo di update
