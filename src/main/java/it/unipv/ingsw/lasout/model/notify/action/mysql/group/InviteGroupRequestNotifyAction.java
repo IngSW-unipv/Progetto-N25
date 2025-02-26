@@ -1,4 +1,4 @@
-package it.unipv.ingsw.lasout.model.notify.action.group;
+package it.unipv.ingsw.lasout.model.notify.action.mysql.group;
 
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.Notify;

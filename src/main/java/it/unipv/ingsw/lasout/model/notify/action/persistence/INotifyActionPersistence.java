@@ -1,7 +1,6 @@
-package it.unipv.ingsw.lasout.model.notify.action.persistance;
+package it.unipv.ingsw.lasout.model.notify.action.persistence;
 
 import it.unipv.ingsw.lasout.model.notify.Notify;
-import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
 
 public interface INotifyActionPersistence {
 

@@ -1,8 +1,9 @@
 package it.unipv.ingsw.lasout.model.notify;
 
 import it.unipv.ingsw.lasout.model.group.Group;
+import it.unipv.ingsw.lasout.model.notify.action.EmptyNotifyAction;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
-import it.unipv.ingsw.lasout.model.notify.action.group.InviteGroupRequestNotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.mysql.group.InviteGroupRequestNotifyAction;
 import it.unipv.ingsw.lasout.model.user.User;
 
 public class Notify {
@@ -21,8 +22,10 @@ public class Notify {
 
     public Notify(Long id) {
         this.id = id;
+        this.notifyAction = new EmptyNotifyAction();
     }
     public Notify(Long id, String description) {
+        this(id);
         this.id = id;
         this.description = description;
     }

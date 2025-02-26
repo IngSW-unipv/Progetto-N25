@@ -1,17 +1,16 @@
-package it.unipv.ingsw.lasout.model.notify.action.friend.persistance;
+package it.unipv.ingsw.lasout.model.notify.action.mysql.friend;
 
-import it.unipv.ingsw.lasout.database.DBQuery;
-import it.unipv.ingsw.lasout.database.DatabaseUtil;
+
 import it.unipv.ingsw.lasout.model.notify.Notify;
-import it.unipv.ingsw.lasout.model.notify.action.friend.FriendRequestNotifyAction;
-import it.unipv.ingsw.lasout.model.notify.action.persistance.INotifyActionPersistence;
+import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
 import it.unipv.ingsw.lasout.model.user.User;
-import it.unipv.ingsw.lasout.model.user.UserDAO;
 
-import java.sql.ResultSet;
+public class FriendRequestNotifyAction implements INotifyAction {
 
-public class MySQLFriendRequestNotifyActionPersistence implements INotifyActionPersistence {
 
+
+
+    /*
     private static final String QUERY_LOAD_1 = "SELECT *" +
             " FROM \\'friendnotify\\'" +
             " WHERE id = ?;";
@@ -24,30 +23,48 @@ public class MySQLFriendRequestNotifyActionPersistence implements INotifyActionP
             " (id, to_user_id, from_user_id) VALUES (?, ?, ?)";
 
 
+     */
 
+    private Notify notify;
+    private User from;
+    private User to;
+
+
+    public void setFrom(User from) {
+        this.from = from;
+    }
+
+    public void setTo(User to) {
+        this.to = to;
+    }
+
+
+
+    public User getFrom() {
+        return from;
+    }
+
+    public User getTo() {
+        return to;
+    }
+
+
+    /*
     @Override
-    public void load(Notify notify) throws Exception {
-
+    public void load(Notify notify) throws Exception{
         DBQuery query = DBQuery.Builder.create()
                 .query(QUERY_LOAD_1)
                 .params(notify.getId())
                 .build();
         DatabaseUtil.getInstance().executeQuery(query);
         ResultSet resultSet = query.getResultSet();
-
-        if(resultSet == null || !resultSet.next()) throw new RuntimeException(String.format("Could not find friend notify  with id '%s'", notify.getId()));
+        if(resultSet == null || !resultSet.next()) throw new RuntimeException(String.format("Could not find friend notify  with id '%s' and user_id '%s'", notify.getId(), notify.getUserID()));
 
         User fromID = UserDAO.getInstance().getRaw(new User(resultSet.getInt("from_user_id")));
         User toID = UserDAO.getInstance().getRaw(new User(resultSet.getInt("to_user_id")));
 
-
-        try{
-            FriendRequestNotifyAction notifyAction = (FriendRequestNotifyAction) notify.getNotifyAction();
-            notifyAction.setFrom(fromID);
-            notifyAction.setTo(toID);
-        }catch (ClassCastException e){
-        }
-
+        this.from = fromID;
+        this.to = toID;
 
         query.close();
     }
@@ -64,20 +81,46 @@ public class MySQLFriendRequestNotifyActionPersistence implements INotifyActionP
 
     @Override
     public void save(Notify notify) throws Exception {
-
-        FriendRequestNotifyAction friendRequestNotifyAction = (FriendRequestNotifyAction) notify.getNotifyAction();
-
         DBQuery dbQuery =  DBQuery.Builder.create()
                 .query(QUERY_UPDATE)
-                .params(friendRequestNotifyAction.getTo().getId(),  friendRequestNotifyAction.getFrom().getId(), friendRequestNotifyAction.getNotify().getId())
+                .params(to.getId(),  from.getId(), notify.getId())
                 .build();
         DatabaseUtil.getInstance().executeQuery(dbQuery);
         if(dbQuery.getUpdateCount() == 0){
             dbQuery.setQuery(QUERY_SAVE);
-            dbQuery.setParams(friendRequestNotifyAction.getNotify().getId(), friendRequestNotifyAction.getTo().getId(),  friendRequestNotifyAction.getFrom().getId());
+            dbQuery.setParams(notify.getId(), to.getId(), from.getId());
             DatabaseUtil.getInstance().executeQuery(dbQuery);
         }
-
         dbQuery.close();
+    }
+
+     */
+
+    @Override
+    public void build() {
+
+    }
+
+    @Override
+    public Notify getNotify() {
+        return notify;
+    }
+
+    @Override
+    public void setNotify(Notify notify) {
+        this.notify = notify;
+    }
+
+    @Override
+    public String type() {
+        return "notifyfriendrequest";
+    }
+
+    @Override
+    public String toString() {
+        return "AcceptFriendRequestNotifyAction{" +
+                "from=" + from +
+                ", to=" + to +
+                '}';
     }
 }
