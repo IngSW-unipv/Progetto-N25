@@ -12,10 +12,8 @@ public class CashbookPanel extends JPanel {
     private JComboBox<CashbookItem> cashbookComboBox; // Menu a tendina
     private JLabel summaryLabel;                      // Sommario:
     private JButton settingsButton;                   // Pulsante Impostazioni
-
     private JTable transactionsTable;                 // Tabella per le transazioni
     private DefaultTableModel tableModel;
-
     private JButton addTransactionsButton;            // Pulsante Aggiungi Transazioni
 
     public CashbookPanel() {
@@ -136,6 +134,14 @@ public class CashbookPanel extends JPanel {
      **/
     public void addComboBoxListener(ActionListener listener) {
         cashbookComboBox.addActionListener(listener);
+    }
+
+    public void addSettingsButtonListener(ActionListener listener) {
+        settingsButton.addActionListener(listener);
+    }
+
+    public void addNewTransactionsButtonListener(ActionListener listener) {
+        addTransactionsButton.addActionListener(listener);
     }
 
 }
