@@ -3,6 +3,7 @@ package it.unipv.ingsw.lasout.view.mainview;
 
 import it.unipv.ingsw.lasout.controller.AppController;
 import it.unipv.ingsw.lasout.controller.account.AccountController;
+import it.unipv.ingsw.lasout.controller.cashbook.CashbookController;
 import it.unipv.ingsw.lasout.controller.group.GroupController;
 import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.controller.vault.VaultController;
