@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.controller.virtualVault;
 
+import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.facade.virtualVault.ConcreteVirtualVaultFacade;
 import it.unipv.ingsw.lasout.model.user.User;
@@ -117,9 +118,8 @@ public class VirtualVaultController {
                     if (success) {
                         JOptionPane.showMessageDialog(dialog, "VirtualVault creato con successo!");
                         dialog.dispose();
-                        /*Righe per aggiornare il saldo VAULT madre
-                        VaultPanel vaultPanel = new VaultPanel();
-                        vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getBalanceByUserId(loggedUser1));*/
+                        //Righe per aggiornare il saldo VAULT madre
+                        VaultController.load();
                         // Aggiorna la combo box per includere il nuovo vault
                         setUpComboBox();
                     } else {
