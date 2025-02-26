@@ -1,3 +1,4 @@
+
 package it.unipv.ingsw.lasout.view.vault;
 
 import java.awt.BorderLayout;
@@ -40,7 +41,7 @@ public class PaymentExecutionDialog extends JDialog{
 		paymentModeCombo = new JComboBox<>(new String[] {"Fisico", "Online"});
 		formPanel.add(paymentModeCombo);
 		
-		formPanel.add(new JLabel("Casuale:"));
+		formPanel.add(new JLabel("Causale:"));
 		causaleField = new JTextField(20);
 		formPanel.add(causaleField);
 		

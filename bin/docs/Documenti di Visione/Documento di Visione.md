@@ -1,11 +1,10 @@
-Documento di Visione 4.0  
+Documento di Visione \- LaSout  
 Partecipanti: Dervishi Claudio, Busin Lorenzo, Sanua Mattia, D’Adamo Andrea, Rizzi Davide, Demartini Riccardo
 
-LaSout  
+LaVault  
 **Obiettivo del progetto**  
 Questo progetto punta a creare un software per la gestione o il risparmio delle finanze personali (individuali) o di gruppo (collettive), in un'unica formula.  
 Un utente ha la possibilità di gestire le sue finanze registrando manualmente e/o automaticamente uscite ed entrate.  
-Inoltre c’è la possibilità per l’utente di fare un upgrade al piano “Premium” che espanda le funzionalità e che introduca un sistema di punti (l’utente base ha un piano “Lite”).  
 Tutte le funzionalità implementate in questo progetto servono a rendere il più semplice possibile la visione e il controllo delle varie spese tramite l’utilizzo di gruppi, salvadanai e conti.
 
 Il software vuole essere diviso in due parti principali: lato utente, ovvero una parte privata, e lato gruppo, dove più utenti (amici, coinquilini, parenti ecc.) potranno creare dei gruppi con diverso obiettivo (risparmio, divisione spese ecc.).
@@ -14,7 +13,7 @@ Il software vuole essere diviso in due parti principali: lato utente, ovvero una
 **(LATO PRIVATO)**
 
 **Vault**  
-Ogni utente avrà: “Il Vault", ovvero il fulcro del lato utente (un contenitore privato del saldo del singolo utente (che non potrà mai andare in rosso ma al massimo a zero)) ed è un vero e proprio conto virtuale (senza l’IBAN perchè non è una banca) visualizzato tramite un’interfaccia nella quale si può:
+Ogni utente avrà: Il “Vault", ovvero il fulcro del lato utente (un contenitore privato del saldo del singolo utente (che non potrà mai andare in rosso ma al massimo a zero)) ed è un vero e proprio conto virtuale (senza l’IBAN perchè non è una banca) visualizzato tramite un’interfaccia nella quale si può:
 
 * vedere il saldo presente sull'app;  
 * effettuare pagamenti:(permette di fare da bridge nel contesto di pagamento) si consumerà solo il saldo presente sul vault  con la possibilità di selezionare un metodo di pagamento supportato, che può essere ad esempio una carta di credito;  
@@ -51,8 +50,6 @@ Caratteristiche:
 
 * ci sarà una sezione “Sommario” con un riassunto di tutte le entrate e uscite per ogni cashBook o per intervalli di tempo (settimana, giorno, mese, anno, totale)  
 * le transazioni possono essere eliminate manualmente oppure essere spostate in un altro cashbook  
-* versione premium: aggiunge la possibilità di vedere grafici alle spese  
-* versione premium: si può ordinare la lista dei movimenti secondo filtri  
 * tutti i cashbook, ad eccezione del principale e quello relativo ai conti associati, sono eliminabili in qualsiasi momento
 
 Un movimento di un cashbook si compone di:
@@ -66,8 +63,8 @@ Per ogni nuova transazione si potrà decidere a quale categoria appartiene e a c
 Ci sono 10 categorie default, alle quali è possibile aggiungerne manualmente ulteriori:  
 Carta, Contanti, Svago, Vacanza, Cena, Investimento, Shopping, Spesa, Stipendio, Abbonamento.
 
-Ogni cashbook ha la possibilità di visualizzare uno storico filtrato (solo per utenti Premium) secondo le esigenze dell’utente, ad esempio per categoria, importo, data, tipologia.   
-L’utente deve poter modificare in qualsiasi momento il filtro e visualizzare in tempo reale lo storico dei movimenti filtrato, inoltre ogni storico può avere diversi grafici per la visualizzazione dell’andamento del cashbook.  
+Ogni cashbook ha la possibilità di visualizzare uno storico filtrato secondo le esigenze dell’utente, ad esempio per categoria, importo, data, tipologia.   
+L’utente deve poter modificare in qualsiasi momento il filtro e visualizzare in tempo reale lo storico dei movimenti filtrato, inoltre ogni storico ha un sommario per la visualizzazione dell’andamento del CashBook.  
 Una volta applicato il filtro, il cashbook mostra il credito residuo dato dai movimenti presenti applicando il filtro.
 
 **VirtualVault**  
@@ -131,43 +128,7 @@ Tutte le spese registrate all'interno del gruppo rimangono "virtuali", ovvero no
 **Creazione e partecipazione**
 
 * ogni utente potrà creare e partecipare ad un gruppo, l'utente amministratore potrà accettare l'ingresso di nuovi utenti  
-* ogni utente Lite ha la possibilità di creare un gruppo con un nome e una breve descrizione  
+* ogni utente ha la possibilità di creare un gruppo con un nome e una breve descrizione  
 * l’amministratore del gruppo può inviare un invito ad altri utenti per partecipare al gruppo  
 * solo l’utente amministratore ha la possibilità di eliminare il gruppo  
 * ogni partecipante può abbandonare il gruppo solo se i debiti sono stati saldati oppure su consenso dell’amministratore 
-
-Ogni utente Lite può creare e partecipare a un numero limitato di gruppi, a differenza dell’utente Premium il quale ha possibilità illimitate di creazione o partecipazione a gruppi.  
-Altri vantaggi della modalità Premium sono la possibilità di specificare differenziare l’importo di una spesa per ogni utente (l’utente Lite può solo suddividere le spese in parti uguali tra i partecipanti), e la visualizzazione dei grafici relativi alle spese del gruppo.
-
-**Conto di Gruppo**  
-Un “Conto di Gruppo” è un conto al quale partecipano tutti i membri del gruppo. L'amministratore ha la possibilità di impostare un obiettivo in denaro per il conto comune, e ogni partecipante può scegliere di contribuire tramite un trasferimento automatico ricorrente dal proprio vault personale al conto di gruppo. Oltre a questa opzione, i membri possono anche decidere di trasferire manualmente un importo arbitrario al conto comune prelevandolo sempre dal proprio Vault personale.  
-In caso di necessità, l'amministratore ha il potere di spostare un importo specifico dal conto di gruppo al Vault personale di uno dei membri. Qualora l'amministratore volesse eliminare il conto di gruppo, dovrà selezionare un membro a cui trasferire i fondi residui nel conto di gruppo.
-
-**VERSIONE PREMIUM**
-
-**Premium vs Base**  
-L'applicazione prevede due tipi di account: il piano Lite, che rappresenta la versione gratuita, e il piano Premium, ovvero un piano a pagamento.   
-Al momento della registrazione, ogni possiede un piano Lite, ma avrà la possibilità di effettuare in ogni momento l'upgrade al piano Premium tramite una sezione dedicata dell'applicazione. Questo aggiornamento sbloccherà diverse funzionalità aggiuntive, tra cui l'accesso a un numero maggiore di gruppi da creare, la visualizzazione di grafici e informazioni più dettagliate sulle proprie finanze e i propri obbiettivi.  
-Il pagamento per il passaggio al piano Premium sarà effettuato scalando automaticamente l’importo dal Vault dell'utente.  
-Qualora i fondi nel Vault fossero insufficienti, il sistema ritenterà il pagamento non appena i fondi saranno sufficienti. L'abbonamento al piano Premium potrà essere disdetto in qualsiasi momento, ma la cancellazione comporterà la perdita di tutti i vantaggi offerti dal piano.
-
-Limitazioni dell'account Lite:
-
-* Possibilità di creare gruppi scegliendo soltanto gli utenti partecipanti e l'importo totale della spesa condivisa, che sarà solamente divisibile in quote uguali senza la possibilità di differenziare l’importo dovuto per ogni persona.  
-* Accesso limitato al numero di gruppi a cui si può partecipare.  
-* Possibilità di creare un numero limitato di gruppi.
-
-Funzionalità dell'account Premium:
-
-* Divisione delle spese condivise con percentuali personalizzabili, tenendo conto di eventuali prestiti tra i membri del gruppo.  
-* Possibilità di suddividere in modo esatto ogni acquisto differenziando l’importo per ogni persona e non solo la suddivisione in parti uguali.  
-* Grafici sull’andamento del conto comune.  
-* Sistema di referral per ottenere vantaggi o ricompense.  
-* Accumulo di punti in base alle spese effettuate.  
-* Sconti e offerte su abbonamenti o servizi di piattaforme affiliate.  
-* Utilizzo illimitato della funzionalità VirtualVault, con la possibilità di:  
-  * Creare un numero illimitato di VirtualVault.  
-  * Monitorare il tempo necessario per raggiungere un obiettivo finanziario specifico.  
-  * Visualizzare grafici dettagliati relativi ai progressi dei VirtualVault.  
-* Utilizzo illimitato di CashBook per tracciare spese effettuate in contanti o con amici.  
-* Accesso a grafici avanzati del CashBook che includono l’andamento di spese, entrate e uscite, per un monitoraggio più completo delle finanze.

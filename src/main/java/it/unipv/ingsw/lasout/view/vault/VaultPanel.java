@@ -17,7 +17,7 @@ public class VaultPanel extends JPanel {
     private JButton aggiungiMetodoBtn;
     private JButton removeMethodBtn;
     private JList<String> paymentMethodsList;
-    private JList<Transaction> transactionsList;
+    private JList<String> transactionsList;
     private JButton depositBtn;
     private JButton withdrawBtn;
     
@@ -136,7 +136,7 @@ public class VaultPanel extends JPanel {
     	removeMethodBtn.addActionListener(l);
     }
     
-    public void updateTransactionList(ListModel<Transaction> model) {
+    public void updateTransactionList(ListModel<String> model) {
     	transactionsList.setModel(model);
     }
 }
