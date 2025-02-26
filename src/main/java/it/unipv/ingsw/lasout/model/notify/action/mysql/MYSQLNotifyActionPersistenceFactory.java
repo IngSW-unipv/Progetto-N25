@@ -1,9 +1,8 @@
 package it.unipv.ingsw.lasout.model.notify.action.mysql;
 
 import it.unipv.ingsw.lasout.model.notify.action.EmptyNotifyAction;
-import it.unipv.ingsw.lasout.model.notify.action.mysql.friend.FriendRequestNotifyAction;
-import it.unipv.ingsw.lasout.model.notify.action.mysql.friend.persistence.MySQLFriendRequestNotifyActionPersistence;
-import it.unipv.ingsw.lasout.model.notify.action.mysql.friend.persistence.MySQLFriendRequestNotifyActionPersistence;
+import it.unipv.ingsw.lasout.model.notify.action.friend.FriendRequestNotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.friend.mysql.MySQLFriendRequestNotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistenceFactory;
 

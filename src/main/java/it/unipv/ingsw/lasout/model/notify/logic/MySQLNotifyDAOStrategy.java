@@ -88,7 +88,6 @@ public class MySQLNotifyDAOStrategy implements LogicNotifyDAOStrategy{
 
     @Override
     public Notify getRaw(Notify notify) throws Exception {
-        System.out.println("getting raw  : " + notify.getId());
         DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_RAW_NOTIFY_1, notify.getId());
 
         DatabaseUtil.getInstance().executeQuery(query);
@@ -136,7 +135,6 @@ public class MySQLNotifyDAOStrategy implements LogicNotifyDAOStrategy{
                 .query(QUERY_GET_ALL_NOTIFY_1)
                 .build();
 
-        System.out.println(query);
         DatabaseUtil.getInstance().executeQuery(query);
 
         List<Notify> all = new ArrayList<Notify>();
@@ -188,7 +186,6 @@ public class MySQLNotifyDAOStrategy implements LogicNotifyDAOStrategy{
                 .build();
         DatabaseUtil.getInstance().executeQuery(query);
 
-        System.out.println(query.getKey());
 
         Long newID = query.getKey();
         notify.setId(newID);

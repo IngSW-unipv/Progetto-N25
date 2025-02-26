@@ -4,7 +4,6 @@ import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
-import it.unipv.ingsw.lasout.model.notify.action.mysql.friend.FriendRequestNotifyAction;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;
 
 import java.sql.ResultSet;
@@ -58,7 +57,6 @@ public abstract class MySQLNotifyActionPersistence implements INotifyActionPersi
 
     @Override
     public void save(Notify notify) throws Exception {
-        //FriendRequestNotifyAction friendRequestNotifyAction = (FriendRequestNotifyAction) notify.getNotifyAction();
 
         DBQuery.Builder dbQueryBuilder =  DBQuery.Builder.create().query(String.format(QUERY_UPDATE, tableName, update));
 
@@ -72,7 +70,6 @@ public abstract class MySQLNotifyActionPersistence implements INotifyActionPersi
         if(dbQuery.getUpdateCount() == 0){
             dbQueryBuilder =  DBQuery.Builder.create().query(String.format(QUERY_SAVE, tableName, insert));
             innerSave(dbQueryBuilder, notify.getNotifyAction());
-            System.out.println(dbQueryBuilder.toString());
             dbQueryBuilder.addParam(notify.getId());
             DatabaseUtil.getInstance().executeQuery(dbQueryBuilder.build());
         }

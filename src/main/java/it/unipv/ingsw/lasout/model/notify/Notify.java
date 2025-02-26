@@ -1,12 +1,11 @@
 package it.unipv.ingsw.lasout.model.notify;
 
-import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.action.EmptyNotifyAction;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
-import it.unipv.ingsw.lasout.model.notify.action.mysql.friend.FriendRequestNotifyAction;
-import it.unipv.ingsw.lasout.model.notify.action.mysql.friend.PayRequestByUserNotifyAction;
-import it.unipv.ingsw.lasout.model.notify.action.mysql.group.InviteGroupRequestNotifyAction;
-import it.unipv.ingsw.lasout.model.notify.action.mysql.group.PayRequestByGroupNotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.friend.FriendRequestNotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.friend.PayRequestByUserNotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.group.InviteGroupRequestNotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.group.PayRequestByGroupNotifyAction;
 import it.unipv.ingsw.lasout.model.user.User;
 
 public class Notify {

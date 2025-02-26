@@ -171,8 +171,6 @@ public class DBQuery {
 
         public DBQuery build(){
 
-
-            System.out.println(params != null  ? " X " :  " LOL ");
             DBQuery dbQuery = new DBQuery(queryString, params);
 
             dbQuery.setPrepareStatementBehavior(prepareStatementBehavior);

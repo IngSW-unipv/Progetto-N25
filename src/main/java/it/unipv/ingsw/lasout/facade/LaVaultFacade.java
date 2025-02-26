@@ -2,9 +2,10 @@ package it.unipv.ingsw.lasout.facade;
 
 import it.unipv.ingsw.lasout.facade.cashbook.CashbookFacade;
 import it.unipv.ingsw.lasout.facade.cashbook.ICashbookFacade;
-import it.unipv.ingsw.lasout.facade.friend.FriendFacade;
+
+import it.unipv.ingsw.lasout.facade.friend.IFriendFacade;
 import it.unipv.ingsw.lasout.facade.group.GroupFacade;
-import it.unipv.ingsw.lasout.facade.notify.NotifyFacade;
+import it.unipv.ingsw.lasout.facade.notify.INotifyFacade;
 import it.unipv.ingsw.lasout.facade.transaction.ITransactionFacade;
 import it.unipv.ingsw.lasout.facade.transaction.TransactionFacade;
 import it.unipv.ingsw.lasout.facade.user.ISessionFacade;
@@ -27,8 +28,8 @@ public class LaVaultFacade {
 
     private IUserFacade userFacade;
     private ISessionFacade sessionFacade;
-    private FriendFacade friendFacade;
-    private NotifyFacade notifyFacade;
+    private IFriendFacade friendFacade;
+    private INotifyFacade notifyFacade;
     private GroupFacade groupFacade;
     private VaultFacade vaultFacade;
     private VirtualVaultFacade virtualVaultFacade;
@@ -39,8 +40,8 @@ public class LaVaultFacade {
 
         try{
             this.userFacade = (IUserFacade) loadClass("user").getDeclaredConstructor().newInstance();
-            this.notifyFacade = (NotifyFacade) loadClass("notify").getDeclaredConstructor().newInstance();
-            this.friendFacade = (FriendFacade) loadClass("friend").getDeclaredConstructor().newInstance();
+            this.notifyFacade = (INotifyFacade) loadClass("notify").getDeclaredConstructor().newInstance();
+            this.friendFacade = (IFriendFacade) loadClass("friend").getDeclaredConstructor().newInstance();
             this.sessionFacade = (ISessionFacade) loadClass("session").getDeclaredConstructor().newInstance();
             this.groupFacade = (GroupFacade) loadClass("group").getDeclaredConstructor().newInstance();
             this.vaultFacade = (VaultFacade) loadClass("vault").getDeclaredConstructor().newInstance();
@@ -61,11 +62,11 @@ public class LaVaultFacade {
 
     public VirtualVaultFacade getVirtualVaultFacade() {return virtualVaultFacade;}
 
-    public FriendFacade getFriendFacade() {
+    public IFriendFacade getFriendFacade() {
         return friendFacade;
     }
 
-    public NotifyFacade getNotifyFacade() {
+    public INotifyFacade getNotifyFacade() {
         return notifyFacade;
     }
 
