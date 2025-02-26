@@ -179,7 +179,7 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
         DBQuery queryInsert;
         DBQuery queryGet;
 
-        double b = getBalanceFromVault(virtualVault);
+
 
             if (virtualVault.getID() != 0) {
                 queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_VIRTUALVAULT_ID, virtualVault.getID(), virtualVault.getName(), virtualVault.getOwner().getId(), virtualVault.getBalance());
@@ -188,7 +188,7 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
 
                 queryGet = DatabaseUtil.getInstance().createQuery(GET_ID_USERID_FROM_VVP, virtualVault.getOwner().getId());
                 DatabaseUtil.getInstance().executeQuery(queryGet);
-                getIdFromVvP(virtualVault, b, queryGet);
+
 
 
                 if(rs!=null)throw new Exception();
@@ -206,7 +206,7 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
 
                 queryGet = DatabaseUtil.getInstance().createQuery(GET_ID_USERID_FROM_VVP, virtualVault.getOwner().getId());
                 DatabaseUtil.getInstance().executeQuery(queryGet);
-                getIdFromVvP(virtualVault, b, queryGet);
+
 
                 if(rs!=null)throw new Exception();
                 if(virtualVault.getID()==0) virtualVault.setID((int)queryInsert.getKey());
@@ -254,12 +254,6 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
             //Chiusura query
             queryDelete.close();
         }
-
-
-
-
-
-
     }
 
 

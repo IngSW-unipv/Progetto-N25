@@ -9,6 +9,7 @@ import it.unipv.ingsw.lasout.view.group.info.ExpenseRowPanel;
 import it.unipv.ingsw.lasout.view.group.info.InfoRowPanel;
 import it.unipv.ingsw.lasout.view.mainview.MainUIView;
 //import it.unipv.ingsw.lasout.view.virtualVault.AddNewVirtualVault;
+import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 import it.unipv.ingsw.lasout.view.virtualVault.AddVirtualVaultDialog;
 import it.unipv.ingsw.lasout.view.virtualVault.VirtualVaultItem;
 import it.unipv.ingsw.lasout.view.virtualVault.VirtualVaultPanel;
@@ -16,6 +17,8 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+
+
 
 public class VirtualVaultController {
 
@@ -114,6 +117,9 @@ public class VirtualVaultController {
                     if (success) {
                         JOptionPane.showMessageDialog(dialog, "VirtualVault creato con successo!");
                         dialog.dispose();
+                        /*Righe per aggiornare il saldo VAULT madre
+                        VaultPanel vaultPanel = new VaultPanel();
+                        vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getBalanceByUserId(loggedUser1));*/
                         // Aggiorna la combo box per includere il nuovo vault
                         setUpComboBox();
                     } else {
