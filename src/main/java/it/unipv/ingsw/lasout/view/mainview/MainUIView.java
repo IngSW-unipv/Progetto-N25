@@ -9,6 +9,7 @@ import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.controller.virtualVault.VirtualVaultController;
 import it.unipv.ingsw.lasout.view.account.AccountPanel;
+import it.unipv.ingsw.lasout.view.cashbook.CashbookPanel;
 import it.unipv.ingsw.lasout.view.group.GroupPanel;
 import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 import it.unipv.ingsw.lasout.view.vault.VaultPanel;
@@ -70,7 +71,6 @@ public class MainUIView extends JFrame {
         GroupPanel groupPanel = new GroupPanel(this);
         new GroupController(groupPanel);
         contentPanel.add(groupPanel, "Group");
-        contentPanel.add(createCard("Contenuto: Cashbook", new Color(210, 105, 30)), "cashbook");
         contentPanel.add(createCard("Contenuto: Notifies", new Color(150, 75, 0)), "notifies");
         contentPanel.add(createCard("Contenuto: Friends", new Color(205, 92, 92)), "friends");
 
@@ -82,6 +82,11 @@ public class MainUIView extends JFrame {
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(leftPanel, BorderLayout.WEST);
         getContentPane().add(contentPanel, BorderLayout.CENTER);
+
+        // Aggiunta CashbookPanel
+        CashbookPanel cashbookPanel = new CashbookPanel();
+        new CashbookController(cashbookPanel); // Passiamo l'utente
+        contentPanel.add(cashbookPanel, "cashbook");
     }
 
     private JPanel createCard(String text, Color bgColor) {
