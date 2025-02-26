@@ -63,6 +63,43 @@ public class ConcreteVaultFacade implements VaultFacade {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	@Override
+	public boolean ritiroVault(User user, Double amount) {
+		
+		double balance = 0;
+		
+		try {
+			
+			balance = vaultDAO.balanceVault(user);
+			
+			if((balance - amount) < 0) {
+				return false;
+				
+			}else {
+				vaultDAO.withdrawBalanceWithUser(user, amount);
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		return true;
+	}
+	
+	@Override
+	public boolean depositoVault(User user, Double amount) {
+		
+		try {
+			
+			vaultDAO.depositBalanceWithUser(user, amount);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		return true;
+	}
 
 	@Override
 	public boolean newVaultinVirtualVault(Vault vault, User user) {

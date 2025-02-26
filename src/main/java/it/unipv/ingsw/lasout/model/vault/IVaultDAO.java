@@ -17,4 +17,10 @@ public interface IVaultDAO extends IDao<Vault>{
 
 	Vault getVaultIDbyUser(User user) throws Exception;
 
+	double balanceVault(User user) throws Exception;
+
+	void withdrawBalanceWithUser(User user, double amount) throws Exception;
+
+	void depositBalanceWithUser(User user, double amount) throws Exception;
+
 }

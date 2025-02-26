@@ -31,8 +31,11 @@ public class VaultDAO implements IVaultDAO{
     private static final String INSERT_A_NEW_VAULT = "INSERT INTO \\'vault\\' (virtualvault_id) VALUES (?)";
     private static final String DELETE_AN_EXISTING_VAULT = "DELETE FROM £virtualvault£ WHERE id = ?";
     private static final String UPDATE_BALANCE = "UPDATE virtualvault SET balance = balance + ? WHERE id = ?";
+    private static final String UPDATE_BALANCE_USERID = "UPDATE virtualvault SET balance = balance + ? WHERE user_id = ?";
     private static final String WITHDRAW_BALANCE = "UPDATE virtualvault SET balance = balance - ? WHERE id = ? AND balance >= ?";
+    private static final String WITHDRAW_BALANCE_USERID = "UPDATE virtualvault SET balance = balance - ? WHERE user_id = ? AND balance >= ?";
     private static final String GET_BALANCE = "SELECT balance FROM \\'virtualvault\\' WHERE id = ?";
+    private static final String GET_BALANCE_BY_USER_ID = "SELECT balance FROM \\'virtualvault\\' WHERE user_id = ? AND nome = 'Vault'";
     
     
 	public List<Vault> getAllbyName() throws Exception {
@@ -66,6 +69,21 @@ public class VaultDAO implements IVaultDAO{
 		}
 	
 	@Override
+	public double balanceVault(User user) throws Exception{
+		 DBQuery query = DatabaseUtil.getInstance().createQuery(GET_BALANCE_BY_USER_ID, user.getId());
+		 DatabaseUtil.getInstance().executeQuery(query);
+		 
+		 ResultSet result = query.getResultSet();
+		 
+		 if(result == null  || !result.next()) throw new RuntimeException("Error");
+		 
+		 double balance = result.getDouble("balance");
+		 
+		 return balance;
+		
+	}
+	
+	@Override
 	public void updateBalance(Vault vault, double amount) throws Exception {
 	    DBQuery query = DatabaseUtil.getInstance().createQuery(UPDATE_BALANCE, amount, vault.getVv_id());
 	    DatabaseUtil.getInstance().executeQuery(query);
@@ -73,6 +91,27 @@ public class VaultDAO implements IVaultDAO{
 	    if (query.getResultSet() != null) throw new Exception("Errore nell'aggiornamento del balance.");
 
 	    query.close();
+	}
+	
+	@Override
+	public void depositBalanceWithUser(User user, double amount) throws Exception{
+		DBQuery query = DatabaseUtil.getInstance().createQuery(UPDATE_BALANCE_USERID, amount, user.getId());
+	    DatabaseUtil.getInstance().executeQuery(query);
+
+	    if (query.getResultSet() != null) throw new Exception("Errore nell'aggiornamento del balance.");
+
+	    query.close();
+	}
+	
+	@Override
+	public void withdrawBalanceWithUser(User user, double amount) throws Exception {
+		DBQuery query = DatabaseUtil.getInstance().createQuery(WITHDRAW_BALANCE_USERID, amount, user.getId(), amount);
+		DatabaseUtil.getInstance().executeQuery(query);
+		
+		if(query.getResultSet() != null) throw new Exception("Errore nell'aggiornamento del balance.");
+		
+		query.close();
+		
 	}
 	
 	@Override
