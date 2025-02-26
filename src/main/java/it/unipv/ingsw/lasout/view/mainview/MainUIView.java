@@ -36,6 +36,7 @@ public class MainUIView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(880, 660);
         setLocationRelativeTo(null);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(MainUIView.class.getResource("/view/logo.png")));
 
         // Pannello sinistro con i bottoni di navigazione
         leftPanel = new JPanel();

@@ -18,6 +18,7 @@ public class LoginView extends JFrame {
         setSize(400, 220);
         setLocationRelativeTo(null);
         setBackground(LaColor.SFONDO);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(LoginView.class.getResource("/view/logo.png")));
 
         // Pannello principale con GridBagLayout
         JPanel mainPanel = new JPanel(new GridBagLayout());

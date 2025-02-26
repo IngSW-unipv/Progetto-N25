@@ -7,6 +7,7 @@ import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.view.cashbook.CashbookPanel;
 import it.unipv.ingsw.lasout.view.cashbook.CashbookItem;
+import it.unipv.ingsw.lasout.view.cashbook.transactions.AddTransactionDialog;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -42,6 +43,14 @@ public class CashbookController {
                 CashbookController.updateSummaryLabel();
             }
         });
+
+        cashbookPanel.addNewTransactionsButtonListener( e->{
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(cashbookPanel);
+            AddTransactionDialog dialog = new AddTransactionDialog(frame);
+
+            dialog.setVisible(true);
+        });
+
 
     }
 
@@ -92,9 +101,8 @@ public class CashbookController {
             JTable table = cashbookPanel.getTransactionsTable();
             table.getColumn("Edit").setCellRenderer(new ButtonRenderer());
             table.getColumn("Edit").setCellEditor(new ButtonEditor(new JCheckBox()));
+
         }
     }
-
-
 }
 
