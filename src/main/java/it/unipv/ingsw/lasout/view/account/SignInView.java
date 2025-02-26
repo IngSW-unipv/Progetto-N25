@@ -16,6 +16,7 @@ public class SignInView extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(400, 260);
         setLocationRelativeTo(null);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(SignInView.class.getResource("/view/logo.png")));
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
