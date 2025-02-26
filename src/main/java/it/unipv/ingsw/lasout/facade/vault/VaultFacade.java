@@ -38,4 +38,6 @@ public interface VaultFacade {
 	boolean ritiroVault(User user, Double amount);
 
 	boolean depositoVault(User user, Double amount);
+
+	double getBalanceByUserId(User user);
 }

@@ -9,6 +9,8 @@ public interface VirtualVaultFacade {
 
     boolean newVirtualVault(VirtualVault virtualVault, User user);
 
+    double getBalanceFromVault(VirtualVault virtualVault);
+
     VirtualVault getVirtualVault(VirtualVault virtualVault);
 
     List<VirtualVault> getAllVirtualVault(User user);
