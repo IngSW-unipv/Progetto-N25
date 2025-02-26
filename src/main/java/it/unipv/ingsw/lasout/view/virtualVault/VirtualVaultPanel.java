@@ -105,7 +105,8 @@ public class VirtualVaultPanel extends JPanel {
         return deleteVirtualVaultButton;
     }
 
-
-
-
+    //Metodo per ottenere la JComboBox per il controller
+    public JComboBox<VirtualVaultItem> getVaultComboBox() {
+        return virtualVaultComboBox;
+    }
 }
