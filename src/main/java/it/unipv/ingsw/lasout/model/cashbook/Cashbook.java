@@ -34,6 +34,12 @@ public class Cashbook {
         this.transactionList = transactionList;
     }
 
+    public Cashbook(User user, String name, boolean isDefault) {
+        this.user = user;
+        this.name = name;
+        this.isDefault = isDefault;
+    }
+
     public int getId() {
         return id;
     }

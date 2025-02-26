@@ -50,6 +50,7 @@ public class RdbCashbookDao implements ICashbookDAO {
     private static final String INSERT_IN_CASHBOOKTRANSACTIONS = "INSERT INTO £cashbooktransactions£ (cashbook_id, transaction_id) VALUES(?,?)";
     private static final String INSERT_CASHBOOK_ID = "INSERT INTO £cashbook£ (id, user_id, name, type) VALUES(?,?,?,?)";
     private static final String INSERT_CASHBOOK_NOID = "INSERT INTO £cashbook£ (user_id, name, type) VALUES (?, ?, ?);";
+    private static final String UPDATE_CASHBOOK = "UPDATE £cashbook£ SET name=? WHERE id=?";
 
     private Cashbook extractRawFromResultSet(ResultSet rs) throws SQLException {
         Cashbook savedCashbook = new Cashbook();
@@ -169,6 +170,16 @@ public class RdbCashbookDao implements ICashbookDAO {
                 return c;
         }
         return null;
+    }
+
+    @Override
+    public void addTransaction(Cashbook cashbook, Transaction transaction) throws Exception{
+        DBQuery query = DatabaseUtil.getInstance().createQuery(INSERT_IN_CASHBOOKTRANSACTIONS, cashbook.getId(), transaction.getId());
+        DatabaseUtil.getInstance().executeQuery(query);
+
+        RdbTransactionDao.getInstance().save(transaction);
+
+        query.close();
     }
 
     /**
@@ -295,8 +306,10 @@ public class RdbCashbookDao implements ICashbookDAO {
      * @throws Exception errore nell'esecuzione della query sql
      */
     public void update(Cashbook cashbook) throws Exception {
-        delete(cashbook);
-        save(cashbook);
+        DBQuery query = DatabaseUtil.getInstance().createQuery(UPDATE_CASHBOOK, cashbook.getName(), cashbook.getId());
+        DatabaseUtil.getInstance().executeQuery(query);
+
+        query.close();
     }
 
     @Override

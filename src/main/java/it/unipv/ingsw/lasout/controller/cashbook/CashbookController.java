@@ -4,9 +4,14 @@ import it.unipv.ingsw.lasout.controller.cashbook.buttonModifiers.ButtonEditor;
 import it.unipv.ingsw.lasout.controller.cashbook.buttonModifiers.ButtonRenderer;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
+import it.unipv.ingsw.lasout.model.cashbook.exception.CannotDeleteDefaultCashbookException;
+import it.unipv.ingsw.lasout.model.transaction.ManualTransaction;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
+import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.view.cashbook.CashbookPanel;
 import it.unipv.ingsw.lasout.view.cashbook.CashbookItem;
+import it.unipv.ingsw.lasout.view.cashbook.dialogs.AddCashbookDialog;
+import it.unipv.ingsw.lasout.view.cashbook.dialogs.EditCashbookDialog;
 import it.unipv.ingsw.lasout.view.cashbook.transactions.AddTransactionDialog;
 
 import javax.swing.*;
@@ -46,9 +51,150 @@ public class CashbookController {
 
         cashbookPanel.addNewTransactionsButtonListener( e->{
             JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(cashbookPanel);
-            AddTransactionDialog dialog = new AddTransactionDialog(frame);
+            AddTransactionDialog addTransactionDialog = new AddTransactionDialog(frame);
 
-            dialog.setVisible(true);
+            // aggiungo listener al bottone della finestra appena creata
+            addTransactionDialog.addSaveButtonActionListener(e1 -> {
+                try{
+                    double amount = Double.parseDouble(addTransactionDialog.getAmountField().getText());
+                    String date = addTransactionDialog.getDateField().getText();
+                    String category = addTransactionDialog.getCategoryField().getText();
+                    String notes = addTransactionDialog.getNotesField().getText();
+
+                    ManualTransaction transaction = new ManualTransaction(amount, date, category, notes);
+                    System.out.println(activeCashbook.toString());
+
+                    try{
+                        LaVaultFacade.getInstance().getCashbookFacade().addTransaction(activeCashbook, transaction);
+                        JOptionPane.showMessageDialog(
+                                addTransactionDialog,
+                                "Transaction added successfully",
+                                "Success",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
+                    } catch (NullPointerException npe) {
+                        JOptionPane.showMessageDialog(
+                                addTransactionDialog,
+                                "Unable to add transaction",
+                                "Save Error",
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                    }
+                } catch (NumberFormatException exception) {
+                    JOptionPane.showMessageDialog(
+                            addTransactionDialog,
+                            "Incorrect amount field format, only numbers and '.' allowed",
+                            "Format error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                    addTransactionDialog.getAmountField().setText("0");
+                }catch (Exception exception) {
+                    JOptionPane.showMessageDialog(
+                            addTransactionDialog,
+                            exception.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                } finally {
+                    CashbookController.setUpTransactionTable();
+                    CashbookController.updateSummaryLabel();
+                    addTransactionDialog.dispose();
+                }
+            });
+
+            addTransactionDialog.setVisible(true);
+        });
+
+        cashbookPanel.addEditCashbookButtonListener(editEvent -> {
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(cashbookPanel);
+            EditCashbookDialog editCashbookDialog = new EditCashbookDialog(frame);
+
+            editCashbookDialog.setNameField(cashbookPanel.getSelectedCashbook().getName());
+
+            editCashbookDialog.addDeleteButtonListener(e1 ->{
+                try {
+                    LaVaultFacade.getInstance().getCashbookFacade().deleteCashbook(activeCashbook);
+                    JOptionPane.showMessageDialog(
+                            editCashbookDialog,
+                            "Cashbook deleted successfully",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                } catch (CannotDeleteDefaultCashbookException exception) {
+                    JOptionPane.showMessageDialog(
+                            editCashbookDialog,
+                            exception.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                } finally{
+                    setUpJComboBox();
+                    setUpTransactionTable();
+                    editCashbookDialog.dispose();
+                }
+            });
+
+            editCashbookDialog.addSaveButtonListener(saveEvent ->{
+                try {
+                    LaVaultFacade.getInstance().getCashbookFacade().editCashbook(activeCashbook);
+                    JOptionPane.showMessageDialog(
+                            editCashbookDialog,
+                            "Cashbook edited successfully",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                } catch (Exception exception) {
+                    JOptionPane.showMessageDialog(
+                            editCashbookDialog,
+                            exception.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                } finally{
+                    setUpJComboBox();
+                    editCashbookDialog.dispose();
+                }
+            });
+
+            // non mostrare se nessun cashbook è selezionato
+            CashbookItem selected = (CashbookItem) cashbookPanel.getSelectedCashbook();
+            if (selected != null && selected.getId() != -1) {
+                editCashbookDialog.setVisible(true);
+            }
+        });
+
+        cashbookPanel.addCreateCashbookButtonListener(e -> {
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(cashbookPanel);
+            AddCashbookDialog addCashbookDialog = new AddCashbookDialog(frame);
+
+            addCashbookDialog.addSaveButtonListener(e1 -> {
+                User loggedUser = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
+                String name = addCashbookDialog.getNameField().getText();
+                Cashbook newCashbook = new Cashbook(loggedUser, name, false);
+
+                try{
+                    LaVaultFacade.getInstance().getCashbookFacade().saveCashbook(newCashbook);
+                    JOptionPane.showMessageDialog(
+                            addCashbookDialog,
+                            "Cashbook Added successfully",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                } catch (NullPointerException npe) {
+                    JOptionPane.showMessageDialog(
+                            addCashbookDialog,
+                            npe.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                } finally {
+                    setUpJComboBox();
+                    addCashbookDialog.dispose();
+                }
+            });
+
+            addCashbookDialog.setVisible(true);
+
         });
 
 

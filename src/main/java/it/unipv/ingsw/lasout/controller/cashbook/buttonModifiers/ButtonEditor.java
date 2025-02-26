@@ -70,7 +70,9 @@ public class ButtonEditor extends DefaultCellEditor {
                 AutomaticTransaction t = (AutomaticTransaction) transaction;
                 editDialog.getAmountField().setEnabled(false);
                 editDialog.getDateField().setEnabled(false);
+                editDialog.getCategoryField().setEnabled(false);
                 editDialog.getNotesField().setEnabled(false);
+                editDialog.getDeleteButton().setEnabled(false);
             }
 
             editDialog.addSaveButtonActionListener(e ->{
@@ -104,10 +106,6 @@ public class ButtonEditor extends DefaultCellEditor {
                                 JOptionPane.ERROR_MESSAGE
                         );
                     }
-
-                    CashbookController.setUpTransactionTable();
-                    CashbookController.updateSummaryLabel();
-                    editDialog.dispose();
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(
                             editDialog,
@@ -116,7 +114,33 @@ public class ButtonEditor extends DefaultCellEditor {
                             JOptionPane.ERROR_MESSAGE
                     );
                     editDialog.getAmountField().setText(String.valueOf(transaction.getAmount()));
+                } finally {
+                    CashbookController.setUpTransactionTable();
+                    CashbookController.updateSummaryLabel();
+                    editDialog.dispose();
                 }
+            });
+
+            editDialog.addDeleteButtonActionListener(e -> {
+                try{
+                    LaVaultFacade.getInstance().getCashbookFacade().removeTransaction(getActiveCashbook(), transaction);
+                    JOptionPane.showMessageDialog(
+                        editDialog,
+                        "Transaction deleted successfully",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE
+                    );
+                    CashbookController.setUpTransactionTable();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(
+                        editDialog,
+                        ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                }
+
+                editDialog.dispose();
             });
 
             editDialog.setVisible(true);
