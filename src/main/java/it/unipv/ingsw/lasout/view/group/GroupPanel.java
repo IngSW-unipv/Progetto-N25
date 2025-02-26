@@ -13,21 +13,21 @@ import java.awt.event.ActionListener;
 
 public class GroupPanel extends JPanel {
 
-    private JComboBox<GroupItem> comboBox;        // Menu a tendina (in alto a sinistra)
-    private JButton nuovoGruppoBtn;               // Pulsante "Nuovo Gruppo"
+    private final JComboBox<GroupItem> comboBox;        // Menu a tendina (in alto a sinistra)
+    private final JButton nuovoGruppoBtn;               // Pulsante "Nuovo Gruppo"
 
-    private JButton impostazioniBtn;              // Pulsante "impostaz" (in alto a destra, sul pannello blu)
-    private JLabel nameLabel;                     // nome gruppo
+    private final JButton impostazioniBtn;              // Pulsante "impostaz" (in alto a destra, sul pannello blu)
+    private final JLabel nameLabel;                     // nome gruppo
 
-    private JButton invitaBtn;
-    private JButton aggiungiSpesaBtn;
-    private JButton finalizzaBtn;
+    private final JButton invitaBtn;
+    private final JButton aggiungiSpesaBtn;
+    private final JButton finalizzaBtn;
 
-    private GroupSettingsDialog settingsDialog;
-    private AddExpenseDialog addExpenseDialog;
-    private NewGroupDialog newGroupDialog;
-    private JInfoPanel infoPanel;
-    private InviteDialog inviteDialog;
+    private final GroupSettingsDialog settingsDialog;
+    private final AddExpenseDialog addExpenseDialog;
+    private final NewGroupDialog newGroupDialog;
+    private final JInfoPanel infoPanel;
+    private final InviteDialog inviteDialog;
 
     public GroupPanel(JFrame frame) {
         setLayout(new BorderLayout());
@@ -152,7 +152,7 @@ public class GroupPanel extends JPanel {
         comboBox.addItem(groupItem);
     }
 
-    public void resetComboBox(){
+    public void resetComboBox() {
         comboBox.removeAllItems();
     }
 
@@ -170,11 +170,11 @@ public class GroupPanel extends JPanel {
         return infoPanel;
     }
 
-    public void resetJInfoPanelLeft(){
+    public void resetJInfoPanelLeft() {
         infoPanel.getLeftPanel().removeAll();
     }
 
-    public void resetJInfoPanelRight(){
+    public void resetJInfoPanelRight() {
         infoPanel.getRightPanel().removeAll();
     }
 
@@ -188,22 +188,32 @@ public class GroupPanel extends JPanel {
         return settingsDialog;
     }
 
-    public void addImpostazioniListener(ActionListener l) { impostazioniBtn.addActionListener(l); }
+    public void addImpostazioniListener(ActionListener l) {
+        impostazioniBtn.addActionListener(l);
+    }
 
 
     /* =========== Tasto aggiungi spesa=============*/
     public AddExpenseDialog getAddExpenseDialog() {
         return addExpenseDialog;
     }
-    public void addAggiungiSpesaListener(ActionListener l) { aggiungiSpesaBtn.addActionListener(l); }
 
-    public JButton getAggiungiSpesaBtn() { return aggiungiSpesaBtn; }
+    public void addAggiungiSpesaListener(ActionListener l) {
+        aggiungiSpesaBtn.addActionListener(l);
+    }
+
+    public JButton getAggiungiSpesaBtn() {
+        return aggiungiSpesaBtn;
+    }
 
     /* ========== Tasto nuovo gruppo ============= */
     public NewGroupDialog getNewGroupDialog() {
         return newGroupDialog;
     }
-    public void addNuovoGruppoListener(ActionListener l) { nuovoGruppoBtn.addActionListener(l); }
+
+    public void addNuovoGruppoListener(ActionListener l) {
+        nuovoGruppoBtn.addActionListener(l);
+    }
 
     /*=========== Tasto finalizza===============*/
 
@@ -211,15 +221,21 @@ public class GroupPanel extends JPanel {
         return finalizzaBtn;
     }
 
-    public void addFinalizzaListener(ActionListener l) { finalizzaBtn.addActionListener(l); }
+    public void addFinalizzaListener(ActionListener l) {
+        finalizzaBtn.addActionListener(l);
+    }
 
     /* ============= Tasto invita ================= */
-    public void addInvitaListener(ActionListener l) { invitaBtn.addActionListener(l); }
+    public void addInvitaListener(ActionListener l) {
+        invitaBtn.addActionListener(l);
+    }
 
     public InviteDialog getInviteDialog() {
         return inviteDialog;
     }
 
-    public JButton getInvitaBtn() { return invitaBtn; }
+    public JButton getInvitaBtn() {
+        return invitaBtn;
+    }
 
 }

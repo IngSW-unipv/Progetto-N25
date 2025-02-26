@@ -34,7 +34,6 @@ public class AppController {
     }
 
 
-
     public void showLoginView() {
         loginView.setVisible(true);
         //almeno quando riapro la schermata pk ho fatto un logout o eliminato l'account i textField sono vuoti
@@ -76,14 +75,14 @@ public class AppController {
 
             //controllo che i campi non siano vuoti alla pressione del bottone
             if (username.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(signInView,"Tutti i campi sono obbligatori!","Errore di Login",JOptionPane.ERROR_MESSAGE);
-            }else if (LaVaultFacade.getInstance().getSessionFacade().isLogged()) {
+                JOptionPane.showMessageDialog(signInView, "Tutti i campi sono obbligatori!", "Errore di Login", JOptionPane.ERROR_MESSAGE);
+            } else if (LaVaultFacade.getInstance().getSessionFacade().isLogged()) {
                 // Se l'utente è loggato, nascondo la finestra di login e mostro la schermata principale (MainView)
                 loginView.setVisible(false);
                 showMainUIView();
             } else {
                 //se non è riuscito a loggarsi perché le credenziali non sono valide, mostro l’errore
-                JOptionPane.showMessageDialog(loginView,"Credenziali errate! Riprova","Errore di Login",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(loginView, "Credenziali errate! Riprova", "Errore di Login", JOptionPane.ERROR_MESSAGE);
                 signInView.clearFields();
             }
         }
@@ -117,14 +116,14 @@ public class AppController {
             LaVaultFacade.getInstance().getSessionFacade().login(userCarrier);
 
             if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
-                JOptionPane.showMessageDialog(signInView,"Tutti i campi sono obbligatori!","Errore di Registrazione",JOptionPane.ERROR_MESSAGE);
-            } else if(!LaVaultFacade.getInstance().getSessionFacade().isLogged()) {
+                JOptionPane.showMessageDialog(signInView, "Tutti i campi sono obbligatori!", "Errore di Registrazione", JOptionPane.ERROR_MESSAGE);
+            } else if (!LaVaultFacade.getInstance().getSessionFacade().isLogged()) {
                 LaVaultFacade.getInstance().getUserFacade().createAccount(userCarrier);
-                JOptionPane.showMessageDialog(signInView,"Registrazione completata! Ora puoi effettuare il login","Registrazione Completata",JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(signInView, "Registrazione completata! Ora puoi effettuare il login", "Registrazione Completata", JOptionPane.INFORMATION_MESSAGE);
                 signInView.dispose();
                 loginView.setVisible(true);
-            }else{
-                JOptionPane.showMessageDialog(signInView,"User already exist, impossible to CREATE your account. Please use another username","Errore di Registrazione",JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(signInView, "User already exist, impossible to CREATE your account. Please use another username", "Errore di Registrazione", JOptionPane.ERROR_MESSAGE);
                 signInView.clearFields();
             }
         }

@@ -1,8 +1,8 @@
 package it.unipv.ingsw.lasout.view.group;
 
 public class GroupItem {
-    private int id;
-    private String name;
+    private final int id;
+    private final String name;
 
     public GroupItem(int id, String name) {
         this.id = id;
@@ -21,5 +21,6 @@ public class GroupItem {
     @Override
     public String toString() {
         return name;
+
     }
 }

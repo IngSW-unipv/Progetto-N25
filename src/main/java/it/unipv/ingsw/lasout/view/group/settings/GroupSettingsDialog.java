@@ -8,11 +8,11 @@ import java.awt.event.ActionListener;
 
 public class GroupSettingsDialog extends JDialog {
 
-    private JButton eliminaUtenti;
-    private JButton lasciaGruppo;
-    private JButton eliminaGruppo;
-    private RemoveParticipantDialog remuveDialog;
-    private JLabel admin;
+    private final JButton eliminaUtenti;
+    private final JButton lasciaGruppo;
+    private final JButton eliminaGruppo;
+    private final RemoveParticipantDialog remuveDialog;
+    private final JLabel admin;
 
     public GroupSettingsDialog(Frame parent) {
         super(parent, "Impostazioni Gruppo", true);
@@ -26,7 +26,7 @@ public class GroupSettingsDialog extends JDialog {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(LaColor.SFONDO);
 
-        admin =new JLabel();
+        admin = new JLabel();
         eliminaUtenti = new JButton("Elimina utenti");
         lasciaGruppo = new JButton("Lascia gruppo");
         eliminaGruppo = new JButton("Elimina gruppo");

@@ -8,8 +8,8 @@ import java.awt.event.ActionListener;
 
 public class NewGroupDialog extends JDialog {
 
-    private JTextField nomeGruppoField;
-    private JButton creaButton;
+    private final JTextField nomeGruppoField;
+    private final JButton creaButton;
 
     public NewGroupDialog(Frame parent) {
         super(parent, "Crea Nuovo Gruppo", true);

@@ -8,6 +8,7 @@ import it.unipv.ingsw.lasout.controller.group.GroupController;
 import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.controller.virtualVault.VirtualVaultController;
+import it.unipv.ingsw.lasout.view.LaColor;
 import it.unipv.ingsw.lasout.view.account.AccountPanel;
 import it.unipv.ingsw.lasout.view.cashbook.CashbookPanel;
 import it.unipv.ingsw.lasout.view.group.GroupPanel;
@@ -31,7 +32,7 @@ public class MainUIView extends JFrame {
     };
 
     public MainUIView(AppController appController) {
-        setTitle("Finestra Principale");
+        setTitle("La Vault");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(880, 660);
         setLocationRelativeTo(null);
@@ -41,11 +42,14 @@ public class MainUIView extends JFrame {
         leftPanel = new JPanel();
         leftPanel.setLayout(new GridLayout(7, 1, 10, 10));
         leftPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        leftPanel.setBackground(LaColor.SFONDO);
 
         navButtons = new JButton[buttonLabels.length];
         for (int i = 0; i < buttonLabels.length; i++) {
             navButtons[i] = new JButton(buttonLabels[i]);
             navButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
+            navButtons[i].setBackground(LaColor.BTN_SFONDO);
+            navButtons[i].setForeground(LaColor.FONT);
             navButtons[i].setFocusPainted(false);
             navButtons[i].setMargin(new Insets(10, 20, 10, 20));
             leftPanel.add(navButtons[i]);
@@ -54,7 +58,7 @@ public class MainUIView extends JFrame {
         // Pannello destro con CardLayout e bordo bianco spesso
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
-        contentPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 8));
+        contentPanel.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO_SCURO, 8));
 
         // Aggiungiamo le "card" al pannello
         VaultPanel vaultPanel = new VaultPanel(this);
