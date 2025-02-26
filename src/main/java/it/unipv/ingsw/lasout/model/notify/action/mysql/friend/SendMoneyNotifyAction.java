@@ -1,4 +1,4 @@
-package it.unipv.ingsw.lasout.model.notify.action.friend;
+package it.unipv.ingsw.lasout.model.notify.action.mysql.friend;
 
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;

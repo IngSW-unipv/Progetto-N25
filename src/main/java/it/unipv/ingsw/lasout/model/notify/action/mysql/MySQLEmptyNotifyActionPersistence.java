@@ -1,9 +1,9 @@
-package it.unipv.ingsw.lasout.model.notify.action.persistance;
+package it.unipv.ingsw.lasout.model.notify.action.mysql;
 
 import it.unipv.ingsw.lasout.model.notify.Notify;
-import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;
 
-public class MySQLEmptyNotifyActionPersistence implements INotifyActionPersistence{
+public class MySQLEmptyNotifyActionPersistence implements INotifyActionPersistence {
 
 
 

@@ -51,7 +51,7 @@ VALUES
 INSERT INTO `notify` (id, user_id, description, type)
 VALUES
 
-    (1, 1, "Benvenuto su LaVault =)", "empty"),
+    (1, 1, "Benvenuto su LaVault =)", "notifyempty"),
     (2, 1, "Benvenuto su LaVault =) Accetta la mia amicizia !", "notifyfriendrequest");
 
 INSERT INTO `friendnotify` (id, to_user_id, from_user_id)

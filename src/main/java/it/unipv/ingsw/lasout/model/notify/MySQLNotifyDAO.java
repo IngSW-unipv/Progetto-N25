@@ -1,28 +1,23 @@
 package it.unipv.ingsw.lasout.model.notify;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
-import it.unipv.ingsw.lasout.dao.IDao;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
-import it.unipv.ingsw.lasout.model.notify.action.persistance.INotifyActionPersistence;
-import it.unipv.ingsw.lasout.model.notify.action.persistance.MySQLEmptyNotifyActionPersistence;
-import it.unipv.ingsw.lasout.model.notify.factory.AbstractNotifyActionFactory;
-import it.unipv.ingsw.lasout.model.notify.factory.EmptyNotifyActionFactory;
+import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;
+import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistenceFactory;
+import it.unipv.ingsw.lasout.model.notify.action.mysql.factory.MYSQLNotifyActionPersistenceFactory;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
 
-import javax.xml.crypto.Data;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
-import java.util.logging.Logger;
 
 public class MySQLNotifyDAO implements INotifyDAO {
 
-    private static final Logger LOGGER = Logger.getLogger(MySQLNotifyDAO.class.getName());
+
+    private static final String  DELETE_FROM_NOTIFY_1=
+            "DELETE FROM \\'notify\\' " +
+                    "WHERE  id = ?;";
 
     private static final String QUERY_GET_RAW_NOTIFY_1 =
             "SELECT *" +
@@ -50,55 +45,18 @@ public class MySQLNotifyDAO implements INotifyDAO {
 
 
 
+    private INotifyActionPersistenceFactory persistenceFactory;
+
     private static final Map<String, Class<?>> classes = new HashMap<>();
-    private static final Map<String, Class<?>> persistenceLoader = new HashMap<>();
+
 
     public MySQLNotifyDAO() {
-
-        populateMap();
-
+        persistenceFactory = new MYSQLNotifyActionPersistenceFactory();
     }
 
 
-    private void populateMap(){
-        classes.clear();
-        persistenceLoader.clear();
-
-        Properties properties = new Properties();
-        try {
-            properties.load(MySQLNotifyDAO.class.getResourceAsStream("/factories.properties"));
-        } catch (IOException e) {
-            LOGGER.severe("Could not load notify factories");
-        }
-        properties.forEach((key, value) -> {
-            try {
-                classes.put((String) key, Class.forName(value.toString()));
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        try {
-            properties.load(MySQLNotifyDAO.class.getResourceAsStream("/notifyperistence.properties"));
-        } catch (IOException e) {
-            LOGGER.severe("Could not load notify action persistence");
-        }
-        properties.forEach((key, value) -> {
-            try {
-                persistenceLoader.put((String) key, Class.forName(value.toString()));
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
 
 
-    private Class<?> getFactory(String key){
-        return classes.getOrDefault(key, EmptyNotifyActionFactory.class);
-    }
-    private Class<?> getPersistenceClass(String key){
-        return persistenceLoader.getOrDefault(key, MySQLEmptyNotifyActionPersistence.class);
-    }
 
 
     @Override
@@ -114,17 +72,22 @@ public class MySQLNotifyDAO implements INotifyDAO {
         String description = rs.getString("description");
 
         String type = rs.getString("type");
+
+        /*
         Class<?> clazz = getFactory(type);
         AbstractNotifyActionFactory factory = (AbstractNotifyActionFactory) clazz.getDeclaredConstructor().newInstance();
         INotifyAction iiNotifyAction =  factory.create();
+
+         */
+
+        INotifyAction iiNotifyAction = NotifyActionFactory.get(type);
 
         Notify returnNotify  = new Notify(id);
         returnNotify.setUser(user);
         returnNotify.setDescription(description);
         iiNotifyAction.setNotify(returnNotify);
 
-        Class<?> clazzPersistence = getPersistenceClass(type);
-        INotifyActionPersistence actionPersistence  = (INotifyActionPersistence) clazzPersistence.getDeclaredConstructor().newInstance();
+        INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(type);
 
         System.out.println("loading: " + type);
         System.out.println("with: " + actionPersistence);
@@ -195,6 +158,11 @@ public class MySQLNotifyDAO implements INotifyDAO {
 
     }
 
+    @Override
+    public INotifyActionPersistenceFactory getPersistenceFactory() {
+        return persistenceFactory;
+    }
+
     /**
      * Gestisce automaticamente l'update di un oggetto in memoria o il salvataggio nuovo.
      * @param notify oggetto da salvare, con  tutte le informazioni
@@ -219,10 +187,9 @@ public class MySQLNotifyDAO implements INotifyDAO {
                 query.setParams(notify.getUserID(), notify.getId(),  notify.getDescription(), notify.getNotifyType());
                 DatabaseUtil.getInstance().executeQuery(query);
 
-                Class<?> clazzPersistence = getPersistenceClass(notify.getNotifyType());
-                INotifyActionPersistence actionPersistence  = (INotifyActionPersistence) clazzPersistence.getDeclaredConstructor().newInstance();
-
+                INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(notify.getNotifyType());
                 actionPersistence.save(notify);
+
                 System.out.println("SAVED");
                 query.close();
             }
@@ -241,10 +208,9 @@ public class MySQLNotifyDAO implements INotifyDAO {
         Long newID = query.getKey();
         notify.setId(newID);
 
-        Class<?> clazzPersistence = getPersistenceClass(notify.getNotifyType());
-        INotifyActionPersistence actionPersistence  = (INotifyActionPersistence) clazzPersistence.getDeclaredConstructor().newInstance();
-
+        INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(notify.getNotifyType());
         actionPersistence.save(notify);
+
         System.out.println("SAVED NEW");
 
 
@@ -269,14 +235,11 @@ public class MySQLNotifyDAO implements INotifyDAO {
         query.setParams(notify.getUserID(), notify.getId(), notify.getDescription(), notify.getNotifyType(),  notify.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
-        Class<?> clazzPersistence = getPersistenceClass(type);
-        INotifyActionPersistence actionPersistence  = (INotifyActionPersistence) clazzPersistence.getDeclaredConstructor().newInstance();
-
+        INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(type);
         actionPersistence.delete(notify);
+
+        actionPersistence = getPersistenceFactory().getPersistence(notify.getNotifyType());
         actionPersistence.save(notify);
-
-
-
     }
 
     @Override
@@ -292,5 +255,12 @@ public class MySQLNotifyDAO implements INotifyDAO {
     @Override
     public void delete(Notify notify) throws Exception {
 
+        INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(notify.getNotifyType());
+        actionPersistence.delete(notify);
+
+        DBQuery dbQuery = DBQuery.Builder.create().query(DELETE_FROM_NOTIFY_1).params(notify.getId()).build();
+        DatabaseUtil.getInstance().executeQuery(dbQuery);
     }
+
+
 }
