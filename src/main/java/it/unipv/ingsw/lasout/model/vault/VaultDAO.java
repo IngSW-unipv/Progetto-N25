@@ -31,9 +31,9 @@ public class VaultDAO implements IVaultDAO{
     private static final String INSERT_A_NEW_VAULT = "INSERT INTO \\'vault\\' (virtualvault_id) VALUES (?)";
     private static final String DELETE_AN_EXISTING_VAULT = "DELETE FROM £virtualvault£ WHERE id = ?";
     private static final String UPDATE_BALANCE = "UPDATE virtualvault SET balance = balance + ? WHERE id = ?";
-    private static final String UPDATE_BALANCE_USERID = "UPDATE virtualvault SET balance = balance + ? WHERE user_id = ?";
+    private static final String UPDATE_BALANCE_USERID = "UPDATE virtualvault SET balance = balance + ? WHERE user_id = ? AND nome = 'Vault'";
     private static final String WITHDRAW_BALANCE = "UPDATE virtualvault SET balance = balance - ? WHERE id = ? AND balance >= ?";
-    private static final String WITHDRAW_BALANCE_USERID = "UPDATE virtualvault SET balance = balance - ? WHERE user_id = ? AND balance >= ?";
+    private static final String WITHDRAW_BALANCE_USERID = "UPDATE virtualvault SET balance = balance - ? WHERE user_id = ? AND balance >= ? AND nome = 'Vault'";
     private static final String GET_BALANCE = "SELECT balance FROM \\'virtualvault\\' WHERE id = ?";
     private static final String GET_BALANCE_BY_USER_ID = "SELECT balance FROM \\'virtualvault\\' WHERE user_id = ? AND nome = 'Vault'";
     

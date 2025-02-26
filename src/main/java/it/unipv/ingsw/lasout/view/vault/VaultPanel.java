@@ -27,6 +27,10 @@ public class VaultPanel extends JPanel {
         initComponents();
     }
     
+    public VaultPanel() {
+    	
+    }
+    
     private void initComponents() {
     	// Pannello superiore: qui inseriamo il pulsante "Aggiungi Metodo di Pagamento"
         JPanel topPanel = new JPanel(new BorderLayout());
