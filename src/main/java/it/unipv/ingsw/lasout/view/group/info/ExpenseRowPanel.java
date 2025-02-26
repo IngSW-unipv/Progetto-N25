@@ -9,10 +9,10 @@ import java.awt.event.ActionListener;
 
 public class ExpenseRowPanel extends JPanel {
 
-    private JLabel nameLabel;
-    private JLabel importoLabel;
-    private JLabel descrizioneLabel;
-    private JButton cancButton;
+    private final JLabel nameLabel;
+    private final JLabel importoLabel;
+    private final JLabel descrizioneLabel;
+    private final JButton cancButton;
 
     public ExpenseRowPanel(String nome, String importo, String descrizione) {
         // Imposta un layout basato su GridBagLayout per gestire la divisione della larghezza
@@ -22,7 +22,7 @@ public class ExpenseRowPanel extends JPanel {
         // Creazione dei componenti
         nameLabel = new JLabel(nome);
         nameLabel.setBorder(new EmptyBorder(0, 10, 0, 0));
-        importoLabel = new JLabel(importo);
+        importoLabel = new JLabel(importo + "€");
         descrizioneLabel = new JLabel(descrizione);
         cancButton = new JButton("Canc");
 

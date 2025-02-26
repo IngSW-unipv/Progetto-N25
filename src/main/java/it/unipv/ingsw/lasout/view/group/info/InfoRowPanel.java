@@ -6,11 +6,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class InfoRowPanel extends JPanel {
-    private JLabel nameLabel;
-    private JLabel directionLabel;
-    private JLabel amountLabel;
-    private JLabel a;
-    private JLabel nameLabelTow;
+    private final JLabel nameLabel;
+    private final JLabel directionLabel;
+    private final JLabel amountLabel;
+    private final JLabel a;
+    private final JLabel nameLabelTow;
 
     public InfoRowPanel(String name, String direction, String amount, String a, String nameTow) {
         // Usa un layout a griglia per distribuire equamente i tre elementi
