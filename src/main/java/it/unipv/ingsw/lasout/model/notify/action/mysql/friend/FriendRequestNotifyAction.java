@@ -1,8 +1,10 @@
 package it.unipv.ingsw.lasout.model.notify.action.mysql.friend;
 
 
+import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.mysql.group.PayRequestByGroupNotifyAction;
 import it.unipv.ingsw.lasout.model.user.User;
 
 public class FriendRequestNotifyAction implements INotifyAction {
@@ -25,7 +27,6 @@ public class FriendRequestNotifyAction implements INotifyAction {
 
      */
 
-    private Notify notify;
     private User from;
     private User to;
 
@@ -101,15 +102,6 @@ public class FriendRequestNotifyAction implements INotifyAction {
 
     }
 
-    @Override
-    public Notify getNotify() {
-        return notify;
-    }
-
-    @Override
-    public void setNotify(Notify notify) {
-        this.notify = notify;
-    }
 
     @Override
     public String type() {
@@ -122,5 +114,38 @@ public class FriendRequestNotifyAction implements INotifyAction {
                 "from=" + from +
                 ", to=" + to +
                 '}';
+    }
+
+
+    public static class FriendRequestBuilder extends Notify.Builder {
+
+        private User from;
+
+        public FriendRequestBuilder() {
+            this.action = new PayRequestByGroupNotifyAction();
+        }
+
+        public FriendRequestNotifyAction.FriendRequestBuilder sendTo(User user){
+            this.to(user);
+            return this;
+        }
+
+        public FriendRequestNotifyAction.FriendRequestBuilder from(User user){
+            this.from = user;
+            return this;
+        }
+
+
+        public Notify build(){
+            Notify notify = super.build();
+            FriendRequestNotifyAction action = (FriendRequestNotifyAction) this.action;
+            action.setTo(sendTo);
+            action.setFrom(from);
+
+            notify.setUser(sendTo);
+            return notify;
+        }
+
+
     }
 }

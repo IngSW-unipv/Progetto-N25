@@ -1,11 +1,10 @@
-package it.unipv.ingsw.lasout.model.notify.action.mysql.factory;
+package it.unipv.ingsw.lasout.model.notify.action.mysql;
 
 import it.unipv.ingsw.lasout.model.notify.action.EmptyNotifyAction;
 import it.unipv.ingsw.lasout.model.notify.action.mysql.friend.FriendRequestNotifyAction;
 import it.unipv.ingsw.lasout.model.notify.action.mysql.friend.persistence.MySQLFriendRequestNotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistenceFactory;
-import it.unipv.ingsw.lasout.model.notify.action.mysql.MySQLEmptyNotifyActionPersistence;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;

@@ -3,7 +3,10 @@ package it.unipv.ingsw.lasout.model.notify;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.action.EmptyNotifyAction;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.mysql.friend.FriendRequestNotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.mysql.friend.PayRequestByUserNotifyAction;
 import it.unipv.ingsw.lasout.model.notify.action.mysql.group.InviteGroupRequestNotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.mysql.group.PayRequestByGroupNotifyAction;
 import it.unipv.ingsw.lasout.model.user.User;
 
 public class Notify {
@@ -89,11 +92,23 @@ public class Notify {
         protected Long id;
 
         public static Builder empty(){
-            return new GroupBuilder();
+            return new Builder();
         }
 
-        public static GroupBuilder groupRequestNotify(){
-            return new GroupBuilder();
+        public static InviteGroupRequestNotifyAction.GroupBuilder groupRequestNotify(){
+            return new InviteGroupRequestNotifyAction.GroupBuilder();
+        }
+
+        public static PayRequestByGroupNotifyAction.PayRequestByGroupBuilder payRequestByGroup() {
+            return new PayRequestByGroupNotifyAction.PayRequestByGroupBuilder();
+        }
+
+        public static PayRequestByUserNotifyAction.PayRequestByUserBuilder payRequestByUser() {
+            return new PayRequestByUserNotifyAction.PayRequestByUserBuilder();
+        }
+
+        public static FriendRequestNotifyAction.FriendRequestBuilder friendRequest() {
+            return new FriendRequestNotifyAction.FriendRequestBuilder();
         }
 
         public Builder to(User  user){
@@ -118,41 +133,8 @@ public class Notify {
             notify.setId(id);
             if(this.action != null){
                 notify.setNotifyAction(action);
-                action.setNotify(notify);
             }
             return notify;
-        }
-
-        public static class GroupBuilder extends Builder{
-
-            private User user;
-            private Group group;
-
-            public GroupBuilder() {
-                this.action = new InviteGroupRequestNotifyAction();
-            }
-
-            public GroupBuilder sendTo(User user){
-                this.user = user;
-                return this;
-            }
-
-            public GroupBuilder group(Group group){
-                this.group = group;
-                return this;
-            }
-
-            public Notify build(){
-                Notify notify = super.build();
-                InviteGroupRequestNotifyAction action = (InviteGroupRequestNotifyAction) this.action;
-                action.setGroup(group);
-                action.setUser(user);
-                notify.setUser(user);
-
-                return notify;
-            }
-
-
         }
 
 

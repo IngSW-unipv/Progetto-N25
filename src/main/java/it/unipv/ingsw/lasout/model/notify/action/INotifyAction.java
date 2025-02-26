@@ -14,9 +14,6 @@ public interface INotifyAction {
     void save(Notify notify) throws Exception;
      */
 
-
-    Notify getNotify();
-    void setNotify(Notify notify);
     String type();
 
 

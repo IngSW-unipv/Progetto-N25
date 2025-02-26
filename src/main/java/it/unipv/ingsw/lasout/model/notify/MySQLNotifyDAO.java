@@ -5,7 +5,7 @@ import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistenceFactory;
-import it.unipv.ingsw.lasout.model.notify.action.mysql.factory.MYSQLNotifyActionPersistenceFactory;
+import it.unipv.ingsw.lasout.model.notify.action.mysql.MYSQLNotifyActionPersistenceFactory;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
 
@@ -85,7 +85,7 @@ public class MySQLNotifyDAO implements INotifyDAO {
         Notify returnNotify  = new Notify(id);
         returnNotify.setUser(user);
         returnNotify.setDescription(description);
-        iiNotifyAction.setNotify(returnNotify);
+        //iiNotifyAction.setNotify(returnNotify);
 
         INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(type);
 

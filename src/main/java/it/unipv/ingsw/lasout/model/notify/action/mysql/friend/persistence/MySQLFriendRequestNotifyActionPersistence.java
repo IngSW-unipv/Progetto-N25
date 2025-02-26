@@ -69,12 +69,12 @@ public class MySQLFriendRequestNotifyActionPersistence implements INotifyActionP
 
         DBQuery dbQuery =  DBQuery.Builder.create()
                 .query(QUERY_UPDATE)
-                .params(friendRequestNotifyAction.getTo().getId(),  friendRequestNotifyAction.getFrom().getId(), friendRequestNotifyAction.getNotify().getId())
+                .params(friendRequestNotifyAction.getTo().getId(),  friendRequestNotifyAction.getFrom().getId(), notify.getId())
                 .build();
         DatabaseUtil.getInstance().executeQuery(dbQuery);
         if(dbQuery.getUpdateCount() == 0){
             dbQuery.setQuery(QUERY_SAVE);
-            dbQuery.setParams(friendRequestNotifyAction.getNotify().getId(), friendRequestNotifyAction.getTo().getId(),  friendRequestNotifyAction.getFrom().getId());
+            dbQuery.setParams(notify.getId(), friendRequestNotifyAction.getTo().getId(),  friendRequestNotifyAction.getFrom().getId());
             DatabaseUtil.getInstance().executeQuery(dbQuery);
         }
 

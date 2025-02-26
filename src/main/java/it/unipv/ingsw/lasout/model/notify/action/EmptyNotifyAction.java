@@ -14,16 +14,6 @@ public class EmptyNotifyAction implements INotifyAction{
     }
 
     @Override
-    public Notify getNotify() {
-        return notify;
-    }
-
-    @Override
-    public void setNotify(Notify notify) {
-        this.notify = notify;
-    }
-
-    @Override
     public String type() {
         return "notifyempty";
     }
