@@ -21,7 +21,7 @@ CREATE TABLE `group`                 (id INT PRIMARY KEY AUTO_INCREMENT, name VA
 CREATE TABLE `usergroup`             (user_id INT REFERENCES `user`(id) ON DELETE CASCADE, group_id INT REFERENCES `group`(id) ON DELETE CASCADE, PRIMARY KEY(user_id, group_id));
 CREATE TABLE `friend`                (user_id INT REFERENCES `user`(id) ON DELETE CASCADE, friend_user_id INT REFERENCES `user`(id) ON DELETE CASCADE, PRIMARY KEY(user_id, friend_user_id));
 CREATE TABLE `notify`                (id INTEGER AUTO_INCREMENT, user_id INT REFERENCES user(id) ON DELETE CASCADE,`description` TEXT NOT NULL, `type` CHAR(100), PRIMARY KEY(id));
-CREATE TABLE `friendnotify`          (id INTEGER , to_user_id INT, from_user_id INT REFERENCES `user`(id) ON DELETE CASCADE, PRIMARY KEY(id, to_user_id), FOREIGN KEY (id) REFERENCES `notify`(id) ON DELETE CASCADE);
+CREATE TABLE `friendnotify`          (id INTEGER , to_user_id INT REFERENCES `user`(id) ON DELETE CASCADE, from_user_id INT REFERENCES `user`(id) ON DELETE CASCADE, PRIMARY KEY(id), FOREIGN KEY (id) REFERENCES `notify`(id) ON DELETE CASCADE);
 CREATE TABLE `virtualvault`          (id INTEGER AUTO_INCREMENT, nome VARCHAR(10), user_id INT, balance DOUBLE, PRIMARY KEY(id), FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE);
 CREATE TABLE `vault`                 (id INTEGER AUTO_INCREMENT, virtualvault_id INTEGER, PRIMARY KEY(id), FOREIGN KEY (virtualvault_id) REFERENCES virtualvault(id) ON DELETE CASCADE);
 CREATE TABLE `creditcard`            (id INTEGER AUTO_INCREMENT, numerocarta VARCHAR(16) NOT NULL, mese INT NOT NULL, anno INT NOT NULL, cvv INT NOT NULL, id_vault INT, PRIMARY KEY(id), FOREIGN KEY (id_vault) REFERENCES vault(id) ON DELETE CASCADE);
@@ -51,15 +51,15 @@ VALUES
     ('viaggio Malesia', 1),
     ('all togheder to Nigeria', 3);
 
-INSERT INTO `notify` (user_id, id, description, type)
+INSERT INTO `notify` (id, user_id, description, type)
 VALUES
 
-    (1, 1, "Benvenuto su LaVault =)", "empty"),
-    (1, 2, "Benvenuto su LaVault =) Accetta la mia amicizia !", "notifyfriendrequest");
+    (1, 1, "Benvenuto su LaVault =)", "notifyempty"),
+    (2, 1, "Benvenuto su LaVault =) Accetta la mia amicizia !", "notifyfriendrequest");
 
-INSERT INTO `friendnotify` (to_user_id, id, from_user_id)
+INSERT INTO `friendnotify` (id, to_user_id, from_user_id)
 VALUES
-    (1, 2, 2);
+    (2, 1, 2);
 
 INSERT INTO usergroup (user_id, group_id) VALUES
     (1, 1),
@@ -149,17 +149,18 @@ INSERT INTO spese (user_id, group_id,amount,note) VALUES
 INSERT INTO virtualvault (nome, user_id, balance) VALUES
     ('Vault', 1, 200),
     ('Vacanza', 1, 300),
-    ('Vault', 2, 500);
-    
+    ('Vault', 2, 500),
+    ('PRIMO', 1, 100);
+
 INSERT INTO vault (virtualvault_id) VALUES
 	(1),
     (3);
-    
+
 INSERT INTO creditcard (numerocarta, mese, anno, cvv, id_vault) VALUES
 	(123456789, 1, 2020, 465, 1);
-	
+
 INSERT INTO paypal (numerocarta, id_vault) VALUES
 	(1234567, 1);
-	
+
 INSERT INTO currentaccount (iban, id_vault) VALUES
 	(1234, 1);

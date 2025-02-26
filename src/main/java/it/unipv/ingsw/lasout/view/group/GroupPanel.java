@@ -148,7 +148,6 @@ public class GroupPanel extends JPanel {
         return (GroupItem) comboBox.getSelectedItem();
     }
 
-
     public void addGroupItem(GroupItem groupItem) {
         comboBox.addItem(groupItem);
     }

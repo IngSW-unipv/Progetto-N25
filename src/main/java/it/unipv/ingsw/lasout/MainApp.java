@@ -16,7 +16,8 @@ public class MainApp {
 
         try {
             DatabaseUtil.getInstance().prepare();
-            DatabaseUtil.getInstance().initialize();
+            DatabaseUtil.
+            getInstance().initialize();
         } catch (IOException | SQLException e) {
             LOGGER.severe("Couldn't initialize database: \n" + e
             );

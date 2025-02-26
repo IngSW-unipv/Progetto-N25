@@ -34,4 +34,10 @@ public interface VaultFacade {
 	List<PaymentMethod> getAllPaymentMethods (Vault vault);
 	
 	boolean executePayment(Vault v, double amount, String recipient);
+
+	boolean ritiroVault(User user, Double amount);
+
+	boolean depositoVault(User user, Double amount);
+
+	double getBalanceByUserId(User user);
 }

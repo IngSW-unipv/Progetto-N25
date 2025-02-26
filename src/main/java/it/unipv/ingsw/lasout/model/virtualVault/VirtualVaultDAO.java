@@ -28,13 +28,13 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
 
 
     //Varie query
-    private static final String QUERY_RAW_1 = "SELECT * FROM $virtualvault$ WHERE id = ? AND user_id = ?";
+    private static final String QUERY_RAW_1 = "SELECT * FROM $virtualvault$ WHERE id = ? && user_id = ? ";
     private static final String QUERY_INSERT_NEW_VIRTUALVAULT_NOID= "INSERT INTO $virtualvault$ (nome, user_id, balance) VALUES (?, ?, ?)";
     private static final String QUERY_INSERT_NEW_VIRTUALVAULT_ID= "INSERT INTO $virtualvault$ (id, nome, user_id, balance) VALUES (?, ?, ?, ?)";
     private static final String QUERY_DELETE_AN_EXISTING_VIRTUALVAULT = "DELETE FROM $virtualvault$ WHERE id = ?";
     private static final String QUERY_DELETE_AN_EXISTING_VIRTUALVAULT_BALANCE = "DELETE FROM $virtualvault$ WHERE id = ? AND nome = 'Vault'";
-    private static final String GET_ALL_VIRTUALVAULT =  "SELECT * FROM £virtualvault£ WHERE virtualvault.id = ?" ;
-    private static final String GET_BALANCE_FROM_VAULT =  "SELECT balance FROM £virtualvault£ WHERE  user_id = ? AND nome = 'Vault'" ;
+    private static final String GET_ALL_VIRTUALVAULT =  "SELECT * FROM £virtualvault£ WHERE user_id = ? && nome != 'Vault'" ;
+    private static final String GET_BALANCE_FROM_VAULT =  "SELECT balance FROM £virtualvault£ WHERE  user_id = ? AND nome = ?" ;
     private static final String UPDATE_BALANCE = "UPDATE $virtualvault$ SET balance = ? WHERE id = ? AND user_id = ?";
     private static final String GET_ID_USERID_FROM_VVP =  "SELECT id, user_id, nome FROM £virtualvault£  WHERE user_id = ? AND nome = 'Vault'";
 
@@ -46,16 +46,27 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
 
         ResultSet rs = query.getResultSet();
 
-        int id = rs.getInt("ID");
+        /*int id = rs.getInt("ID");
         User user = userDAO.get(new User(rs.getInt("user_id")));
 
         double balance = rs.getDouble("balance");
 
         VirtualVault vVault = new VirtualVault(id, user);
         vVault.setBalance(balance);
+        return vVault;*/
+        if (rs.next()) { // Assicurati che ci sia almeno una riga
+            int id = rs.getInt("ID");
+            String nome = rs.getString("NOME");
+            User user = userDAO.get(new User(rs.getInt("user_id")));
+            double balance = rs.getDouble("balance");
+            VirtualVault vVault = new VirtualVault(id, nome, user);
+            vVault.setName(nome);
+            vVault.setBalance(balance);
+            return vVault;
+        } else {
+            return null;
+        }
 
-
-        return vVault;
     }
 
 
@@ -65,11 +76,15 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
         return getRaw(virtualVault);
     }
 
+    @Override
+    public List<VirtualVault> getAll() throws Exception {
+        return List.of();
+    }
 
 
     @Override
-    public List<VirtualVault> getAll() throws Exception {
-        DBQuery query = DatabaseUtil.getInstance().createQuery(GET_ALL_VIRTUALVAULT, VirtualVault.class);
+    public List<VirtualVault> getAll(User user) throws Exception {
+        DBQuery query = DatabaseUtil.getInstance().createQuery(GET_ALL_VIRTUALVAULT, user.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
         ResultSet rs = query.getResultSet();
@@ -83,7 +98,8 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
             VirtualVault vVault = new VirtualVault();
             vVault.setID(rs.getInt("id"));
             vVault.setBalance(rs.getDouble("balance"));
-            vVault.setOwner(userDAO.get(new User(rs.getInt("user_id"))));
+            vVault.setName(rs.getString("nome"));
+            vVault.setOwner(userDAO.getRaw(new User(rs.getInt("user_id"))));
 
             virtualVaults.add(vVault);
         }
@@ -100,7 +116,7 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
     public double getBalanceFromVault(VirtualVault virtualVault) throws Exception{
         double b = 0.0;
         DBQuery queryGetBalanceFromVault;
-        queryGetBalanceFromVault = DatabaseUtil.getInstance().createQuery(GET_BALANCE_FROM_VAULT,   virtualVault.getOwner().getId());
+        queryGetBalanceFromVault = DatabaseUtil.getInstance().createQuery(GET_BALANCE_FROM_VAULT,   virtualVault.getOwner().getId(), virtualVault.getName());
         DatabaseUtil.getInstance().executeQuery(queryGetBalanceFromVault);
         if(queryGetBalanceFromVault.getResultSet().next()){
             b = queryGetBalanceFromVault.getResultSet().getDouble("balance");
@@ -158,12 +174,13 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
     */
     @Override
     public void save(VirtualVault virtualVault) throws Exception {
+
         //Query per l'aggiunta di un virtualvault
         DBQuery queryInsert;
         DBQuery queryGet;
 
-        double b = getBalanceFromVault(virtualVault);
-        if(virtualVault.getBalance() <  b) {
+
+
             if (virtualVault.getID() != 0) {
                 queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_VIRTUALVAULT_ID, virtualVault.getID(), virtualVault.getName(), virtualVault.getOwner().getId(), virtualVault.getBalance());
                 DatabaseUtil.getInstance().executeQuery(queryInsert);
@@ -171,7 +188,7 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
 
                 queryGet = DatabaseUtil.getInstance().createQuery(GET_ID_USERID_FROM_VVP, virtualVault.getOwner().getId());
                 DatabaseUtil.getInstance().executeQuery(queryGet);
-                getIdFromVvP(virtualVault, b, queryGet);
+
 
 
                 if(rs!=null)throw new Exception();
@@ -189,17 +206,12 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
 
                 queryGet = DatabaseUtil.getInstance().createQuery(GET_ID_USERID_FROM_VVP, virtualVault.getOwner().getId());
                 DatabaseUtil.getInstance().executeQuery(queryGet);
-                getIdFromVvP(virtualVault, b, queryGet);
+
 
                 if(rs!=null)throw new Exception();
                 if(virtualVault.getID()==0) virtualVault.setID((int)queryInsert.getKey());
                 queryInsert.close();
             }
-
-        }else {
-            System.out.println("Importo che vuoi inserire troppo alto  "+virtualVault.getBalance()+"\nNel vault hai a disposizione: "+ VirtualVaultDAO.getInstance().getBalanceFromVault(virtualVault));
-        }
-
     }
     /*
     * Metodo di update
@@ -242,12 +254,6 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
             //Chiusura query
             queryDelete.close();
         }
-
-
-
-
-
-
     }
 
 
@@ -282,8 +288,9 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
 
 
         VirtualVaultDAO.getInstance().save(v2);
-        VirtualVaultDAO.getInstance().delete(v2);
+        //VirtualVaultDAO.getInstance().delete(v2);
         VirtualVaultDAO.getInstance().getAll();
+
 
 
     }
