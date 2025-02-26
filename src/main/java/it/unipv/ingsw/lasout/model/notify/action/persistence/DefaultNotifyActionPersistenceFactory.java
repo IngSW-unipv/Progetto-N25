@@ -1,6 +1,5 @@
 package it.unipv.ingsw.lasout.model.notify.action.persistence;
 
-import it.unipv.ingsw.lasout.model.notify.MySQLNotifyDAO;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -20,7 +19,7 @@ public class DefaultNotifyActionPersistenceFactory implements INotifyActionPersi
 
         Properties properties = new Properties();
         try {
-            properties.load(MySQLNotifyDAO.class.getResourceAsStream("/notifyperistence.properties"));
+            properties.load(DefaultNotifyActionPersistenceFactory.class.getResourceAsStream("/notifyperistence.properties"));
         } catch (IOException e) {
             LOGGER.severe("Could not load notify action persistence");
         }

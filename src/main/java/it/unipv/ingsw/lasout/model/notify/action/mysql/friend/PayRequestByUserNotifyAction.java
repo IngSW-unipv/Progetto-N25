@@ -19,7 +19,7 @@ public class PayRequestByUserNotifyAction implements INotifyAction {
 
     @Override
     public String type() {
-        return "notifysendmoney";
+        return "notifypayrequestbyuser";
     }
 
     public User getFrom() {
@@ -51,7 +51,7 @@ public class PayRequestByUserNotifyAction implements INotifyAction {
         private double value;
 
         public PayRequestByUserBuilder() {
-            this.action = new PayRequestByGroupNotifyAction();
+            this.action = new PayRequestByUserNotifyAction();
         }
 
         public PayRequestByUserNotifyAction.PayRequestByUserBuilder sendTo(User user){

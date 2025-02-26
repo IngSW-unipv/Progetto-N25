@@ -20,7 +20,7 @@ public class NotifyActionFactory {
 
         Properties properties = new Properties();
         try {
-            properties.load(MySQLNotifyDAO.class.getResourceAsStream("/factories.properties"));
+            properties.load(NotifyActionFactory.class.getResourceAsStream("/factories.properties"));
         } catch (IOException e) {
             LOGGER.severe("Could not load notify factories");
         }
@@ -46,7 +46,5 @@ public class NotifyActionFactory {
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 }

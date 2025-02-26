@@ -1,83 +1,44 @@
 package it.unipv.ingsw.lasout.model.notify.action.mysql.friend.persistence;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
-import it.unipv.ingsw.lasout.database.DatabaseUtil;
-import it.unipv.ingsw.lasout.model.notify.Notify;
+import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.mysql.MySQLNotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.notify.action.mysql.friend.FriendRequestNotifyAction;
-import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class MySQLFriendRequestNotifyActionPersistence implements INotifyActionPersistence {
+public class MySQLFriendRequestNotifyActionPersistence extends MySQLNotifyActionPersistence {
 
-    private static final String QUERY_LOAD_1 = "SELECT *" +
-            " FROM \\'friendnotify\\'" +
-            " WHERE id = ?;";
-    private static final String QUERY_DELETE_1 = "DELETE" +
-            " FROM \\'friendnotify\\'" +
-            " WHERE id = ?;";
-    private static final String QUERY_UPDATE = "UPDATE \\'friendnotify\\'" +
-            " SET to_user_id = ?, from_user_id = ? WHERE id = ?;";
-    private static final String QUERY_SAVE = "INSERT INTO \\'friendnotify\\'" +
-            " (id, to_user_id, from_user_id) VALUES (?, ?, ?)";
-
-
+    public MySQLFriendRequestNotifyActionPersistence() {
+        this.tableName = "friendnotify";
+        this.update  = "to_user_id = ?, from_user_id = ?";
+        this.insert  = "to_user_id, from_user_id";
+    }
 
     @Override
-    public void load(Notify notify) throws Exception {
-
-        DBQuery query = DBQuery.Builder.create()
-                .query(QUERY_LOAD_1)
-                .params(notify.getId())
-                .build();
-        DatabaseUtil.getInstance().executeQuery(query);
-        ResultSet resultSet = query.getResultSet();
-
-        if(resultSet == null || !resultSet.next()) throw new RuntimeException(String.format("Could not find friend notify  with id '%s'", notify.getId()));
-
-        User fromID = UserDAO.getInstance().getRaw(new User(resultSet.getInt("from_user_id")));
-        User toID = UserDAO.getInstance().getRaw(new User(resultSet.getInt("to_user_id")));
-
-
+    public void innerLoad(ResultSet resultSet, INotifyAction iNotifyAction) throws SQLException {
         try{
-            FriendRequestNotifyAction notifyAction = (FriendRequestNotifyAction) notify.getNotifyAction();
+            User fromID = UserDAO.getInstance().getRaw(new User(resultSet.getInt("from_user_id")));
+            User toID = UserDAO.getInstance().getRaw(new User(resultSet.getInt("to_user_id")));
+            FriendRequestNotifyAction notifyAction = (FriendRequestNotifyAction) iNotifyAction;
             notifyAction.setFrom(fromID);
             notifyAction.setTo(toID);
         }catch (ClassCastException e){
+
         }
-
-
-        query.close();
     }
 
     @Override
-    public void delete(Notify notify) throws Exception {
-        DBQuery dbQuery =  DBQuery.Builder.create()
-                .query(QUERY_DELETE_1)
-                .params(notify.getId())
-                .build();
-        DatabaseUtil.getInstance().executeQuery(dbQuery);
-        dbQuery.close();
-    }
+    public void innerSave(DBQuery.Builder query, INotifyAction iNotifyAction) throws SQLException {
+        try{
+            FriendRequestNotifyAction  friendRequestNotifyAction = (FriendRequestNotifyAction) iNotifyAction;
+            query.params(friendRequestNotifyAction.getTo().getId(),  friendRequestNotifyAction.getFrom().getId());
+        }catch (ClassCastException e){
 
-    @Override
-    public void save(Notify notify) throws Exception {
-
-        FriendRequestNotifyAction friendRequestNotifyAction = (FriendRequestNotifyAction) notify.getNotifyAction();
-
-        DBQuery dbQuery =  DBQuery.Builder.create()
-                .query(QUERY_UPDATE)
-                .params(friendRequestNotifyAction.getTo().getId(),  friendRequestNotifyAction.getFrom().getId(), notify.getId())
-                .build();
-        DatabaseUtil.getInstance().executeQuery(dbQuery);
-        if(dbQuery.getUpdateCount() == 0){
-            dbQuery.setQuery(QUERY_SAVE);
-            dbQuery.setParams(notify.getId(), friendRequestNotifyAction.getTo().getId(),  friendRequestNotifyAction.getFrom().getId());
-            DatabaseUtil.getInstance().executeQuery(dbQuery);
         }
 
-        dbQuery.close();
     }
 }

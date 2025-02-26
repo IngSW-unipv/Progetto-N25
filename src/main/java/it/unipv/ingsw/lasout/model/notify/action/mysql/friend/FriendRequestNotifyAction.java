@@ -122,7 +122,7 @@ public class FriendRequestNotifyAction implements INotifyAction {
         private User from;
 
         public FriendRequestBuilder() {
-            this.action = new PayRequestByGroupNotifyAction();
+            this.action = new FriendRequestNotifyAction();
         }
 
         public FriendRequestNotifyAction.FriendRequestBuilder sendTo(User user){
