@@ -174,13 +174,13 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
     */
     @Override
     public void save(VirtualVault virtualVault) throws Exception {
-        /*
+
         //Query per l'aggiunta di un virtualvault
         DBQuery queryInsert;
         DBQuery queryGet;
 
-        double b = getBalanceFromVault(virtualVault);
-        if(virtualVault.getBalance() <  b) {
+
+
             if (virtualVault.getID() != 0) {
                 queryInsert = DatabaseUtil.getInstance().createQuery(QUERY_INSERT_NEW_VIRTUALVAULT_ID, virtualVault.getID(), virtualVault.getName(), virtualVault.getOwner().getId(), virtualVault.getBalance());
                 DatabaseUtil.getInstance().executeQuery(queryInsert);
@@ -188,7 +188,7 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
 
                 queryGet = DatabaseUtil.getInstance().createQuery(GET_ID_USERID_FROM_VVP, virtualVault.getOwner().getId());
                 DatabaseUtil.getInstance().executeQuery(queryGet);
-                getIdFromVvP(virtualVault, b, queryGet);
+
 
 
                 if(rs!=null)throw new Exception();
@@ -206,17 +206,12 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
 
                 queryGet = DatabaseUtil.getInstance().createQuery(GET_ID_USERID_FROM_VVP, virtualVault.getOwner().getId());
                 DatabaseUtil.getInstance().executeQuery(queryGet);
-                getIdFromVvP(virtualVault, b, queryGet);
+
 
                 if(rs!=null)throw new Exception();
                 if(virtualVault.getID()==0) virtualVault.setID((int)queryInsert.getKey());
                 queryInsert.close();
             }
-
-        }else {
-            System.out.println("Importo che vuoi inserire troppo alto  "+virtualVault.getBalance()+"\nNel vault hai a disposizione: "+ VirtualVaultDAO.getInstance().getBalanceFromVault(virtualVault));
-        }
-*/
     }
     /*
     * Metodo di update
@@ -259,12 +254,6 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
             //Chiusura query
             queryDelete.close();
         }
-
-
-
-
-
-
     }
 
 

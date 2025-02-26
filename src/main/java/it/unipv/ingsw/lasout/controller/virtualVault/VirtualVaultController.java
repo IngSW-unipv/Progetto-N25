@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.controller.virtualVault;
 
+import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.facade.virtualVault.ConcreteVirtualVaultFacade;
 import it.unipv.ingsw.lasout.model.user.User;
@@ -9,6 +10,7 @@ import it.unipv.ingsw.lasout.view.group.info.ExpenseRowPanel;
 import it.unipv.ingsw.lasout.view.group.info.InfoRowPanel;
 import it.unipv.ingsw.lasout.view.mainview.MainUIView;
 //import it.unipv.ingsw.lasout.view.virtualVault.AddNewVirtualVault;
+import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 import it.unipv.ingsw.lasout.view.virtualVault.AddVirtualVaultDialog;
 import it.unipv.ingsw.lasout.view.virtualVault.VirtualVaultItem;
 import it.unipv.ingsw.lasout.view.virtualVault.VirtualVaultPanel;
@@ -16,6 +18,8 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+
+
 
 public class VirtualVaultController {
 
@@ -104,7 +108,7 @@ public class VirtualVaultController {
                     VirtualVault nuovoVault = new VirtualVault();
                     nuovoVault.setName(nome);
                     nuovoVault.setBalance(saldo);
-                    //System.out.println("SONO IL BALANCE DEL NUOVO VAULT"+ nuovoVault.getBalance());
+                    System.out.println("SONO IL BALANCE DEL NUOVO VAULT"+ nuovoVault.getBalance());
                     // Imposta l'owner dall'utente loggato
                     User loggedUser1 = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
                     nuovoVault.setOwner(loggedUser1);
@@ -114,6 +118,8 @@ public class VirtualVaultController {
                     if (success) {
                         JOptionPane.showMessageDialog(dialog, "VirtualVault creato con successo!");
                         dialog.dispose();
+                        //Righe per aggiornare il saldo VAULT madre
+                        VaultController.load();
                         // Aggiorna la combo box per includere il nuovo vault
                         setUpComboBox();
                     } else {

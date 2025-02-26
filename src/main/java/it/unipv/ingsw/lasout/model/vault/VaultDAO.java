@@ -33,7 +33,7 @@ public class VaultDAO implements IVaultDAO{
     private static final String UPDATE_BALANCE = "UPDATE virtualvault SET balance = balance + ? WHERE id = ?";
     private static final String UPDATE_BALANCE_USERID = "UPDATE virtualvault SET balance = balance + ? WHERE user_id = ? AND nome = 'Vault'";
     private static final String WITHDRAW_BALANCE = "UPDATE virtualvault SET balance = balance - ? WHERE id = ? AND balance >= ?";
-    private static final String WITHDRAW_BALANCE_USERID = "UPDATE virtualvault SET balance = balance - ? WHERE user_id = ? AND balance >= ? AND nome = 'Vault'";
+    private static final String WITHDRAW_BALANCE_USERID = "UPDATE virtualvault SET balance = ? WHERE user_id = ? AND nome = 'Vault'";
     private static final String GET_BALANCE = "SELECT balance FROM \\'virtualvault\\' WHERE id = ?";
     private static final String GET_BALANCE_BY_USER_ID = "SELECT balance FROM \\'virtualvault\\' WHERE user_id = ? AND nome = 'Vault'";
     
@@ -95,6 +95,7 @@ public class VaultDAO implements IVaultDAO{
 	
 	@Override
 	public void depositBalanceWithUser(User user, double amount) throws Exception{
+		
 		DBQuery query = DatabaseUtil.getInstance().createQuery(UPDATE_BALANCE_USERID, amount, user.getId());
 	    DatabaseUtil.getInstance().executeQuery(query);
 
@@ -105,7 +106,8 @@ public class VaultDAO implements IVaultDAO{
 	
 	@Override
 	public void withdrawBalanceWithUser(User user, double amount) throws Exception {
-		DBQuery query = DatabaseUtil.getInstance().createQuery(WITHDRAW_BALANCE_USERID, amount, user.getId(), amount);
+		System.out.println(amount);
+		DBQuery query = DatabaseUtil.getInstance().createQuery(WITHDRAW_BALANCE_USERID, amount, user.getId());
 		DatabaseUtil.getInstance().executeQuery(query);
 		
 		if(query.getResultSet() != null) throw new Exception("Errore nell'aggiornamento del balance.");

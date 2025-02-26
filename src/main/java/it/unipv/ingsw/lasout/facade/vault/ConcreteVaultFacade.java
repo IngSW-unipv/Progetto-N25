@@ -68,12 +68,16 @@ public class ConcreteVaultFacade implements VaultFacade {
 		try {
 
 			double balance = vaultDAO.balanceVault(user);
+			
+			double differenza = balance - amount;
+			
+			System.out.println(differenza);
 
-			if ((balance - amount) < 0) {
+			if ((differenza) < 0) {
 				return false;
 
 			} else {
-				vaultDAO.withdrawBalanceWithUser(user, amount);
+				vaultDAO.withdrawBalanceWithUser(user, differenza);
 			}
 
 		} catch (Exception e) {
