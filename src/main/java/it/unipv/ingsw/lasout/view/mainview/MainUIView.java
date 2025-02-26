@@ -5,9 +5,11 @@ import it.unipv.ingsw.lasout.controller.AppController;
 import it.unipv.ingsw.lasout.controller.account.AccountController;
 import it.unipv.ingsw.lasout.controller.group.GroupController;
 import it.unipv.ingsw.lasout.controller.vault.VaultController;
+import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.controller.virtualVault.VirtualVaultController;
 import it.unipv.ingsw.lasout.view.account.AccountPanel;
 import it.unipv.ingsw.lasout.view.group.GroupPanel;
+import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 import it.unipv.ingsw.lasout.view.virtualVault.VirtualVaultPanel;
 
@@ -106,5 +108,6 @@ public class MainUIView extends JFrame {
         GroupController.load();
         VaultController.load();
         VirtualVaultController.load();
+        CashbookController.load();
     }
 }
