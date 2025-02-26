@@ -4,18 +4,17 @@ import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.virtualVault.VirtualVault;
-import it.unipv.ingsw.lasout.model.virtualVault.VirtualVaultDAO;
 import it.unipv.ingsw.lasout.model.virtualVault.IVirtualVaultDAO;
 import it.unipv.ingsw.lasout.util.DaoFactory;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class ConcreteVirtualVaultFacade implements VirtualVaultFacade {
     //
     private IVirtualVaultDAO virtualVaultDAO;
-
 
 
     public ConcreteVirtualVaultFacade(){
@@ -34,7 +33,6 @@ public class ConcreteVirtualVaultFacade implements VirtualVaultFacade {
 
     @Override
     public boolean newVirtualVault(VirtualVault virtualVault, User user){
-
         try{
             //Controllo se uno user è loggato
             if(LaVaultFacade.getInstance().getSessionFacade().isLogged()){
@@ -48,14 +46,34 @@ public class ConcreteVirtualVaultFacade implements VirtualVaultFacade {
     }
 
     @Override
-    //Serve per restituire un pojo di VirtualVault
-    public boolean getVirtualVault(VirtualVault virtualVault){
+    public double getBalanceFromVault(VirtualVault virtualVault){
+        double result = 0;
         try{
-            virtualVaultDAO.get(virtualVault);
+            result = virtualVaultDAO.getBalanceFromVault(virtualVault);
         } catch (Exception e){
-            return false;
+            throw new RuntimeException(e);
         }
-        return true;
+        return result;
+    }
+    @Override
+    //Serve per restituire un pojo di VirtualVault
+    public VirtualVault getVirtualVault(VirtualVault virtualVault){
+        VirtualVault result = null;
+         try{
+            result = virtualVaultDAO.getRaw(virtualVault);
+        } catch (Exception e){
+            return null;
+        }
+        return result;
+    }
+    @Override
+    public List<VirtualVault> getAllVirtualVault(User user){
+        try{
+          return virtualVaultDAO.getAll(user);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
     }
     @Override
     //Serve per modificare i virtualVault
@@ -94,28 +112,34 @@ public class ConcreteVirtualVaultFacade implements VirtualVaultFacade {
         }
 
         VirtualVault v = new VirtualVault();;
-        //VirtualVault v2 = new VirtualVault();;
+        VirtualVault v2 = new VirtualVault();;
+
         //Prova con user
         User user = new User("cla", "miao", "bbb@gmail.com");
         LaVaultFacade.getInstance().getSessionFacade().login(user);
-        System.out.println("It's logged in "+LaVaultFacade.getInstance().getSessionFacade().isLogged());
-        //System.out.println("questo è il mio id "+LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().getId());
-
         v.setName("IL PRIMO");
         v.setOwner(new User(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().getId()));
-        v.setBalance(7000);
-//       v2.setOwner(new User(5));
-//       v2.setID(5);
-//       v2.setBalance(2000);
+        v.setBalance(70);
+        System.out.println("It's logged in "+LaVaultFacade.getInstance().getSessionFacade().isLogged());
+        System.out.println("questo è il mio id "+LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().getId());
+
+        User user1 = new User("dada", "ciao", "aaa@gmail.com");
+        LaVaultFacade.getInstance().getSessionFacade().login(user1);
+        v2.setName("IL SECONDO");
+        v2.setOwner(new User(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().getId()));
+        v2.setBalance(20);
+        System.out.println("It's logged in "+LaVaultFacade.getInstance().getSessionFacade().isLogged());
+        System.out.println("questo è il mio id "+LaVaultFacade.getInstance().getSessionFacade().getLoggedUser().getId());
 
 
 
-        //VirtualVaultDAO.getInstance().save(v);
-        //VirtualVaultDAO.getInstance().save(v2);
-        //VirtualVaultDAO.getInstance().delete(v2);
 
-        ConcreteVirtualVaultFacade.getInstance().newVirtualVault(v, user);
+        //ConcreteVirtualVaultFacade.getInstance().newVirtualVault(v, user);
+        ConcreteVirtualVaultFacade.getInstance().newVirtualVault(v2, user1);
+        //ConcreteVirtualVaultFacade.getInstance().deleteVirtualVault(v2);
 
+
+        System.out.println(DaoFactory.getVirtualVaultDAO().getAll(new User(1)));
 
     }
 

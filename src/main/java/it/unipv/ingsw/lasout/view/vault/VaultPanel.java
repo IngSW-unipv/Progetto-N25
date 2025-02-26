@@ -5,34 +5,48 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethod;
+import it.unipv.ingsw.lasout.view.LaColor;
 import it.unipv.ingsw.lasout.view.mainview.MainUIView;
 
 public class VaultPanel extends JPanel {
 
 	private JLabel saldoLabel;
-    // Aggiungi un pulsante per aprire il dialogo di aggiunta metodo
+	private JButton executePaymentBtn;
     private JButton aggiungiMetodoBtn;
+    private JButton removeMethodBtn;
     private JList<String> paymentMethodsList;
-    private JList<String> transactionsList;
+    private JList<Transaction> transactionsList;
     private JButton depositBtn;
     private JButton withdrawBtn;
     
     public VaultPanel(MainUIView mainUIview) {
         setLayout(new BorderLayout(10,10));
+        setBackground(LaColor.SFONDO);
         initComponents();
     }
     
+    public VaultPanel() {
+    	
+    }
+    
     private void initComponents() {
-        // Pannello superiore: qui inseriamo il pulsante "Aggiungi Metodo di Pagamento"
+    	// Pannello superiore: qui inseriamo il pulsante "Aggiungi Metodo di Pagamento"
         JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO_SCURO, 5));
         topPanel.setOpaque(false);
+        topPanel.setBackground(LaColor.SFONDO_CHIARO);
         
-        // Puoi mettere qui eventuali altri componenti (come il menu già esistente)
-        // e posizionare il pulsante a destra.
+        executePaymentBtn = new JButton("Esegui pagamento");
+        executePaymentBtn.setPreferredSize(new Dimension(160, 50));
+        executePaymentBtn.setBackground(LaColor.BTN_SFONDO);
+        topPanel.add(executePaymentBtn, BorderLayout.WEST);
+        
         aggiungiMetodoBtn = new JButton("Aggiungi Metodo di Pagamento");
         // Imposta eventualmente lo stile o la trasparenza
         aggiungiMetodoBtn.setOpaque(false);
+        aggiungiMetodoBtn.setBackground(LaColor.BTN_SFONDO);
         topPanel.add(aggiungiMetodoBtn, BorderLayout.EAST);
         
         add(topPanel, BorderLayout.NORTH);
@@ -45,14 +59,26 @@ public class VaultPanel extends JPanel {
         
         // EAST: Lista dei metodi di pagamento
         JPanel eastPanel = new JPanel(new BorderLayout());
+        eastPanel.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO_SCURO, 5));
+        eastPanel.setBackground(LaColor.SFONDO_CHIARO);
         eastPanel.setPreferredSize(new Dimension(200, getHeight()));
         eastPanel.add(new JLabel("Metodi di Pagamento", SwingConstants.CENTER), BorderLayout.NORTH);
         paymentMethodsList = new JList<>(new DefaultListModel<>());
         eastPanel.add(new JScrollPane(paymentMethodsList), BorderLayout.CENTER);
         add(eastPanel, BorderLayout.EAST);
         
+        removeMethodBtn = new JButton("Rimuovi Metodo");
+        removeMethodBtn.setBackground(LaColor.BTN_SFONDO);
+        JPanel btnPanel = new JPanel (new FlowLayout());
+        btnPanel.setBackground(LaColor.SFONDO);
+        btnPanel.add(removeMethodBtn);
+        eastPanel.add(btnPanel, BorderLayout.SOUTH);
+        add(eastPanel, BorderLayout.EAST);
+        
         // WEST: Lista delle transazioni
         JPanel westPanel = new JPanel(new BorderLayout());
+        westPanel.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO_SCURO, 5));
+        westPanel.setBackground(LaColor.SFONDO_CHIARO);
         westPanel.setPreferredSize(new Dimension(200, getHeight()));
         westPanel.add(new JLabel("Transazioni", SwingConstants.CENTER), BorderLayout.NORTH);
         transactionsList = new JList<>(new DefaultListModel<>());
@@ -61,16 +87,23 @@ public class VaultPanel extends JPanel {
         
      // SOUTH: Pannello per i due nuovi pulsanti "Deposit" e "Withdraw"
         JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        southPanel.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO_SCURO, 5));
+        southPanel.setBackground(LaColor.SFONDO_CHIARO);
         depositBtn = new JButton("Deposita Denaro");
         withdrawBtn = new JButton("Preleva Denaro");
         depositBtn.setPreferredSize(new Dimension(150, 50));
         withdrawBtn.setPreferredSize(new Dimension(150, 50));
+        depositBtn.setBackground(LaColor.BTN_SFONDO);
+        withdrawBtn.setBackground(LaColor.BTN_SFONDO);
         southPanel.add(depositBtn);
         southPanel.add(withdrawBtn);
         add(southPanel, BorderLayout.SOUTH);
     }
     
-    // Metodi getter e setter esistenti...
+    public void addExecutePaymentListner(ActionListener l) {
+    	executePaymentBtn.addActionListener(l);
+    }
+    
     public void updateSaldo(double saldo) {
         saldoLabel.setText("Saldo: €" + String.format("%.2f", saldo));
     }
@@ -98,16 +131,12 @@ public class VaultPanel extends JPanel {
     public void addWithdrawListener(ActionListener l) {
         withdrawBtn.addActionListener(l);
     }
-    @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g.create();
-        int w = getWidth();
-        int h = getHeight();
-        // Esempio: sfumatura da blu chiaro a blu scuro
-        GradientPaint gp = new GradientPaint(0, 0, new Color(173,216,230), 0, h, new Color(0,0,139));
-        g2d.setPaint(gp);
-        g2d.fillRect(0, 0, w, h);
-        g2d.dispose();
-        super.paintChildren(g);
+    
+    public void addRemoveMethodListener(ActionListener l) {
+    	removeMethodBtn.addActionListener(l);
+    }
+    
+    public void updateTransactionList(ListModel<Transaction> model) {
+    	transactionsList.setModel(model);
     }
 }

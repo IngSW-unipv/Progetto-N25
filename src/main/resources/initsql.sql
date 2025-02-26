@@ -28,9 +28,9 @@ CREATE TABLE `creditcard`            (id INTEGER AUTO_INCREMENT, numerocarta VAR
 CREATE TABLE `paypal`                (id INTEGER AUTO_INCREMENT,numerocarta VARCHAR(16) NOT NULL, id_vault INT, PRIMARY KEY(id), FOREIGN KEY (id_vault) REFERENCES vault(id) ON DELETE CASCADE);
 CREATE TABLE `currentaccount`        (id INTEGER AUTO_INCREMENT, iban VARCHAR(34) NOT NULL, id_vault INT, PRIMARY KEY(id), FOREIGN KEY (id_vault) REFERENCES vault(id) ON DELETE CASCADE);
 CREATE TABLE `spese`                 (id INTEGER AUTO_INCREMENT, user_id INT, group_id INT, amount DOUBLE, note VARCHAR(55), PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE, FOREIGN KEY (group_id) REFERENCES  `group`(id) ON DELETE CASCADE);
-CREATE TABLE `paymentmethod`         (id INTEGER AUTO_INCREMENT, id_vault INTEGER, type VARCHAR(20), id_paymentmethod INTEGER, PRIMARY KEY(id), FOREIGN KEY (id_vault) REFERENCES vault(id) ON DELETE CASCADE);
-CREATE TABLE `cashbook`              (id INTEGER AUTO_INCREMENT, user_id INTEGER , name VARCHAR(50) NOT NULL, PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE);
-CREATE TABLE `transactions`          (id INT NOT NULL, type TINYINT NULL, amount DOUBLE NULL, date VARCHAR(10), category VARCHAR(50) NULL, note VARCHAR(120) NULL, PRIMARY KEY (id));
+CREATE TABLE `paymentmethod`         (id INTEGER AUTO_INCREMENT, id_vault INTEGER, type VARCHAR(20), id_paymentmethod INTEGER, number VARCHAR(34), PRIMARY KEY(id), FOREIGN KEY (id_vault) REFERENCES vault(id) ON DELETE CASCADE);
+CREATE TABLE `cashbook`              (id INTEGER AUTO_INCREMENT, user_id INTEGER, name VARCHAR(50) NOT NULL, type TINYINT NOT NULL, PRIMARY KEY (id), FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE);
+CREATE TABLE `transactions`          (id INTEGER AUTO_INCREMENT, type TINYINT NOT NULL, amount DOUBLE NULL, date VARCHAR(10), category VARCHAR(50) NULL, note VARCHAR(120) NULL, PRIMARY KEY (id));
 CREATE TABLE `cashbooktransactions`  (cashbook_id INT REFERENCES `cashbook`(id) ON DELETE CASCADE, transaction_id INT REFERENCES `transactions`(id) ON DELETE CASCADE, PRIMARY KEY(cashbook_id, transaction_id));
 
 
@@ -45,8 +45,11 @@ INSERT INTO `user` (username, password, email)
 
 INSERT INTO `group` (name, user_id)
 VALUES
-    ('GR1', 1),
-    ('GR2', 2);
+    ('Vacanza a New York', 1),
+    ('Regalo Marco', 2),
+    ('Grigliata', 4),
+    ('viaggio Malesia', 1),
+    ('all togheder to Nigeria', 3);
 
 INSERT INTO `notify` (id, user_id, description, type)
 VALUES
@@ -60,46 +63,104 @@ VALUES
 
 INSERT INTO usergroup (user_id, group_id) VALUES
     (1, 1),
-    (1,2),
     (2, 2),
     (2, 1),
     (3, 1),
     (3, 2),
     (4, 2),
-    (6, 2);
+    (6, 2),
+    (4,3),
+    (5,3),
+    (6,3),
+    (1,3),
+    (1,4),
+    (2,4),
+    (3,4),
+    (4,4),
+    (5,4),
+    (3,5),
+    (2,5),
+    (1,5),
+    (6,5);
 
 
-INSERT INTO cashbook (user_id, name) VALUES
-    (1, 'default'),
-    (2, 'risparmio'),
-    (2, 'guadagno'),
-    (3, 'risparmio'),
-    (4, 'ciao'),
-    (6, 'dafult');
+INSERT INTO cashbook (user_id, name, type) VALUES
+    (1, 'default', 0),
+    (1, 'contanti', 1),
+    (2, 'risparmio', 1),
+    (2, 'guadagno', 1),
+    (3, 'risparmio', 1),
+    (4, 'ciao', 1),
+    (6, 'dafault', 0);
 
 INSERT INTO transactions (id, type, amount, date, category, note) VALUES
     (1, 0, -100.00, '2021',  'Bob', 'Payment for services'),
     (2, 1, 50.00, '2021', 'Charlie', 'Refund'),
     (3, 1, -200.00, '2021',  'David', 'Gift'),
-    (4, 0, 75.50, '2021', 'Frank', 'Purchase');
+    (4, 0, 75.50, '2021', 'Frank', 'Purchase'),
+    (5, 1, 120.00, '2021', 'Alice', 'Salary deposit'),
+    (6, 0, -30.00, '2021', 'Bob', 'Grocery shopping'),
+    (7, 1, 200.00, '2021', 'Charlie', 'Bonus'),
+    (8, 0, -50.00, '2021', 'David', 'Utility bill'),
+    (9, 0, -25.00, '2021', 'Eve', 'Dining out'),
+    (10, 1, 150.00, '2021', 'Frank', 'Freelance payment'),
+    (11, 0, -60.00, '2021', 'Grace', 'Subscription fee');
 
 INSERT INTO cashbooktransactions (transaction_id, cashbook_id) VALUES
     (1, 1),
-    (2, 2),
+    (2, 1),
     (3, 1),
-    (4, 3);
+    (4, 1),
+    (5, 1),
+
+    (6, 2),
+    (7, 2),
+    (8, 2),
+
+    (9, 3),
+    (10, 3),
+    (11, 3);
 
 
 INSERT INTO spese (user_id, group_id,amount,note) VALUES
-    (1,1 , 100, 'prova1'),
-    (2,1 , 36.5, 'prova1'),
-    (3,1 , 15, 'prova1'),
-    (3,1 , 19.8, 'prova1'),
-    (3,1 , 122, 'prova1'),
-    (2,1 , 13.9, 'prova1'),
-    (1,1 , 83, 'prova1'),
-    (1,1 , 56, 'prova1'),
-    (2,1,700,'prva2');
+
+    (1,1 , 100, 'volo'),
+    (2,1 , 36.5, 'pizza'),
+    (3,1 , 15, 'birre'),
+    (3,1 , 19.8, 'birre'),
+    (3,1 , 122, 'volo'),
+    (2,1 , 13.9, 'sneck'),
+    (1,1 , 83, 'regali'),
+    (1,1 , 56, 'regali'),
+    (2,1,700,'Hotel'),
+    (2,2,18,'Tabellone'),
+    (6,2,210,'Regalo brick'),
+    (4,3, 80, 'cibo per tutti'),
+    (4,4,50,'cibo'),
+    (2,4,1200, 'Casa'),
+    (5,4,118.55, 'cena'),
+    (6,5,470,'La primula'),
+    (3,5,250, 'Betoniera'),
+    (2,5, 200, 'L insime');
+
+
     
+
 INSERT INTO virtualvault (nome, user_id, balance) VALUES
-	('Vault', 1, 200)
+    ('Vault', 1, 200),
+    ('Vacanza', 1, 300),
+    ('Vault', 2, 500),
+    ('PRIMO', 1, 100);
+
+INSERT INTO vault (virtualvault_id) VALUES
+	(1),
+    (3);
+
+INSERT INTO creditcard (numerocarta, mese, anno, cvv, id_vault) VALUES
+	(123456789, 1, 2020, 465, 1);
+
+INSERT INTO paypal (numerocarta, id_vault) VALUES
+	(1234567, 1);
+
+INSERT INTO currentaccount (iban, id_vault) VALUES
+	(1234, 1);

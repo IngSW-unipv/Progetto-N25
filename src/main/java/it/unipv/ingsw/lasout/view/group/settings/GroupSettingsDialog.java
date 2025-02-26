@@ -12,6 +12,7 @@ public class GroupSettingsDialog extends JDialog {
     private JButton lasciaGruppo;
     private JButton eliminaGruppo;
     private RemoveParticipantDialog remuveDialog;
+    private JLabel admin;
 
     public GroupSettingsDialog(Frame parent) {
         super(parent, "Impostazioni Gruppo", true);
@@ -25,11 +26,13 @@ public class GroupSettingsDialog extends JDialog {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(LaColor.SFONDO);
 
+        admin =new JLabel();
         eliminaUtenti = new JButton("Elimina utenti");
         lasciaGruppo = new JButton("Lascia gruppo");
         eliminaGruppo = new JButton("Elimina gruppo");
 
         // Allineamento orizzontale al centro
+        admin.setAlignmentX(Component.CENTER_ALIGNMENT);
         eliminaUtenti.setAlignmentX(Component.CENTER_ALIGNMENT);
         lasciaGruppo.setAlignmentX(Component.CENTER_ALIGNMENT);
         eliminaGruppo.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -40,6 +43,7 @@ public class GroupSettingsDialog extends JDialog {
         lasciaGruppo.setMaximumSize(buttonSize);
         eliminaGruppo.setMaximumSize(buttonSize);
 
+        admin.setForeground(LaColor.FONT);
         eliminaUtenti.setForeground(LaColor.FONT);
         lasciaGruppo.setForeground(LaColor.FONT);
         eliminaGruppo.setForeground(LaColor.FONT);
@@ -52,6 +56,8 @@ public class GroupSettingsDialog extends JDialog {
 
         //spazi verticali tra i pulsanti
         panel.add(Box.createVerticalGlue());
+        panel.add(admin);
+        panel.add(Box.createVerticalStrut(40));
         panel.add(eliminaUtenti);
         panel.add(Box.createVerticalStrut(40)); // spazio tra i pulsanti
         panel.add(lasciaGruppo);
@@ -78,5 +84,9 @@ public class GroupSettingsDialog extends JDialog {
 
     public RemoveParticipantDialog getRemuveDialog() {
         return remuveDialog;
+    }
+
+    public void setAmin(String a) {
+        admin.setText(a);
     }
 }

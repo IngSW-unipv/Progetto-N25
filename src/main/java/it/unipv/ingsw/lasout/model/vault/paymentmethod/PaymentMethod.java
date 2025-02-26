@@ -28,4 +28,6 @@ public interface PaymentMethod {
 
 	void setId(int int1);
 	
+	void setNumeroCarta(String string);
+	
 }

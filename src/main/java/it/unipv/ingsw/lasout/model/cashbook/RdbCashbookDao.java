@@ -1,6 +1,7 @@
 package it.unipv.ingsw.lasout.model.cashbook;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,17 +12,18 @@ import it.unipv.ingsw.lasout.model.cashbook.exception.CashbookAlreadyExistingExc
 import it.unipv.ingsw.lasout.model.transaction.ManualTransaction;
 import it.unipv.ingsw.lasout.model.transaction.RdbTransactionDao;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
+import it.unipv.ingsw.lasout.model.transaction.exception.CannotDeleteAutomaticTransactionException;
 import it.unipv.ingsw.lasout.model.user.User;
 
 public class RdbCashbookDao implements ICashbookDAO {
     /**
-     * Istanza singola del GroupDao (implementazione singleton)
+     * Istanza singola del CashbookDao (implementazione singleton)
      */
     private static RdbCashbookDao instance = null;
 
     /**
      *
-     * @return l'istanza singleton del GroupDao
+     * @return l'istanza singleton del CashbookDao
      */
     public static RdbCashbookDao getInstance(){
         if (instance == null){
@@ -46,8 +48,25 @@ public class RdbCashbookDao implements ICashbookDAO {
     private static final String DELETE_FROM_CASHBOOKTRANSACTIONS = "DELETE FROM £cashbooktransactions£ WHERE cashbook_id = ?";
     private static final String DELETE_CASHBOOK_FROM_ID = "DELETE FROM £cashbook£ WHERE id = ?";
     private static final String INSERT_IN_CASHBOOKTRANSACTIONS = "INSERT INTO £cashbooktransactions£ (cashbook_id, transaction_id) VALUES(?,?)";
-    private static final String INSERT_CASHBOOK_ID = "INSERT INTO £cashbook£ (id, user_id, name) VALUES(?,?,?)";
-    private static final String INSERT_CASHBOOK_NOID = "INSERT INTO £cashbook£ (user_id, name) VALUES (?, ?);";
+    private static final String INSERT_CASHBOOK_ID = "INSERT INTO £cashbook£ (id, user_id, name, type) VALUES(?,?,?,?)";
+    private static final String INSERT_CASHBOOK_NOID = "INSERT INTO £cashbook£ (user_id, name, type) VALUES (?, ?, ?);";
+
+    private Cashbook extractRawFromResultSet(ResultSet rs) throws SQLException {
+        Cashbook savedCashbook = new Cashbook();
+        savedCashbook.setId(rs.getInt("id"));
+        savedCashbook.setName(rs.getString("name"));
+        savedCashbook.setUser(new User(rs.getInt("user_id")));
+
+        int type = rs.getInt("type");
+        if (type == CashbookType.DEFAULT.getCode()){
+            savedCashbook.setIsDefault(true);
+        } else {
+            savedCashbook.setIsDefault(false);
+        }
+
+
+        return savedCashbook;
+    }
 
     /**
      * Voglio ottenere un CashBook dal DB solo tramite il suo ID
@@ -65,10 +84,7 @@ public class RdbCashbookDao implements ICashbookDAO {
             throw new RuntimeException("Cashbook not found");
         }
 
-        Cashbook savedCashbook = new Cashbook();
-        savedCashbook.setId(resultSet.getInt("id"));
-        savedCashbook.setName(resultSet.getString("name"));
-        savedCashbook.setUser(new User(resultSet.getInt("user_id")));
+        Cashbook savedCashbook = extractRawFromResultSet(resultSet);
 
         query.close();
         return savedCashbook;
@@ -103,9 +119,7 @@ public class RdbCashbookDao implements ICashbookDAO {
         ResultSet rs = query.getResultSet();
         List<Cashbook> cashbooksList = new ArrayList<Cashbook>();
         while(rs.next()){
-            Cashbook cashbook = new Cashbook();
-            cashbook.setId(rs.getInt("id"));
-            cashbook.setName(rs.getString("name"));
+            Cashbook cashbook = extractRawFromResultSet(rs);
             cashbook.setTransactionList(getCashbookTransactions(new Cashbook(rs.getInt("id"))));
 
             cashbooksList.add(cashbook);
@@ -135,7 +149,7 @@ public class RdbCashbookDao implements ICashbookDAO {
             Transaction t;
             Transaction carrierTransaction = new ManualTransaction();
             carrierTransaction.setId(rs.getInt("transaction_id"));
-            t= RdbTransactionDao.getInstance().get(carrierTransaction);
+            t = RdbTransactionDao.getInstance().get(carrierTransaction);
             transactionList.add(t);
         }
 
@@ -151,7 +165,7 @@ public class RdbCashbookDao implements ICashbookDAO {
             throw new RuntimeException(e);
         }
         for(Cashbook c: cashbookList){
-            if(c.getName().equals("default"))
+            if(c.isDefault())
                 return c;
         }
         return null;
@@ -167,13 +181,20 @@ public class RdbCashbookDao implements ICashbookDAO {
         DBQuery query;
 
         try {
-            if (cashbook.getId() != 0) {
-                query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_ID, cashbook.getId(), cashbook.getUser().getId(), cashbook.getName());
+            int type;
+            if(cashbook.isDefault()){
+                type = CashbookType.DEFAULT.getCode();
             } else {
-                query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_NOID, cashbook.getUser().getId(), cashbook.getName());
+                type = CashbookType.GENERIC.getCode();
+            }
+
+            if (cashbook.getId() != 0) {
+                query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_ID, cashbook.getId(), cashbook.getUser().getId(), cashbook.getName(), type);
+            } else {
+                query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_NOID, cashbook.getUser().getId(), cashbook.getName(), type);
             }
         } catch (Exception e) {
-            throw new CashbookAlreadyExistingException("Cashbook already exists exception");
+            throw new CashbookAlreadyExistingException(cashbook.getName());
         }
         DatabaseUtil.getInstance().executeQuery(query);
 
@@ -223,10 +244,6 @@ public class RdbCashbookDao implements ICashbookDAO {
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_CASHBOOK_FROM_ID, cashbook.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
-        if(cashbook.getName().equals("default")) {
-            throw new CannotDeleteDefaultCashbookException("Cannot delete default cashbook exception");
-        }
-
         if(cashbook.getTransactionList()!=null)
             deleteAssociation(cashbook);
 
@@ -244,7 +261,11 @@ public class RdbCashbookDao implements ICashbookDAO {
         List<Transaction> transactions = cashbook.getTransactionList();
         for (Transaction t : transactions) {
             if (!isTransactionStillUsed(t)) {
-                RdbTransactionDao.getInstance().delete(t);
+                try {
+                    RdbTransactionDao.getInstance().delete(t);
+                } catch (CannotDeleteAutomaticTransactionException e) {
+                    continue;
+                }
             }
         }
 
@@ -269,7 +290,7 @@ public class RdbCashbookDao implements ICashbookDAO {
 
 
     /**
-     * Update dei dati riguardanti un cashbook con conseguente modifica delle relazioni ad esso collegate
+     * Update dei dati riguardanti un cashbook senza la modifica delle transazioni ad esso collegate
      * @param cashbook carrier contentente solo l'id del cashbook da aggiornare
      * @throws Exception errore nell'esecuzione della query sql
      */

@@ -2,6 +2,7 @@ package it.unipv.ingsw.lasout.model.transaction;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.transaction.exception.CannotDeleteAutomaticTransactionException;
 import it.unipv.ingsw.lasout.model.transaction.exception.CannotEditTransactionException;
 
 import java.sql.ResultSet;
@@ -11,13 +12,13 @@ import java.util.List;
 
 public class RdbTransactionDao implements ITransactionDAO{
     /**
-     * Istanza singola del GroupDao (implementazione singleton)
+     * Istanza singola del RdbTransactionDao (implementazione singleton)
      */
     private static RdbTransactionDao instance = null;
 
     /**
      *
-     * @return l'istanza singleton del GroupDao
+     * @return l'istanza singleton del RdbTransactionDao
      */
     public static RdbTransactionDao getInstance(){
         if (instance == null){
@@ -29,7 +30,7 @@ public class RdbTransactionDao implements ITransactionDAO{
     /**
      * Rendo il costruttore privato
      */
-    private RdbTransactionDao(){
+    public RdbTransactionDao(){
         super();
     }
 
@@ -155,11 +156,18 @@ public class RdbTransactionDao implements ITransactionDAO{
     /**
      * Eliminazione di un cashbook dal database per aggiornamento o eliminazione dei
      * dati tenendo conto anche delle relazioni ed eliminandole di conseguenza
-     * @param transaction carrier contentente solo l'id del cashbook da eliminare dal database
+     * @param carrierTransaction carrier contentente solo l'id del cashbook da eliminare dal database
      * @throws Exception errore nel esecuzione della query sql
      */
     @Override
-    public void delete(Transaction transaction) throws Exception {
+    public void delete(Transaction carrierTransaction) throws Exception {
+        ModifiableTransaction transaction;
+        try{
+            transaction = (ModifiableTransaction) carrierTransaction;
+        } catch (Exception e) {
+            throw new CannotDeleteAutomaticTransactionException();
+        }
+
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_TRANSACTION_FROM_ID, transaction.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
@@ -179,15 +187,16 @@ public class RdbTransactionDao implements ITransactionDAO{
 
     /**
      * Update dei dati riguardanti un cashbook con conseguente modifica delle relazioni ad esso collegate
-     * @param transaction carrier contentente solo l'id del cashbook da aggiornare
+     * @param carrierTransaction carrier contentente solo l'id del cashbook da aggiornare
      * @throws Exception errore nell'esecuzione della query sql
      */
-    public void update(Transaction transaction) throws Exception {
+    public void update(Transaction carrierTransaction) throws Exception {
         DBQuery query = null;
+        ModifiableTransaction transaction;
 
         // lancerà un errore di casting, perciò non posso modificare la transazione
         try{
-            ModifiableTransaction t = (ModifiableTransaction) transaction;
+            transaction = (ModifiableTransaction) carrierTransaction;
         } catch (Exception e) {
             throw new CannotEditTransactionException();
         }

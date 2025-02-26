@@ -2,6 +2,7 @@ package it.unipv.ingsw.lasout.controller.vault;
 
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.facade.vault.ConcreteVaultFacade;
+import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.vault.Vault;
 import it.unipv.ingsw.lasout.model.vault.VaultDAO;
@@ -9,7 +10,9 @@ import it.unipv.ingsw.lasout.model.vault.paymentmethod.CreditCard;
 import it.unipv.ingsw.lasout.model.vault.paymentmethod.CurrentAccount;
 import it.unipv.ingsw.lasout.model.vault.paymentmethod.PayPal;
 import it.unipv.ingsw.lasout.model.vault.paymentmethod.PaymentMethod;
-import it.unipv.ingsw.lasout.view.vault.PaymentMethodDialog;
+import it.unipv.ingsw.lasout.view.vault.AddPaymentMethodDialog;
+import it.unipv.ingsw.lasout.view.vault.DeletePaymentMethodDialog;
+import it.unipv.ingsw.lasout.view.vault.PaymentExecutionDialog;
 import it.unipv.ingsw.lasout.view.vault.PaymentMethodTransactionDialog;
 import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 
@@ -36,7 +39,7 @@ public class VaultController {
 
 		 vaultPanel.addAggiungiMetodoListener(e -> {
 	            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(vaultPanel);
-	            PaymentMethodDialog addDialog = new PaymentMethodDialog(frame);
+	            AddPaymentMethodDialog addDialog = new AddPaymentMethodDialog(frame);
 	            addDialog.addConfirmListener(ev -> {
 	                // Leggi il tipo selezionato dal dialogo
 	                String type = addDialog.getSelectedType();
@@ -44,26 +47,25 @@ public class VaultController {
 	                boolean success = false;
 	                if(type.equals("CreditCard")) {
 	                    String cardNumber = addDialog.getCcNumber();
+	                    if(cardNumber == null || cardNumber.isEmpty()){
+	                        JOptionPane.showMessageDialog(frame, "Inserisci un numero di carta valido.");
+	                        return;
+	                    }
 	                    String month = addDialog.getCcMonth();
 	                    String year = addDialog.getCcYear();
 	                    String cvv = addDialog.getCcCVV();
+	                    
 	                    // Usa la factory per creare l'istanza
 	                    success = ConcreteVaultFacade.getInstance().addPaymentMethod(vault,
 	                                new CreditCard(cardNumber, Integer.parseInt(month), Integer.parseInt(year), Integer.parseInt(cvv), vault.getId()),
-	                                type);
-	                    CreditCard cc = new CreditCard();
-	                    cc.setNumeroCarta(cardNumber);
-	                    cc.setMese(Integer.parseInt(month));
-	                    cc.setAnno(Integer.parseInt(year));
-	                    cc.setCvv(Integer.parseInt(cvv));
-	                   
+	                                type);    
 	                    
 	                } else if(type.equals("PayPal")) {
 	                    String cardNumber = addDialog.getPpNumber();
 	                    success = ConcreteVaultFacade.getInstance().addPaymentMethod(vault,
 	                                new PayPal(cardNumber, vault.getId()),
 	                                type);
-	                } else if(type.equals("Conto Corrente")) {
+	                } else if(type.equals("CurrentAccount")) {
 	                    String iban = addDialog.getIban();
 	                    success = ConcreteVaultFacade.getInstance().addPaymentMethod(vault,
 	                                new CurrentAccount(iban, vault.getId()),
@@ -74,7 +76,7 @@ public class VaultController {
 	                    List<PaymentMethod> methods = LaVaultFacade.getInstance().getVaultFacade().getAllPaymentMethods(vault);
 	                    DefaultListModel<String> model = new DefaultListModel<>();
 	                    for (PaymentMethod pm : methods) {
-	                         model.addElement(pm.toString()); // Assicurati che PaymentMethod.toString() restituisca una rappresentazione utile
+	                        model.addElement(pm.toString()); 
 	                    }
 	                    vaultPanel.updatePaymentMethodsList(model);
 	                    JOptionPane.showMessageDialog(frame, "Metodo aggiunto correttamente.");
@@ -113,6 +115,7 @@ public class VaultController {
 	                    if(success) {
 	                        JOptionPane.showMessageDialog(frame, "Denaro depositato correttamente.");
 	                        vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getBalanceByID(vault));
+	                        updateTransactionsView();
 	                    } else {
 	                        JOptionPane.showMessageDialog(frame, "Errore nel deposito.");
 	                    }
@@ -146,6 +149,7 @@ public class VaultController {
 	                    if(success) {
 	                        JOptionPane.showMessageDialog(frame, "Denaro prelevato correttamente.");
 	                        vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getBalanceByID(vault));
+	                        updateTransactionsView();
 	                    } else {
 	                        JOptionPane.showMessageDialog(frame, "Errore nel prelievo.");
 	                    }
@@ -154,6 +158,73 @@ public class VaultController {
 	                dialog.addCancelListener(ev -> dialog.dispose());
 	                dialog.setVisible(true);
 	            }
+	        });
+	        
+	        vaultPanel.addRemoveMethodListener( e -> {
+	            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(vaultPanel);
+	        	//recuper la lista aggiornata dei metodi di pagamento
+	        	List<PaymentMethod> methods = ConcreteVaultFacade.getInstance().getAllPaymentMethods(vault);
+	        	//dialog cancellazione
+	        	DeletePaymentMethodDialog deletedialog = new DeletePaymentMethodDialog(frame, vault, methods);
+	        	//listener per pulsante
+	        	deletedialog.addDeleteListener(ev ->{
+	        		PaymentMethod selectedMethod = deletedialog.getSelectedPaymentMethod();
+	        		if(selectedMethod == null) {
+	        			JOptionPane.showMessageDialog(deletedialog, "Seleziona un metodo di pagamento da rimuovere");
+	        			return;
+	        		}
+	        		
+	        		int confirm = JOptionPane.showConfirmDialog(deletedialog, "Sei sicuro di voler rimuovere il "
+	        				+ "metodo di pagamento selezionato?", "Conferma cancellazione", JOptionPane.YES_NO_OPTION);
+	        		if(confirm == JOptionPane.YES_OPTION) {
+	        			boolean success = ConcreteVaultFacade.getInstance()
+	        					.deletePaymentMethod(vault, selectedMethod, selectedMethod.getMethodName());
+	        			if(success) {
+	        				JOptionPane.showMessageDialog(deletedialog, "Metodo di pagamento rimosso con successo");
+	        				//aggiorno la lista
+	        				deletedialog.removeSelectedPaymentMethod();
+	        				//aggiorno la lista della view
+	        				List<PaymentMethod> newMethods = ConcreteVaultFacade.getInstance().getAllPaymentMethods(vault);
+	        				DefaultListModel<String> newModel = new DefaultListModel<>();
+	        				for(PaymentMethod pm : newMethods){
+	        					newModel.addElement(pm.toString());
+	        				}
+	        				vaultPanel.updatePaymentMethodsList(newModel);
+	        			} else {
+	        				JOptionPane.showMessageDialog(deletedialog, "Errore nella cancellazione del metodo");
+	        			}
+	        		}
+	        		
+	        	});
+	        	
+	        	deletedialog.addCancelListener(ev -> deletedialog.dispose());
+	        	deletedialog.setVisible(true);
+	        });
+	        
+	        vaultPanel.addExecutePaymentListner(e -> {
+	        	
+	        	JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(vaultPanel);
+	        	PaymentExecutionDialog paymentDialog = new PaymentExecutionDialog(frame);
+	        	
+	        	paymentDialog.addConfirmListener(ev -> {
+	        		double amount = paymentDialog.getAmount();
+	        		if(amount <= 0) {
+	        			JOptionPane.showMessageDialog(paymentDialog, "Inserisce un importo valido");
+	        			return;
+	        		}
+	        		String causale = paymentDialog.getCausale();
+	        		
+	        		boolean success = ConcreteVaultFacade.getInstance().executePayment(vault, amount, causale);
+	        		if(success) {
+	        			JOptionPane.showMessageDialog(paymentDialog, "Pagamento eseguito con successo");
+	        			vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getBalanceByID(vault));
+	        		}else {
+	        			JOptionPane.showMessageDialog(paymentDialog, "Errore nell'esecuzione del pagamento");
+	        		}
+	        		paymentDialog.dispose();
+	        	});
+	        	paymentDialog.addCancelListener(ev -> paymentDialog.dispose());
+	        	paymentDialog.setVisible(true);
 	        });
 	}
 	
@@ -185,8 +256,16 @@ public class VaultController {
 		ConcreteVaultFacade.getInstance().newVaultinVault(vault);
 
 		ConcreteVaultFacade.getInstance().getVaultId(vault);
+		
+		updateTransactionsView();
 	}
 	
-	
-
+	public static void updateTransactionsView() {
+		List<Transaction> transactions = LaVaultFacade.getInstance().getCashbookFacade().getVaultTransactionsOfUser(vault.getOwner());
+		DefaultListModel<Transaction> model = new DefaultListModel<>();
+		for(Transaction t : transactions) {
+			model.addElement(t);
+		}
+		vaultPanel.updateTransactionList(model);
+	}
 }

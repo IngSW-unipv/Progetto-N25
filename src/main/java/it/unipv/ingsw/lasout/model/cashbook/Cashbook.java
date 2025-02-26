@@ -12,6 +12,7 @@ public class Cashbook {
     private User user;
     private String name;
     private List<Transaction> transactionList;
+    private boolean isDefault;
 
     public Cashbook(){
     }
@@ -20,13 +21,13 @@ public class Cashbook {
         this.id = id;
     }
 
-    public Cashbook(int id, User user, String name) {
+    public Cashbook(int id, User user, String name, boolean isDefault) {
         this.id = id;
         this.user = user;
         this.name = name;
     }
 
-    public Cashbook(int id, User user, String name, List<Transaction> transactionList) {
+    public Cashbook(int id, User user, String name, boolean isDefault, List<Transaction> transactionList) {
         this.id = id;
         this.user = user;
         this.name = name;
@@ -65,11 +66,17 @@ public class Cashbook {
         this.transactionList = transactionList;
     }
 
+    public boolean isDefault(){
+        return isDefault;
+    }
 
+    public void setIsDefault(boolean isDefault){
+        this.isDefault = isDefault;
+    }
 
     @Override
     public String toString() {
-        return String.format("Cashbook{id=%d, name='%s'}", id, name);
+        return String.format("Cashbook{id=%d, name='%s', isDefault='%s'}", id, name, isDefault);
     }
 
 
@@ -84,4 +91,5 @@ public class Cashbook {
     public void addTransaction(Transaction transaction) {
         transactionList.add(transaction);
     }
+
 }

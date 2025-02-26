@@ -26,12 +26,10 @@ public class PaymentMethodView extends JPanel{
 
         // Creo i pulsanti per aggiungere e rimuovere il metodo
         addMethodButton = new JButton("Aggiungi Metodo");
-        removeMethodButton = new JButton("Rimuovi Metodo");
 
         // Aggiungi i componenti al pannello
         add(paymentTypeComboBox);
         add(addMethodButton);
-        add(removeMethodButton);
     }
 
     public String getSelectedPaymentType() {

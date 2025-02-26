@@ -1,9 +1,11 @@
 package it.unipv.ingsw.lasout.facade;
 
 import it.unipv.ingsw.lasout.facade.cashbook.CashbookFacade;
+import it.unipv.ingsw.lasout.facade.cashbook.ICashbookFacade;
 import it.unipv.ingsw.lasout.facade.friend.FriendFacade;
 import it.unipv.ingsw.lasout.facade.group.GroupFacade;
 import it.unipv.ingsw.lasout.facade.notify.NotifyFacade;
+import it.unipv.ingsw.lasout.facade.transaction.ITransactionFacade;
 import it.unipv.ingsw.lasout.facade.transaction.TransactionFacade;
 import it.unipv.ingsw.lasout.facade.user.ISessionFacade;
 import it.unipv.ingsw.lasout.facade.user.IUserFacade;
@@ -30,8 +32,8 @@ public class LaVaultFacade {
     private GroupFacade groupFacade;
     private VaultFacade vaultFacade;
     private VirtualVaultFacade virtualVaultFacade;
-    private CashbookFacade cashbookFacade;
-    private TransactionFacade transactionFacade;
+    private ICashbookFacade cashbookFacade;
+    private ITransactionFacade transactionFacade;
 
     private LaVaultFacade() {
 
@@ -43,11 +45,10 @@ public class LaVaultFacade {
             this.groupFacade = (GroupFacade) loadClass("group").getDeclaredConstructor().newInstance();
             this.vaultFacade = (VaultFacade) loadClass("vault").getDeclaredConstructor().newInstance();
             this.virtualVaultFacade = (VirtualVaultFacade) loadClass("virtualvault").getDeclaredConstructor().newInstance();
-            this.cashbookFacade = (CashbookFacade) loadClass("cashbook").getDeclaredConstructor().newInstance();
-            this.transactionFacade = (TransactionFacade) loadClass("transaction").getDeclaredConstructor().newInstance();
+            this.cashbookFacade = (ICashbookFacade) loadClass("cashbook").getDeclaredConstructor().newInstance();
+            this.transactionFacade = (ITransactionFacade) loadClass("transaction").getDeclaredConstructor().newInstance();
         }catch (Exception e){
-            //throw new RuntimeException(e);
-            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -82,11 +83,11 @@ public class LaVaultFacade {
     	return vaultFacade;
     }
     
-    public CashbookFacade getCashbookFacade() {
+    public ICashbookFacade getCashbookFacade() {
         return cashbookFacade;
     }
 
-    public TransactionFacade getTransactionFacade() {
+    public ITransactionFacade getTransactionFacade() {
         return transactionFacade;
     }
 }

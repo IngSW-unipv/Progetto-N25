@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class PaymentMethodDialog extends JDialog{
+public class AddPaymentMethodDialog extends JDialog{
 	
 	private JComboBox<String> methodCombo;
     private JPanel cardsPanel;
@@ -28,7 +28,7 @@ public class PaymentMethodDialog extends JDialog{
     // Campi per Conto Corrente
     private JTextField ibanField;
     
-    public PaymentMethodDialog(Frame owner) {
+    public AddPaymentMethodDialog(Frame owner) {
         super(owner, "Aggiungi Metodo di Pagamento", true);
         initComponents();
     }
@@ -81,9 +81,9 @@ public class PaymentMethodDialog extends JDialog{
         caPanel.add(ibanField);
         
         // Aggiungo i pannelli al cardsPanel
-        cardsPanel.add(ccPanel, "Credit Card");
+        cardsPanel.add(ccPanel, "CreditCard");
         cardsPanel.add(ppPanel, "PayPal");
-        cardsPanel.add(caPanel, "Conto Corrente");
+        cardsPanel.add(caPanel, "CurrentAccount");
         
         add(cardsPanel, BorderLayout.CENTER);
         
