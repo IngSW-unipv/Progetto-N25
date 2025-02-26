@@ -23,13 +23,14 @@ public class VaultPanel extends JPanel {
     
     public VaultPanel(MainUIView mainUIview) {
         setLayout(new BorderLayout(10,10));
-        setBackground(LaColor.SFONDO_SCURO);
+        setBackground(LaColor.SFONDO);
         initComponents();
     }
     
     private void initComponents() {
     	// Pannello superiore: qui inseriamo il pulsante "Aggiungi Metodo di Pagamento"
         JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO_SCURO, 5));
         topPanel.setOpaque(false);
         topPanel.setBackground(LaColor.SFONDO_CHIARO);
         
@@ -38,8 +39,6 @@ public class VaultPanel extends JPanel {
         executePaymentBtn.setBackground(LaColor.BTN_SFONDO);
         topPanel.add(executePaymentBtn, BorderLayout.WEST);
         
-        // Puoi mettere qui eventuali altri componenti (come il menu già esistente)
-        // e posizionare il pulsante a destra.
         aggiungiMetodoBtn = new JButton("Aggiungi Metodo di Pagamento");
         // Imposta eventualmente lo stile o la trasparenza
         aggiungiMetodoBtn.setOpaque(false);
@@ -56,6 +55,7 @@ public class VaultPanel extends JPanel {
         
         // EAST: Lista dei metodi di pagamento
         JPanel eastPanel = new JPanel(new BorderLayout());
+        eastPanel.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO_SCURO, 5));
         eastPanel.setBackground(LaColor.SFONDO_CHIARO);
         eastPanel.setPreferredSize(new Dimension(200, getHeight()));
         eastPanel.add(new JLabel("Metodi di Pagamento", SwingConstants.CENTER), BorderLayout.NORTH);
@@ -73,6 +73,7 @@ public class VaultPanel extends JPanel {
         
         // WEST: Lista delle transazioni
         JPanel westPanel = new JPanel(new BorderLayout());
+        westPanel.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO_SCURO, 5));
         westPanel.setBackground(LaColor.SFONDO_CHIARO);
         westPanel.setPreferredSize(new Dimension(200, getHeight()));
         westPanel.add(new JLabel("Transazioni", SwingConstants.CENTER), BorderLayout.NORTH);
@@ -82,6 +83,7 @@ public class VaultPanel extends JPanel {
         
      // SOUTH: Pannello per i due nuovi pulsanti "Deposit" e "Withdraw"
         JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        southPanel.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO_SCURO, 5));
         southPanel.setBackground(LaColor.SFONDO_CHIARO);
         depositBtn = new JButton("Deposita Denaro");
         withdrawBtn = new JButton("Preleva Denaro");
