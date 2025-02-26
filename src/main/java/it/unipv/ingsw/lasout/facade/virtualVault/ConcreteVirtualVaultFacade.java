@@ -50,7 +50,7 @@ public class ConcreteVirtualVaultFacade implements VirtualVaultFacade {
     public VirtualVault getVirtualVault(VirtualVault virtualVault){
         VirtualVault result = null;
          try{
-            result=virtualVaultDAO.get(virtualVault);
+            result = virtualVaultDAO.getRaw(virtualVault);
         } catch (Exception e){
             return null;
         }

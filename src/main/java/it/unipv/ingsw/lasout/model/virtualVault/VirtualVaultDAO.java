@@ -28,7 +28,7 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
 
 
     //Varie query
-    private static final String QUERY_RAW_1 = "SELECT * FROM $virtualvault$ WHERE id = ? AND user_id = ?";
+    private static final String QUERY_RAW_1 = "SELECT * FROM $virtualvault$ WHERE id = ? && user_id = ? ";
     private static final String QUERY_INSERT_NEW_VIRTUALVAULT_NOID= "INSERT INTO $virtualvault$ (nome, user_id, balance) VALUES (?, ?, ?)";
     private static final String QUERY_INSERT_NEW_VIRTUALVAULT_ID= "INSERT INTO $virtualvault$ (id, nome, user_id, balance) VALUES (?, ?, ?, ?)";
     private static final String QUERY_DELETE_AN_EXISTING_VIRTUALVAULT = "DELETE FROM $virtualvault$ WHERE id = ?";
@@ -46,16 +46,27 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
 
         ResultSet rs = query.getResultSet();
 
-        int id = rs.getInt("ID");
+        /*int id = rs.getInt("ID");
         User user = userDAO.get(new User(rs.getInt("user_id")));
 
         double balance = rs.getDouble("balance");
 
         VirtualVault vVault = new VirtualVault(id, user);
         vVault.setBalance(balance);
+        return vVault;*/
+        if (rs.next()) { // Assicurati che ci sia almeno una riga
+            int id = rs.getInt("ID");
+            String nome = rs.getString("NOME");
+            User user = userDAO.get(new User(rs.getInt("user_id")));
+            double balance = rs.getDouble("balance");
+            VirtualVault vVault = new VirtualVault(id, nome, user);
+            vVault.setName(nome);
+            vVault.setBalance(balance);
+            return vVault;
+        } else {
+            return null;
+        }
 
-
-        return vVault;
     }
 
 

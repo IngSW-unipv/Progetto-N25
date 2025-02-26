@@ -150,7 +150,7 @@ INSERT INTO virtualvault (nome, user_id, balance) VALUES
     ('Vault', 1, 200),
     ('Vacanza', 1, 300),
     ('Vault', 2, 500),
-    ('PRIMO', 1, 300);
+    ('PRIMO', 1, 100);
     
 INSERT INTO vault (virtualvault_id) VALUES
 	(1),

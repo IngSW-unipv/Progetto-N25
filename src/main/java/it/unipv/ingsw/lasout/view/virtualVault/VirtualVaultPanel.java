@@ -35,6 +35,20 @@ public class VirtualVaultPanel extends JPanel {
         topPanel.setBackground(getBackground());
 
         comboLabel = new JLabel("Seleziona VirtualVault:");
+
+        virtualVaultComboBox = new JComboBox<>();
+        // Imposta correttamente l'elemento di default
+        virtualVaultComboBox.addItem(new VirtualVaultItem(0, "Selezione VirtualVault"));
+        virtualVaultComboBox.setBackground(LaColor.BTN_SFONDO);
+        virtualVaultComboBox.setForeground(LaColor.FONT);
+
+        topPanel.add(comboLabel);
+        topPanel.add(virtualVaultComboBox);
+        add(topPanel, BorderLayout.NORTH);
+        /*JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        topPanel.setBackground(getBackground());
+
+        comboLabel = new JLabel("Seleziona VirtualVault:");
         virtualVaultComboBox = new JComboBox<>();
         // Aggiunge un elemento di default
         virtualVaultComboBox.addItem(virtualVaultComboBox.getItemAt(0));
@@ -45,12 +59,11 @@ public class VirtualVaultPanel extends JPanel {
         topPanel.add(comboLabel);
         topPanel.add(virtualVaultComboBox);
         add(topPanel, BorderLayout.NORTH);
-
+*/
         // --- CENTER: pannello grigio per le info ---
         infoPanel = new JPanel();
         infoPanel.setBackground(LaColor.SFONDO);
-        infoPanel.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO, 15));
-
+        infoPanel.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO_SCURO, 15));
         // Imposta una dimensione preferita (
         infoPanel.setPreferredSize(new Dimension(400, 200));
         add(infoPanel, BorderLayout.CENTER);
@@ -81,11 +94,11 @@ public class VirtualVaultPanel extends JPanel {
     }
     public void resetInfoPanel() {infoPanel.removeAll();}
 
-
+    //-----------------
     public JButton getAddVirtualVaultButton() {
         return addVirtualVaultButton;
     }
-
+    //----------------
     public JButton getDeleteVirtualVaultButton() {
         return deleteVirtualVaultButton;
     }

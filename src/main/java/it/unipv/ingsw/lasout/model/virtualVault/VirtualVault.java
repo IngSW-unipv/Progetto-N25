@@ -36,6 +36,9 @@ public class VirtualVault implements IVault{
         this.behavior = behavior;
     }
 
+    public VirtualVault(int id, String nome, User user) {
+    }
+
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
 
