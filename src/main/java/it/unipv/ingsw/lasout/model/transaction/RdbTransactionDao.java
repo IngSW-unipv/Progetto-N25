@@ -144,10 +144,13 @@ public class RdbTransactionDao implements ITransactionDAO{
             query = DatabaseUtil.getInstance().createQuery(INSERT_TRANSACTION_ID, transaction.getId(), type.getCode(), transaction.getAmount(), transaction.getDate(), transaction.getCategory(), transaction.getNotes());
         }
         else{
-            query = DatabaseUtil.getInstance().createQuery(INSERT_TRANSACTION_NOID, type.getCode(), transaction.getAmount(), transaction.getDate(), transaction.getCategory(), transaction.getNotes());
+            query = DatabaseUtil.getInstance().createGeneratedKeyQuery(INSERT_TRANSACTION_NOID, type.getCode(), transaction.getAmount(), transaction.getDate(), transaction.getCategory(), transaction.getNotes());
         }
 
         DatabaseUtil.getInstance().executeQuery(query);
+
+        //salvo id
+        if (transaction.getId() == 0) transaction.setId((int)query.getKey());
 
         query.close();
     }
@@ -170,9 +173,9 @@ public class RdbTransactionDao implements ITransactionDAO{
 
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_TRANSACTION_FROM_ID, transaction.getId());
         DatabaseUtil.getInstance().executeQuery(query);
+        query.close();
 
         deleteAssociation(transaction);
-        query.close();
     }
 
     /**

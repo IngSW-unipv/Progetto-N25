@@ -101,7 +101,7 @@ public class ButtonEditor extends DefaultCellEditor {
                     } else {
                         JOptionPane.showMessageDialog(
                                 editDialog,
-                                "Unable to edit transaction",
+                                "Cannot edit automatically generated transactions",
                                 "Edit Error",
                                 JOptionPane.ERROR_MESSAGE
                         );

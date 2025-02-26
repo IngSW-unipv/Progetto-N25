@@ -34,7 +34,7 @@ public class TransactionFacade implements ITransactionFacade {
         try {
             return transactionDAO.get(carrierTransaction);
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException(e);
         }
     }
 

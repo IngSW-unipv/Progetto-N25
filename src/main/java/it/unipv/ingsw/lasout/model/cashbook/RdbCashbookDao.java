@@ -7,7 +7,6 @@ import java.util.List;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
-import it.unipv.ingsw.lasout.model.cashbook.exception.CannotDeleteDefaultCashbookException;
 import it.unipv.ingsw.lasout.model.cashbook.exception.CashbookAlreadyExistingException;
 import it.unipv.ingsw.lasout.model.transaction.ManualTransaction;
 import it.unipv.ingsw.lasout.model.transaction.RdbTransactionDao;
@@ -174,10 +173,10 @@ public class RdbCashbookDao implements ICashbookDAO {
 
     @Override
     public void addTransaction(Cashbook cashbook, Transaction transaction) throws Exception{
+        RdbTransactionDao.getInstance().save(transaction);
+
         DBQuery query = DatabaseUtil.getInstance().createQuery(INSERT_IN_CASHBOOKTRANSACTIONS, cashbook.getId(), transaction.getId());
         DatabaseUtil.getInstance().executeQuery(query);
-
-        RdbTransactionDao.getInstance().save(transaction);
 
         query.close();
     }
@@ -202,20 +201,19 @@ public class RdbCashbookDao implements ICashbookDAO {
             if (cashbook.getId() != 0) {
                 query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_ID, cashbook.getId(), cashbook.getUser().getId(), cashbook.getName(), type);
             } else {
-                query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_NOID, cashbook.getUser().getId(), cashbook.getName(), type);
+                query = DatabaseUtil.getInstance().createGeneratedKeyQuery(INSERT_CASHBOOK_NOID, cashbook.getUser().getId(), cashbook.getName(), type);
             }
         } catch (Exception e) {
             throw new CashbookAlreadyExistingException(cashbook.getName());
         }
         DatabaseUtil.getInstance().executeQuery(query);
 
-        //INSERT nella tabella cashbooktransactions solo se ci sono transazioni da salvare
-        if(cashbook.getTransactionList()!=null) {
-            saveAssociation(cashbook);
-        }
+        //salvo id
+        if (cashbook.getId() == 0) cashbook.setId((int)query.getKey());
 
         query.close();
     }
+
 
     /**
      * Codice che implementa l'aggiunta della relazione N a N nel database

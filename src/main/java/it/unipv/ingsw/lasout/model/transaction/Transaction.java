@@ -43,6 +43,7 @@ public abstract class Transaction {
 
 	public Transaction(double amount, String date, String category, String notes) {
 		this.amount = amount;
+		this.category = category;
 		this.date = date;
 		this.notes = notes;
 	}
@@ -110,4 +111,7 @@ public abstract class Transaction {
 				this.notes.equals(t.notes);
 	}
 
+	public String toStringReduced(){
+		return String.format("%.2f€ il", amount)+" "+date+" "+notes;
+	}
 }
