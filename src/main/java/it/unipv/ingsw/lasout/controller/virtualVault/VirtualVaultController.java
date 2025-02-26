@@ -104,7 +104,7 @@ public class VirtualVaultController {
                     VirtualVault nuovoVault = new VirtualVault();
                     nuovoVault.setName(nome);
                     nuovoVault.setBalance(saldo);
-                    //System.out.println("SONO IL BALANCE DEL NUOVO VAULT"+ nuovoVault.getBalance());
+                    System.out.println("SONO IL BALANCE DEL NUOVO VAULT"+ nuovoVault.getBalance());
                     // Imposta l'owner dall'utente loggato
                     User loggedUser1 = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
                     nuovoVault.setOwner(loggedUser1);
