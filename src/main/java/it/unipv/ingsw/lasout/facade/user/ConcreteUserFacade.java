@@ -34,6 +34,8 @@ public class ConcreteUserFacade implements IUserFacade {
 
                 // inizializzazione all'iscrizione
                 initOnSignIn(userCarrier);
+                
+                initOnSignInVault(userCarrier);
 
                 return true;
             }catch (Exception sqlException){
@@ -53,6 +55,22 @@ public class ConcreteUserFacade implements IUserFacade {
             allUserInformation = userCredentialsStrategy.searchUser(userCarrier);
 
             LaVaultFacade.getInstance().getCashbookFacade().createDefaultCashbook(allUserInformation);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    private void initOnSignInVault(User userCarrier) {
+        User allUserInformation = new User();
+        try{
+            UserCredentialsStrategy userCredentialsStrategy;
+            if (userCarrier.getUsername().contains("@")) userCredentialsStrategy = new EmailPassword();
+            else userCredentialsStrategy = new UsernamePassword();
+
+            allUserInformation = userCredentialsStrategy.searchUser(userCarrier);
+
+            LaVaultFacade.getInstance().getVaultFacade().newVaultinVirtualVault(allUserInformation);
+            
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

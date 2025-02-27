@@ -247,7 +247,7 @@ public class VaultController {
 		
 		vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getBalanceByID(vault));
 		
-		//ConcreteVaultFacade.getInstance().newVaultinVirtualVault(vault, currentUser);
+		//ConcreteVaultFacade.getInstance().newVaultinVirtualVault(currentUser);
 
 		ConcreteVaultFacade.getInstance().newVaultinVault(vault);
 
