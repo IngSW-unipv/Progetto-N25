@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.controller.vault;
 
+import it.unipv.ingsw.lasout.controller.Loadable;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.facade.vault.ConcreteVaultFacade;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
@@ -18,14 +19,16 @@ import it.unipv.ingsw.lasout.view.vault.VaultPanel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-public class VaultController {
+public class VaultController implements Loadable{
 
 	private static Vault vault;
 	private static VaultPanel vaultPanel;
@@ -34,6 +37,10 @@ public class VaultController {
 		this.vaultPanel = vaultPanel;
 		initController();
 	}
+
+	
+	
+	
 	
 	private void initController() {
 
@@ -273,5 +280,15 @@ public class VaultController {
             model.addElement(pm.toString()); 
         }
         vaultPanel.updatePaymentMethodsList(model);
+	}
+
+
+
+
+
+	@Override
+	public void reload() {
+		load();
+		
 	}
 }

@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.controller.group;
 
+import it.unipv.ingsw.lasout.controller.Loadable;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.group.Debito;
 import it.unipv.ingsw.lasout.model.group.Group;
@@ -14,53 +15,24 @@ import it.unipv.ingsw.lasout.view.group.settings.ParticipantRowPanel;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class GroupController {
+public class GroupController implements Loadable {
     private static GroupPanel groupPanel;
     private static Group activeGroup;
+    private Set<Loadable> loadables = new HashSet<>();
 
-    public GroupController(GroupPanel groupPanel) {
+    public GroupController(GroupPanel groupPanel){
         GroupController.groupPanel = groupPanel;
         initController();
     }
 
-    /**
-     * caricamento
-     */
-    public static void load() {
-        setUpJComboBox();
+    public void subscribe(Loadable updatable) {
+        loadables.add(updatable);
     }
 
-    /**
-     * reset e riempòimento jcombobox
-     */
-    public static void setUpJComboBox() {
-        groupPanel.resetComboBox();
-        groupPanel.addGroupItem(new GroupItem(-1, "Seleziona Gruppo..."));
-        List<Group> grouplist = LaVaultFacade.getInstance().getUserFacade().getGroupOfLoggedUser();
-        for (Group group : grouplist) {
-            groupPanel.addGroupItem(new GroupItem((int) group.getId(), group.getName()));
-        }
-    }
-
-    /**
-     * reset della schermata dei gruppi
-     */
-    public static void out() {
-        groupPanel.resetComboBox();
-        activeGroup = null;
-        groupPanel.getInfoPanel().getLeftPanel().removeAll();
-        groupPanel.getInfoPanel().getRightPanel().removeAll();
-        groupPanel.getInfoPanel().revalidate();
-        groupPanel.getInfoPanel().repaint();
-        groupPanel.setNameLabelText("");
-        groupPanel.getImpostazioniBtn().setEnabled(false);
-        groupPanel.getAggiungiSpesaBtn().setEnabled(false);
-        groupPanel.getFinalizzaBtn().setEnabled(false);
-        groupPanel.getInvitaBtn().setEnabled(false);
-
-    }
 
     private void initController() {
 
@@ -195,6 +167,7 @@ public class GroupController {
             if (LaVaultFacade.getInstance().getGroupFacade().finalizzaDebiti(activeGroup)) {
                 setUpJInfoPanelLeft();
                 setUpJInfoPanelRight();
+                loadables.forEach(Loadable::reload);
                 JOptionPane.showMessageDialog(groupPanel, "Spese finalizate");
             } else {
                 JOptionPane.showMessageDialog(groupPanel, "Per finalizare le spese devi essere admin");
@@ -292,12 +265,14 @@ public class GroupController {
      * reset e setup lista di amici per l'invito al gruppo (utilizzo del caso d'uso amicizzie)
      */
     private void setUpInviteFriendList() {
+        User loggedUser = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
+        List<User> friends =  loggedUser.getFriends();
         //List<User> friends = LaVaultFacade.getInstance().getFriendFacade().getFriends(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
-        List<User> friends = new ArrayList<>();
+        /*List<User> friends = new ArrayList<>();
         friends.add(new User(2));
         friends.add(new User(3));
         friends.add(new User(4));
-        friends.add(new User(6));
+        friends.add(new User(6));*/
 
         for (User user : friends) {
             User us = LaVaultFacade.getInstance().getUserFacade().getUser(user);
@@ -317,5 +292,47 @@ public class GroupController {
         in.addActionListener(e -> {
             LaVaultFacade.getInstance().getGroupFacade().invite(activeGroup, user);
         });
+    }
+
+    /**
+     * caricamento
+     */
+    public static void load() {
+        setUpJComboBox();
+    }
+
+    @Override
+    public void reload(){
+        load();
+    }
+
+    /**
+     * reset e riempòimento jcombobox
+     */
+    public static void setUpJComboBox() {
+        groupPanel.resetComboBox();
+        groupPanel.addGroupItem(new GroupItem(-1, "Seleziona Gruppo..."));
+        List<Group> grouplist = LaVaultFacade.getInstance().getUserFacade().getGroupOfLoggedUser();
+        for (Group group : grouplist) {
+            groupPanel.addGroupItem(new GroupItem((int) group.getId(), group.getName()));
+        }
+    }
+
+    /**
+     * reset della schermata dei gruppi
+     */
+    public static void out() {
+        groupPanel.resetComboBox();
+        activeGroup = null;
+        groupPanel.getInfoPanel().getLeftPanel().removeAll();
+        groupPanel.getInfoPanel().getRightPanel().removeAll();
+        groupPanel.getInfoPanel().revalidate();
+        groupPanel.getInfoPanel().repaint();
+        groupPanel.setNameLabelText("");
+        groupPanel.getImpostazioniBtn().setEnabled(false);
+        groupPanel.getAggiungiSpesaBtn().setEnabled(false);
+        groupPanel.getFinalizzaBtn().setEnabled(false);
+        groupPanel.getInvitaBtn().setEnabled(false);
+
     }
 }

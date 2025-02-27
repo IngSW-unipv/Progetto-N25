@@ -1,16 +1,18 @@
-package it.unipv.ingsw.lasout.model.notify;
+/*package it.unipv.ingsw.lasout.model.notify;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.notify.dao.INotifyDAO;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistenceFactory;
-import it.unipv.ingsw.lasout.model.notify.action.mysql.factory.MYSQLNotifyActionPersistenceFactory;
+import it.unipv.ingsw.lasout.model.notify.action.mysql.MYSQLNotifyActionPersistenceFactory;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
 
 import java.sql.ResultSet;
 import java.util.*;
+
 
 public class MySQLNotifyDAO implements INotifyDAO {
 
@@ -47,8 +49,6 @@ public class MySQLNotifyDAO implements INotifyDAO {
 
     private INotifyActionPersistenceFactory persistenceFactory;
 
-    private static final Map<String, Class<?>> classes = new HashMap<>();
-
 
     public MySQLNotifyDAO() {
         persistenceFactory = new MYSQLNotifyActionPersistenceFactory();
@@ -61,6 +61,7 @@ public class MySQLNotifyDAO implements INotifyDAO {
 
     @Override
     public Notify getRaw(Notify notify) throws Exception {
+        System.out.println("getting raw  : " + notify.getId());
         DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_RAW_NOTIFY_1, notify.getId());
 
         DatabaseUtil.getInstance().executeQuery(query);
@@ -80,17 +81,16 @@ public class MySQLNotifyDAO implements INotifyDAO {
 
          */
 
+/*
         INotifyAction iiNotifyAction = NotifyActionFactory.get(type);
 
         Notify returnNotify  = new Notify(id);
         returnNotify.setUser(user);
         returnNotify.setDescription(description);
-        iiNotifyAction.setNotify(returnNotify);
+        //iiNotifyAction.setNotify(returnNotify);
 
         INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(type);
 
-        System.out.println("loading: " + type);
-        System.out.println("with: " + actionPersistence);
         //actionPersistence.load(iiNotifyAction);
 
         returnNotify.setNotifyAction(iiNotifyAction);
@@ -113,6 +113,8 @@ public class MySQLNotifyDAO implements INotifyDAO {
         DBQuery query = DBQuery.Builder.create()
                 .query(QUERY_GET_ALL_NOTIFY_1)
                 .build();
+
+        System.out.println(query);
         DatabaseUtil.getInstance().executeQuery(query);
 
         List<Notify> all = new ArrayList<Notify>();
@@ -168,6 +170,7 @@ public class MySQLNotifyDAO implements INotifyDAO {
      * @param notify oggetto da salvare, con  tutte le informazioni
      * @throws Exception
      */
+/*
     @Override
     public void save(Notify notify) throws Exception {
 
@@ -264,3 +267,6 @@ public class MySQLNotifyDAO implements INotifyDAO {
 
 
 }
+
+
+ */

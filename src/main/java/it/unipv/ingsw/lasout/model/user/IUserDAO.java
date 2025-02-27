@@ -23,7 +23,7 @@ public interface IUserDAO extends IDao<User> {
      * @param user utente che avrà una determinata lista di amici
      * @return la lista di amici dell'utente
      */
-    List<User> getFriends(User user);
+    List<User> getFriends(User user) throws SQLException;
 
     List<Cashbook> getCashbooks(User user);
 
@@ -33,7 +33,7 @@ public interface IUserDAO extends IDao<User> {
      * @return la lista delle notifiche
      * @throws Exception eccezione lanciata dalla classe NotifyDAO
      */
-    List<Notify> getNotifications(User user) throws Exception;
+    //List<Notify> getNotifications(User user) throws Exception;
 
     /**
      * Metodo che serve ad associare una lista di gruppi (altri utenti) a un certo utente

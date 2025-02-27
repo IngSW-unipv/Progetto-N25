@@ -91,6 +91,7 @@ public class DatabaseUtil {
 
 
             boolean hasResults = pS.execute();
+
             if(hasResults){
                 query.setResultSet(pS.getResultSet());
             }

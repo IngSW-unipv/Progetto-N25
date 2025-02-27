@@ -4,7 +4,7 @@ import it.unipv.ingsw.lasout.dao.IDao;
 import it.unipv.ingsw.lasout.model.cashbook.ICashbookDAO;
 import it.unipv.ingsw.lasout.model.group.IGroupDao;
 import it.unipv.ingsw.lasout.model.group.spesa.ISpesaDao;
-import it.unipv.ingsw.lasout.model.notify.INotifyDAO;
+import it.unipv.ingsw.lasout.model.notify.dao.INotifyDAO;
 import it.unipv.ingsw.lasout.model.transaction.ITransactionDAO;
 import it.unipv.ingsw.lasout.model.user.IUserDAO;
 import it.unipv.ingsw.lasout.model.vault.IVaultDAO;
@@ -67,7 +67,9 @@ public class DaoFactory {
             System.out.println(properties.getProperty("dao."+ clazz.getSimpleName().toLowerCase()));
             retClass = Class.forName(properties.getProperty("dao."+ clazz.getSimpleName().toLowerCase()));
             Object x = retClass.getDeclaredConstructor().newInstance();
-            return clazz.cast(x);
+            T val = clazz.cast(x);
+            lodadedDao.put(clazz,  (IDao<?>) x);
+            return val;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

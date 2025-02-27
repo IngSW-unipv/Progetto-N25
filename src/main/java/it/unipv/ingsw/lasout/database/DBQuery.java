@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class DBQuery {
 
@@ -17,7 +20,14 @@ public class DBQuery {
 
     public DBQuery(String query, Object... params) {
         setQuery(query);
-        this.params = params;
+        if(params != null) this.params = params;
+        this.prepareStatementBehavior = new DefaultPrepareStatementBehavior();
+
+    }
+
+    public DBQuery(String query, List<Object> params) {
+        setQuery(query);
+        if(params != null) this.params = params.toArray();
         this.prepareStatementBehavior = new DefaultPrepareStatementBehavior();
     }
 
@@ -129,7 +139,7 @@ public class DBQuery {
 
         private String queryString;
         private PrepareStatementBehavior prepareStatementBehavior;
-        private Object[] params;
+        private List<Object> params;
 
         private Builder(){
             this.prepareStatementBehavior = new DefaultPrepareStatementBehavior();
@@ -149,12 +159,17 @@ public class DBQuery {
             return this;
         }
         public Builder params(Object... params){
-            this.params = params;
+            this.params = new ArrayList<>();
+            this.params.addAll(Arrays.asList(params));
+            return this;
+        }
+        public Builder addParam(Long id) {
+            if(params == null) this.params  = new ArrayList<>();
+            this.params.add(id);
             return this;
         }
 
         public DBQuery build(){
-
 
             DBQuery dbQuery = new DBQuery(queryString, params);
 
@@ -162,7 +177,29 @@ public class DBQuery {
             return dbQuery;
         }
 
+        @Override
+        public String toString() {
+            return "Builder{" +
+                    "queryString='" + queryString + '\'' +
+                    ", prepareStatementBehavior=" + prepareStatementBehavior +
+                    ", params=" + params +
+                    '}';
+        }
 
+        public int getParams() {
+            return params == null ? 0 : params.size();
+        }
     }
 
+    @Override
+    public String toString() {
+        return "DBQuery{" +
+                "connection=" + connection +
+                ", preparedStatement=" + preparedStatement +
+                ", prepareStatementBehavior=" + prepareStatementBehavior +
+                ", resultSet=" + resultSet +
+                ", query='" + query + '\'' +
+                ", params=" + Arrays.toString(params) +
+                '}';
+    }
 }

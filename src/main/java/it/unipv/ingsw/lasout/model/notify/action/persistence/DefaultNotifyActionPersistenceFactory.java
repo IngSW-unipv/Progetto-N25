@@ -1,6 +1,5 @@
 package it.unipv.ingsw.lasout.model.notify.action.persistence;
 
-import it.unipv.ingsw.lasout.model.notify.MySQLNotifyDAO;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -8,6 +7,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+/*
 public class DefaultNotifyActionPersistenceFactory implements INotifyActionPersistenceFactory{
 
     private static final Logger LOGGER = Logger.getLogger(DefaultNotifyActionPersistenceFactory.class.getName());
@@ -20,7 +20,7 @@ public class DefaultNotifyActionPersistenceFactory implements INotifyActionPersi
 
         Properties properties = new Properties();
         try {
-            properties.load(MySQLNotifyDAO.class.getResourceAsStream("/notifyperistence.properties"));
+            properties.load(DefaultNotifyActionPersistenceFactory.class.getResourceAsStream("/notifyperistence.properties"));
         } catch (IOException e) {
             LOGGER.severe("Could not load notify action persistence");
         }
@@ -40,3 +40,6 @@ public class DefaultNotifyActionPersistenceFactory implements INotifyActionPersi
         return null;
     }
 }
+
+
+ */

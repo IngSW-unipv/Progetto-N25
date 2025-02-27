@@ -4,7 +4,7 @@ import it.unipv.ingsw.lasout.model.user.User;
 
 import java.util.List;
 
-public class ConcreteFriendFacadeV1 implements FriendFacade {
+public class ConcreteFriendFacadeV1 implements IFriendFacade {
 
 
 
