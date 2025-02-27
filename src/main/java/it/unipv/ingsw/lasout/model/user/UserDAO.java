@@ -1,11 +1,10 @@
 package it.unipv.ingsw.lasout.model.user;
 
 
-import it.unipv.ingsw.lasout.dao.IDao;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
-import it.unipv.ingsw.lasout.model.cashbook.RdbCashbookDao;
+import it.unipv.ingsw.lasout.model.cashbook.MySQLCashbookDao;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
 import it.unipv.ingsw.lasout.model.notify.INotifyDAO;
@@ -251,7 +250,7 @@ public class UserDAO implements IUserDAO {
 
         List<Cashbook> cashbooks = null;
         try {
-            cashbooks = RdbCashbookDao.getInstance().getAllUserCashbooks(user);
+            cashbooks = MySQLCashbookDao.getInstance().getAllUserCashbooks(user);
         } catch (Exception noCashbookFound) {
             throw new RuntimeException(noCashbookFound);
         }

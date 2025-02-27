@@ -62,7 +62,7 @@ public class ConcreteVirtualVaultFacade implements VirtualVaultFacade {
          try{
             result = virtualVaultDAO.getRaw(virtualVault);
         } catch (Exception e){
-            return null;
+            throw new RuntimeException(e);
         }
         return result;
     }
@@ -82,6 +82,7 @@ public class ConcreteVirtualVaultFacade implements VirtualVaultFacade {
             virtualVaultDAO.update(virtualVault);
         } catch (Exception e){
             return false;
+            //throw new RuntimeException(e);
         }
         return true;
     }
@@ -91,7 +92,7 @@ public class ConcreteVirtualVaultFacade implements VirtualVaultFacade {
         try{
             virtualVaultDAO.delete(virtualVault);
         } catch (Exception e){
-            return false;
+            throw new RuntimeException(e);
         }
         return true;
     }

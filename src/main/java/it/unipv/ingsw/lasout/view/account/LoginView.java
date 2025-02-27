@@ -1,4 +1,5 @@
 package it.unipv.ingsw.lasout.view.account;
+
 import it.unipv.ingsw.lasout.view.LaColor;
 
 import javax.swing.*;
@@ -6,10 +7,10 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class LoginView extends JFrame {
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-    private JButton loginButton;
-    private JButton registerButton;
+    private final JTextField usernameField;
+    private final JPasswordField passwordField;
+    private final JButton loginButton;
+    private final JButton registerButton;
 
     public LoginView() {
         setTitle("Login");
@@ -17,6 +18,7 @@ public class LoginView extends JFrame {
         setSize(400, 220);
         setLocationRelativeTo(null);
         setBackground(LaColor.SFONDO);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(LoginView.class.getResource("/view/logo.png")));
 
         // Pannello principale con GridBagLayout
         JPanel mainPanel = new JPanel(new GridBagLayout());

@@ -198,9 +198,11 @@ public class VaultDAO implements IVaultDAO{
 	}
 	
 	@Override
-	public void save(Vault oggetto) throws Exception {
+	public void save(User user) throws Exception {
 		
-		DBQuery query = DatabaseUtil.getInstance().createQuery(INSERT_A_NEW_VAULT_IN_VIRTUALVAULT, oggetto.getOwner().getId());
+		System.out.println(user.getId());
+		
+		DBQuery query = DatabaseUtil.getInstance().createQuery(INSERT_A_NEW_VAULT_IN_VIRTUALVAULT, user.getId());
 		DatabaseUtil.getInstance().executeQuery(query);
 		
 		ResultSet result = query.getResultSet();
@@ -340,6 +342,12 @@ public class VaultDAO implements IVaultDAO{
 		query.close();
 		
 		return balance;	
+		
+	}
+
+	@Override
+	public void save(Vault t) throws Exception {
+		// TODO Auto-generated method stub
 		
 	}
 

@@ -5,17 +5,18 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class SignInView extends JFrame {
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-    private JTextField emailField;
-    private JButton registerButton;
-    private JButton loginButton;
+    private final JTextField usernameField;
+    private final JPasswordField passwordField;
+    private final JTextField emailField;
+    private final JButton registerButton;
+    private final JButton loginButton;
 
     public SignInView() {
         setTitle("Registrazione");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(400, 260);
         setLocationRelativeTo(null);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(SignInView.class.getResource("/view/logo.png")));
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));

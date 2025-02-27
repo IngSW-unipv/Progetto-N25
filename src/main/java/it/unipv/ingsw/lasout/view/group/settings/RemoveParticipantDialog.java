@@ -6,8 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RemoveParticipantDialog extends JDialog {
-    private JPanel contentPanel;  // pannello interno dove aggiungerai le righe
-    private JScrollPane scrollPane;
+    private final JPanel contentPanel;  // pannello interno dove aggiungerai le righe
+    private final JScrollPane scrollPane;
 
     public RemoveParticipantDialog(Frame parent) {
         super(parent, "Elimina Partecipante", true);

@@ -49,11 +49,11 @@ public class AccountController {
         });
 
         // lambda expression
-        accountPanel.addDeleteAccountListener(e->{
+        accountPanel.addDeleteAccountListener(e -> {
             User user = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
             LaVaultFacade.getInstance().getUserFacade().deleteAccount(user);
 
-            JOptionPane.showMessageDialog(null,"Account eliminato con successo, a breve sarai riportato alla schermata di login","Rimozione account",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Account eliminato con successo, a breve sarai riportato alla schermata di login", "Rimozione account", JOptionPane.INFORMATION_MESSAGE);
 
             //prima di eliminare l'account pulisco tutti i JTextField
             accountPanel.clearFields();
@@ -76,7 +76,7 @@ public class AccountController {
             //User user = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
             LaVaultFacade.getInstance().getSessionFacade().logout();
 
-            JOptionPane.showMessageDialog(null,"Logout effettuato con successo, a breve sarai riportato alla schermata di login","Logout",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Logout effettuato con successo, a breve sarai riportato alla schermata di login", "Logout", JOptionPane.INFORMATION_MESSAGE);
 
             //prima di fare il logout effettivo pulisco tutti i JTextField
             accountPanel.clearFields();

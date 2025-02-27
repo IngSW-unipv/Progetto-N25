@@ -9,14 +9,14 @@ import java.awt.*;
 public class AccountPanel extends JPanel {
 
     // Campi di testo per le password
-    private JPasswordField oldPasswordField;
-    private JPasswordField newPasswordField;
-    private JPasswordField repeatNewPasswordField;
+    private final JPasswordField oldPasswordField;
+    private final JPasswordField newPasswordField;
+    private final JPasswordField repeatNewPasswordField;
 
     // Bottoni
-    private JButton changePasswordButton;
-    private JButton deleteAccountButton;
-    private JButton logoutButton;
+    private final JButton changePasswordButton;
+    private final JButton deleteAccountButton;
+    private final JButton logoutButton;
 
     public AccountPanel(MainUIView mainUIView) {
         // Imposta il layout principale a BorderLayout

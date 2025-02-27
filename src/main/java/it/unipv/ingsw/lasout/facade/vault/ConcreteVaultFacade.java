@@ -102,12 +102,10 @@ public class ConcreteVaultFacade implements VaultFacade {
 	}
 
 	@Override
-	public boolean newVaultinVirtualVault(Vault vault, User user) {
+	public boolean newVaultinVirtualVault(User user) {
 
 		try {
-			if (LaVaultFacade.getInstance().getSessionFacade().isLogged()) {
-				vaultDAO.save(vault);
-			}
+			vaultDAO.save(user);	
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

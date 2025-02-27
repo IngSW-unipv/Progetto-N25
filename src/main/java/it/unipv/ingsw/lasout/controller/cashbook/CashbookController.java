@@ -4,9 +4,16 @@ import it.unipv.ingsw.lasout.controller.cashbook.buttonModifiers.ButtonEditor;
 import it.unipv.ingsw.lasout.controller.cashbook.buttonModifiers.ButtonRenderer;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
+import it.unipv.ingsw.lasout.model.cashbook.exception.CannotDeleteDefaultCashbookException;
+import it.unipv.ingsw.lasout.model.cashbook.exception.CashbookAlreadyExistingException;
+import it.unipv.ingsw.lasout.model.transaction.ManualTransaction;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
+import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.view.cashbook.CashbookPanel;
 import it.unipv.ingsw.lasout.view.cashbook.CashbookItem;
+import it.unipv.ingsw.lasout.view.cashbook.dialogs.AddCashbookDialog;
+import it.unipv.ingsw.lasout.view.cashbook.dialogs.EditCashbookDialog;
+import it.unipv.ingsw.lasout.view.cashbook.transactions.AddTransactionDialog;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -24,30 +31,205 @@ public class CashbookController {
 
     // operazioni eseguite al caricamento del panel
     public static void load() {
-        setUpJComboBox();
+        setUpCashbookComboBox();
     }
 
     public static void initController() {
         // listener del combo box
-        cashbookPanel.addComboBoxListener(e -> {
+        cashbookPanel.addCashbookComboBoxListener(e -> {
             CashbookItem selected = (CashbookItem) cashbookPanel.getSelectedCashbook();
 
             // azioni da eseguire quando viene selezionato un cashbook dal combo box
             if (selected != null && selected.getId() != -1) {
                 activeCashbook = LaVaultFacade.getInstance().getCashbookFacade().getCashbook(new Cashbook(selected.getId()));
-                // test
-                System.out.println("Id cashbook selezionato: "+selected.getId());
 
+                //test
+                System.out.println("Id cashbook selezionato: " + selected.getId());
+
+                //azioni al resto del panel
                 CashbookController.setUpTransactionTable();
                 CashbookController.updateSummaryLabel();
+            } else {
+                // se seleziono "Seleziona Cashbook..."
+                activeCashbook = null;
+                // resetto righe tabella
+                DefaultTableModel model = cashbookPanel.getTableModel();
+                model.setRowCount(0);
+
+                cashbookPanel.setSummaryText("Sommario: -");
+                System.out.println("Default selected: activeCashbook reset e tabella svuotata");
             }
         });
 
+        cashbookPanel.addNewTransactionsButtonListener( e->{
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(cashbookPanel);
+            AddTransactionDialog addTransactionDialog = new AddTransactionDialog(frame);
+
+            // aggiungo listener al bottone della finestra appena creata
+            addTransactionDialog.addSaveButtonActionListener(e1 -> {
+                try{
+                    double amount = Double.parseDouble(addTransactionDialog.getAmountField().getText());
+                    String date = addTransactionDialog.getDateField().getText();
+                    String category = addTransactionDialog.getCategoryField().getText();
+                    String notes = addTransactionDialog.getNotesField().getText();
+
+                    ManualTransaction transaction = new ManualTransaction(amount, date, category, notes);
+                    System.out.println(activeCashbook.toString());
+
+                    try{
+                        LaVaultFacade.getInstance().getCashbookFacade().addTransaction(activeCashbook, transaction);
+                        JOptionPane.showMessageDialog(
+                                addTransactionDialog,
+                                "Transaction added successfully",
+                                "Success",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
+                    } catch (NullPointerException npe) {
+                        JOptionPane.showMessageDialog(
+                                addTransactionDialog,
+                                "Unable to add transaction",
+                                "Save Error",
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                    }
+                } catch (NumberFormatException exception) {
+                    JOptionPane.showMessageDialog(
+                            addTransactionDialog,
+                            "Incorrect amount field format, only numbers and '.' allowed",
+                            "Format error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                    addTransactionDialog.getAmountField().setText("0");
+                }catch (Exception exception) {
+                    JOptionPane.showMessageDialog(
+                            addTransactionDialog,
+                            exception.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                } finally {
+                    CashbookController.setUpTransactionTable();
+                    CashbookController.updateSummaryLabel();
+                    addTransactionDialog.dispose();
+                }
+            });
+            // non mostrare se nessun cashbook è selezionato
+            CashbookItem selected = (CashbookItem) cashbookPanel.getSelectedCashbook();
+            if (selected != null && selected.getId() != -1) {
+                addTransactionDialog.setVisible(true);
+            }
+
+        });
+
+        cashbookPanel.addEditCashbookButtonListener(editEvent -> {
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(cashbookPanel);
+            EditCashbookDialog editCashbookDialog = new EditCashbookDialog(frame);
+
+            editCashbookDialog.setNameField(cashbookPanel.getSelectedCashbook().getName());
+
+            editCashbookDialog.addDeleteButtonListener(e1 ->{
+                try {
+                    LaVaultFacade.getInstance().getCashbookFacade().deleteCashbook(activeCashbook);
+                    JOptionPane.showMessageDialog(
+                            editCashbookDialog,
+                            "Cashbook deleted successfully",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+
+                } catch (CannotDeleteDefaultCashbookException exception) {
+                    JOptionPane.showMessageDialog(
+                            editCashbookDialog,
+                            exception.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                } finally{
+                    setUpCashbookComboBox();
+                    setUpTransactionTable();
+                    updateSummaryLabel();
+                    editCashbookDialog.dispose();
+                }
+            });
+
+            editCashbookDialog.addSaveButtonListener(saveEvent ->{
+                String newName = editCashbookDialog.getNameField().getText();
+                activeCashbook.setName(newName);
+                try {
+                    LaVaultFacade.getInstance().getCashbookFacade().editCashbook(activeCashbook);
+                    JOptionPane.showMessageDialog(
+                            editCashbookDialog,
+                            "Cashbook edited successfully",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                } catch (Exception exception) {
+                    JOptionPane.showMessageDialog(
+                            editCashbookDialog,
+                            exception.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                } finally{
+                    setUpCashbookComboBox();
+                    editCashbookDialog.dispose();
+                }
+            });
+
+            // non mostrare se nessun cashbook è selezionato
+            CashbookItem selected = (CashbookItem) cashbookPanel.getSelectedCashbook();
+            if (selected != null && selected.getId() != -1) {
+                editCashbookDialog.setVisible(true);
+            }
+        });
+
+        cashbookPanel.addCreateCashbookButtonListener(e -> {
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(cashbookPanel);
+            AddCashbookDialog addCashbookDialog = new AddCashbookDialog(frame);
+
+            addCashbookDialog.addSaveButtonListener(e1 -> {
+                User loggedUser = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
+                String name = addCashbookDialog.getNameField().getText();
+                Cashbook newCashbook = new Cashbook(loggedUser, name, false);
+
+                try {
+                    LaVaultFacade.getInstance().getCashbookFacade().saveCashbook(newCashbook);
+                    JOptionPane.showMessageDialog(
+                            addCashbookDialog,
+                            "Cashbook Added successfully",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                } catch (NullPointerException npe) {
+                    JOptionPane.showMessageDialog(
+                            addCashbookDialog,
+                            npe.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                } catch (CashbookAlreadyExistingException exception) {
+                    JOptionPane.showMessageDialog(
+                            addCashbookDialog,
+                            exception.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                } finally {
+                    setUpCashbookComboBox();
+                    addCashbookDialog.dispose();
+                }
+            });
+
+            addCashbookDialog.setVisible(true);
+
+        });
+
+
     }
 
-    public static void setUpJComboBox() {
+    public static void setUpCashbookComboBox() {
         // svuoto la combo box
-        cashbookPanel.resetComboBox();
+        cashbookPanel.resetCashbookComboBox();
 
         // voce di default "Seleziona Cashbook..."
         cashbookPanel.addCashbookItem(new CashbookItem(-1, "Seleziona Cashbook..."));
@@ -58,6 +240,8 @@ public class CashbookController {
                 new CashbookItem(c.getId(), c.getName())
             );
         }
+
+        cashbookPanel.getCashbookComboBox().setSelectedIndex(0);
     }
 
     public static Cashbook getActiveCashbook() {
@@ -70,31 +254,51 @@ public class CashbookController {
     }
 
     public static void setUpTransactionTable() {
-        DefaultTableModel model = cashbookPanel.getTableModel();
-        Cashbook selectedCashbook = LaVaultFacade.getInstance().getCashbookFacade().getCashbook(new Cashbook(cashbookPanel.getSelectedCashbook().getId()));
-        List<Transaction> transactionList=selectedCashbook.getTransactionList();
+        JTable table = cashbookPanel.getTransactionsTable();
+        // Se la tabella è in modalità editing, annulla l'editing
+        if (table.isEditing()) {
+            table.getCellEditor().cancelCellEditing();
+        }
 
-        // cancella righe delle precedenti selezioni
+        DefaultTableModel model = cashbookPanel.getTableModel();
+        // Reimposta esplicitamente le intestazioni per garantire la struttura corretta
+        model.setColumnIdentifiers(new Object[]{"Date", "Amount", "Category", "Notes", "Edit"});
+
+        CashbookItem selectedItem = cashbookPanel.getSelectedCashbook();
+        if (selectedItem == null || selectedItem.getId() == -1) {
+            model.setRowCount(0);
+            return;
+        }
+
+        Cashbook selectedCashbook = LaVaultFacade.getInstance()
+                .getCashbookFacade().getCashbook(new Cashbook(selectedItem.getId()));
+        if (selectedCashbook == null) {
+            model.setRowCount(0);
+            return;
+        }
+        activeCashbook = selectedCashbook;
+
+        // Svuota il modello prima di popolare la tabella
         model.setRowCount(0);
 
-        // creazione di ogni riga della tabella
-        for (Transaction t : transactionList) {
-            Object[] rowData = new Object[] {
-                    t.getDate(),
-                    t.getAmount(),
-                    t.getCategory(),
-                    t.getNotes(),
-                    "Edit"          // placeholder che poi viene coperto dal bottone
-            };
-            model.addRow(rowData);
+        // Imposta una volta sola renderer e editor per la colonna "Edit"
+        table.getColumn("Edit").setCellRenderer(new ButtonRenderer());
+        table.getColumn("Edit").setCellEditor(new ButtonEditor(new JCheckBox()));
 
-            // aggiungo bottone all'ultima cella
-            JTable table = cashbookPanel.getTransactionsTable();
-            table.getColumn("Edit").setCellRenderer(new ButtonRenderer());
-            table.getColumn("Edit").setCellEditor(new ButtonEditor(new JCheckBox()));
+        List<Transaction> transactionList = selectedCashbook.getTransactionList();
+        if (transactionList != null) {
+            for (Transaction t : transactionList) {
+                Object[] rowData = {
+                        t.getDate(),
+                        t.getAmount(),
+                        t.getCategory(),
+                        t.getNotes(),
+                        "Edit" // Placeholder che verrà sostituito dal bottone
+                };
+                model.addRow(rowData);
+            }
         }
     }
-
 
 }
 

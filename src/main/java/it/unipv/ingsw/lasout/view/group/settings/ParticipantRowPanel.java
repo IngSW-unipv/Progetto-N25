@@ -7,8 +7,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class ParticipantRowPanel extends JPanel {
-    private JLabel nameLabel;
-    private JButton espelliButton;
+    private final JLabel nameLabel;
+    private final JButton espelliButton;
 
     public ParticipantRowPanel(String participantName) {
         // Usa BorderLayout per disporre la label e il bottone

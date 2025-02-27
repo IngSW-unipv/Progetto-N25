@@ -8,9 +8,9 @@ import java.awt.event.ActionListener;
 
 public class AddExpenseDialog extends JDialog {
 
-    private JTextField field1;
-    private JTextField field2;
-    private JButton aggiungiButton;
+    private final JTextField field1;
+    private final JTextField field2;
+    private final JButton aggiungiButton;
 
     public AddExpenseDialog(Frame parent) {
         super(parent, "Aggiungi Spesa", true);

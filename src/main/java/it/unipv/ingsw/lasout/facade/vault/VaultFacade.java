@@ -13,8 +13,6 @@ public interface VaultFacade {
 	
 	boolean sendMoney(User Sender, User Receiver);
 	
-	boolean newVaultinVirtualVault(Vault vault, User user);
-	
 	boolean newVaultinVault(Vault vault);
 	
 	boolean getVaultId(Vault vault);
@@ -40,4 +38,6 @@ public interface VaultFacade {
 	boolean depositoVault(User user, Double amount);
 
 	double getBalanceByUserId(User user);
+
+	boolean newVaultinVirtualVault(User user);
 }

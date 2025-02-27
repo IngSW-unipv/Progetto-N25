@@ -23,4 +23,6 @@ public interface IVaultDAO extends IDao<Vault>{
 
 	void depositBalanceWithUser(User user, double amount) throws Exception;
 
+	void save(User user) throws Exception;
+
 }

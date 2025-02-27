@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.facade.cashbook;
 
+import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.cashbook.ICashbookDAO;
 import it.unipv.ingsw.lasout.model.cashbook.exception.CannotDeleteDefaultCashbookException;
@@ -14,27 +15,31 @@ import it.unipv.ingsw.lasout.util.DaoFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CashbookFacade implements ICashbookFacade {
+public class ConcreteCashbookFacade implements ICashbookFacade {
 
     private ICashbookDAO cashBookDAO;
-    public CashbookFacade() {
+    public ConcreteCashbookFacade() {
         cashBookDAO = DaoFactory.getCashbookDAO();
     }
 
-    private static CashbookFacade instance;
-    public static CashbookFacade getInstance() {
+    private static ConcreteCashbookFacade instance;
+    public static ConcreteCashbookFacade getInstance() {
         if (instance == null) {
-            instance = new CashbookFacade();
+            instance = new ConcreteCashbookFacade();
         }
         return instance;
     }
 
     @Override
-    public boolean saveCashbook(Cashbook cashbook) {
+    public boolean saveCashbook(Cashbook cashbook) throws CashbookAlreadyExistingException{
+        if(checkAlreadyExist(cashbook)){
+            throw new CashbookAlreadyExistingException(cashbook.getName());
+        }
+
         try {
             cashBookDAO.save(cashbook);
         } catch (CashbookAlreadyExistingException e) {
-            throw new CashbookAlreadyExistingException(e.getMessage());
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -61,18 +66,23 @@ public class CashbookFacade implements ICashbookFacade {
     }
 
     @Override
-    public boolean deleteCashbook(Cashbook cashbook){
-        try{
-            //verifico non sia un cashbook default
-            if(!cashBookDAO.getRaw(cashbook).isDefault()){
+    public boolean deleteCashbook(Cashbook cashbook) throws CannotDeleteDefaultCashbookException {
+        try {
+            // verifico se il cashbook non è default
+            if (!cashBookDAO.getRaw(cashbook).isDefault()) {
                 cashBookDAO.delete(cashbook);
                 return true;
             } else {
                 throw new CannotDeleteDefaultCashbookException();
             }
+        } catch (CannotDeleteDefaultCashbookException ex) {
+            // propago
+            throw ex;
         } catch (Exception e) {
+            // altre eccezioni
             throw new RuntimeException(e);
         }
+
     }
 
     @Override
@@ -96,14 +106,22 @@ public class CashbookFacade implements ICashbookFacade {
     @Override
     public boolean addTransaction(Cashbook cashbook, Transaction transaction) {
         try{
-            Cashbook c = cashBookDAO.get(cashbook);
-            c.addTransaction(transaction);
-            cashBookDAO.update(c);
+            cashBookDAO.addTransaction(cashbook, transaction);
         } catch (Exception e) {
             return false;
         }
 
         return true;
+    }
+
+    @Override
+    public boolean editTransaction(Cashbook cashbook, Transaction transaction) {
+        try {
+            LaVaultFacade.getInstance().getTransactionFacade().editTransaction(transaction);
+            return true;
+        }catch (CannotEditTransactionException e) {
+            throw e;
+        }
     }
 
     /**
@@ -119,29 +137,11 @@ public class CashbookFacade implements ICashbookFacade {
     }
 
     @Override
-    public boolean editTransaction(Cashbook cashbook, Transaction transaction) {
-        Cashbook c;
-        try{
-            c=getCashbook(cashbook);
-            c.removeTransaction(transaction);
-            cashBookDAO.update(c);
-            editCashbook(c);
-        } catch (CannotEditTransactionException e) {
-            throw e;
-        } catch (Exception e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
     public boolean removeTransaction(Cashbook cashbook, Transaction transaction){
         try{
             Cashbook c = getCashbook(cashbook);
             c.removeTransaction((ModifiableTransaction) transaction);
-            cashBookDAO.update(c);
-            editCashbook(c);
+            LaVaultFacade.getInstance().getTransactionFacade().deleteTransaction(transaction);
         } catch (Exception e) {
             return false;
         }
@@ -187,4 +187,21 @@ public class CashbookFacade implements ICashbookFacade {
         return getAutomaticTransactions(c);
     }
 
+    private boolean checkAlreadyExist(Cashbook cashbook){
+        List<Cashbook> l=getUserCashbooks(cashbook.getUser());
+        for(Cashbook c : l){
+            if(c.getName().equals(cashbook.getName())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Cashbook createDefaultCashbook(User carrierUser) {
+        Cashbook defaultCashbook = new Cashbook(carrierUser, "default", true);
+        saveCashbook(defaultCashbook);
+
+        return defaultCashbook;
+    }
 }

@@ -11,12 +11,11 @@ public class CashbookPanel extends JPanel {
 
     private JComboBox<CashbookItem> cashbookComboBox; // Menu a tendina
     private JLabel summaryLabel;                      // Sommario:
-    private JButton settingsButton;                   // Pulsante Impostazioni
-
+    private JButton editCashbookButton;                   // Pulsante Impostazioni
     private JTable transactionsTable;                 // Tabella per le transazioni
-    private DefaultTableModel tableModel;
-
+    private DefaultTableModel tableModel;             // Sono gli header della tabella
     private JButton addTransactionsButton;            // Pulsante Aggiungi Transazioni
+    private JButton addCashbookButton;
 
     public CashbookPanel() {
         setLayout(new BorderLayout());
@@ -34,6 +33,12 @@ public class CashbookPanel extends JPanel {
         cashbookComboBox.setForeground(LaColor.FONT);
         leftTopPanel.add(cashbookComboBox);
 
+        // pulsante add nel sottopannello in alto a sinistra
+        addCashbookButton = new JButton("Add");
+        addCashbookButton.setBackground(LaColor.BTN_SFONDO);
+        addCashbookButton.setForeground(LaColor.FONT);
+        leftTopPanel.add(addCashbookButton);
+
         // sottopannello in alto centrale contiene il label "Sommario:"
         JPanel centerTopPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         centerTopPanel.setBackground(getBackground());
@@ -44,13 +49,13 @@ public class CashbookPanel extends JPanel {
         summaryLabel.setFont(biggerFont);
         centerTopPanel.add(summaryLabel);
 
-        // sottopannello destro contiene il pulsante Impostazioni
+        // sottopannello destro contiene il pulsante Edit Cashbook
         JPanel rightTopPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         rightTopPanel.setBackground(LaColor.SFONDO);
-        settingsButton = new JButton("Impostazioni");
-        settingsButton.setBackground(LaColor.BTN_SFONDO);
-        settingsButton.setForeground(LaColor.FONT);
-        rightTopPanel.add(settingsButton);
+        editCashbookButton = new JButton("Edit Cashbook");
+        editCashbookButton.setBackground(LaColor.BTN_SFONDO);
+        editCashbookButton.setForeground(LaColor.FONT);
+        rightTopPanel.add(editCashbookButton);
 
         // compongo il topPanel
         topPanel.add(leftTopPanel, BorderLayout.WEST);
@@ -91,9 +96,9 @@ public class CashbookPanel extends JPanel {
     }
 
     /*
-    * Comandi per la gestione della combo box
+    * Comandi per combo box
     * */
-    public void resetComboBox() {
+    public void resetCashbookComboBox() {
         cashbookComboBox.removeAllItems();
     }
 
@@ -105,11 +110,15 @@ public class CashbookPanel extends JPanel {
         return (CashbookItem) cashbookComboBox.getSelectedItem();
     }
 
+    public JComboBox<CashbookItem> getCashbookComboBox() {
+        return cashbookComboBox;
+    }
+
     /*
      * Getters
      **/
-    public JButton getSettingsButton() {
-        return settingsButton;
+    public JButton getEditCashbookButton() {
+        return editCashbookButton;
     }
 
     public DefaultTableModel getTableModel() {
@@ -134,8 +143,20 @@ public class CashbookPanel extends JPanel {
     /*
      * Listeners
      **/
-    public void addComboBoxListener(ActionListener listener) {
+    public void addCashbookComboBoxListener(ActionListener listener) {
         cashbookComboBox.addActionListener(listener);
+    }
+
+    public void addEditCashbookButtonListener(ActionListener listener) {
+        editCashbookButton.addActionListener(listener);
+    }
+
+    public void addNewTransactionsButtonListener(ActionListener listener) {
+        addTransactionsButton.addActionListener(listener);
+    }
+
+    public void addCreateCashbookButtonListener(ActionListener listener) {
+        addCashbookButton.addActionListener(listener);
     }
 
 }

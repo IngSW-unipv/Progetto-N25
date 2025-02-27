@@ -19,11 +19,18 @@ public class VirtualVault implements IVault{
         behavior = new VirtualVaultData();
     }
     //Costruttore con il balance e owner
-    public VirtualVault(double balance, User user) {
+    public VirtualVault(double balance, User owner) {
 
         this.owner = owner;
         behavior = new VirtualVaultData();
     }
+
+    public VirtualVault(User user, int id) {
+        this.ID = id;
+        this.owner = user;
+        behavior = new VirtualVaultData();
+    }
+
 
     public VirtualVault() {
         this.balance = balance;

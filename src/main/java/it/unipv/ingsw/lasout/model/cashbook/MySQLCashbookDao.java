@@ -7,27 +7,26 @@ import java.util.List;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
-import it.unipv.ingsw.lasout.model.cashbook.exception.CannotDeleteDefaultCashbookException;
 import it.unipv.ingsw.lasout.model.cashbook.exception.CashbookAlreadyExistingException;
 import it.unipv.ingsw.lasout.model.transaction.ManualTransaction;
-import it.unipv.ingsw.lasout.model.transaction.RdbTransactionDao;
+import it.unipv.ingsw.lasout.model.transaction.MySQLTransactionDao;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.model.transaction.exception.CannotDeleteAutomaticTransactionException;
 import it.unipv.ingsw.lasout.model.user.User;
 
-public class RdbCashbookDao implements ICashbookDAO {
+public class MySQLCashbookDao implements ICashbookDAO {
     /**
      * Istanza singola del CashbookDao (implementazione singleton)
      */
-    private static RdbCashbookDao instance = null;
+    private static MySQLCashbookDao instance = null;
 
     /**
      *
      * @return l'istanza singleton del CashbookDao
      */
-    public static RdbCashbookDao getInstance(){
+    public static MySQLCashbookDao getInstance(){
         if (instance == null){
-            instance= new RdbCashbookDao();
+            instance= new MySQLCashbookDao();
         }
         return instance;
     }
@@ -35,7 +34,7 @@ public class RdbCashbookDao implements ICashbookDAO {
     /**
      * Rendo il costruttore privato
      */
-    public RdbCashbookDao(){
+    public MySQLCashbookDao(){
         super();
     }
 
@@ -50,6 +49,7 @@ public class RdbCashbookDao implements ICashbookDAO {
     private static final String INSERT_IN_CASHBOOKTRANSACTIONS = "INSERT INTO £cashbooktransactions£ (cashbook_id, transaction_id) VALUES(?,?)";
     private static final String INSERT_CASHBOOK_ID = "INSERT INTO £cashbook£ (id, user_id, name, type) VALUES(?,?,?,?)";
     private static final String INSERT_CASHBOOK_NOID = "INSERT INTO £cashbook£ (user_id, name, type) VALUES (?, ?, ?);";
+    private static final String UPDATE_CASHBOOK = "UPDATE £cashbook£ SET name=? WHERE id=?";
 
     private Cashbook extractRawFromResultSet(ResultSet rs) throws SQLException {
         Cashbook savedCashbook = new Cashbook();
@@ -149,7 +149,7 @@ public class RdbCashbookDao implements ICashbookDAO {
             Transaction t;
             Transaction carrierTransaction = new ManualTransaction();
             carrierTransaction.setId(rs.getInt("transaction_id"));
-            t = RdbTransactionDao.getInstance().get(carrierTransaction);
+            t = MySQLTransactionDao.getInstance().get(carrierTransaction);
             transactionList.add(t);
         }
 
@@ -171,6 +171,16 @@ public class RdbCashbookDao implements ICashbookDAO {
         return null;
     }
 
+    @Override
+    public void addTransaction(Cashbook cashbook, Transaction transaction) throws Exception{
+        MySQLTransactionDao.getInstance().save(transaction);
+
+        DBQuery query = DatabaseUtil.getInstance().createQuery(INSERT_IN_CASHBOOKTRANSACTIONS, cashbook.getId(), transaction.getId());
+        DatabaseUtil.getInstance().executeQuery(query);
+
+        query.close();
+    }
+
     /**
      * Salvataggio di un cashbook nel database tenendo conto delle relazioni con gli oggetti collegati
      * @param cashbook carrier contentente solo l'id del cashbook da aggiungere dal database
@@ -179,7 +189,7 @@ public class RdbCashbookDao implements ICashbookDAO {
     @Override
     public void save(Cashbook cashbook) throws Exception {
         DBQuery query;
-
+        
         try {
             int type;
             if(cashbook.isDefault()){
@@ -191,20 +201,23 @@ public class RdbCashbookDao implements ICashbookDAO {
             if (cashbook.getId() != 0) {
                 query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_ID, cashbook.getId(), cashbook.getUser().getId(), cashbook.getName(), type);
             } else {
-                query = DatabaseUtil.getInstance().createQuery(INSERT_CASHBOOK_NOID, cashbook.getUser().getId(), cashbook.getName(), type);
+                query = DatabaseUtil.getInstance().createGeneratedKeyQuery(INSERT_CASHBOOK_NOID, cashbook.getUser().getId(), cashbook.getName(), type);
             }
         } catch (Exception e) {
             throw new CashbookAlreadyExistingException(cashbook.getName());
         }
         DatabaseUtil.getInstance().executeQuery(query);
 
-        //INSERT nella tabella cashbooktransactions solo se ci sono transazioni da salvare
-        if(cashbook.getTransactionList()!=null) {
+        //salvo id
+        if (cashbook.getId() == 0) cashbook.setId((int)query.getKey());
+
+        if(cashbook.getTransactionList()!=null){
             saveAssociation(cashbook);
         }
 
         query.close();
     }
+
 
     /**
      * Codice che implementa l'aggiunta della relazione N a N nel database
@@ -220,12 +233,12 @@ public class RdbCashbookDao implements ICashbookDAO {
             // se get restituisce not found exception allora significa che posso crearla
             // altrimenti non faccio nulla e mantengo l'associazione
             try{
-                Transaction n = RdbTransactionDao.getInstance().get(t);
+                Transaction n = MySQLTransactionDao.getInstance().get(t);
                 if(!n.equals(t)){   //se la transazione è diversa da quella già presente fa un update
-                    RdbTransactionDao.getInstance().update(t);
+                    MySQLTransactionDao.getInstance().update(t);
                 }
             } catch (RuntimeException transactionNotFound) {
-                RdbTransactionDao.getInstance().save(t);
+                MySQLTransactionDao.getInstance().save(t);
             }
         }
         if(query!=null) query.close();
@@ -262,7 +275,7 @@ public class RdbCashbookDao implements ICashbookDAO {
         for (Transaction t : transactions) {
             if (!isTransactionStillUsed(t)) {
                 try {
-                    RdbTransactionDao.getInstance().delete(t);
+                    MySQLTransactionDao.getInstance().delete(t);
                 } catch (CannotDeleteAutomaticTransactionException e) {
                     continue;
                 }
@@ -295,8 +308,10 @@ public class RdbCashbookDao implements ICashbookDAO {
      * @throws Exception errore nell'esecuzione della query sql
      */
     public void update(Cashbook cashbook) throws Exception {
-        delete(cashbook);
-        save(cashbook);
+        DBQuery query = DatabaseUtil.getInstance().createQuery(UPDATE_CASHBOOK, cashbook.getName(), cashbook.getId());
+        DatabaseUtil.getInstance().executeQuery(query);
+
+        query.close();
     }
 
     @Override

@@ -6,8 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class InviteDialog extends JDialog {
-    private JPanel inviteContentPanel; // Pannello dove verranno aggiunte le righe
-    private JScrollPane scrollPane;
+    private final JPanel inviteContentPanel; // Pannello dove verranno aggiunte le righe
+    private final JScrollPane scrollPane;
 
     public InviteDialog(Frame parent) {
         super(parent, "Invita Utenti", true);

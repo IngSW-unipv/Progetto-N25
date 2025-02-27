@@ -10,19 +10,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RdbTransactionDao implements ITransactionDAO{
+public class MySQLTransactionDao implements ITransactionDAO{
     /**
-     * Istanza singola del RdbTransactionDao (implementazione singleton)
+     * Istanza singola del MySQLTransactionDao (implementazione singleton)
      */
-    private static RdbTransactionDao instance = null;
+    private static MySQLTransactionDao instance = null;
 
     /**
      *
-     * @return l'istanza singleton del RdbTransactionDao
+     * @return l'istanza singleton del MySQLTransactionDao
      */
-    public static RdbTransactionDao getInstance(){
+    public static MySQLTransactionDao getInstance(){
         if (instance == null){
-            instance= new RdbTransactionDao();
+            instance= new MySQLTransactionDao();
         }
         return instance;
     }
@@ -30,7 +30,7 @@ public class RdbTransactionDao implements ITransactionDAO{
     /**
      * Rendo il costruttore privato
      */
-    public RdbTransactionDao(){
+    public MySQLTransactionDao(){
         super();
     }
 
@@ -144,10 +144,13 @@ public class RdbTransactionDao implements ITransactionDAO{
             query = DatabaseUtil.getInstance().createQuery(INSERT_TRANSACTION_ID, transaction.getId(), type.getCode(), transaction.getAmount(), transaction.getDate(), transaction.getCategory(), transaction.getNotes());
         }
         else{
-            query = DatabaseUtil.getInstance().createQuery(INSERT_TRANSACTION_NOID, type.getCode(), transaction.getAmount(), transaction.getDate(), transaction.getCategory(), transaction.getNotes());
+            query = DatabaseUtil.getInstance().createGeneratedKeyQuery(INSERT_TRANSACTION_NOID, type.getCode(), transaction.getAmount(), transaction.getDate(), transaction.getCategory(), transaction.getNotes());
         }
 
         DatabaseUtil.getInstance().executeQuery(query);
+
+        //salvo id
+        if (transaction.getId() == 0) transaction.setId((int)query.getKey());
 
         query.close();
     }
@@ -170,9 +173,9 @@ public class RdbTransactionDao implements ITransactionDAO{
 
         DBQuery query = DatabaseUtil.getInstance().createQuery(DELETE_TRANSACTION_FROM_ID, transaction.getId());
         DatabaseUtil.getInstance().executeQuery(query);
+        query.close();
 
         deleteAssociation(transaction);
-        query.close();
     }
 
     /**

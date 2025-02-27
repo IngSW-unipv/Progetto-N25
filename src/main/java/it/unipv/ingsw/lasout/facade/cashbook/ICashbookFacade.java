@@ -1,6 +1,7 @@
 package it.unipv.ingsw.lasout.facade.cashbook;
 
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
+import it.unipv.ingsw.lasout.model.cashbook.exception.CannotDeleteDefaultCashbookException;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.model.user.User;
 
@@ -14,7 +15,7 @@ public interface ICashbookFacade {
 
     boolean editCashbook(Cashbook cashbook);
 
-    boolean deleteCashbook(Cashbook cashbook);
+    boolean deleteCashbook(Cashbook cashbook) throws CannotDeleteDefaultCashbookException;
 
     Cashbook getUserDefaultCashbook(User carrierUser);
 
@@ -39,4 +40,6 @@ public interface ICashbookFacade {
     List<Transaction> getAutomaticTransactions(Cashbook c);
 
     List<Transaction> getVaultTransactionsOfUser(User user);
+
+    Cashbook createDefaultCashbook(User carrierUser);
 }

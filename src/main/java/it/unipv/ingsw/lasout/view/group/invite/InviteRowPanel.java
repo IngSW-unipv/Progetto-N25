@@ -7,8 +7,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class InviteRowPanel extends JPanel {
-    private JLabel infoLabel;
-    private JButton actionButton;
+    private final JLabel infoLabel;
+    private final JButton actionButton;
 
     public InviteRowPanel(String username) {
         // Layout orizzontale

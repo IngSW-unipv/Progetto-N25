@@ -6,10 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class JInfoPanel extends JPanel {
-    private JScrollPane leftScrollPane;
-    private JScrollPane rightScrollPane;
-    private JPanel leftPanel;
-    private JPanel rightPanel;
+    private final JScrollPane leftScrollPane;
+    private final JScrollPane rightScrollPane;
+    private final JPanel leftPanel;
+    private final JPanel rightPanel;
 
     public JInfoPanel() {
         // Imposta il layout con GridBagLayout
@@ -64,11 +64,11 @@ public class JInfoPanel extends JPanel {
         return rightPanel;
     }
 
-    public void addExpenseLine(ExpenseRowPanel ex){
+    public void addExpenseLine(ExpenseRowPanel ex) {
         leftPanel.add(ex);
     }
 
-    public void addInfoLine(InfoRowPanel info){
+    public void addInfoLine(InfoRowPanel info) {
         rightPanel.add(info);
     }
 

@@ -56,29 +56,24 @@ public class VaultController {
 	                    String cvv = addDialog.getCcCVV();
 	                    
 	                    // Usa la factory per creare l'istanza
-	                    success = ConcreteVaultFacade.getInstance().addPaymentMethod(vault,
+	                    success = LaVaultFacade.getInstance().getVaultFacade().addPaymentMethod(vault,
 	                                new CreditCard(cardNumber, Integer.parseInt(month), Integer.parseInt(year), Integer.parseInt(cvv), vault.getId()),
 	                                type);    
 	                    
 	                } else if(type.equals("PayPal")) {
 	                    String cardNumber = addDialog.getPpNumber();
-	                    success = ConcreteVaultFacade.getInstance().addPaymentMethod(vault,
+	                    success = LaVaultFacade.getInstance().getVaultFacade().addPaymentMethod(vault,
 	                                new PayPal(cardNumber, vault.getId()),
 	                                type);
 	                } else if(type.equals("CurrentAccount")) {
 	                    String iban = addDialog.getIban();
-	                    success = ConcreteVaultFacade.getInstance().addPaymentMethod(vault,
+	                    success = LaVaultFacade.getInstance().getVaultFacade().addPaymentMethod(vault,
 	                                new CurrentAccount(iban, vault.getId()),
 	                                type);
 	                }
 	                if(success == true) {
 	                	// AGGIUNTA: Aggiorna la lista dei metodi di pagamento nel VaultPanel
-	                    List<PaymentMethod> methods = LaVaultFacade.getInstance().getVaultFacade().getAllPaymentMethods(vault);
-	                    DefaultListModel<String> model = new DefaultListModel<>();
-	                    for (PaymentMethod pm : methods) {
-	                        model.addElement(pm.toString()); 
-	                    }
-	                    vaultPanel.updatePaymentMethodsList(model);
+	                	updatePaymentMethodView();
 	                    JOptionPane.showMessageDialog(frame, "Metodo aggiunto correttamente.");
 	                } else {
 	                    JOptionPane.showMessageDialog(frame, "Errore nell'aggiunta del metodo di pagamento.");
@@ -163,7 +158,7 @@ public class VaultController {
 	        vaultPanel.addRemoveMethodListener( e -> {
 	            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(vaultPanel);
 	        	//recuper la lista aggiornata dei metodi di pagamento
-	        	List<PaymentMethod> methods = ConcreteVaultFacade.getInstance().getAllPaymentMethods(vault);
+	        	List<PaymentMethod> methods = LaVaultFacade.getInstance().getVaultFacade().getAllPaymentMethods(vault);
 	        	//dialog cancellazione
 	        	DeletePaymentMethodDialog deletedialog = new DeletePaymentMethodDialog(frame, vault, methods);
 	        	//listener per pulsante
@@ -177,14 +172,14 @@ public class VaultController {
 	        		int confirm = JOptionPane.showConfirmDialog(deletedialog, "Sei sicuro di voler rimuovere il "
 	        				+ "metodo di pagamento selezionato?", "Conferma cancellazione", JOptionPane.YES_NO_OPTION);
 	        		if(confirm == JOptionPane.YES_OPTION) {
-	        			boolean success = ConcreteVaultFacade.getInstance()
-	        					.deletePaymentMethod(vault, selectedMethod, selectedMethod.getMethodName());
+	        			boolean success = LaVaultFacade.getInstance().getVaultFacade().
+	        					deletePaymentMethod(vault, selectedMethod, selectedMethod.getMethodName());
 	        			if(success) {
 	        				JOptionPane.showMessageDialog(deletedialog, "Metodo di pagamento rimosso con successo");
 	        				//aggiorno la lista
 	        				deletedialog.removeSelectedPaymentMethod();
 	        				//aggiorno la lista della view
-	        				List<PaymentMethod> newMethods = ConcreteVaultFacade.getInstance().getAllPaymentMethods(vault);
+	        				List<PaymentMethod> newMethods = LaVaultFacade.getInstance().getVaultFacade().getAllPaymentMethods(vault);
 	        				DefaultListModel<String> newModel = new DefaultListModel<>();
 	        				for(PaymentMethod pm : newMethods){
 	        					newModel.addElement(pm.toString());
@@ -214,10 +209,11 @@ public class VaultController {
 	        		}
 	        		String causale = paymentDialog.getCausale();
 	        		
-	        		boolean success = ConcreteVaultFacade.getInstance().executePayment(vault, amount, causale);
+	        		boolean success = LaVaultFacade.getInstance().getVaultFacade().executePayment(vault, amount, causale);
 	        		if(success) {
 	        			JOptionPane.showMessageDialog(paymentDialog, "Pagamento eseguito con successo");
 	        			vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getBalanceByID(vault));
+	        			updateTransactionsView();
 	        		}else {
 	        			JOptionPane.showMessageDialog(paymentDialog, "Errore nell'esecuzione del pagamento");
 	        		}
@@ -251,21 +247,31 @@ public class VaultController {
 		
 		vaultPanel.updateSaldo(LaVaultFacade.getInstance().getVaultFacade().getBalanceByID(vault));
 		
-		//ConcreteVaultFacade.getInstance().newVaultinVirtualVault(vault, currentUser);
+		//ConcreteVaultFacade.getInstance().newVaultinVirtualVault(currentUser);
 
 		ConcreteVaultFacade.getInstance().newVaultinVault(vault);
 
 		ConcreteVaultFacade.getInstance().getVaultId(vault);
 		
 		updateTransactionsView();
+		updatePaymentMethodView();
 	}
 	
 	public static void updateTransactionsView() {
 		List<Transaction> transactions = LaVaultFacade.getInstance().getCashbookFacade().getVaultTransactionsOfUser(vault.getOwner());
-		DefaultListModel<Transaction> model = new DefaultListModel<>();
+		DefaultListModel<String> model = new DefaultListModel<>();
 		for(Transaction t : transactions) {
-			model.addElement(t);
+			model.addElement(t.toStringReduced());
 		}
 		vaultPanel.updateTransactionList(model);
+	}
+	
+	public static void updatePaymentMethodView() {
+		List<PaymentMethod> methods = LaVaultFacade.getInstance().getVaultFacade().getAllPaymentMethods(vault);
+        DefaultListModel<String> model = new DefaultListModel<>();
+        for (PaymentMethod pm : methods) {
+            model.addElement(pm.toString()); 
+        }
+        vaultPanel.updatePaymentMethodsList(model);
 	}
 }
