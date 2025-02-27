@@ -11,11 +11,10 @@ import it.unipv.ingsw.lasout.view.group.info.InfoRowPanel;
 import it.unipv.ingsw.lasout.view.mainview.MainUIView;
 //import it.unipv.ingsw.lasout.view.virtualVault.AddNewVirtualVault;
 import it.unipv.ingsw.lasout.view.vault.VaultPanel;
-import it.unipv.ingsw.lasout.view.virtualVault.AddVirtualVaultDialog;
-import it.unipv.ingsw.lasout.view.virtualVault.DeleteVirtualVaultDialog;
-import it.unipv.ingsw.lasout.view.virtualVault.VirtualVaultItem;
-import it.unipv.ingsw.lasout.view.virtualVault.VirtualVaultPanel;
+import it.unipv.ingsw.lasout.view.virtualVault.*;
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -47,17 +46,19 @@ public class VirtualVaultController {
                 //System.out.println(s.getId());
                 //Recupero il VirtualVault completo tramite la Facade utilizzando il tempValue
                 virtualVault = LaVaultFacade.getInstance().getVirtualVaultFacade().getVirtualVault(tempVault);
-                System.out.println("SONO IL VV" + virtualVault);
-                System.out.println("Controllo id virtualVault selezionato: " + s.getId());
+                //System.out.println("SONO IL VV" + virtualVault);
+                //System.out.println("Controllo id virtualVault selezionato: " + s.getId());
                 //Aggiorno il pannello centrale con i dettagli del virtualVault selezionato
-                updateInfoPanel();
+                //updateInfoPanel();
+                view.updateCentralInfo(virtualVault.getName(), "Saldo" + virtualVault.getBalance() + "€");
 
                 view.setNameLabelText(s.getName());
                 view.getAddVirtualVaultButton().setEnabled(true);
                 view.getDeleteVirtualVaultButton().setEnabled(true);
             } else {
                 virtualVault = new VirtualVault();
-                updateInfoPanel();
+                //updateInfoPanel();
+                view.updateCentralInfo(virtualVault.getName(), "Saldo" + virtualVault.getBalance() + "€");
                 view.setNameLabelText("Seleziona VirtualVault");
                 view.getAddVirtualVaultButton().setEnabled(false);
                 view.getDeleteVirtualVaultButton().setEnabled(false);
@@ -209,91 +210,71 @@ public class VirtualVaultController {
         });
 
 
-        /*
-        // Listener per il pulsante "Elimina VirtualVault" nel controller
-        view.getDeleteVirtualVaultButton().addActionListener(e -> {
-            // Ottieni il frame principale per passarlo come parent al dialog
-            JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(view);
-
-            // Prepara la lista dei VirtualVaultItem da mostrare
-            // Qui utilizzo la lista che hai già popolato nella combo box della VirtualVaultPanel
-            List<VirtualVaultItem> vaultItems = new java.util.ArrayList<>();
-            // Per evitare di eliminare il vault principale, filtra l'elemento con id -1 o 0.
-            for (int i = 0; i < view.getVaultComboBox().getItemCount(); i++) {
-                VirtualVaultItem item = view.getVaultComboBox().getItemAt(i);
-                if(item.getId() > 0){
-                    vaultItems.add(item);
-                }
+        // --------------Listener per il pulsante Deposita--------------
+        view.getDepositButton().addActionListener(e -> {
+            if (virtualVault == null || virtualVault.getID() == 0) {
+                JOptionPane.showMessageDialog(view, "Seleziona un VirtualVault valido prima di depositare.", "Errore", JOptionPane.ERROR_MESSAGE);
+                return;
             }
+            JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(view);
+            ModifyBalanceDialog dialog = new ModifyBalanceDialog(parentFrame, "Deposita Importo");
+            dialog.addConfirmListener(ae -> {
+                double amount = dialog.getAmount();
+                if (amount <= 0) {
+                    JOptionPane.showMessageDialog(dialog, "Inserisci un importo valido!", "Errore", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                // Aggiorniamo il balance del currentVault
+                virtualVault.setBalance(virtualVault.getBalance() + amount);
+                //System.out.println("SONO IL BALANCE" + virtualVault.getBalance());
+                /// DEVO ANCHE AGGIORNARE LA PARTE DI BUSOOOO
+                // Salviamo l'aggiornamento
 
-            // Crea e mostra il dialog di eliminazione
-
-            DeleteVirtualVaultDialog dialog = new DeleteVirtualVaultDialog(parentFrame, vaultItems);
-            dialog.addDeleteActionListener(ae -> {
-
-
-
-
-                VirtualVaultItem selectedItem = dialog.getSelectedVaultItem();
-                if (selectedItem != null && selectedItem.getId() > 0) {
-                    // Ad esempio, se il metodo deleteVirtualVault restituisce true in caso di successo:
-
-                    // Recupera l'utente loggato
-                    User loggedUser = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
-                    //System.out.println(loggedUser.getId());
-                    VirtualVault tempVirtualVault = new VirtualVault();
-                    tempVirtualVault.setName(selectedItem.getName());
-                    tempVirtualVault.setOwner(loggedUser);
-                    System.out.println("SONO il VVAULT TEMP" + tempVirtualVault);
-                    VirtualVault vvaultToDelete = LaVaultFacade.getInstance().getVirtualVaultFacade().getVirtualVault(tempVirtualVault);
-                    if (vvaultToDelete == null) {
-                        JOptionPane.showMessageDialog(dialog, "Non è stato possibile recuperare il VirtualVault selezionato.", "Errore", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-
-
-                    // Recupera il saldo disponibile dal vault principale
-                    double saldo = vvaultToDelete.getBalance();
-                    boolean available;
-                    try {
-                        available = LaVaultFacade.getInstance().getVaultFacade().depositoVault(loggedUser, saldo);
-                        //System.out.println("SONO LA VARIABILE D?APP"+available);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        JOptionPane.showMessageDialog(dialog, "Errore nel recuperare il saldo del Vault principale.", "Errore", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-
-                    // Controllo: se l'importo inserito è maggiore di quello disponibile, mostra errore e consenti di reinserire
-                    if (!available) {
-                        JOptionPane.showMessageDialog(dialog, "Importo troppo alto!\nHai a disposizione: " + available + "\nReinserisci un importo valido.", "Errore", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    VirtualVault nuovoVaultDelete = new VirtualVault();
-                    nuovoVaultDelete.setID(selectedItem.getId());
-                    // Imposta l'owner dall'utente loggato
-                    User loggedUser2 = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
-                    nuovoVaultDelete.setOwner(loggedUser2);
-
-                    boolean success = LaVaultFacade.getInstance().getVirtualVaultFacade().deleteVirtualVault(nuovoVaultDelete);
-                    if (success) {
-                        JOptionPane.showMessageDialog(dialog, "VirtualVault eliminato con successo!");
-                        dialog.dispose();
-
-                        //Righe per aggiornare il saldo VAULT madre
-                        VaultController.load();
-                        // Aggiorna la combo box e/o il pannello centrale se necessario
-                        setUpComboBox();
-
-
-                    } else {
-                        JOptionPane.showMessageDialog(dialog, "Errore nell'eliminazione del VirtualVault.", "Errore", JOptionPane.ERROR_MESSAGE);
-                    }
+                System.out.println("SONO IL VV " + LaVaultFacade.getInstance().getVirtualVaultFacade().editVirtualVault(virtualVault));
+                boolean success = LaVaultFacade.getInstance().getVirtualVaultFacade().editVirtualVault(virtualVault);
+                if (success) {
+                    JOptionPane.showMessageDialog(dialog, "Deposito effettuato con successo!");
+                    dialog.dispose();
+                    setUpComboBox();
+                } else {
+                    JOptionPane.showMessageDialog(dialog, "Errore nel deposito!", "Errore", JOptionPane.ERROR_MESSAGE);
                 }
             });
             dialog.setVisible(true);
-        });*/
+        });
 
+        // --------------Listener per il pulsante Preleva --------------
+        view.getWithdrawButton().addActionListener(e -> {
+            if (virtualVault == null || virtualVault.getID() == 0) {
+                JOptionPane.showMessageDialog(view, "Seleziona un VirtualVault valido prima di prelevare.", "Errore", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(view);
+            ModifyBalanceDialog dialog = new ModifyBalanceDialog(parentFrame, "Preleva Importo");
+            dialog.addConfirmListener(ae -> {
+                double amount = dialog.getAmount();
+                if (amount <= 0) {
+                    JOptionPane.showMessageDialog(dialog, "Inserisci un importo valido!", "Errore", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (amount > virtualVault.getBalance()) {
+                    JOptionPane.showMessageDialog(dialog, "Importo superiore al saldo disponibile!", "Errore", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                // Aggiorniamo il balance
+                virtualVault.setBalance(virtualVault.getBalance() - amount);
+
+                boolean success = LaVaultFacade.getInstance().getVirtualVaultFacade().editVirtualVault(virtualVault);
+                if (success) {
+                    JOptionPane.showMessageDialog(dialog, "Prelievo effettuato con successo!");
+                    dialog.dispose();
+                    setUpComboBox();
+                } else {
+                    JOptionPane.showMessageDialog(dialog, "Errore nel prelievo!", "Errore", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+            dialog.setVisible(true);
+        });
     }
 
 
@@ -322,29 +303,5 @@ public class VirtualVaultController {
             }
         }
 
-        /**
-         * Aggiorna il pannello centrale (infoPanel) con le informazioni del VirtualVault selezionato.
-         */
-        private void updateInfoPanel() {
-            // Pulisce il pannello informativo
-            view.resetInfoPanel();
-            JPanel infoPanel = view.getInfoPanel();
-            infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-
-            if (virtualVault != null) {
-                // Crea ed aggiunge le etichette con le informazioni del VirtualVault
-                //JLabel idLabel = new JLabel("ID: " + virtualVault.getID());
-                JLabel nameLabel = new JLabel("Nome: " + virtualVault.getName());
-                JLabel balanceLabel = new JLabel("Saldo: " + virtualVault.getBalance() + "€");
-                //infoPanel.add(idLabel);
-                infoPanel.add(nameLabel);
-                infoPanel.add(balanceLabel);
-            } else {
-                // Visualizza un messaggio di default se nessun VirtualVault è selezionato
-                infoPanel.add(new JLabel("Nessun Virtual Vault selezionato"));
-            }
-            infoPanel.revalidate();
-            infoPanel.repaint();
-        }
 }
 

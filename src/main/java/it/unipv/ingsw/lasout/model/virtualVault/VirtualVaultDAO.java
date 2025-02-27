@@ -216,13 +216,13 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
     */
     @Override
     public void update(VirtualVault virtualVault) throws Exception {
-        double b = getBalanceFromVault(virtualVault);
-        //double newB = b - virtualVault.getBalance();
-        //System.out.println("update = " + virtualVault.getBalance());
-        delete(virtualVault);
-        save(virtualVault);
 
+        DBQuery query = DatabaseUtil.getInstance().createQuery(UPDATE_BALANCE, virtualVault.getBalance(), virtualVault.getID(), virtualVault.getOwner().getId());
+        DatabaseUtil.getInstance().executeQuery(query);
 
+        if (query.getResultSet() != null) throw new Exception("Errore nell'aggiornamento del balance.");
+
+        query.close();
     }
 
 
