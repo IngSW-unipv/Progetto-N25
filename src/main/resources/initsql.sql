@@ -36,7 +36,7 @@ CREATE TABLE `cashbooktransactions`  (cashbook_id INT REFERENCES `cashbook`(id) 
 
 INSERT INTO `user` (username, password, email)
     VALUES
-    ('dada'  ,'123'    ,'aaa@gmail.com'),
+    ('dada'  ,'ciao'    ,'aaa@gmail.com'),
     ('cla'   ,'miao'    ,'bbb@gmail.com'),
     ('dema'  ,'bau'     ,'ccc@gmail.com'),
     ('buso'  ,'pluto'   ,'ddd@gmail.com'),
