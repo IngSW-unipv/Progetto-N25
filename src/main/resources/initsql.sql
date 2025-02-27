@@ -176,7 +176,10 @@ INSERT INTO virtualvault (nome, user_id, balance) VALUES
     ('Vault', 3, 200),
     ('Vault', 4, 200),
     ('Vault', 5, 200),
-    ('Vault', 6, 200);
+    ('Vault', 6, 200),
+    ('PRIMO', 5, 100);
+
+
 
 INSERT INTO vault (virtualvault_id) VALUES
 	(1),
