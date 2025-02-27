@@ -246,8 +246,11 @@ public class VirtualVaultController {
                 }
                 if (!depositSuccess) {
                     JOptionPane.showMessageDialog(dialog,
-                            "Impossibile reintegrare il saldo del VirtualVault da eliminare.",
+                            "Impossibile effettuare il deposito, importo troppo alto",
                             "Errore", JOptionPane.ERROR_MESSAGE);
+
+                    virtualVault.setBalance(virtualVault.getBalance()-amount);
+                    System.out.println("VV AGG"+virtualVault.getBalance());
                     return;
                 }
                 //System.out.println("SONO IL VV " + LaVaultFacade.getInstance().getVirtualVaultFacade().getVirtualVault(virtualVault));
@@ -300,8 +303,9 @@ public class VirtualVaultController {
                 }
                 if (!depositSuccess) {
                     JOptionPane.showMessageDialog(dialog,
-                            "Impossibile reintegrare il saldo del VirtualVault da eliminare.",
+                            "Impossibile effettuare il prelievo, importo troppo alto",
                             "Errore", JOptionPane.ERROR_MESSAGE);
+                    virtualVault.setBalance(virtualVault.getBalance());
                     return;
                 }
 
