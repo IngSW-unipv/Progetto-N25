@@ -167,6 +167,7 @@ public class GroupController implements Loadable {
             if (LaVaultFacade.getInstance().getGroupFacade().finalizzaDebiti(activeGroup)) {
                 setUpJInfoPanelLeft();
                 setUpJInfoPanelRight();
+                loadables.forEach(Loadable::reload);
                 JOptionPane.showMessageDialog(groupPanel, "Spese finalizate");
             } else {
                 JOptionPane.showMessageDialog(groupPanel, "Per finalizare le spese devi essere admin");
