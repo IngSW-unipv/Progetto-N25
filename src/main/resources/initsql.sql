@@ -58,9 +58,9 @@ VALUES
 INSERT INTO `notify` (id, user_id, description, type)
 VALUES
 
-    (1, 1, "Benvenuto su LaVault =)", "empty"),
-    (2, 1, "cla ti ha inviato una richiesta di amicizia !", "friendrequest"),
-    (3, 1, "cla ti ha invitato a partecipare al gruppo Regalo Marco !", "groupinvite");
+    (1, 1, 'Benvenuto su LaVault =)', 'empty'),
+    (2, 1, 'cla ti ha inviato una richiesta di amicizia !', 'friendrequest'),
+    (3, 1, 'cla ti ha invitato a partecipare al gruppo Regalo Marco !', 'groupinvite');
 
 INSERT INTO `friend` (user_id, friend_user_id)
 VALUES
@@ -106,12 +106,17 @@ INSERT INTO usergroup (user_id, group_id) VALUES
 
 INSERT INTO cashbook (user_id, name, type) VALUES
     (1, 'default', 0),
+    (2, 'default', 0),
+    (3, 'default', 0),
+    (4, 'default', 0),
+    (5, 'default', 0),
+    (6, 'default', 0),
+
     (1, 'contanti', 1),
     (2, 'risparmio', 1),
     (2, 'guadagno', 1),
     (3, 'risparmio', 1),
-    (4, 'ciao', 1),
-    (6, 'dafault', 0);
+    (4, 'ciao', 1);
 
 INSERT INTO transactions (id, type, amount, date, category, note) VALUES
     (1, 0, -100.00, '2021',  'Bob', 'Payment for services'),
