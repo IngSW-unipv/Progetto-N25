@@ -147,6 +147,7 @@ public class CashbookController {
                 } finally{
                     setUpCashbookComboBox();
                     setUpTransactionTable();
+                    updateSummaryLabel();
                     editCashbookDialog.dispose();
                 }
             });

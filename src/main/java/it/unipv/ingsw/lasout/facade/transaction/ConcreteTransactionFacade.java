@@ -4,17 +4,17 @@ import it.unipv.ingsw.lasout.model.transaction.ITransactionDAO;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.util.DaoFactory;
 
-public class TransactionFacade implements ITransactionFacade {
+public class ConcreteTransactionFacade implements ITransactionFacade {
 
     ITransactionDAO transactionDAO;
-    public TransactionFacade() {
+    public ConcreteTransactionFacade() {
         transactionDAO = DaoFactory.getTransactionDAO();
     }
 
-    private static TransactionFacade instance;
-    public static TransactionFacade getInstance() {
+    private static ConcreteTransactionFacade instance;
+    public static ConcreteTransactionFacade getInstance() {
         if (instance == null) {
-            instance = new TransactionFacade();
+            instance = new ConcreteTransactionFacade();
         }
         return instance;
     }

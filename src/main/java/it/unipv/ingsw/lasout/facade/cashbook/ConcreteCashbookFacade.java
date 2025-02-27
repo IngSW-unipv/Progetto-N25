@@ -1,6 +1,6 @@
 package it.unipv.ingsw.lasout.facade.cashbook;
 
-import it.unipv.ingsw.lasout.facade.transaction.TransactionFacade;
+import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.cashbook.ICashbookDAO;
 import it.unipv.ingsw.lasout.model.cashbook.exception.CannotDeleteDefaultCashbookException;
@@ -15,17 +15,17 @@ import it.unipv.ingsw.lasout.util.DaoFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CashbookFacade implements ICashbookFacade {
+public class ConcreteCashbookFacade implements ICashbookFacade {
 
     private ICashbookDAO cashBookDAO;
-    public CashbookFacade() {
+    public ConcreteCashbookFacade() {
         cashBookDAO = DaoFactory.getCashbookDAO();
     }
 
-    private static CashbookFacade instance;
-    public static CashbookFacade getInstance() {
+    private static ConcreteCashbookFacade instance;
+    public static ConcreteCashbookFacade getInstance() {
         if (instance == null) {
-            instance = new CashbookFacade();
+            instance = new ConcreteCashbookFacade();
         }
         return instance;
     }
@@ -117,7 +117,7 @@ public class CashbookFacade implements ICashbookFacade {
     @Override
     public boolean editTransaction(Cashbook cashbook, Transaction transaction) {
         try {
-            TransactionFacade.getInstance().editTransaction(transaction);
+            LaVaultFacade.getInstance().getTransactionFacade().editTransaction(transaction);
             return true;
         }catch (CannotEditTransactionException e) {
             throw e;
@@ -141,7 +141,7 @@ public class CashbookFacade implements ICashbookFacade {
         try{
             Cashbook c = getCashbook(cashbook);
             c.removeTransaction((ModifiableTransaction) transaction);
-            TransactionFacade.getInstance().deleteTransaction(transaction);
+            LaVaultFacade.getInstance().getTransactionFacade().deleteTransaction(transaction);
         } catch (Exception e) {
             return false;
         }

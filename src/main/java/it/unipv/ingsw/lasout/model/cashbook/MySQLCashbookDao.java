@@ -9,24 +9,24 @@ import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.model.cashbook.exception.CashbookAlreadyExistingException;
 import it.unipv.ingsw.lasout.model.transaction.ManualTransaction;
-import it.unipv.ingsw.lasout.model.transaction.RdbTransactionDao;
+import it.unipv.ingsw.lasout.model.transaction.MySQLTransactionDao;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
 import it.unipv.ingsw.lasout.model.transaction.exception.CannotDeleteAutomaticTransactionException;
 import it.unipv.ingsw.lasout.model.user.User;
 
-public class RdbCashbookDao implements ICashbookDAO {
+public class MySQLCashbookDao implements ICashbookDAO {
     /**
      * Istanza singola del CashbookDao (implementazione singleton)
      */
-    private static RdbCashbookDao instance = null;
+    private static MySQLCashbookDao instance = null;
 
     /**
      *
      * @return l'istanza singleton del CashbookDao
      */
-    public static RdbCashbookDao getInstance(){
+    public static MySQLCashbookDao getInstance(){
         if (instance == null){
-            instance= new RdbCashbookDao();
+            instance= new MySQLCashbookDao();
         }
         return instance;
     }
@@ -34,7 +34,7 @@ public class RdbCashbookDao implements ICashbookDAO {
     /**
      * Rendo il costruttore privato
      */
-    public RdbCashbookDao(){
+    public MySQLCashbookDao(){
         super();
     }
 
@@ -149,7 +149,7 @@ public class RdbCashbookDao implements ICashbookDAO {
             Transaction t;
             Transaction carrierTransaction = new ManualTransaction();
             carrierTransaction.setId(rs.getInt("transaction_id"));
-            t = RdbTransactionDao.getInstance().get(carrierTransaction);
+            t = MySQLTransactionDao.getInstance().get(carrierTransaction);
             transactionList.add(t);
         }
 
@@ -173,7 +173,7 @@ public class RdbCashbookDao implements ICashbookDAO {
 
     @Override
     public void addTransaction(Cashbook cashbook, Transaction transaction) throws Exception{
-        RdbTransactionDao.getInstance().save(transaction);
+        MySQLTransactionDao.getInstance().save(transaction);
 
         DBQuery query = DatabaseUtil.getInstance().createQuery(INSERT_IN_CASHBOOKTRANSACTIONS, cashbook.getId(), transaction.getId());
         DatabaseUtil.getInstance().executeQuery(query);
@@ -233,12 +233,12 @@ public class RdbCashbookDao implements ICashbookDAO {
             // se get restituisce not found exception allora significa che posso crearla
             // altrimenti non faccio nulla e mantengo l'associazione
             try{
-                Transaction n = RdbTransactionDao.getInstance().get(t);
+                Transaction n = MySQLTransactionDao.getInstance().get(t);
                 if(!n.equals(t)){   //se la transazione è diversa da quella già presente fa un update
-                    RdbTransactionDao.getInstance().update(t);
+                    MySQLTransactionDao.getInstance().update(t);
                 }
             } catch (RuntimeException transactionNotFound) {
-                RdbTransactionDao.getInstance().save(t);
+                MySQLTransactionDao.getInstance().save(t);
             }
         }
         if(query!=null) query.close();
@@ -275,7 +275,7 @@ public class RdbCashbookDao implements ICashbookDAO {
         for (Transaction t : transactions) {
             if (!isTransactionStillUsed(t)) {
                 try {
-                    RdbTransactionDao.getInstance().delete(t);
+                    MySQLTransactionDao.getInstance().delete(t);
                 } catch (CannotDeleteAutomaticTransactionException e) {
                     continue;
                 }
