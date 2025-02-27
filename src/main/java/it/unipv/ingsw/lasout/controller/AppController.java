@@ -72,8 +72,6 @@ public class AppController {
             userCarrier.setUsername(username);
             userCarrier.setPassword(password);
 
-            loginView.preSetDada();
-
             //chiamo la facade per il login
             LaVaultFacade.getInstance().getSessionFacade().login(userCarrier);
 
@@ -88,7 +86,6 @@ public class AppController {
             } else {
                 //se non è riuscito a loggarsi perché le credenziali non sono valide, mostro l’errore
                 JOptionPane.showMessageDialog(loginView, "Credenziali errate! Riprova", "Errore di Login", JOptionPane.ERROR_MESSAGE);
-                signInView.clearFields();
             }
         }
     }
@@ -131,6 +128,7 @@ public class AppController {
                 JOptionPane.showMessageDialog(signInView, "Registrazione completata! Ora puoi effettuare il login", "Registrazione Completata", JOptionPane.INFORMATION_MESSAGE);
                 signInView.dispose();
                 loginView.setVisible(true);
+                signInView.clearFields();
             } else {
                 JOptionPane.showMessageDialog(signInView, "User already exist, impossible to CREATE your account. Please use another username", "Errore di Registrazione", JOptionPane.ERROR_MESSAGE);
                 signInView.clearFields();

@@ -21,7 +21,7 @@ public class AccountController {
         this.appController = appController;
 
 
-        // classe interna anonima
+        // classe interna anonima (anonymous class ("sottoclasse" della inner))
         accountPanel.addChangePasswordListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
