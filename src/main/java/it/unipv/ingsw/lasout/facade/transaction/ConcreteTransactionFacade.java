@@ -2,6 +2,7 @@ package it.unipv.ingsw.lasout.facade.transaction;
 
 import it.unipv.ingsw.lasout.model.transaction.ITransactionDAO;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
+import it.unipv.ingsw.lasout.model.transaction.exception.CannotDeleteAutomaticTransactionException;
 import it.unipv.ingsw.lasout.util.DaoFactory;
 
 public class ConcreteTransactionFacade implements ITransactionFacade {
@@ -53,7 +54,7 @@ public class ConcreteTransactionFacade implements ITransactionFacade {
         try {
             transactionDAO.delete(transaction);
         } catch (Exception e) {
-            return false;
+            throw new CannotDeleteAutomaticTransactionException();
         }
         return true;
     }

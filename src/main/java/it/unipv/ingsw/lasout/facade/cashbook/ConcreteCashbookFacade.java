@@ -8,6 +8,7 @@ import it.unipv.ingsw.lasout.model.cashbook.exception.CashbookAlreadyExistingExc
 import it.unipv.ingsw.lasout.model.transaction.AutomaticTransaction;
 import it.unipv.ingsw.lasout.model.transaction.ModifiableTransaction;
 import it.unipv.ingsw.lasout.model.transaction.Transaction;
+import it.unipv.ingsw.lasout.model.transaction.exception.CannotDeleteAutomaticTransactionException;
 import it.unipv.ingsw.lasout.model.transaction.exception.CannotEditTransactionException;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.util.DaoFactory;
@@ -143,7 +144,7 @@ public class ConcreteCashbookFacade implements ICashbookFacade {
             c.removeTransaction((ModifiableTransaction) transaction);
             LaVaultFacade.getInstance().getTransactionFacade().deleteTransaction(transaction);
         } catch (Exception e) {
-            return false;
+            throw new CannotDeleteAutomaticTransactionException();
         }
         return true;
     }
