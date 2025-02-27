@@ -15,15 +15,22 @@ import it.unipv.ingsw.lasout.view.group.settings.ParticipantRowPanel;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GroupController implements Loadable {
     private static GroupPanel groupPanel;
     private static Group activeGroup;
+    private Set<Loadable> loadables = new HashSet<>();
 
     public GroupController(GroupPanel groupPanel){
         GroupController.groupPanel = groupPanel;
         initController();
+    }
+
+    public void subscribe(Loadable updatable) {
+        loadables.add(updatable);
     }
 
 

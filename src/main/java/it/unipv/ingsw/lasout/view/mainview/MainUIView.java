@@ -76,6 +76,7 @@ public class MainUIView extends JFrame {
         // Aggiunta il pannello "Gruppi"
         GroupPanel groupPanel = new GroupPanel(this);
         groupController = new GroupController(groupPanel);
+
         contentPanel.add(groupPanel, "Group");
 
         notifyController= new NotifyController();
@@ -93,6 +94,7 @@ public class MainUIView extends JFrame {
 
         notifyController.subscribe(groupController);
         notifyController.subscribe(notifyPanel0);
+        groupController.subscribe(notifyPanel0);
 
     }
 
