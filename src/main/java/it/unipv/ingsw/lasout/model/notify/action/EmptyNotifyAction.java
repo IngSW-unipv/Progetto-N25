@@ -1,6 +1,9 @@
 package it.unipv.ingsw.lasout.model.notify.action;
 
+import it.unipv.ingsw.lasout.controller.notify.NotifyController;
 import it.unipv.ingsw.lasout.model.notify.Notify;
+
+import javax.swing.*;
 
 
 public class EmptyNotifyAction implements INotifyAction{
@@ -9,18 +12,8 @@ public class EmptyNotifyAction implements INotifyAction{
 
 
     @Override
-    public void build() {
+    public void build(NotifyController notifyController, JPanel buttonPanel) {
 
-    }
-
-    @Override
-    public Notify getNotify() {
-        return notify;
-    }
-
-    @Override
-    public void setNotify(Notify notify) {
-        this.notify = notify;
     }
 
     @Override

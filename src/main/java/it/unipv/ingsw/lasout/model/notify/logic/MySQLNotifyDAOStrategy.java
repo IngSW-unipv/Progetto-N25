@@ -1,21 +1,21 @@
-/*package it.unipv.ingsw.lasout.model.notify;
+package it.unipv.ingsw.lasout.model.notify.logic;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
-import it.unipv.ingsw.lasout.model.notify.INotifyDAO;
+import it.unipv.ingsw.lasout.model.notify.Notify;
+import it.unipv.ingsw.lasout.model.notify.NotifyActionFactory;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.mysql.MYSQLNotifyActionPersistenceFactory;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistenceFactory;
-import it.unipv.ingsw.lasout.model.notify.action.mysql.MYSQLNotifyActionPersistenceFactory;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
 
 import java.sql.ResultSet;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-
-public class MySQLNotifyDAO implements INotifyDAO {
-
+public class MySQLNotifyDAOStrategy implements LogicNotifyDAOStrategy{
 
     private static final String  DELETE_FROM_NOTIFY_1=
             "DELETE FROM \\'notify\\' " +
@@ -45,94 +45,15 @@ public class MySQLNotifyDAO implements INotifyDAO {
                     "FROM \\'notify\\' " +
                     "WHERE user_id = ?;";
 
-
-
-    private INotifyActionPersistenceFactory persistenceFactory;
-
-
-    public MySQLNotifyDAO() {
-        persistenceFactory = new MYSQLNotifyActionPersistenceFactory();
-    }
-
-
-
-
-
+    private final INotifyActionPersistenceFactory persistenceFactory = new MYSQLNotifyActionPersistenceFactory();
 
     @Override
-    public Notify getRaw(Notify notify) throws Exception {
-        System.out.println("getting raw  : " + notify.getId());
-        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_RAW_NOTIFY_1, notify.getId());
-
-        DatabaseUtil.getInstance().executeQuery(query);
-        ResultSet rs = query.getResultSet();
-        if(rs == null || !rs.next()) throw new RuntimeException("ResultSet is null or empty");
-
-        Long id = notify.getId();
-        User user = UserDAO.getInstance().getRaw(new User(rs.getInt("user_id")));
-        String description = rs.getString("description");
-
-        String type = rs.getString("type");
-
-        /*
-        Class<?> clazz = getFactory(type);
-        AbstractNotifyActionFactory factory = (AbstractNotifyActionFactory) clazz.getDeclaredConstructor().newInstance();
-        INotifyAction iiNotifyAction =  factory.create();
-
-         */
-
-/*
-        INotifyAction iiNotifyAction = NotifyActionFactory.get(type);
-
-        Notify returnNotify  = new Notify(id);
-        returnNotify.setUser(user);
-        returnNotify.setDescription(description);
-        //iiNotifyAction.setNotify(returnNotify);
-
-        INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(type);
-
-        //actionPersistence.load(iiNotifyAction);
-
-        returnNotify.setNotifyAction(iiNotifyAction);
-
-        query.close();
-        return returnNotify;
-    }
-
-
-
-    @Override
-    public Notify get(Notify oggetto) throws Exception {
-
-        return getRaw(oggetto);
-
+    public INotifyActionPersistenceFactory getPersistenceFactory() {
+        return persistenceFactory;
     }
 
     @Override
-    public List<Notify> getAll() throws Exception {
-        DBQuery query = DBQuery.Builder.create()
-                .query(QUERY_GET_ALL_NOTIFY_1)
-                .build();
-
-        System.out.println(query);
-        DatabaseUtil.getInstance().executeQuery(query);
-
-        List<Notify> all = new ArrayList<Notify>();
-
-        ResultSet rs = query.getResultSet();
-        while(rs.next()){
-            Long id = rs.getLong("id");
-            Notify notify = get(new Notify(id));
-            all.add(notify);
-        }
-
-        query.close();
-
-        return all;
-    }
-
     public List<Notify> notifiesOf(User user) throws Exception {
-
         DBQuery dbQuery = DBQuery.Builder.create()
                 .query(QUERY_GET_NOTIFIES_OF_USER)
                 .params(user.getId())
@@ -157,20 +78,79 @@ public class MySQLNotifyDAO implements INotifyDAO {
 
 
         return notifies;
-
     }
 
     @Override
-    public INotifyActionPersistenceFactory getPersistenceFactory() {
-        return persistenceFactory;
+    public INotifyAction getNotifyActionOf(Notify notify) throws Exception {
+        return getRaw(notify).getNotifyAction();
     }
 
-    /**
-     * Gestisce automaticamente l'update di un oggetto in memoria o il salvataggio nuovo.
-     * @param notify oggetto da salvare, con  tutte le informazioni
-     * @throws Exception
-     */
-/*
+
+    @Override
+    public Notify getRaw(Notify notify) throws Exception {
+        DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_RAW_NOTIFY_1, notify.getId());
+
+        DatabaseUtil.getInstance().executeQuery(query);
+        ResultSet rs = query.getResultSet();
+        if(rs == null || !rs.next()) throw new RuntimeException("ResultSet is null or empty");
+
+        Long id = notify.getId();
+        User user = UserDAO.getInstance().getRaw(new User(rs.getInt("user_id")));
+        String description = rs.getString("description");
+
+        String type = rs.getString("type");
+
+        /*
+        Class<?> clazz = getFactory(type);
+        AbstractNotifyActionFactory factory = (AbstractNotifyActionFactory) clazz.getDeclaredConstructor().newInstance();
+        INotifyAction iiNotifyAction =  factory.create();
+
+         */
+
+        INotifyAction iiNotifyAction = NotifyActionFactory.get(type);
+
+        Notify returnNotify  = new Notify(id);
+        returnNotify.setUser(user);
+        returnNotify.setDescription(description);
+        returnNotify.setNotifyAction(iiNotifyAction);
+
+        INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(type);
+        actionPersistence.load(returnNotify);
+        //actionPersistence.load(iiNotifyAction);
+
+
+
+        query.close();
+        return returnNotify;
+    }
+
+    @Override
+    public Notify get(Notify oggetto) throws Exception {
+        return getRaw(oggetto);
+    }
+
+    @Override
+    public List<Notify> getAll() throws Exception {
+        DBQuery query = DBQuery.Builder.create()
+                .query(QUERY_GET_ALL_NOTIFY_1)
+                .build();
+
+        DatabaseUtil.getInstance().executeQuery(query);
+
+        List<Notify> all = new ArrayList<Notify>();
+
+        ResultSet rs = query.getResultSet();
+        while(rs.next()){
+            Long id = rs.getLong("id");
+            Notify notify = get(new Notify(id));
+            all.add(notify);
+        }
+
+        query.close();
+
+        return all;
+    }
+
     @Override
     public void save(Notify notify) throws Exception {
 
@@ -206,7 +186,6 @@ public class MySQLNotifyDAO implements INotifyDAO {
                 .build();
         DatabaseUtil.getInstance().executeQuery(query);
 
-        System.out.println(query.getKey());
 
         Long newID = query.getKey();
         notify.setId(newID);
@@ -218,10 +197,6 @@ public class MySQLNotifyDAO implements INotifyDAO {
 
 
         query.close();
-
-
-
-
 
 
     }
@@ -247,26 +222,18 @@ public class MySQLNotifyDAO implements INotifyDAO {
 
     @Override
     public void update(Notify notify) throws Exception {
-
         update(notify, DBQuery.Builder.create()
                 .query(SELECT_TYPE)
                 .params(notify.getId())
                 .build());
-
     }
 
     @Override
     public void delete(Notify notify) throws Exception {
-
         INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(notify.getNotifyType());
         actionPersistence.delete(notify);
 
         DBQuery dbQuery = DBQuery.Builder.create().query(DELETE_FROM_NOTIFY_1).params(notify.getId()).build();
         DatabaseUtil.getInstance().executeQuery(dbQuery);
     }
-
-
 }
-
-
- */

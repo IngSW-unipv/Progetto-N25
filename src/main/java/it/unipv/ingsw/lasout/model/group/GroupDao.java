@@ -4,7 +4,6 @@ package it.unipv.ingsw.lasout.model.group;
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
-import it.unipv.ingsw.lasout.facade.notify.NotifyFacade;
 import it.unipv.ingsw.lasout.model.group.exception.CantDeleteException;
 import it.unipv.ingsw.lasout.model.group.exception.CantSaveException;
 import it.unipv.ingsw.lasout.model.group.exception.NoResoultException;

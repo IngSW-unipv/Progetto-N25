@@ -20,7 +20,7 @@ CREATE TABLE `user`                  (id INTEGER PRIMARY KEY AUTO_INCREMENT, use
 CREATE TABLE `group`                 (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(45), user_id INT NOT NULL REFERENCES user(id) ON DELETE CASCADE);
 CREATE TABLE `usergroup`             (user_id INT REFERENCES `user`(id) ON DELETE CASCADE, group_id INT REFERENCES `group`(id) ON DELETE CASCADE, PRIMARY KEY(user_id, group_id));
 CREATE TABLE `friend`                (user_id INT REFERENCES `user`(id) ON DELETE CASCADE, friend_user_id INT REFERENCES `user`(id) ON DELETE CASCADE, PRIMARY KEY(user_id, friend_user_id));
-CREATE TABLE `notify`                (id INTEGER AUTO_INCREMENT, user_id INT REFERENCES user(id) ON DELETE CASCADE,`description` TEXT NOT NULL, `type` CHAR(100), PRIMARY KEY(id));
+CREATE TABLE `notify`                (id INTEGER AUTO_INCREMENT, user_id INT REFERENCES user(id) ON DELETE CASCADE,`description` TEXT, `type` CHAR(100), PRIMARY KEY(id));
 CREATE TABLE `friendnotify`          (id INTEGER , to_user_id INT REFERENCES `user`(id) ON DELETE CASCADE, from_user_id INT REFERENCES `user`(id) ON DELETE CASCADE, PRIMARY KEY(id), FOREIGN KEY (id) REFERENCES `notify`(id) ON DELETE CASCADE);
 CREATE TABLE `virtualvault`          (id INTEGER AUTO_INCREMENT, nome VARCHAR(10), user_id INT, balance DOUBLE, PRIMARY KEY(id), FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE);
 CREATE TABLE `vault`                 (id INTEGER AUTO_INCREMENT, virtualvault_id INTEGER, PRIMARY KEY(id), FOREIGN KEY (virtualvault_id) REFERENCES virtualvault(id) ON DELETE CASCADE);
@@ -36,7 +36,7 @@ CREATE TABLE `cashbooktransactions`  (cashbook_id INT REFERENCES `cashbook`(id) 
 
 INSERT INTO `user` (username, password, email)
     VALUES
-    ('dada'  ,'ciao'    ,'aaa@gmail.com'),
+    ('dada'  ,'123'    ,'aaa@gmail.com'),
     ('cla'   ,'miao'    ,'bbb@gmail.com'),
     ('dema'  ,'bau'     ,'ccc@gmail.com'),
     ('buso'  ,'pluto'   ,'ddd@gmail.com'),
@@ -55,7 +55,7 @@ INSERT INTO `notify` (id, user_id, description, type)
 VALUES
 
     (1, 1, "Benvenuto su LaVault =)", "notifyempty"),
-    (2, 1, "Benvenuto su LaVault =) Accetta la mia amicizia !", "notifyfriendrequest");
+    (2, 1, "cla ti ha inviato una richiesta di amicizia !", "notifyfriendrequest");
 
 INSERT INTO `friendnotify` (id, to_user_id, from_user_id)
 VALUES
