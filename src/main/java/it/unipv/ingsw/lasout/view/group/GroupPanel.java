@@ -13,16 +13,13 @@ import java.awt.event.ActionListener;
 
 public class GroupPanel extends JPanel {
 
-    private final JComboBox<GroupItem> comboBox;        // Menu a tendina (in alto a sinistra)
-    private final JButton nuovoGruppoBtn;               // Pulsante "Nuovo Gruppo"
-
-    private final JButton impostazioniBtn;              // Pulsante "impostaz" (in alto a destra, sul pannello blu)
-    private final JLabel nameLabel;                     // nome gruppo
-
+    private final JComboBox<GroupItem> comboBox;
+    private final JButton nuovoGruppoBtn;
+    private final JButton impostazioniBtn;
+    private final JLabel nameLabel;
     private final JButton invitaBtn;
     private final JButton aggiungiSpesaBtn;
     private final JButton finalizzaBtn;
-
     private final GroupSettingsDialog settingsDialog;
     private final AddExpenseDialog addExpenseDialog;
     private final NewGroupDialog newGroupDialog;

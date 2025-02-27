@@ -31,6 +31,9 @@ public class MainUIView extends JFrame {
             "notifies", "friends", "account"
     };
 
+    private GroupController groupController;
+
+
     public MainUIView(AppController appController) {
         setTitle("La Vault");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,7 +77,7 @@ public class MainUIView extends JFrame {
 
         // Aggiungiamo il pannello "Gruppi"
         GroupPanel groupPanel = new GroupPanel(this);
-        new GroupController(groupPanel);
+        groupController = new GroupController(groupPanel);
         contentPanel.add(groupPanel, "Group");
         contentPanel.add(createCard("Contenuto: Notifies", new Color(150, 75, 0)), "notifies");
         contentPanel.add(createCard("Contenuto: Friends", new Color(205, 92, 92)), "friends");
