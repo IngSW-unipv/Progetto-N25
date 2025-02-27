@@ -3,6 +3,7 @@ package it.unipv.ingsw.lasout;
 import it.unipv.ingsw.lasout.controller.AppController;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
 import it.unipv.ingsw.lasout.facade.group.ConcreteGroupFacade;
+import it.unipv.ingsw.lasout.util.InitSaintReim2025;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -19,6 +20,7 @@ public class MainApp {
     public static void main(String[] args) {
 
         try {
+            new InitSaintReim2025();
             DatabaseUtil.getInstance().prepare();
             DatabaseUtil.
             getInstance().initialize();

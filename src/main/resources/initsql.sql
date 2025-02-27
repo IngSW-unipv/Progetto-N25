@@ -71,8 +71,7 @@ VALUES
     (4, 1),
     (1, 4),
     (5, 1),
-    (1, 5),
-;
+    (1, 5);
 
 INSERT INTO `friendnotify` (id, to_user_id, from_user_id)
 VALUES
