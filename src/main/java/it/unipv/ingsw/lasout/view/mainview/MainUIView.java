@@ -119,6 +119,6 @@ public class MainUIView extends JFrame {
         GroupController.load();
         VaultController.load();
         VirtualVaultController.load();
-        CashbookController.load();
+        //CashbookController.load();
     }
 }

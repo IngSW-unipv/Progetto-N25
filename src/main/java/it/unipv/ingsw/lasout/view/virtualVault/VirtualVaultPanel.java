@@ -49,21 +49,7 @@ public class VirtualVaultPanel extends JPanel {
         topPanel.add(comboLabel);
         topPanel.add(virtualVaultComboBox);
         add(topPanel, BorderLayout.NORTH);
-        /*JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        topPanel.setBackground(getBackground());
 
-        comboLabel = new JLabel("Seleziona VirtualVault:");
-        virtualVaultComboBox = new JComboBox<>();
-        // Aggiunge un elemento di default
-        virtualVaultComboBox.addItem(virtualVaultComboBox.getItemAt(0));
-        //Setto colori che mi servono
-        virtualVaultComboBox.setBackground(LaColor.BTN_SFONDO);
-        virtualVaultComboBox.setForeground(LaColor.FONT);
-
-        topPanel.add(comboLabel);
-        topPanel.add(virtualVaultComboBox);
-        add(topPanel, BorderLayout.NORTH);
-*/
         // --- CENTER: pannello per le info ---
         infoPanel = new JPanel(new BorderLayout());
         infoPanel.setBackground(LaColor.SFONDO);
