@@ -82,6 +82,7 @@ public class ConcreteVirtualVaultFacade implements VirtualVaultFacade {
             virtualVaultDAO.update(virtualVault);
         } catch (Exception e){
             return false;
+            //throw new RuntimeException(e);
         }
         return true;
     }

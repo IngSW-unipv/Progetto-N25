@@ -226,11 +226,14 @@ public class VirtualVaultController {
                 }
                 // Aggiorniamo il balance del currentVault
                 virtualVault.setBalance(virtualVault.getBalance() + amount);
+                virtualVault.setID(virtualVault.getID());
+                System.out.println(virtualVault);
+
                 //System.out.println("SONO IL BALANCE" + virtualVault.getBalance());
                 /// DEVO ANCHE AGGIORNARE LA PARTE DI BUSOOOO
                 // Salviamo l'aggiornamento
 
-                System.out.println("SONO IL VV " + LaVaultFacade.getInstance().getVirtualVaultFacade().editVirtualVault(virtualVault));
+                //System.out.println("SONO IL VV " + LaVaultFacade.getInstance().getVirtualVaultFacade().getVirtualVault(virtualVault));
                 boolean success = LaVaultFacade.getInstance().getVirtualVaultFacade().editVirtualVault(virtualVault);
                 if (success) {
                     JOptionPane.showMessageDialog(dialog, "Deposito effettuato con successo!");

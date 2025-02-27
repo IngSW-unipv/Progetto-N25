@@ -35,7 +35,7 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
     private static final String QUERY_DELETE_AN_EXISTING_VIRTUALVAULT_BALANCE = "DELETE FROM $virtualvault$ WHERE id = ? AND nome = 'Vault'";
     private static final String GET_ALL_VIRTUALVAULT =  "SELECT * FROM £virtualvault£ WHERE user_id = ? && nome != 'Vault'" ;
     private static final String GET_BALANCE_FROM_VAULT =  "SELECT balance FROM £virtualvault£ WHERE  user_id = ? AND nome = ?" ;
-    private static final String UPDATE_BALANCE = "UPDATE $virtualvault$ SET balance = ? WHERE id = ? AND user_id = ?";
+    private static final String UPDATE_BALANCE = "UPDATE $virtualvault$ SET balance = ? WHERE id = ?";
     private static final String GET_ID_USERID_FROM_VVP =  "SELECT id, user_id, nome FROM £virtualvault£  WHERE user_id = ? AND nome = 'Vault'";
 
     @Override
@@ -217,7 +217,7 @@ public class VirtualVaultDAO implements IVirtualVaultDAO {
     @Override
     public void update(VirtualVault virtualVault) throws Exception {
 
-        DBQuery query = DatabaseUtil.getInstance().createQuery(UPDATE_BALANCE, virtualVault.getBalance(), virtualVault.getID(), virtualVault.getOwner().getId());
+        DBQuery query = DatabaseUtil.getInstance().createQuery(UPDATE_BALANCE, virtualVault.getBalance(), virtualVault.getID());
         DatabaseUtil.getInstance().executeQuery(query);
 
         if (query.getResultSet() != null) throw new Exception("Errore nell'aggiornamento del balance.");

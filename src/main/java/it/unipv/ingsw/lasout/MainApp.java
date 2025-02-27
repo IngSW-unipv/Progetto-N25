@@ -10,6 +10,10 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public class MainApp {
+
+
+
+
     private static final Logger LOGGER = Logger.getLogger(ConcreteGroupFacade.class.getName());
 
     public static void main(String[] args) {
