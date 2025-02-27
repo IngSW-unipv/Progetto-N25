@@ -9,6 +9,7 @@ import it.unipv.ingsw.lasout.controller.notify.NotifyController;
 import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.controller.virtualVault.VirtualVaultController;
+import it.unipv.ingsw.lasout.view.LaColor;
 import it.unipv.ingsw.lasout.view.account.AccountPanel;
 import it.unipv.ingsw.lasout.view.cashbook.CashbookPanel;
 import it.unipv.ingsw.lasout.view.group.GroupPanel;
@@ -72,7 +73,7 @@ public class MainUIView extends JFrame {
         contentPanel.add(virtualVaultPanel, "virtualvault");
         //contentPanel.add(createCard("Contenuto: VirtualVault", new Color(160, 82, 45)), "virtualVault");
 
-        // Aggiungiamo il pannello "Gruppi"
+        // Aggiunta il pannello "Gruppi"
         GroupPanel groupPanel = new GroupPanel(this);
         groupController = new GroupController(groupPanel);
         contentPanel.add(groupPanel, "Group");
@@ -80,7 +81,8 @@ public class MainUIView extends JFrame {
         notifyController= new NotifyController();
         NotifyPanel  notifyPanel0 = new NotifyPanel(notifyController);
         contentPanel.add(notifyPanel0, "notifies");
-        //contentPanel.add(createCard("Contenuto: Notifies", new Color(150, 75, 0)), "notifies");
+        //contentPanel.add(createCard("
+        //Contenuto: Notifies", new Color(150, 75, 0)), "notifies");
         //contentPanel.add(createCard("Contenuto: Friends", new Color(205, 92, 92)), "friends");
 
 
@@ -101,6 +103,8 @@ public class MainUIView extends JFrame {
             navButtons[i] = new JButton(buttonLabels[i]);
             navButtons[i].setFont(new Font("Arial", Font.BOLD, 14));
             navButtons[i].setFocusPainted(false);
+            navButtons[i].setBackground(LaColor.BTN_SFONDO);
+            navButtons[i].setForeground(LaColor.FONT);
             navButtons[i].setMargin(new Insets(10, 20, 10, 20));
             leftPanel.add(navButtons[i]);
         }
@@ -110,12 +114,13 @@ public class MainUIView extends JFrame {
         leftPanel = new JPanel();
         leftPanel.setLayout(new GridLayout(7, 1, 10, 10));
         leftPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        leftPanel.setBackground(LaColor.SFONDO);
     }
 
     public  void prepareCardLayout(){
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
-        contentPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 8));
+        contentPanel.setBorder(BorderFactory.createLineBorder(LaColor.SFONDO_SCURO, 8));
     }
 
     public void addContents(){

@@ -255,13 +255,13 @@ public class CashbookController {
 
     public static void setUpTransactionTable() {
         JTable table = cashbookPanel.getTransactionsTable();
-        // Se la tabella è in modalità editing, annulla l'editing
+        // se la tabella è in modalità editing per impedire malfunzionamento bottone
         if (table.isEditing()) {
             table.getCellEditor().cancelCellEditing();
         }
 
         DefaultTableModel model = cashbookPanel.getTableModel();
-        // Reimposta esplicitamente le intestazioni per garantire la struttura corretta
+        // reimposta le intestazioni
         model.setColumnIdentifiers(new Object[]{"Date", "Amount", "Category", "Notes", "Edit"});
 
         CashbookItem selectedItem = cashbookPanel.getSelectedCashbook();
@@ -278,10 +278,10 @@ public class CashbookController {
         }
         activeCashbook = selectedCashbook;
 
-        // Svuota il modello prima di popolare la tabella
+        // svuota tabella prima di caricare
         model.setRowCount(0);
 
-        // Imposta una volta sola renderer e editor per la colonna "Edit"
+        // imposta i bottoni edit
         table.getColumn("Edit").setCellRenderer(new ButtonRenderer());
         table.getColumn("Edit").setCellEditor(new ButtonEditor(new JCheckBox()));
 
@@ -293,7 +293,7 @@ public class CashbookController {
                         t.getAmount(),
                         t.getCategory(),
                         t.getNotes(),
-                        "Edit" // Placeholder che verrà sostituito dal bottone
+                        "Edit"              // placeholder che verrà sostituito dal bottone
                 };
                 model.addRow(rowData);
             }
