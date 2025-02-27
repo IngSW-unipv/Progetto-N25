@@ -11,6 +11,7 @@ import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.controller.virtualVault.VirtualVaultController;
 import it.unipv.ingsw.lasout.view.LaColor;
 import it.unipv.ingsw.lasout.view.account.AccountPanel;
+import it.unipv.ingsw.lasout.view.account.LoginView;
 import it.unipv.ingsw.lasout.view.cashbook.CashbookPanel;
 import it.unipv.ingsw.lasout.view.group.GroupPanel;
 import it.unipv.ingsw.lasout.view.notify.NotifyPanel;
@@ -29,7 +30,7 @@ public class MainUIView extends JFrame {
     private JPanel leftPanel;
     private JButton[] navButtons;
     private String[] buttonLabels = {
-            "vault", "virtualvault", "Group", "cashbook",
+            "vault", "virtualvault", "Group", "Cashbook",
             "notifies", "friends", "account"
     };
 
@@ -54,6 +55,7 @@ public class MainUIView extends JFrame {
     }
 
     private void prepareMainView() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(MainUIView.class.getResource("/view/logo.png")));
         setTitle("Finestra Principale");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(880, 660);
@@ -90,7 +92,7 @@ public class MainUIView extends JFrame {
         // Aggiunta CashbookPanel
         CashbookPanel cashbookPanel = new CashbookPanel();
         new CashbookController(cashbookPanel); // Passiamo l'utente
-        contentPanel.add(cashbookPanel, "cashbook");
+        contentPanel.add(cashbookPanel, "Cashbook");
 
         notifyController.subscribe(groupController);
         notifyController.subscribe(notifyPanel0);
