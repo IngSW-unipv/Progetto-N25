@@ -96,15 +96,7 @@
 | Sequenza degli eventi principali: L’utente1 entra nell’apposita area premendo il pulsante di invio del denaro L’utente1 specifica l’importo da inviare L’utente1 conferma l’operazione Il saldo dal Vault dell’utente1 viene scalato dell’importo appena confermato e il saldo dal Vault dell'utente2 viene incrementato dell’importo inserito dall'utente La transazione viene registrata |
 | Postcondizioni: l’invio del denaro va a buon fine decrementando il saldo nel Vault dell’utente1 e incrementando quello dell’utente2  |
 | Sequenza di eventi alternativi: il denaro inviato dall’utente1 è maggiore di quello che in realtà ha nel suo Vault, allora: non viene prelevata nessuna somma dal Vault dell’utente1  il sistema invia un messaggio d’errore all’utente1 e i saldi dei Vault dei due utenti rimangono invariati |
-| **Caso d’uso 3.2: Storico delle transazioni tra utenti** |
-| Breve descrizione: consente di visualizzare una lista delle transazioni tra due utenti (ricezione, invio, annullamento) |
-| Attore primario: utente1 |
-| Attori secondari: utente2 |
-| Precondizioni: entrambi gli utenti devono essersi registrati e aver effettuato il login |
-| Sequenza degli eventi principali: L’utente1 entra nell’apposita sezione L’utente1 clicca sull’ utente del quale vuole conoscere lo storico delle transazioni (utente2) Il sistema genera l’elenco delle transazioni relative ai due utenti |
-| Postcondizioni: l’utente1 visualizza la lista transazioni fatte con l’utente2 |
-| Sequenza di eventi alternativi: nessuna |
-| **Caso d’uso 3.3: Generazione notifica** |
+| **Caso d’uso 3.2: Generazione notifica** |
 | Breve descrizione: l’applicazione invia una notifica all’utente (destinatario) di ricezione o richiesta importo (natura della notifica) sulla base di un altro utente (mittente) |
 | Attore primario: utente1 (mittente) |
 | Attore secondario: utente2 (destinatario) |
@@ -144,9 +136,9 @@
 | Attore primario: utente 1 |
 | Attori secondari: utente 2 |
 | Precondizioni: entrambi gli utenti devono essere registrati, aver effettuato il login e l’utente1 deve conoscere lo username dell’utente2 |
-| Sequenza degli eventi principali:  L’utente1 apre l’area dell’applicazione predisposta alla gestione delle amicizie L'utente1 digita lo username dell’utente2 L’utente1 preme il tasto di ricerca Il sistema mostra a schermo il risultato della ricerca L’utente1 invia la richiesta d’amicizia all’utente2 L’utente2 riceverà la richiesta d’amicizia e potrà decidere se accettarla o declinarla |
+| Sequenza degli eventi principali:  L’utente1 apre l’area dell’applicazione predisposta alla gestione delle amicizie L'utente1 digita lo username dell’utente2 L’utente1 preme il tasto di ricerca Il sistema mostra a schermo il risultato della ricerca L’utente1 invia la richiesta d’amicizia all’utente2 generando una notifica  L’utente2 riceverà la notifica di richiesta d’amicizia e potrà decidere se accettarla o declinarla |
 | Postcondizioni: l’utente1 ha mandato trovato utente2 e gli ha mandato la richiesta di amicizia |
-| Sequenza di eventi alternativi:  la ricerca non ha prodotto alcun risultato, allora: l’utente1 riceverà un messaggio di errore |
+| Sequenza di eventi alternativi:  la ricerca non ha prodotto alcun risultato, allora: non verra aggiunto l’utente ricercato |
 
 | Caso d’uso 5: Gestione Gruppo |
 | :---- |
