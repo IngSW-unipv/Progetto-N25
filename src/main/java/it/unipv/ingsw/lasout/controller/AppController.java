@@ -10,14 +10,18 @@ import it.unipv.ingsw.lasout.view.mainview.MainUIView;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AppController {
     private LoginView loginView;
     private SignInView signInView;
     private MainUIView mainUIView;
 
+    private Set<Loadable> loadables;
+
     public AppController() {
-        // Inizializziamo le view
+        loadables = new HashSet<>();
         loginView = new LoginView();
         mainUIView = new MainUIView(this); // Passa "this" per fornire il riferimento all'AppController
 
@@ -79,6 +83,7 @@ public class AppController {
             } else if (LaVaultFacade.getInstance().getSessionFacade().isLogged()) {
                 // Se l'utente è loggato, nascondo la finestra di login e mostro la schermata principale (MainView)
                 loginView.setVisible(false);
+                loadables.forEach(Loadable::reload);
                 showMainUIView();
             } else {
                 //se non è riuscito a loggarsi perché le credenziali non sono valide, mostro l’errore
@@ -86,6 +91,10 @@ public class AppController {
                 signInView.clearFields();
             }
         }
+    }
+
+    public void subscribe(Loadable loadable) {
+        loadables.add(loadable);
     }
 
     // Listener per aprire la schermata di registrazione

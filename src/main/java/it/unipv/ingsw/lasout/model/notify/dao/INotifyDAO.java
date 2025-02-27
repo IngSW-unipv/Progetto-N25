@@ -14,7 +14,6 @@ public interface INotifyDAO extends IDao<Notify> {
 
     INotifyAction getNotifyActionOf(Notify notify) throws Exception;
 
-
     INotifyActionFactory getNotifyActionFactory();
 
 }

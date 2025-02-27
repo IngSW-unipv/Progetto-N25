@@ -8,6 +8,7 @@ import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 import it.unipv.ingsw.lasout.util.DaoFactory;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ConcreteUserFacade implements IUserFacade {
@@ -159,6 +160,48 @@ public class ConcreteUserFacade implements IUserFacade {
             System.out.println(e.getMessage());
         }
         return cashbooks;
+    }
+
+    @Override
+    public boolean deleteFriendShip(User friend, User  of) {
+        try{
+            userDAO.deleteFriend(friend, of);
+            userDAO.deleteFriend(of, friend);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    public User getUserByName(User userName) {
+
+        try{
+            return userDAO.getUserByUsername(userName);
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    @Override
+    public void makeFriendShipOneWay(User from, User to) {
+
+        try{
+            userDAO.saveFriend(to, from);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
+    public List<User> getFriends(User user) {
+        try {
+            return userDAO.getFriends(user);
+        } catch (SQLException e) {
+            return new ArrayList<>();
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package it.unipv.ingsw.lasout.model.notify.action.friend;
 
+import it.unipv.ingsw.lasout.controller.notify.ButtonNotifyAction;
 import it.unipv.ingsw.lasout.controller.notify.NotifyController;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
@@ -13,11 +14,29 @@ public class PayRequestByUserNotifyAction implements INotifyAction {
     private User from;
     private User user;
     private double amount;
-    private INotifyActionPersistence persistence;
 
     @Override
     public void build(NotifyController notifyController, JPanel buttonPanel) {
+        JButton accept = new JButton("Paga");
+        JButton refuse = new JButton("Rifiuta");
 
+
+
+        accept.addActionListener((e)->{
+            ButtonNotifyAction notifyAction = (ButtonNotifyAction) e;
+            PayRequestByUserNotifyAction request = (PayRequestByUserNotifyAction) notifyAction.getNotify().getNotifyAction();
+            notifyController.acceptPayRequestByUser(request);
+            notifyController.deleteNotify(notifyAction.getNotify());
+            JOptionPane.showMessageDialog(buttonPanel, request.amount + "€ sono stati scalati dal tuo  saldo");
+        });
+
+        refuse.addActionListener((e)->{
+            ButtonNotifyAction notifyAction = (ButtonNotifyAction) e;
+            notifyController.deleteNotify(notifyAction.getNotify());
+        });
+
+        buttonPanel.add(accept);
+        buttonPanel.add(refuse);
     }
 
     @Override

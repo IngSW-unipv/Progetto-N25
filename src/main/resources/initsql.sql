@@ -162,13 +162,19 @@ INSERT INTO spese (user_id, group_id,amount,note) VALUES
 
 INSERT INTO virtualvault (nome, user_id, balance) VALUES
     ('Vault', 1, 200),
-    ('Vacanza', 1, 300),
-    ('Vault', 2, 500),
-    ('PRIMO', 1, 100);
+    ('Vault', 2, 200),
+    ('Vault', 3, 200),
+    ('Vault', 4, 200),
+    ('Vault', 5, 200),
+    ('Vault', 6, 200);
 
 INSERT INTO vault (virtualvault_id) VALUES
 	(1),
-    (3);
+    (2),
+    (3),
+    (4),
+    (5),
+    (6);
 
 INSERT INTO creditcard (numerocarta, mese, anno, cvv, id_vault) VALUES
 	(123456789, 1, 2020, 465, 1);

@@ -3,6 +3,7 @@ package it.unipv.ingsw.lasout.facade.notify;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.dao.INotifyDAO;
 import it.unipv.ingsw.lasout.model.notify.Notify;
+import it.unipv.ingsw.lasout.model.user.IUserDAO;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.util.DaoFactory;
 
@@ -11,9 +12,11 @@ import java.util.Collection;
 public class ConcreteNotifyFacadeV1 implements INotifyFacade{
 
     private INotifyDAO notifyDAO;
+    private IUserDAO userDAO;
 
     public ConcreteNotifyFacadeV1() {
         notifyDAO = DaoFactory.getNotifyDAO();
+        userDAO = DaoFactory.getUserDAO();
     }
 
     @Override
@@ -39,8 +42,10 @@ public class ConcreteNotifyFacadeV1 implements INotifyFacade{
     public boolean sendFriendRequest(User from, User to) {
         String username = null;
         try {
-            if(from.getUsername() == null ) username  =  DaoFactory.getUserDAO().getRaw(from).getUsername();
+            if(from.getUsername() == null ) username  = userDAO.getRaw(from).getUsername();
+            else username = from.getUsername();
         } catch (Exception e) {
+
         }
         Notify notify = Notify.Builder.friendRequest()
                 .sendTo(to)
@@ -52,12 +57,19 @@ public class ConcreteNotifyFacadeV1 implements INotifyFacade{
 
     @Override
     public boolean sendPayRequestByUser(User from, User to, double value) {
-        Notify notify = Notify.Builder.payRequestByUser()
-                .sendTo(to)
-                .amount(value)
-                .from(from)
-                .build();
-        return sendNotify(notify);
+        try {
+            User user = userDAO.getRaw(from);
+            Notify notify = Notify.Builder.payRequestByUser()
+                    .sendTo(to)
+                    .amount(value)
+                    .from(from)
+                    .description(user.getUsername() + " ha richiesto " + value + "€ da riscuotere ORA  !!!!!!")
+                    .build();
+            return sendNotify(notify);
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
     @Override

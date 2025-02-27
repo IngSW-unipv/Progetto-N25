@@ -34,6 +34,8 @@ public class NotifyPanel extends JPanel implements Loadable {
         notifyController.setNotifyPanel(this);
         this.notifyController = notifyController;
 
+
+
         preparePanel();
         prepareJList();
 
@@ -51,6 +53,7 @@ public class NotifyPanel extends JPanel implements Loadable {
     public void prepareJList(){
         notifyModel = new DefaultListModel<>();
         notifyList = new JList<>(notifyModel);
+        notifyList.setBackground(LaColor.SFONDO);
         notifyList.setFixedCellHeight(-1);
         notifyList.setCellRenderer(new NotifyRenderer(notifyController));
         notifyList.addMouseListener(new NotifyMouseAdapter(notifyList));

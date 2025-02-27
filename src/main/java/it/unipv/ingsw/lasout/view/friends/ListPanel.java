@@ -19,11 +19,6 @@ public class ListPanel extends JPanel {
         // Allineamento a sinistra, così le righe si estendono a piena larghezza
         rowsContainer.setAlignmentX(LEFT_ALIGNMENT);
 
-        // Aggiungiamo delle righe di esempio
-        for (int i = 0; i < 15; i++) {
-            AmicoRowPanel row = new AmicoRowPanel("Amico " + (i + 1));
-            rowsContainer.add(row);
-        }
 
         // JScrollPane per lo scroll verticale
         JScrollPane scrollPane = new JScrollPane(
@@ -38,6 +33,12 @@ public class ListPanel extends JPanel {
 
     public void addRow(AmicoRowPanel row) {
         rowsContainer.add(row);
+        rowsContainer.revalidate();
+        rowsContainer.repaint();
+    }
+
+    public void clear(){
+        rowsContainer.removeAll();
         rowsContainer.revalidate();
         rowsContainer.repaint();
     }

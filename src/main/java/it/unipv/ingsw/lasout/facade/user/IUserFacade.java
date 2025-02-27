@@ -48,4 +48,12 @@ public interface IUserFacade {
     User getUser(User userCarrier);
 
     List<Cashbook> getCashbookOfLoggedUser();
+
+    boolean deleteFriendShip(User friend, User  of);
+
+    User getUserByName(User userName);
+
+    void makeFriendShipOneWay(User from, User to);
+
+    List<User> getFriends(User user);
 }

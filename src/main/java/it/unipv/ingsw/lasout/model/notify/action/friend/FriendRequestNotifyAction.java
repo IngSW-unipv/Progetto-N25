@@ -110,6 +110,7 @@ public class FriendRequestNotifyAction implements INotifyAction {
         accept.addActionListener((e)->{
             ButtonNotifyAction notifyAction = (ButtonNotifyAction) e;
             notifyController.acceptFriendRequest((FriendRequestNotifyAction) notifyAction.getNotify().getNotifyAction());
+            notifyController.deleteNotify(notifyAction.getNotify());
         });
 
         refuse.addActionListener((e)->{

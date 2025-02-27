@@ -38,6 +38,7 @@ public class MainUIView extends JFrame {
 
     private GroupController groupController;
     private NotifyController notifyController;
+    private FriendsController friendsController;
 
     public MainUIView(AppController appController) {
 
@@ -51,7 +52,7 @@ public class MainUIView extends JFrame {
         new AccountController(accountPanel, appController);
         contentPanel.add(accountPanel, "account");
 
-        prepareUseCases();
+        prepareUseCases(appController);
         addContents();
 
     }
@@ -64,10 +65,10 @@ public class MainUIView extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    private void prepareUseCases() {
+    private void prepareUseCases(AppController  controller) {
         // Aggiungiamo le "card" al pannello
         VaultPanel vaultPanel = new VaultPanel(this);
-        new VaultController(vaultPanel);
+        VaultController vaultController = new VaultController(vaultPanel);
         contentPanel.add(vaultPanel, "vault");
 
 
@@ -90,7 +91,7 @@ public class MainUIView extends JFrame {
 
         //contentPanel.add(createCard("Contenuto: Friends", new Color(205, 92, 92)), "friends");
         FriendsPanel friendsPanel = new FriendsPanel();
-        new FriendsController(friendsPanel);
+        friendsController = new FriendsController(friendsPanel);
         contentPanel.add(friendsPanel, "friends");
 
         // Aggiunta CashbookPanel
@@ -99,8 +100,12 @@ public class MainUIView extends JFrame {
         contentPanel.add(cashbookPanel, "Cashbook");
 
         notifyController.subscribe(groupController);
+        notifyController.subscribe(vaultController);
         notifyController.subscribe(notifyPanel0);
+        notifyController.subscribe(friendsController);
         groupController.subscribe(notifyPanel0);
+
+        controller.subscribe(notifyPanel0);
 
     }
 
@@ -163,6 +168,7 @@ public class MainUIView extends JFrame {
         VaultController.load();
         VirtualVaultController.load();
         CashbookController.load();
+        friendsController.load();
         notifyController.load();
     }
 }

@@ -60,8 +60,9 @@ public class UserDAO implements IUserDAO {
     private static final String QUERY_SELECT_ID_FROM_HIS_EMAIL_PASSWORD = "SELECT id FROM $user$ WHERE email = ? AND password = ?;";
     private static final String QUERY_SELECT_ID_FROM_HIS_CREDENTIALS_FOR_CREATING_ACCOUNT = "SELECT id FROM $user$ WHERE username = ? AND email = ? AND password = ?;";
     private static final String QUERY_UPDATE_PASSWORD = "UPDATE $user$ SET password = ? WHERE id = ?;";
-
-
+    private static final String DELETE_FRIEND_ONE_WAY = "DELETE FROM \\'friend\\' WHERE user_id = ? AND friend_user_id = ?;";
+    private static final String SEARCH_USER_BY_USERNAME =  "SELECT id FROM \\'user\\'  WHERE username = ?;";
+    private static final String SAVE_FRIENDSHIP_ONE_WAY =  "INSERT INTO  \\'friend\\' (user_id, friend_user_id) VALUES (?, ?)";
 
     private static final String QUERY_SELECT_FRIENDS_OF_USER = "SELECT user_id, friend_user_id " +
             "FROM \\'friend\\'" +
@@ -369,5 +370,49 @@ public class UserDAO implements IUserDAO {
 
         querySelect.close();
         return idUser;
+    }
+
+    @Override
+    public void deleteFriend(User friend, User of) throws SQLException {
+
+        DBQuery query  = DBQuery.Builder.create()
+                .query(DELETE_FRIEND_ONE_WAY)
+                .params(of.getId(), friend.getId())
+                .build();
+        DatabaseUtil.getInstance().executeQuery(query);
+
+    }
+
+    @Override
+    public User getUserByUsername(User userName) throws SQLException {
+        DBQuery query  = DBQuery.Builder.create()
+                .query(SEARCH_USER_BY_USERNAME)
+                .params(userName.getUsername())
+                .build();
+        DatabaseUtil.getInstance().executeQuery(query);
+
+        ResultSet resultSet = query.getResultSet();
+        if(resultSet == null || !resultSet.next())  throw new UserNotFoundException("Creeper ! AAWW MAAAAN");
+
+        long id = resultSet.getLong("id");
+
+        return get(new User(id));
+
+    }
+
+    @Override
+    public void saveFriend(User to, User from) throws SQLException {
+
+        System.out.println("SAVING FRIENND : " + to.getId());
+        System.out.println("SAVING FRIENND 2: " + from.getId());
+
+        DBQuery query = DBQuery.Builder.create()
+                .query(SAVE_FRIENDSHIP_ONE_WAY)
+                .params(to.getId(), from.getId())
+                .build();
+
+        System.out.println(query);
+
+        DatabaseUtil.getInstance().executeQuery(query);
     }
 }

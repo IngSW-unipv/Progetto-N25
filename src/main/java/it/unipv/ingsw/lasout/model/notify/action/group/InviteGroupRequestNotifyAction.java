@@ -15,7 +15,6 @@ public class InviteGroupRequestNotifyAction implements INotifyAction {
 
     private Group group;
     private User user;
-    private INotifyActionPersistence persistence;
 
     @Override
     public void build(NotifyController notifyController, JPanel buttonPanel) {
@@ -29,6 +28,7 @@ public class InviteGroupRequestNotifyAction implements INotifyAction {
             ButtonNotifyAction notifyAction = (ButtonNotifyAction) e;
             notifyController.acceptGroupInvite((InviteGroupRequestNotifyAction) notifyAction.getNotify().getNotifyAction());
             notifyController.deleteNotify(notifyAction.getNotify());
+            JOptionPane.showMessageDialog(buttonPanel, "Richiesta accettata");
         });
 
         refuse.addActionListener((e)->{
