@@ -4,6 +4,7 @@ package it.unipv.ingsw.lasout.view.mainview;
 import it.unipv.ingsw.lasout.controller.AppController;
 import it.unipv.ingsw.lasout.controller.account.AccountController;
 import it.unipv.ingsw.lasout.controller.cashbook.CashbookController;
+import it.unipv.ingsw.lasout.controller.friends.FriendsController;
 import it.unipv.ingsw.lasout.controller.group.GroupController;
 import it.unipv.ingsw.lasout.controller.notify.NotifyController;
 import it.unipv.ingsw.lasout.controller.vault.VaultController;
@@ -11,7 +12,9 @@ import it.unipv.ingsw.lasout.controller.vault.VaultController;
 import it.unipv.ingsw.lasout.controller.virtualVault.VirtualVaultController;
 import it.unipv.ingsw.lasout.view.LaColor;
 import it.unipv.ingsw.lasout.view.account.AccountPanel;
+import it.unipv.ingsw.lasout.view.account.LoginView;
 import it.unipv.ingsw.lasout.view.cashbook.CashbookPanel;
+import it.unipv.ingsw.lasout.view.friends.FriendsPanel;
 import it.unipv.ingsw.lasout.view.group.GroupPanel;
 import it.unipv.ingsw.lasout.view.notify.NotifyPanel;
 import it.unipv.ingsw.lasout.view.vault.VaultPanel;
@@ -29,7 +32,7 @@ public class MainUIView extends JFrame {
     private JPanel leftPanel;
     private JButton[] navButtons;
     private String[] buttonLabels = {
-            "vault", "virtualvault", "Group", "cashbook",
+            "vault", "virtualvault", "Group", "Cashbook",
             "notifies", "friends", "account"
     };
 
@@ -54,6 +57,7 @@ public class MainUIView extends JFrame {
     }
 
     private void prepareMainView() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(MainUIView.class.getResource("/view/logo.png")));
         setTitle("Finestra Principale");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(880, 660);
@@ -82,15 +86,17 @@ public class MainUIView extends JFrame {
         notifyController= new NotifyController();
         NotifyPanel  notifyPanel0 = new NotifyPanel(notifyController);
         contentPanel.add(notifyPanel0, "notifies");
-        //contentPanel.add(createCard("
-        //Contenuto: Notifies", new Color(150, 75, 0)), "notifies");
-        //contentPanel.add(createCard("Contenuto: Friends", new Color(205, 92, 92)), "friends");
 
+
+        //contentPanel.add(createCard("Contenuto: Friends", new Color(205, 92, 92)), "friends");
+        FriendsPanel friendsPanel = new FriendsPanel();
+        new FriendsController(friendsPanel);
+        contentPanel.add(friendsPanel, "friends");
 
         // Aggiunta CashbookPanel
         CashbookPanel cashbookPanel = new CashbookPanel();
         new CashbookController(cashbookPanel); // Passiamo l'utente
-        contentPanel.add(cashbookPanel, "cashbook");
+        contentPanel.add(cashbookPanel, "Cashbook");
 
         notifyController.subscribe(groupController);
         notifyController.subscribe(notifyPanel0);

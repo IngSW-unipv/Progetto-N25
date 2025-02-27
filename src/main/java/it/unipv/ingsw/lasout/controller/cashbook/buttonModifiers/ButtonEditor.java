@@ -89,7 +89,7 @@ public class ButtonEditor extends DefaultCellEditor {
                     transaction.setNotes(newTxNotes);
 
                     // chiama la facade per aggiornare la transazione
-                    boolean success = LaVaultFacade.getInstance().getTransactionFacade().editTransaction(transaction);
+                    boolean success = LaVaultFacade.getInstance().getCashbookFacade().editTransaction(getActiveCashbook(), transaction);
 
                     if(success) {
                         JOptionPane.showMessageDialog(
