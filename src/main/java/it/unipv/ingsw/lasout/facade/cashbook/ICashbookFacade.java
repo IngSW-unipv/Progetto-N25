@@ -40,4 +40,6 @@ public interface ICashbookFacade {
     List<Transaction> getAutomaticTransactions(Cashbook c);
 
     List<Transaction> getVaultTransactionsOfUser(User user);
+
+    Cashbook createDefaultCashbook(User carrierUser);
 }

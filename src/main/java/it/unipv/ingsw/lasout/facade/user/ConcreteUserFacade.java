@@ -3,8 +3,7 @@ package it.unipv.ingsw.lasout.facade.user;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.group.Group;
-import it.unipv.ingsw.lasout.model.user.IUserDAO;
-import it.unipv.ingsw.lasout.model.user.User;
+import it.unipv.ingsw.lasout.model.user.*;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
 import it.unipv.ingsw.lasout.util.DaoFactory;
 
@@ -32,6 +31,10 @@ public class ConcreteUserFacade implements IUserFacade {
             //serve perché la "save" può lanciare un eccezione sulla query che devo gestire qua
             try {
                 userDAO.save(userCarrier);
+
+                // inizializzazione all'iscrizione
+                initOnSignIn(userCarrier);
+
                 return true;
             }catch (Exception sqlException){
                 System.out.println(sqlException.getMessage());
@@ -39,6 +42,22 @@ public class ConcreteUserFacade implements IUserFacade {
             }
         }
     }
+
+    private void initOnSignIn(User userCarrier) {
+        User allUserInformation = new User();
+        try{
+            UserCredentialsStrategy userCredentialsStrategy;
+            if (userCarrier.getUsername().contains("@")) userCredentialsStrategy = new EmailPassword();
+            else userCredentialsStrategy = new UsernamePassword();
+
+            allUserInformation = userCredentialsStrategy.searchUser(userCarrier);
+
+            LaVaultFacade.getInstance().getCashbookFacade().createDefaultCashbook(allUserInformation);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 
 
     @Override

@@ -197,4 +197,11 @@ public class ConcreteCashbookFacade implements ICashbookFacade {
         return false;
     }
 
+    @Override
+    public Cashbook createDefaultCashbook(User carrierUser) {
+        Cashbook defaultCashbook = new Cashbook(carrierUser, "default", true);
+        saveCashbook(defaultCashbook);
+
+        return defaultCashbook;
+    }
 }
