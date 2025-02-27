@@ -1,4 +1,4 @@
-package it.unipv.ingsw.lasout.model.notify.action.mysql;
+package it.unipv.ingsw.lasout.model.notify.action.persistence.mysql;
 
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;

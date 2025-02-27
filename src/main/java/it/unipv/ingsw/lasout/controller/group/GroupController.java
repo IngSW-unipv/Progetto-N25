@@ -257,12 +257,14 @@ public class GroupController implements Loadable {
      * reset e setup lista di amici per l'invito al gruppo (utilizzo del caso d'uso amicizzie)
      */
     private void setUpInviteFriendList() {
+        User loggedUser = LaVaultFacade.getInstance().getSessionFacade().getLoggedUser();
+        List<User> friends =  loggedUser.getFriends();
         //List<User> friends = LaVaultFacade.getInstance().getFriendFacade().getFriends(LaVaultFacade.getInstance().getSessionFacade().getLoggedUser());
-        List<User> friends = new ArrayList<>();
+        /*List<User> friends = new ArrayList<>();
         friends.add(new User(2));
         friends.add(new User(3));
         friends.add(new User(4));
-        friends.add(new User(6));
+        friends.add(new User(6));*/
 
         for (User user : friends) {
             User us = LaVaultFacade.getInstance().getUserFacade().getUser(user);

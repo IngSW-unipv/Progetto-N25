@@ -4,10 +4,12 @@ import it.unipv.ingsw.lasout.model.notify.Notify;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 
 public class NotifyRenderer extends JPanel implements ListCellRenderer<Notify> {
 
@@ -24,7 +26,7 @@ public class NotifyRenderer extends JPanel implements ListCellRenderer<Notify> {
         setOpaque(true);
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Pannello superiore per la label e l'icona
+
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setOpaque(false);
 
@@ -32,8 +34,8 @@ public class NotifyRenderer extends JPanel implements ListCellRenderer<Notify> {
         label = new JLabel();
         label.setHorizontalAlignment(SwingConstants.LEFT);
 
-        // Icona del cestino come JButton ridimensionato
-        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/icons/trash.png"));
+
+        ImageIcon originalIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/icons/trash.png")));
         Image scaledImage = originalIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaledImage);
 
@@ -45,21 +47,26 @@ public class NotifyRenderer extends JPanel implements ListCellRenderer<Notify> {
         trashButton.setOpaque(false);
         trashButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        // Aggiunge la label e l'icona al topPanel
+        trashButton.addActionListener(e->{
+            ButtonNotifyAction notifyAction = (ButtonNotifyAction) e;
+            notifyController.deleteNotify(notifyAction.getNotify());
+        });
+
         topPanel.add(label, BorderLayout.WEST);
         topPanel.add(trashButton, BorderLayout.EAST);
 
-        // Pannello per i bottoni
+
         buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         buttonPanel.setOpaque(false);
+        buttonPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 
+        setBorder(new MatteBorder(0, 0, 1, 0, new Color(87, 87, 87)));
 
-        // Spazio vuoto tra la label e i bottoni
         JPanel centerPanel = new JPanel();
         centerPanel.setOpaque(false);
         centerPanel.setPreferredSize(new Dimension(0, 10)); // Spazio verticale di 10 pixel
 
-        // Aggiunge i componenti al pannello principale
+
         add(topPanel, BorderLayout.NORTH);
         add(centerPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -73,7 +80,8 @@ public class NotifyRenderer extends JPanel implements ListCellRenderer<Notify> {
 
         buttonPanel.removeAll();
 
-        value.getNotifyAction().build(notifyController, buttonPanel);
+        System.out.println(value +  " - " + value.getNotifyAction());
+        if(value != null && value.getNotifyAction() != null) value.getNotifyAction().build(notifyController, buttonPanel);
 
         if (isSelected) {
             setBackground(list.getSelectionBackground());
@@ -82,6 +90,7 @@ public class NotifyRenderer extends JPanel implements ListCellRenderer<Notify> {
             setBackground(list.getBackground());
             label.setForeground(list.getForeground());
         }
+
 
         return this;
     }

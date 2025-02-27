@@ -2,7 +2,7 @@ package it.unipv.ingsw.lasout.model.notify.action.friend.mysql;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
-import it.unipv.ingsw.lasout.model.notify.action.mysql.MySQLNotifyActionPersistence;
+import it.unipv.ingsw.lasout.model.notify.action.persistence.mysql.MySQLNotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.notify.action.friend.FriendRequestNotifyAction;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;

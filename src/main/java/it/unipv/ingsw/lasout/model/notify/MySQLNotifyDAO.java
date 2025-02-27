@@ -2,7 +2,7 @@
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
-import it.unipv.ingsw.lasout.model.notify.INotifyDAO;
+import it.unipv.ingsw.lasout.model.notify.dao.INotifyDAO;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistenceFactory;

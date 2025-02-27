@@ -3,6 +3,7 @@ package it.unipv.ingsw.lasout.model.notify.action.friend;
 import it.unipv.ingsw.lasout.controller.notify.NotifyController;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.user.User;
 
 import javax.swing.*;
@@ -12,6 +13,7 @@ public class PayRequestByUserNotifyAction implements INotifyAction {
     private User from;
     private User user;
     private double amount;
+    private INotifyActionPersistence persistence;
 
     @Override
     public void build(NotifyController notifyController, JPanel buttonPanel) {
@@ -20,7 +22,7 @@ public class PayRequestByUserNotifyAction implements INotifyAction {
 
     @Override
     public String type() {
-        return "notifypayrequestbyuser";
+        return "payrequestbyuser";
     }
 
     public User getFrom() {
@@ -46,6 +48,7 @@ public class PayRequestByUserNotifyAction implements INotifyAction {
     public void setAmount(double amount) {
         this.amount = amount;
     }
+
 
     public static class PayRequestByUserBuilder extends Notify.Builder {
         private User from;

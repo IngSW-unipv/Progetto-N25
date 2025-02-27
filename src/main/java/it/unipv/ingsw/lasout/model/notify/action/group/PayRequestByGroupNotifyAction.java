@@ -4,6 +4,7 @@ import it.unipv.ingsw.lasout.controller.notify.NotifyController;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.user.User;
 
 import javax.swing.*;
@@ -21,7 +22,7 @@ public class PayRequestByGroupNotifyAction implements INotifyAction {
 
     @Override
     public String type() {
-        return "notifypayrequestbygroup";
+        return "payrequestbygroup";
     }
 
     public Group getGroup() {
@@ -47,6 +48,7 @@ public class PayRequestByGroupNotifyAction implements INotifyAction {
     public void setAmount(double amount) {
         this.amount = amount;
     }
+
 
     public static class PayRequestByGroupBuilder extends Notify.Builder {
 

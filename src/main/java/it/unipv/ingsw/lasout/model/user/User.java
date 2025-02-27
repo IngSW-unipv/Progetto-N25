@@ -24,7 +24,6 @@ public class User {
     private List<Notify> notifies;
     private List<Cashbook> cashbooks;
 
-
     /**
      * COSTRUTTORE
      * @param id

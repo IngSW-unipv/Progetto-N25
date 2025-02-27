@@ -5,6 +5,7 @@ import it.unipv.ingsw.lasout.controller.notify.ButtonNotifyAction;
 import it.unipv.ingsw.lasout.controller.notify.NotifyController;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.user.User;
 
 import javax.swing.*;
@@ -113,7 +114,7 @@ public class FriendRequestNotifyAction implements INotifyAction {
 
         refuse.addActionListener((e)->{
             ButtonNotifyAction notifyAction = (ButtonNotifyAction) e;
-            System.out.println("rfiutata la richiesta");
+            notifyController.deleteNotify(notifyAction.getNotify());
         });
 
         buttonPanel.add(accept);
@@ -124,8 +125,9 @@ public class FriendRequestNotifyAction implements INotifyAction {
 
     @Override
     public String type() {
-        return "notifyfriendrequest";
+        return "friendrequest";
     }
+
 
     @Override
     public String toString() {

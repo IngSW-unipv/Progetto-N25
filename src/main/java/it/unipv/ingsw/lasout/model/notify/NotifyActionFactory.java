@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+/*
 public class NotifyActionFactory {
 
     private static final Logger LOGGER = Logger.getLogger(NotifyActionFactory.class.getName());
@@ -20,7 +21,7 @@ public class NotifyActionFactory {
 
         Properties properties = new Properties();
         try {
-            properties.load(NotifyActionFactory.class.getResourceAsStream("/factories.properties"));
+            properties.load(NotifyActionFactory.class.getResourceAsStream("/notifyactionfactory.properties"));
         } catch (IOException e) {
             LOGGER.severe("Could not load notify factories");
         }
@@ -48,3 +49,6 @@ public class NotifyActionFactory {
         }
     }
 }
+
+
+ */

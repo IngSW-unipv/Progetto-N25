@@ -7,7 +7,7 @@ import it.unipv.ingsw.lasout.model.cashbook.Cashbook;
 import it.unipv.ingsw.lasout.model.cashbook.MySQLCashbookDao;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.group.GroupDao;
-import it.unipv.ingsw.lasout.model.notify.INotifyDAO;
+import it.unipv.ingsw.lasout.model.notify.dao.INotifyDAO;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.user.exception.UserAlreadyExistException;
 import it.unipv.ingsw.lasout.model.user.exception.UserNotFoundException;
@@ -39,12 +39,7 @@ public class UserDAO implements IUserDAO {
      * Rendo il costruttore privato
      */
 
-    private INotifyDAO iNotifyDAO;
-
     public UserDAO(){
-
-        iNotifyDAO = DaoFactory.getNotifyDAO();
-
     }
 
     /**
@@ -68,7 +63,9 @@ public class UserDAO implements IUserDAO {
 
 
 
-
+    private static final String QUERY_SELECT_FRIENDS_OF_USER = "SELECT user_id, friend_user_id " +
+            "FROM \\'friend\\'" +
+            "WHERE user_id = ?;";
 
 
     /**
@@ -124,7 +121,7 @@ public class UserDAO implements IUserDAO {
         List<Cashbook> cashbooks = getCashbooks(user);
         savedUser.setCashbooks(cashbooks);
 
-        //savedUser.setNotifies(getNotifications(user));
+        savedUser.getFriends().addAll(getFriends(user));
         return savedUser;
     }
 
@@ -232,15 +229,25 @@ public class UserDAO implements IUserDAO {
 
 
 
-
-
-
-
-
     @Override
-    public List<User> getFriends(User user){
+    public List<User> getFriends(User user) throws SQLException {
 
         List<User> friends = new ArrayList<>();
+
+        DBQuery query = DBQuery.Builder.create()
+                .query(QUERY_SELECT_FRIENDS_OF_USER)
+                .params(user.getId())
+                .build();
+
+        DatabaseUtil.getInstance().executeQuery(query);
+
+        ResultSet  resultSet = query.getResultSet();
+        if(resultSet == null) throw new SQLException("querySelect error");
+
+        while(resultSet.next()) {
+            User rawUser = getRaw(new User(resultSet.getInt("friend_user_id")));
+            friends.add(rawUser);
+        }
 
         return friends;
     }
@@ -258,11 +265,6 @@ public class UserDAO implements IUserDAO {
         return cashbooks;
     }
 
-    @Override
-    public List<Notify> getNotifications(User user) throws Exception {
-
-        return iNotifyDAO.notifiesOf(user);
-    }
 
 
     @Override

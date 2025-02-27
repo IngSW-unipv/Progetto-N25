@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+/*
 public class DefaultNotifyActionPersistenceFactory implements INotifyActionPersistenceFactory{
 
     private static final Logger LOGGER = Logger.getLogger(DefaultNotifyActionPersistenceFactory.class.getName());
@@ -39,3 +40,6 @@ public class DefaultNotifyActionPersistenceFactory implements INotifyActionPersi
         return null;
     }
 }
+
+
+ */

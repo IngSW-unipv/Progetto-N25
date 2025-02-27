@@ -33,7 +33,7 @@ public class MainUIView extends JFrame {
     };
 
     private GroupController groupController;
-
+    private NotifyController notifyController;
 
     public MainUIView(AppController appController) {
 
@@ -77,8 +77,8 @@ public class MainUIView extends JFrame {
         groupController = new GroupController(groupPanel);
         contentPanel.add(groupPanel, "Group");
 
-        NotifyController controller = new NotifyController();
-        NotifyPanel  notifyPanel0 = new NotifyPanel(controller);
+        notifyController= new NotifyController();
+        NotifyPanel  notifyPanel0 = new NotifyPanel(notifyController);
         contentPanel.add(notifyPanel0, "notifies");
         //contentPanel.add(createCard("Contenuto: Notifies", new Color(150, 75, 0)), "notifies");
         //contentPanel.add(createCard("Contenuto: Friends", new Color(205, 92, 92)), "friends");
@@ -88,6 +88,10 @@ public class MainUIView extends JFrame {
         CashbookPanel cashbookPanel = new CashbookPanel();
         new CashbookController(cashbookPanel); // Passiamo l'utente
         contentPanel.add(cashbookPanel, "cashbook");
+
+        notifyController.subscribe(groupController);
+        notifyController.subscribe(notifyPanel0);
+
     }
 
     public void prepareButtons(){
@@ -146,6 +150,6 @@ public class MainUIView extends JFrame {
         VaultController.load();
         VirtualVaultController.load();
         CashbookController.load();
-        NotifyController.load();
+        notifyController.load();
     }
 }

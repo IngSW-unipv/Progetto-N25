@@ -1,15 +1,12 @@
 package it.unipv.ingsw.lasout.facade.notify;
 
 import it.unipv.ingsw.lasout.model.group.Group;
-import it.unipv.ingsw.lasout.model.notify.INotifyDAO;
+import it.unipv.ingsw.lasout.model.notify.dao.INotifyDAO;
 import it.unipv.ingsw.lasout.model.notify.Notify;
 import it.unipv.ingsw.lasout.model.user.User;
-import it.unipv.ingsw.lasout.model.user.UserDAO;
 import it.unipv.ingsw.lasout.util.DaoFactory;
-import it.unipv.ingsw.lasout.util.TextUtil;
 
 import java.util.Collection;
-import java.util.List;
 
 public class ConcreteNotifyFacadeV1 implements INotifyFacade{
 
@@ -87,6 +84,16 @@ public class ConcreteNotifyFacadeV1 implements INotifyFacade{
     @Override
     public Collection<Notify> getAll(User loggedUser) throws Exception{
         return notifyDAO.notifiesOf(loggedUser);
+    }
+
+    @Override
+    public boolean delete(Notify notify) {
+        try {
+            notifyDAO.delete(notify);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 

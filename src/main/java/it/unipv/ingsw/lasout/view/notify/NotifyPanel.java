@@ -1,9 +1,8 @@
 package it.unipv.ingsw.lasout.view.notify;
 
+import it.unipv.ingsw.lasout.controller.Loadable;
+import it.unipv.ingsw.lasout.controller.notify.*;
 import it.unipv.ingsw.lasout.controller.notify.ButtonNotifyAction;
-import it.unipv.ingsw.lasout.controller.notify.ButtonNotifyAction;
-import it.unipv.ingsw.lasout.controller.notify.NotifyController;
-import it.unipv.ingsw.lasout.controller.notify.NotifyRenderer;
 import it.unipv.ingsw.lasout.facade.LaVaultFacade;
 import it.unipv.ingsw.lasout.model.group.Group;
 import it.unipv.ingsw.lasout.model.notify.Notify;
@@ -21,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class NotifyPanel extends JPanel {
+public class NotifyPanel extends JPanel implements Loadable {
 
     private NotifyController notifyController;
 
@@ -52,59 +51,16 @@ public class NotifyPanel extends JPanel {
     public void prepareJList(){
         notifyModel = new DefaultListModel<>();
         notifyList = new JList<>(notifyModel);
-        notifyList.setCellRenderer(new NotifyRenderer(notifyController));
         notifyList.setFixedCellHeight(-1);
-
-
-        notifyList.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                int index = notifyList.locationToIndex(e.getPoint());
-                if (index != -1) {
-                    Rectangle cellBounds = notifyList.getCellBounds(index, index);
-                    Point pointInCell = new Point(e.getX() - cellBounds.x, e.getY() - cellBounds.y);
-
-                    NotifyRenderer renderer = (NotifyRenderer) notifyList.getCellRenderer();
-                    renderer.getListCellRendererComponent(notifyList, notifyList.getModel().getElementAt(index), index, false, false);
-
-                    Rectangle trashBounds = renderer.getTrashButton().getBounds();
-                    trashBounds.width += 10;
-                    trashBounds.height += 10;
-                    renderer.getButtonPanel().doLayout();
-                    if (trashBounds.contains(pointInCell)) {
-                        ((DefaultListModel<Notify>) notifyList.getModel()).removeElementAt(index);
-                        Arrays.stream(renderer.getTrashButton().getActionListeners()).forEach(x -> {
-                            Notify notify = notifyList.getModel().getElementAt(index);
-                            x.actionPerformed(new ButtonNotifyAction(notify, renderer.getTrashButton(), ActionEvent.ACTION_PERFORMED, null));
-                        });
-                        return;
-                    }
-
-
-                    for (Component comp : renderer.getButtonPanel().getComponents()) {
-
-                        JButton button = (JButton) comp;
-
-                        Rectangle buttonBounds = button.getBounds();
-                        buttonBounds.translate(renderer.getButtonPanel().getX(), renderer.getButtonPanel().getY());
-
-
-                        if (buttonBounds.contains(pointInCell)) {
-                            Arrays.stream(button.getActionListeners()).forEach(x -> {
-                                Notify notify = notifyList.getModel().getElementAt(index);
-                                x.actionPerformed(new ButtonNotifyAction(notify, button, ActionEvent.ACTION_PERFORMED, null));
-                            });
-                            return;
-                        }
-
-                    }
-                }
-            }
-        });
-
+        notifyList.setCellRenderer(new NotifyRenderer(notifyController));
+        notifyList.addMouseListener(new NotifyMouseAdapter(notifyList));
         scrollPane = new JScrollPane(notifyList);
         add(scrollPane);
+    }
+
+    @Override
+    public void reload() {
+        populateJList();
     }
 
     public void populateJList() {
@@ -112,7 +68,6 @@ public class NotifyPanel extends JPanel {
         try {
             Collection<Notify> list = notifyController.getAll();
             list.forEach(notify -> {
-                System.out.println(notify);
                 notifyModel.addElement(notify);
             });
         } catch (Exception e) {
@@ -120,10 +75,6 @@ public class NotifyPanel extends JPanel {
             throw new RuntimeException(e);
         }
 
-    }
-
-    public void updateView(){
-        populateJList();
     }
 
 

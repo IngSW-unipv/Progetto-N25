@@ -24,4 +24,6 @@ public interface INotifyFacade {
     boolean sendInviteGroupRequest(Group from, User to);
 
     Collection<Notify> getAll(User loggedUser) throws Exception;
+
+    boolean delete(Notify notify);
 }

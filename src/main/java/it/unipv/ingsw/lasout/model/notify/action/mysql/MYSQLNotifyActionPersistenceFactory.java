@@ -3,13 +3,15 @@ package it.unipv.ingsw.lasout.model.notify.action.mysql;
 import it.unipv.ingsw.lasout.model.notify.action.EmptyNotifyAction;
 import it.unipv.ingsw.lasout.model.notify.action.friend.FriendRequestNotifyAction;
 import it.unipv.ingsw.lasout.model.notify.action.friend.mysql.MySQLFriendRequestNotifyActionPersistence;
+import it.unipv.ingsw.lasout.model.notify.action.group.InviteGroupRequestNotifyAction;
+import it.unipv.ingsw.lasout.model.notify.action.group.mysql.MySQLInviteGroupRequestNotifyActionPersistence;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;
-import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistenceFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
 public class MYSQLNotifyActionPersistenceFactory implements INotifyActionPersistenceFactory {
 
 
@@ -19,6 +21,7 @@ public class MYSQLNotifyActionPersistenceFactory implements INotifyActionPersist
     public  MYSQLNotifyActionPersistenceFactory() {
         persistenceLoader.put(new FriendRequestNotifyAction().type(), MySQLFriendRequestNotifyActionPersistence.class);
         persistenceLoader.put(new EmptyNotifyAction().type(), MySQLEmptyNotifyActionPersistence.class);
+        persistenceLoader.put(new InviteGroupRequestNotifyAction().type(), MySQLInviteGroupRequestNotifyActionPersistence.class);
     }
 
     @Override
@@ -32,3 +35,5 @@ public class MYSQLNotifyActionPersistenceFactory implements INotifyActionPersist
         }
     }
 }
+
+ */

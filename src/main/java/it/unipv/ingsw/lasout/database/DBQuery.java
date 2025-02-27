@@ -185,6 +185,10 @@ public class DBQuery {
                     ", params=" + params +
                     '}';
         }
+
+        public int getParams() {
+            return params == null ? 0 : params.size();
+        }
     }
 
     @Override

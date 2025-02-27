@@ -1,4 +1,4 @@
-package it.unipv.ingsw.lasout.model.notify.action.mysql;
+package it.unipv.ingsw.lasout.model.notify.action.persistence.mysql;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
@@ -20,7 +20,7 @@ public abstract class MySQLNotifyActionPersistence implements INotifyActionPersi
     private static final String QUERY_UPDATE = "UPDATE \\'%s\\'" +
             " SET %s WHERE id = ?;";
     private static final String QUERY_SAVE = "INSERT INTO \\'%s\\'" +
-            " (%s, id) VALUES (?, ?, ?)";
+            " (%s, id) VALUES (%s)";
 
     protected String tableName;
     protected String update;
@@ -68,9 +68,17 @@ public abstract class MySQLNotifyActionPersistence implements INotifyActionPersi
         DatabaseUtil.getInstance().executeQuery(dbQuery);
 
         if(dbQuery.getUpdateCount() == 0){
-            dbQueryBuilder =  DBQuery.Builder.create().query(String.format(QUERY_SAVE, tableName, insert));
+            dbQueryBuilder =  DBQuery.Builder.create();
             innerSave(dbQueryBuilder, notify.getNotifyAction());
             dbQueryBuilder.addParam(notify.getId());
+
+            String questionMarks = "";
+            for(int i =  0; i < dbQueryBuilder.getParams(); i++){
+                questionMarks +=  "?, ";
+            }
+            questionMarks = questionMarks.substring(0, questionMarks.length()-2);
+            String str = String.format(QUERY_SAVE, tableName, insert, questionMarks);
+            dbQueryBuilder.query(str);
             DatabaseUtil.getInstance().executeQuery(dbQueryBuilder.build());
         }
 

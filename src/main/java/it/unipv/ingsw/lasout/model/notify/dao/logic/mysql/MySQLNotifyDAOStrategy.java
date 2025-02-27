@@ -1,13 +1,13 @@
-package it.unipv.ingsw.lasout.model.notify.logic;
+package it.unipv.ingsw.lasout.model.notify.dao.logic.mysql;
 
 import it.unipv.ingsw.lasout.database.DBQuery;
 import it.unipv.ingsw.lasout.database.DatabaseUtil;
+import it.unipv.ingsw.lasout.model.notify.action.factory.INotifyActionFactory;
+import it.unipv.ingsw.lasout.model.notify.action.factory.mysql.MySQLNotifyActionFactory;
 import it.unipv.ingsw.lasout.model.notify.Notify;
-import it.unipv.ingsw.lasout.model.notify.NotifyActionFactory;
 import it.unipv.ingsw.lasout.model.notify.action.INotifyAction;
-import it.unipv.ingsw.lasout.model.notify.action.mysql.MYSQLNotifyActionPersistenceFactory;
 import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistence;
-import it.unipv.ingsw.lasout.model.notify.action.persistence.INotifyActionPersistenceFactory;
+import it.unipv.ingsw.lasout.model.notify.dao.logic.LogicNotifyDAOStrategy;
 import it.unipv.ingsw.lasout.model.user.User;
 import it.unipv.ingsw.lasout.model.user.UserDAO;
 
@@ -15,7 +15,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySQLNotifyDAOStrategy implements LogicNotifyDAOStrategy{
+public class MySQLNotifyDAOStrategy implements LogicNotifyDAOStrategy {
 
     private static final String  DELETE_FROM_NOTIFY_1=
             "DELETE FROM \\'notify\\' " +
@@ -45,11 +45,20 @@ public class MySQLNotifyDAOStrategy implements LogicNotifyDAOStrategy{
                     "FROM \\'notify\\' " +
                     "WHERE user_id = ?;";
 
-    private final INotifyActionPersistenceFactory persistenceFactory = new MYSQLNotifyActionPersistenceFactory();
+    private final INotifyActionFactory notifyActionFactory = new MySQLNotifyActionFactory();
+    //private final INotifyActionPersistenceFactory persistenceFactory = new MYSQLNotifyActionPersistenceFactory();
 
+    /*
     @Override
     public INotifyActionPersistenceFactory getPersistenceFactory() {
         return persistenceFactory;
+    }
+
+     */
+
+    @Override
+    public INotifyActionFactory getNotifyActionFactory() {
+        return notifyActionFactory;
     }
 
     @Override
@@ -86,6 +95,8 @@ public class MySQLNotifyDAOStrategy implements LogicNotifyDAOStrategy{
     }
 
 
+
+
     @Override
     public Notify getRaw(Notify notify) throws Exception {
         DBQuery query = DatabaseUtil.getInstance().createQuery(QUERY_GET_RAW_NOTIFY_1, notify.getId());
@@ -107,15 +118,19 @@ public class MySQLNotifyDAOStrategy implements LogicNotifyDAOStrategy{
 
          */
 
-        INotifyAction iiNotifyAction = NotifyActionFactory.get(type);
+        INotifyAction iiNotifyAction = getNotifyActionFactory().get(type);
 
         Notify returnNotify  = new Notify(id);
         returnNotify.setUser(user);
         returnNotify.setDescription(description);
         returnNotify.setNotifyAction(iiNotifyAction);
 
-        INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(type);
-        actionPersistence.load(returnNotify);
+        getNotifyActionFactory().getPersistence(type).load(returnNotify);
+
+
+        //iiNotifyAction.getPersistence().load(returnNotify);
+        //INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(type);
+        //actionPersistence.load(returnNotify);
         //actionPersistence.load(iiNotifyAction);
 
 
@@ -170,8 +185,10 @@ public class MySQLNotifyDAOStrategy implements LogicNotifyDAOStrategy{
                 query.setParams(notify.getUserID(), notify.getId(),  notify.getDescription(), notify.getNotifyType());
                 DatabaseUtil.getInstance().executeQuery(query);
 
-                INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(notify.getNotifyType());
-                actionPersistence.save(notify);
+                getNotifyActionFactory().getPersistence(notify.getNotifyType()).save(notify);
+
+                //INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(notify.getNotifyType());
+                //actionPersistence.save(notify);
 
                 System.out.println("SAVED");
                 query.close();
@@ -190,8 +207,9 @@ public class MySQLNotifyDAOStrategy implements LogicNotifyDAOStrategy{
         Long newID = query.getKey();
         notify.setId(newID);
 
-        INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(notify.getNotifyType());
-        actionPersistence.save(notify);
+        getNotifyActionFactory().getPersistence(notify.getNotifyType()).save(notify);
+        //INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(notify.getNotifyType());
+        //actionPersistence.save(notify);
 
         System.out.println("SAVED NEW");
 
@@ -213,11 +231,16 @@ public class MySQLNotifyDAOStrategy implements LogicNotifyDAOStrategy{
         query.setParams(notify.getUserID(), notify.getId(), notify.getDescription(), notify.getNotifyType(),  notify.getId());
         DatabaseUtil.getInstance().executeQuery(query);
 
+        getNotifyActionFactory().getPersistence(type).delete(notify);
+        getNotifyActionFactory().getPersistence(notify.getNotifyType()).save(notify);
+        /*
         INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(type);
         actionPersistence.delete(notify);
 
         actionPersistence = getPersistenceFactory().getPersistence(notify.getNotifyType());
         actionPersistence.save(notify);
+
+         */
     }
 
     @Override
@@ -230,8 +253,9 @@ public class MySQLNotifyDAOStrategy implements LogicNotifyDAOStrategy{
 
     @Override
     public void delete(Notify notify) throws Exception {
-        INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(notify.getNotifyType());
-        actionPersistence.delete(notify);
+        //INotifyActionPersistence actionPersistence = getPersistenceFactory().getPersistence(notify.getNotifyType());
+        //actionPersistence.delete(notify);
+        getNotifyActionFactory().getPersistence(notify.getNotifyType()).delete(notify);
 
         DBQuery dbQuery = DBQuery.Builder.create().query(DELETE_FROM_NOTIFY_1).params(notify.getId()).build();
         DatabaseUtil.getInstance().executeQuery(dbQuery);
