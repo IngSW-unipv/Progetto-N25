@@ -105,13 +105,14 @@ INSERT INTO usergroup (user_id, group_id) VALUES
 
 INSERT INTO cashbook (user_id, name, type) VALUES
     (1, 'default', 0),
+    (1, 'contanti', 1),
     (2, 'default', 0),
     (3, 'default', 0),
     (4, 'default', 0),
     (5, 'default', 0),
     (6, 'default', 0),
 
-    (1, 'contanti', 1),
+
     (2, 'risparmio', 1),
     (2, 'guadagno', 1),
     (3, 'risparmio', 1),
@@ -120,13 +121,13 @@ INSERT INTO cashbook (user_id, name, type) VALUES
 INSERT INTO transactions (id, type, amount, date, category, note) VALUES
     (1, 0, -100.00, '2021',  'Bob', 'Payment for services'),
     (2, 1, 50.00, '2021', 'Charlie', 'Refund'),
-    (3, 1, -200.00, '2021',  'David', 'Gift'),
-    (4, 0, 75.50, '2021', 'Frank', 'Purchase'),
+    (3, 0, 300.00, '2021',  'David', 'Gift'),
+    (4, 1, 75.50, '2021', 'Frank', 'Purchase'),
     (5, 1, 120.00, '2021', 'Alice', 'Salary deposit'),
-    (6, 0, -30.00, '2021', 'Bob', 'Grocery shopping'),
+    (6, 1, -30.00, '2021', 'Bob', 'Grocery shopping'),
     (7, 1, 200.00, '2021', 'Charlie', 'Bonus'),
-    (8, 0, -50.00, '2021', 'David', 'Utility bill'),
-    (9, 0, -25.00, '2021', 'Eve', 'Dining out'),
+    (8, 1, -50.00, '2021', 'David', 'Utility bill'),
+    (9, 1, -25.00, '2021', 'Eve', 'Dining out'),
     (10, 1, 150.00, '2021', 'Frank', 'Freelance payment'),
     (11, 0, -60.00, '2021', 'Grace', 'Subscription fee');
 
