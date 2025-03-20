@@ -1,4 +1,4 @@
-# La Vault - un software per la gestione delle tue finanze
+# La Vault - un software per la gestione delle tue finanze (28/30)
 Progetto di Busin Lorenzo, D'adamo Andrea, Demartini Riccardo, Dervishi Claudio, Rizzi Davide, Sanua Mattia per il corso di Ingegneria del Software università di Pavia.
 ## Obiettivi 
 Ispirati da svariate app di budget e finanza nasce "La Vault", un software che punta ad unificare tutte le più famose funzioni per la gestione finanziaria, dal classico conto, allo scambio di denaro, fino alla gestione dell'agenda delle spese, con un occhio anche alle spese di gruppo con anche uno sguardo verso le spese di gruppo.
